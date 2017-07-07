@@ -31,58 +31,28 @@
                     [
                         'label' => 'Same tools',
                         'url' => 'javascript:;',
+                        'options' => ['class'=>'has-sub'],
                         'items' => [
                             ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
                             ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug']],
                         ],
                     ],
+                    [
+                        'label' => '权限管理',
+                        'url' => 'javascript:;',
+                        'options' => ['class'=>'has-sub'],
+                        'items' => [
+                            ['label' => '路由管理',  'url' => ['/admin/route']],
+                            ['label' => '权限管理',  'url' => ['/admin/permission']],
+                            ['label' => '菜单管理',  'url' => ['/admin/menu']],
+                            ['label' => '角色管理',  'url' => ['/admin/role']],
+                            ['label' => '权限分配',  'url' => ['/admin/assignment']],
+                            ['label' => '用户管理',  'url' => ['/admin/user']],
+                        ],
+                    ],
                 ],
             ]
         ) ?>
-<!--        <ul class="nav">-->
-<!--            <li class="nav-header">Navigation</li>-->
-<!--            <li class="has-sub">-->
-<!--                <a href="javascript:;">-->
-<!--                    <b class="caret pull-right"></b>-->
-<!--                    <i class="fa fa-laptop"></i>-->
-<!--                    <span>Dashboard</span>-->
-<!--                </a>-->
-<!--                <ul class="sub-menu">-->
-<!--                    <li><a href="index.html">Dashboard v1</a></li>-->
-<!--                    <li><a href="index_v2.html">Dashboard v2</a></li>-->
-<!--                </ul>-->
-<!--            </li>-->
-<!--            <li class="has-sub">-->
-<!--                <a href="javascript:;">-->
-<!--                    <b class="caret pull-right"></b>-->
-<!--                    <i class="fa fa-align-left"></i>-->
-<!--                    <span>Menu Level</span>-->
-<!--                </a>-->
-<!--                <ul class="sub-menu">-->
-<!--                    <li class="has-sub">-->
-<!--                        <a href="javascript:;">-->
-<!--                            <b class="caret pull-right"></b>-->
-<!--                            Menu 1.1-->
-<!--                        </a>-->
-<!--                        <ul class="sub-menu">-->
-<!--                            <li class="has-sub">-->
-<!--                                <a href="javascript:;">-->
-<!--                                    <b class="caret pull-right"></b>-->
-<!--                                    Menu 2.1-->
-<!--                                </a>-->
-<!--                                <ul class="sub-menu">-->
-<!--                                    <li><a href="javascript:;">Menu 3.1</a></li>-->
-<!--                                    <li><a href="javascript:;">Menu 3.2</a></li>-->
-<!--                                </ul>-->
-<!--                            </li>-->
-<!--                            <li><a href="javascript:;">Menu 2.2</a></li>-->
-<!--                            <li><a href="javascript:;">Menu 2.3</a></li>-->
-<!--                        </ul>-->
-<!--                    </li>-->
-<!--                    <li><a href="javascript:;">Menu 1.2</a></li>-->
-<!--                    <li><a href="javascript:;">Menu 1.3</a></li>-->
-<!--                </ul>-->
-<!--            </li>-->
             <!-- begin sidebar minify button -->
             <li><a href="javascript:;" class="sidebar-minify-btn" data-click="sidebar-minify"><i class="fa fa-angle-double-left"></i></a></li>
             <!-- end sidebar minify button -->

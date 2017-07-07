@@ -16,13 +16,7 @@ if (Yii::$app->controller->action->id === 'login') {
     );
 } else {
 
-//    if (class_exists('backend\assets\AppAsset')) {
-//        backend\assets\AppAsset::register($this);
-//    } else {
-//        app\assets\AppAsset::register($this);
-//    }
-
-    pd\coloradmin\web\AdminLteAsset::register($this);
+    pd\coloradmin\web\ColorAdminAsset::register($this);
 
     $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/pokerdragon/color-admin/assets');
     ?>
@@ -44,7 +38,6 @@ if (Yii::$app->controller->action->id === 'login') {
 
     <!-- begin #page-container -->
     <div id="page-container" class="page-container fade page-sidebar-fixed page-header-fixed">
-
         <?= $this->render(
             'header.php',
             ['directoryAsset' => $directoryAsset]
@@ -62,13 +55,7 @@ if (Yii::$app->controller->action->id === 'login') {
         ) ?>
 
     </div>
-
     <?php $this->endBody() ?>
-    <?php
-    $this->registerJs('
-     App.init();
-    ');
-    ?>
     </body>
     </html>
     <?php $this->endPage() ?>

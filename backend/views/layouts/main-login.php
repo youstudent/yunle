@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /* @var $this \yii\web\View */
 /* @var $content string */
 
-pd\coloradmin\web\AdminLteAsset::register($this);
+pd\coloradmin\web\ColorAdminAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -29,11 +29,6 @@ pd\coloradmin\web\AdminLteAsset::register($this);
     <?= $content ?>
 
 <?php $this->endBody() ?>
-<?php
-$this->registerJs('
-     App.init();
-    ');
-?>
 </body>
 </html>
 <?php $this->endPage() ?>

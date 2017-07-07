@@ -15,9 +15,9 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/pokerdragon/
                 <img src="<?= $directoryAsset ?>/img/login-bg/bg-7.jpg" data-id="login-cover-image" alt="" />
             </div>
             <div class="news-caption">
-                <h4 class="caption-title"><i class="fa fa-diamond text-success"></i> Announcing the Color Admin app</h4>
+                <h4 class="caption-title"><i class="fa fa-diamond text-success"></i> angke </h4>
                 <p>
-                    Download the Color Admin app for iPhone®, iPad®, and Android™. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    技术支持 &copy 伊普西龙
                 </p>
             </div>
         </div>
@@ -27,8 +27,8 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/pokerdragon/
             <!-- begin login-header -->
             <div class="login-header">
                 <div class="brand">
-                    <span class="logo"></span> Color Admin
-                    <small>responsive bootstrap 3 admin template</small>
+                    <span class="logo"></span> 后台管理
+                    <small> </small>
                 </div>
                 <div class="icon">
                     <i class="fa fa-sign-in"></i>
@@ -39,25 +39,25 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/pokerdragon/
             <div class="login-content">
                 <form action="index.html" method="POST" class="margin-bottom-0">
                     <div class="form-group m-b-15">
-                        <input type="text" class="form-control input-lg" placeholder="Email Address" required />
+                        <input type="text" class="form-control input-lg" placeholder="用户名" required />
                     </div>
                     <div class="form-group m-b-15">
-                        <input type="password" class="form-control input-lg" placeholder="Password" required />
+                        <input type="password" class="form-control input-lg" placeholder="密码" required />
                     </div>
                     <div class="checkbox m-b-30">
                         <label>
-                            <input type="checkbox" /> Remember Me
+                            <input type="checkbox" /> 记住密码
                         </label>
                     </div>
                     <div class="login-buttons">
-                        <button type="submit" class="btn btn-success btn-block btn-lg">Sign me in</button>
+                        <button type="submit" class="btn btn-success btn-block btn-lg">登录</button>
                     </div>
-                    <div class="m-t-20 m-b-40 p-b-40 text-inverse">
-                        Not a member yet? Click <a href="register_v3.html" class="text-success">here</a> to register.
-                    </div>
+<!--                    <div class="m-t-20 m-b-40 p-b-40 text-inverse">-->
+<!--                        Not a member yet? Click <a href="register_v3.html" class="text-success">here</a> to register.-->
+<!--                    </div>-->
                     <hr />
                     <p class="text-center">
-                        &copy; Color Admin All Right Reserved 2015
+                        &copy; Angke All Right Reserved 2015
                     </p>
                 </form>
             </div>

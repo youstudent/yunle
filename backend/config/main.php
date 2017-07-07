@@ -24,12 +24,12 @@ return [
     'components' => [
         'assetManager' => [
             'bundles' => [
-//                'yii\web\JqueryAsset' => [
-//                    'sourcePath' => null,   // 一定不要发布该资源
-//                    'js' => [
-//
-//                    ]
-//                ],
+                'yii\web\JqueryAsset' => [
+                    'sourcePath' => null,   // 一定不要发布该资源
+                    'js' => [
+
+                    ]
+                ],
             ],
         ],
         'request' => [
