@@ -726,6 +726,7 @@ class User extends Component
             return true;
         }
 
+
         foreach ($acceptableTypes as $type => $params) {
             if (in_array($type, $this->acceptableRedirectTypes, true)) {
                 return true;

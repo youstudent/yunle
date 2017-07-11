@@ -1,5 +1,10 @@
 <?php
 
+
+use yii\widgets\ActiveForm;
+
+/* @var $model common\models\LoginForm */
+
 $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/pokerdragon/color-admin/assets');
 
 
@@ -37,29 +42,42 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/pokerdragon/
             <!-- end login-header -->
             <!-- begin login-content -->
             <div class="login-content">
-                <form action="index.html" method="POST" class="margin-bottom-0">
-                    <div class="form-group m-b-15">
-                        <input type="text" class="form-control input-lg" placeholder="用户名" required />
-                    </div>
-                    <div class="form-group m-b-15">
-                        <input type="password" class="form-control input-lg" placeholder="密码" required />
-                    </div>
-                    <div class="checkbox m-b-30">
-                        <label>
-                            <input type="checkbox" /> 记住密码
-                        </label>
-                    </div>
-                    <div class="login-buttons">
-                        <button type="submit" class="btn btn-success btn-block btn-lg">登录</button>
-                    </div>
-<!--                    <div class="m-t-20 m-b-40 p-b-40 text-inverse">-->
-<!--                        Not a member yet? Click <a href="register_v3.html" class="text-success">here</a> to register.-->
-<!--                    </div>-->
-                    <hr />
-                    <p class="text-center">
-                        &copy; Angke All Right Reserved 2015
-                    </p>
-                </form>
+                <?php $form = ActiveForm::begin([
+                    'id' => 'item-form',
+                    'options' => ['class'=> 'margin-bottom-0'],
+                    'fieldConfig' => [
+                        'template' =>  "\n<div class='form-group m-b-15'>{input}</div>\n{hint}\n{error}",
+                    ]
+                ]); ?>
+
+                <?= $form->field($model, 'username')->textInput([
+                        'maxlength' => 16,
+                        'class' => 'form-control input-lg',
+                        'placeholder' => '用户名',
+                ]) ?>
+
+                <?= $form->field($model, 'password')->passwordInput([
+                    'maxlength' => 16,
+                    'class' => 'form-control input-lg',
+                    'placeholder' => '密码',
+                ]) ?>
+
+                <div class="checkbox m-b-30">
+                    <label>
+                        <input type="checkbox" name="LoginForm[rememberMe]" value="1" checked /> 记住密码
+                    </label>
+                </div>
+
+                <div class="login-buttons">
+                    <button type="submit" class="btn btn-success btn-block btn-lg">登录</button>
+                </div>
+
+                <hr />
+                <p class="text-center">
+                    &copy; Angke All Right Reserved 2015
+                </p>
+
+                <?php ActiveForm::end(); ?>
             </div>
             <!-- end login-content -->
         </div>

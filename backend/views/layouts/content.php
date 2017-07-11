@@ -1,6 +1,5 @@
 <?php
 use yii\widgets\Breadcrumbs;
-use pd\coloradmin\widgets\Alert;
 
 ?>
 <!-- begin #content -->
@@ -28,7 +27,6 @@ use pd\coloradmin\widgets\Alert;
 <!--    </h1>-->
     <!-- end page-header -->
 
-    <?= Alert::widget() ?>
     <?= $content ?>
 
 </div>

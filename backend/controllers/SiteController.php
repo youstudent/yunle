@@ -17,7 +17,6 @@ class SiteController extends Controller
      */
     public function behaviors()
     {
-        return parent::behaviors();
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -94,11 +93,7 @@ class SiteController extends Controller
     {
         Yii::$app->user->logout();
 
-        return $this->goHome();
+        return Yii::$app->getResponse()->redirect(['/site/login']);
     }
 
-    public function actionTest()
-    {
-        return $this->render('vue_demo');
-    }
 }

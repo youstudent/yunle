@@ -1,5 +1,6 @@
 <?php
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /* @var $this \yii\web\View */
 /* @var $content string */
@@ -36,7 +37,7 @@ use yii\helpers\Html;
                     <span class="label">5</span>
                 </a>
                 <ul class="dropdown-menu media-list pull-right animated fadeInDown">
-                    <li class="dropdown-header">Notifications (5)</li>
+                    <li class="dropdown-header"> 通知消息 (5)</li>
                     <li class="media">
                         <a href="javascript:;">
                             <div class="media-left"><i class="fa fa-bug media-object bg-red"></i></div>
@@ -94,7 +95,7 @@ use yii\helpers\Html;
             <li class="dropdown navbar-user">
                 <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
                     <img src="<?= $directoryAsset ?>/img/user-3.jpg" alt=""/>
-                    <span class="hidden-xs">Adam Schwartz</span> <b class="caret"></b>
+                    <span class="hidden-xs"><?= Yii::$app->user->id ?></span> <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu animated fadeInLeft">
                     <li class="arrow"></li>
@@ -103,7 +104,7 @@ use yii\helpers\Html;
                     <li><a href="javascript:;">Calendar</a></li>
                     <li><a href="javascript:;">Setting</a></li>
                     <li class="divider"></li>
-                    <li><a href="javascript:;">Log Out</a></li>
+                    <li><a href="<?= Url::to(['site/logout']) ?>">注销</a></li>
                 </ul>
             </li>
         </ul>
