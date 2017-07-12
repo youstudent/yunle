@@ -95,7 +95,7 @@ use yii\helpers\Url;
             <li class="dropdown navbar-user">
                 <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
                     <img src="<?= $directoryAsset ?>/img/user-3.jpg" alt=""/>
-                    <span class="hidden-xs"><?= Yii::$app->user->id ?></span> <b class="caret"></b>
+                    <span class="hidden-xs"><?= Yii::$app->user->getIdentity()->username ?></span> <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu animated fadeInLeft">
                     <li class="arrow"></li>
@@ -104,7 +104,7 @@ use yii\helpers\Url;
                     <li><a href="javascript:;">Calendar</a></li>
                     <li><a href="javascript:;">Setting</a></li>
                     <li class="divider"></li>
-                    <li><a href="<?= Url::to(['site/logout']) ?>">注销</a></li>
+                    <li><a href="<?= Url::to(['/admin/site/logout']) ?>">注销</a></li>
                 </ul>
             </li>
         </ul>

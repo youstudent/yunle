@@ -39,9 +39,10 @@ return [
             'cookieValidationKey' => 'KIyOZVHLRMgh-Uef6sMAJL630ctmmj4f',
         ],
         'user' => [
-            'identityClass' => 'common\models\User',
+            'identityClass' => 'pd\admin\models\User',
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
+            'loginUrl' => ['admin/user/login'],
         ],
         'session' => [
             // this is the name of the session cookie used for login on the backend

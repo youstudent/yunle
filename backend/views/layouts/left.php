@@ -24,17 +24,35 @@
             [
                 'options' => ['class' => 'nav'],
                 'items' => [
-                    ['label' => 'Navigation', 'options' => ['class' => 'nav-header']],
-                    ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
-                    ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug']],
-                    ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
+                    ['label' => '菜单', 'options' => ['class' => 'nav-header']],
+                    ['label' => '会员', 'url'=> ['/gii']],
+                    ['label' => '服务商', 'url'=> 'javascript:;'],
+                    ['label' => '业务员', 'url'=> 'javascript:;'],
                     [
-                        'label' => 'Same tools',
+                        'label' => '订单',
                         'url' => 'javascript:;',
                         'options' => ['class'=>'has-sub'],
                         'items' => [
-                            ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
-                            ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug']],
+                            ['label' => '', 'url' => ['/gii']],
+                            ['label' => '高级设置','url' => ['/debug']],
+                        ],
+                    ],
+                    [
+                        'label' => '保险',
+                        'url' => 'javascript:;',
+                        'options' => ['class'=>'has-sub'],
+                        'items' => [
+                            ['label' => '', 'url' => ['/gii']],
+                            ['label' => '高级设置','url' => ['/debug']],
+                        ],
+                    ],
+                    [
+                        'label' => '设置',
+                        'url' => 'javascript:;',
+                        'options' => ['class'=>'has-sub'],
+                        'items' => [
+                            ['label' => '基础设置', 'url' => ['/gii']],
+                            ['label' => '高级设置','url' => ['/debug']],
                         ],
                     ],
                     [

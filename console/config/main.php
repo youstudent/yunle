@@ -17,6 +17,11 @@ return [
             'namespace' => 'common\fixtures',
           ],
     ],
+    "aliases" => [
+        "@pd/admin" => "@vendor/pokerdragon/yii2-admin",
+        "@pd/coloradmin" => "@vendor/pokerdragon/yii2-color-admin-asset",
+        "@pd/helpers" => "@vendor/pokerdragon/helpers",
+    ],
     'components' => [
         'log' => [
             'targets' => [
