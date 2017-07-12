@@ -26,7 +26,7 @@ use Codeception\Util\Soap as XmlUtils;
  *
  * ## Configuration
  *
- * * url *optional* - the url of api
+ * * url *optional* - the url of service
  *
  * This module requires PHPBrowser or any of Framework modules enabled.
  *
@@ -67,7 +67,7 @@ modules:
     enabled:
         - REST:
             depends: PhpBrowser
-            url: http://localhost/api/
+            url: http://localhost/service/
 --
 Framework modules can be used for testing of API as well.
 EOF;

@@ -83,7 +83,7 @@ modules:
             browser: firefox
             url: http://localhost
         - REST:
-            url: http://localhost/api/v1
+            url: service
             depends: PhpBrowser
 ```
 
@@ -118,7 +118,7 @@ actor: ApiTester
 modules:
     enabled:
         - REST:
-            url: http://serviceapp/api/v1/
+            url: service
             depends: PhpBrowser
             part: Json
 ```
