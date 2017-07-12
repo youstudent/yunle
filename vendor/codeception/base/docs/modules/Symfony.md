@@ -165,7 +165,7 @@ Returns a string with response body.
 <?php
 // in Helper class
 public function createUserByApi($name) {
-    $userData = $this->getModule('Symfony')->_request('POST', '/api/v1/users', ['name' => $name]);
+    $userData = $this->getModule('Symfony')->_request('POST', 'service', ['name' => $name]);
     $user = json_decode($userData);
     return $user->id;
 }

@@ -377,15 +377,15 @@ class ActiveRecord extends BaseActiveRecord
      * ```php
      * return [
      *     'admin' => self::OP_INSERT,
-     *     'api' => self::OP_INSERT | self::OP_UPDATE | self::OP_DELETE,
+     *     'service' => self::OP_INSERT | self::OP_UPDATE | self::OP_DELETE,
      *     // the above is equivalent to the following:
-     *     // 'api' => self::OP_ALL,
+     *     // 'service' => self::OP_ALL,
      *
      * ];
      * ```
      *
      * The above declaration specifies that in the "admin" scenario, the insert operation ([[insert()]])
-     * should be done in a transaction; and in the "api" scenario, all the operations should be done
+     * should be done in a transaction; and in the "service" scenario, all the operations should be done
      * in a transaction.
      *
      * @return array the declarations of transactional operations. The array keys are scenarios names,

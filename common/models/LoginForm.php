@@ -1,6 +1,24 @@
 <?php
 namespace common\models;
 
+/*
+     *
+      ******       ******
+    **********   **********
+  ************* *************
+ *****************************
+ *****************************
+ *****************************
+  ***************************
+    ***********************
+      ********龙龙********
+        *******我*******
+          *****爱*****
+            ***你***
+              ***
+               *
+     */
+
 use Yii;
 use yii\base\Model;
 
@@ -11,9 +29,11 @@ class LoginForm extends Model
 {
     public $username;
     public $password;
+    public $code;
     public $rememberMe = true;
 
     private $_user;
+    private $_code;
 
 
     /**
@@ -28,6 +48,8 @@ class LoginForm extends Model
             ['rememberMe', 'boolean'],
             // password is validated by validatePassword()
             ['password', 'validatePassword'],
+            // password is validated by validateCode()
+            ['code', 'validateCode'],
         ];
     }
 
@@ -44,6 +66,22 @@ class LoginForm extends Model
             $user = $this->getUser();
             if (!$user || !$user->validatePassword($this->password)) {
                 $this->addError($attribute, 'Incorrect username or password.');
+            }
+        }
+    }
+
+    /**
+     * Validates the code.
+     *
+     * @param string $attribute the attribute currently being validated
+     * @param array $params the additional name-value pairs given in the rule
+     */
+    public function validateCode($attribute, $params)
+    {
+        if (!$this->hasErrors()) {
+            $code = $this->getCode();
+            if (!$code || !$code->validateCode($this->code)) {
+                $this->addError($attribute, '验证码不正确.');
             }
         }
     }
@@ -75,4 +113,14 @@ class LoginForm extends Model
 
         return $this->_user;
     }
+
+    protected function getCode()
+    {
+        if ($this->_code === null) {
+            $this->_code = MessageCode::findOne(['phone'=>$this->username, 'code'=>$this->code, 'status'=>0])->code;
+        }
+
+        return $this->_code;
+    }
+
 }

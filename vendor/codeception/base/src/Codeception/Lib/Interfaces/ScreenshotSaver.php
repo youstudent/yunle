@@ -9,7 +9,7 @@ interface ScreenshotSaver
      * ```php
      * $this->getModule('{{MODULE_NAME}}')->_saveScreenshot(codecept_output_dir().'screenshot_1.png');
      * ```
-     * @api
+     * @service
      * @param $filename
      */
     public function _saveScreenshot($filename);

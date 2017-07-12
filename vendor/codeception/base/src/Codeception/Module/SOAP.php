@@ -181,7 +181,7 @@ EOF;
     /**
      * Submits request to endpoint.
      *
-     * Requires of api function name and parameters.
+     * Requires of service function name and parameters.
      * Parameters can be passed either as DOMDocument, DOMNode, XML string, or array (if no attributes).
      *
      * You are allowed to execute as much requests as you need inside test.

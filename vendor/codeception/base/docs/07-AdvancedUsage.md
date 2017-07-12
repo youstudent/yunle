@@ -179,10 +179,10 @@ Data is defined via the `@example` annotation, using JSON or Doctrine-style nota
 ```php
 <?php
  /**
-  * @example ["/api/", 200]
-  * @example ["/api/protected", 401]
-  * @example ["/api/not-found-url", 404]
-  * @example ["/api/faulty", 500]
+  * @example [service, 200]
+  * @example [service, 401]
+  * @example [service, 404]
+  * @example [service, 500]
   */
   public function checkEndpoints(ApiTester $I, \Codeception\Example $example)
   {

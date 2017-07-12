@@ -15,7 +15,7 @@ and specify the paths to the other `codeception.yml` configurations that you wan
 include:
   - frontend/src/*Bundle
   - admin
-  - api/rest
+  - service
 paths:
   output: _output
 settings:
