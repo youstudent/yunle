@@ -41,8 +41,8 @@ use yii\web\IdentityInterface;
  * @property integer $status
  * @property integer $created_at
  * @property integer $updated_at
- * @property integer $curr_login_at
- * @property string $curr_login_ip
+ * @property integer $last_login_at
+ * @property string $last_login_ip
  * @property string $access_token
  * @property string $login_count
  * @property integer $type
@@ -63,8 +63,8 @@ class User extends ActiveRecord
     public function rules()
     {
         return [
-            [['pid', 'role_id', 'status', 'created_at', 'updated_at', 'curr_login_at', 'type'], 'integer'],
-            [['username', 'phone', 'curr_login_ip', 'login_count'], 'string', 'max' => 50],
+            [['pid', 'role_id', 'status', 'created_at', 'updated_at', 'last_login_at', 'type'], 'integer'],
+            [['username', 'phone', 'last_login_ip', 'login_count'], 'string', 'max' => 50],
             [['password'], 'string', 'max' => 80],
             [['password_reset_token', 'email', 'auth_key', 'access_token'], 'string', 'max' => 60],
             [['username'], 'unique'],
@@ -90,8 +90,8 @@ class User extends ActiveRecord
             'status' => 'Status',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
-            'curr_login_at' => 'Curr Login At',
-            'curr_login_ip' => 'Curr Login Ip',
+            'last_login_at' => 'Curr Login At',
+            'last_login_ip' => 'Curr Login Ip',
             'access_token' => 'Access Token',
             'login_count' => 'Login Count',
         ];
@@ -117,6 +117,7 @@ class User extends ActiveRecord
     {
 
     }
+
     /**
      * 服务端登录
      * @param $username $password
@@ -131,7 +132,7 @@ class User extends ActiveRecord
 
         $detail = User::findOne(['username'=>$data['username']]);
 
-        if(!isset($detail) || !User::validatePassword($data['password'],$detail->password) || $detail->type!=3){
+        if(!isset($detail) || !User::validatePassword($data['password'],$detail->password)){
             $this->addError('message', '账号或密码错误');
             return false;
         }
@@ -139,8 +140,8 @@ class User extends ActiveRecord
             $this->addError('message', '请联系管理员');
             return false;
         }
-        $detail->curr_login_at = time();
-        $detail->curr_login_ip = Yii::$app->request->getUserIP();
+        $detail->last_login_at = time();
+        $detail->last_login_ip = Yii::$app->request->getUserIP();
         if ($detail->save(false)) {
             return true;
         }
@@ -201,21 +202,21 @@ class User extends ActiveRecord
         $user_id = 2;
         //TODO:id
         //1.我的会员总数
-        $count = User::find()->where(['pid' => $user_id])->count();
+        $count = Member::find()->where(['pid' => $user_id])->count();
         $end_at = time();
         //2.最近新增会员数
         $newCount = 0;
         switch ($data['date']) {
             case 1:
                 $start_at = time() - 7*24*3600;
-                $newCount = User::find()->where(['between', 'created_at', $start_at, $end_at])->andWhere(['pid' => $user_id])->count();
+                $newCount = Member::find()->where(['between', 'created_at', $start_at, $end_at])->andWhere(['pid' => $user_id])->count();
                 break;
             case 2:
                 $start_at = time() - 30*24*3600;
-                $newCount = User::find()->where(['between', 'created_at', $start_at, $end_at])->andWhere(['pid' => $user_id])->count();
+                $newCount = Member::find()->where(['between', 'created_at', $start_at, $end_at])->andWhere(['pid' => $user_id])->count();
                 break;
             case 3:
-                $newCount = User::find()->where(['pid' => $user_id])->count();
+                $newCount = Member::find()->where(['pid' => $user_id])->count();
                 break;
         }
 
@@ -308,7 +309,6 @@ class User extends ActiveRecord
     public function userDetail($id)
     {
         //用户信息
-        $id = 1;
         //TODO:记得删除测试数据
         $user = User::find()->select('id, phone, type')
             ->where(['id' => $id])
@@ -339,14 +339,8 @@ class User extends ActiveRecord
         }
 
         //用户驾驶证信息
-        $arr = 'name, sex, nationality, papers, birthday, certificate_at, permit, start_at, end_at';
-        $license = DrivingLicense::find()->select($arr)
-            ->where(['user_id' => $id])
-            ->asArray()
-            ->all();
-        if (!isset($license) || empty($license)) {
-            $license = '暂无添加驾驶证';
-        }
+        $license = new DrivingLicense();
+        $license = $license->getDriver($id);
 
         $data = ['user'=>$user, 'real'=>$name, 'license'=>$license];
         return $data;

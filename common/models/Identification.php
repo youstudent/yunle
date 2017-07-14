@@ -2,13 +2,31 @@
 
 namespace common\models;
 
+/*
+     *
+      ******       ******
+    **********   **********
+  ************* *************
+ *****************************
+ *****************************
+ *****************************
+  ***************************
+    ***********************
+      ********龙龙********
+        *******我*******
+          *****爱*****
+            ***你***
+              ***
+               *
+     */
+
 use Yii;
 
 /**
  * This is the model class for table "cdc_identification".
  *
  * @property string $id
- * @property integer $user_id
+ * @property integer $member_id
  * @property string $name
  * @property integer $status
  * @property string $licence
@@ -24,7 +42,7 @@ class Identification extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'cdc_identification';
+        return '{{%identification}}';
     }
 
     /**
@@ -33,8 +51,8 @@ class Identification extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id'], 'required'],
-            [['user_id', 'status'], 'integer'],
+            [['member_id'], 'required'],
+            [['member_id', 'status'], 'integer'],
             [['name', 'sex', 'birthday', 'start_at', 'end_at'], 'string', 'max' => 50],
             [['licence'], 'string', 'max' => 255],
         ];
@@ -47,7 +65,7 @@ class Identification extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'user_id' => 'User ID',
+            'member_id' => 'Member ID',
             'name' => 'Name',
             'status' => 'Status',
             'licence' => 'Licence',
@@ -64,17 +82,17 @@ class Identification extends \yii\db\ActiveRecord
     public function view()
     {
         //TODO:id
-        $user_id = 3;
-        $type = User::findOne(['id'=>$user_id])->type;
-        $identification = Identification::findOne(['user_id'=>$user_id]);
+        $member_id = 3;
+        $type = Member::findOne(['id'=>$member_id])->type;
+        $identification = Identification::findOne(['member_id'=>$member_id]);
         if (!isset($identification) || empty($identification)) {
             $this->addError('message', '请认证');
             return false;
         }
         if ($type == 1) {
-            $identification = Identification::findOne(['user_id'=>$user_id]);
+            $identification = Identification::findOne(['member_id'=>$member_id]);
         } else {
-            $identification = Identification::find()->select('name, licence')->where(['user_id'=>$user_id])->asArray()->all();
+            $identification = Identification::find()->select('name, licence')->where(['member_id'=>$member_id])->asArray()->all();
         }
 
         return $identification;
@@ -85,23 +103,17 @@ class Identification extends \yii\db\ActiveRecord
      */
     public function approve($data)
     {
-        if (!isset($data['id']) || empty($data['id'])) {
-            $user_id = 1;
-            //TODO:id
-        } else {
-            $user_id = $data['id'];
-        }
         if (empty($data['name']) || empty($data['licence'])) {
             $this->addError('message', '认证信息不能为空');
             return false;
         }
-        $user = User::findOne(['id'=>$user_id]);
-        $user->type = $data['type'];
+        $member = Member::findOne(['id'=>$data['member_id']]);
+        $member->type = $data['type'];
 
         $this->load(['formName'=>$data],'formName');
-        $this->user_id = $user_id;
+        $this->member_id = $data['member_id'];
 
-        if ($this->save(false) && $user->save(false)) {
+        if ($this->save(false) && $member->save(false)) {
             return true;
         }
         return false;

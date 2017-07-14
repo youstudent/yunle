@@ -23,21 +23,21 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "cdc_user_code".
+ * This is the model class for table "cdc_member_code".
  *
  * @property integer $id
- * @property integer $user_id
+ * @property integer $member_id
  * @property integer $code_id
  * @property integer $created_at
  */
-class UserCode extends \yii\db\ActiveRecord
+class MemberCode extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'cdc_user_code';
+        return '{{%member_code}}';
     }
 
     /**
@@ -46,7 +46,7 @@ class UserCode extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'code_id', 'created_at'], 'integer'],
+            [['member_id', 'code_id', 'created_at'], 'integer'],
         ];
     }
 
@@ -57,7 +57,7 @@ class UserCode extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'user_id' => 'User ID',
+            'member_id' => 'Member ID',
             'code_id' => 'Code ID',
             'created_at' => 'Created At',
         ];

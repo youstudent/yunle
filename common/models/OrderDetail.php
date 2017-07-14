@@ -27,13 +27,14 @@ use Yii;
  *
  * @property integer $id
  * @property integer $order_id
- * @property integer $user_id
+ * @property integer $member_id
  * @property integer $car_id
  * @property integer $type
  * @property integer $distributing
  * @property integer $cost
  * @property integer $pick
- * @property integer $pick_at
+ * @property integer facilitator_id
+ * @property string $pick_at
  * @property string $pick_addr
  * @property integer $post
  * @property integer $post_at
@@ -48,9 +49,9 @@ class OrderDetail extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'cdc_order_detail';
+        return '{{%order_detail}}';
     }
-
+//TODO:服务商名
     /**
      * @inheritdoc
      */
@@ -58,7 +59,7 @@ class OrderDetail extends \yii\db\ActiveRecord
     {
         return [
             [['id', 'car_id'], 'required'],
-            [['id', 'order_id', 'user_id', 'car_id', 'type', 'distributing', 'cost', 'pick', 'pick_at', 'post', 'post_at', 'created_at', 'updated_at'], 'integer'],
+            [['id', 'order_id', 'member_id', 'car_id', 'facilitator_id', 'type', 'distributing', 'cost', 'pick', 'pick_at', 'post', 'post_at', 'created_at', 'updated_at'], 'integer'],
             [['pick_addr', 'post_addr'], 'string', 'max' => 255],
         ];
     }
@@ -71,7 +72,7 @@ class OrderDetail extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'order_id' => 'Order ID',
-            'user_id' => 'User ID',
+            'member_id' => 'Member ID',
             'car_id' => 'Car ID',
             'type' => 'Type',
             'distributing' => 'Distributing',

@@ -27,7 +27,7 @@ use Yii;
  *
  * @property string $id
  * @property integer $order_id
- * @property integer $user_id
+ * @property integer $member_id
  * @property string $status_id
  * @property string $info
  * @property integer $created_at
@@ -40,7 +40,7 @@ class ActDetail extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'cdc_act_detail';
+        return '{{%act_detail}}';
     }
 
     /**
@@ -49,7 +49,7 @@ class ActDetail extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'user_id', 'created_at', 'updated_at'], 'integer'],
+            [['order_id', 'member_id', 'created_at', 'updated_at'], 'integer'],
             [['status_id', 'info'], 'string', 'max' => 255],
         ];
     }
@@ -62,7 +62,7 @@ class ActDetail extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'order_id' => 'Order ID',
-            'user_id' => 'User ID',
+            'member_id' => 'member ID',
             'status_id' => 'Status ID',
             'info' => 'Info',
             'created_at' => 'Created At',

@@ -38,7 +38,7 @@ class InvitationCode extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'cdc_invitation_code';
+        return '{{%invitation_code}}';
     }
 
     /**

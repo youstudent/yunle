@@ -19,10 +19,10 @@ namespace api\models;
                *
      */
 
+use common\models\Member;
 use Yii;
 use common\models\InvitationCode;
 use yii\base\Model;
-use common\models\User;
 
 /**
  * Signup form
@@ -62,21 +62,27 @@ class SignupForm extends Model
      */
     public function signup($data)
     {
-        //TODO:此处phone和code为从token中获取的邀请码和手机号
-        $code = InvitationCode::findOne(['code'=>$data['code']]);
+        //TODO:根据token验证一次
+        $code = InvitationCode::findOne(['code'=>$data['invite_code']]);
+        $phone = Member::findOne(['phone'=>$data['phone']]);
+
+        if(isset($code) || !empty($code)){
+            $this->addError('message', '该手机号已被注册');
+            return false;
+        }
+
         if(!isset($code) || empty($code)){
             $this->addError('message', '邀请码不存在');
             return false;
         }
 
         // 生成账号
-        $user = new User();
-        $user->username = $data['phone'];
+        $user = new Member();
         $user->pid = $code->user_id;
         $user->phone = $data['phone'];
         $user->created_at = time();
-        $user->curr_login_at = time();
-        $user->curr_login_ip = Yii::$app->request->getUserIP();
+        $user->last_login_at = time();
+        $user->last_login_ip = Yii::$app->request->getUserIP();
 
         //TODO:此处在修改一次token
         return $user->save(false) ? $user : null;

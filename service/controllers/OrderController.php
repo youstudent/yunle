@@ -2,11 +2,11 @@
 /**
  * Created by PhpStorm.
  * User: Administrator
- * Date: 2017/7/8
- * Time: 11:22
+ * Date: 2017/7/13
+ * Time: 14:06
  */
 
-namespace api\controllers;
+namespace service\controllers;
 
 /*
      *
@@ -26,16 +26,17 @@ namespace api\controllers;
                *
      */
 
+use common\models\Order;
 use Yii;
-use common\models\Car;
 
-class CarController extends ApiController
+
+class OrderController extends ApiController
 {
-    //车车车
+    //订单列表
     public function actionList()
     {
-        $model = new Car();
-        $data = $model->getCar();
+        $model = new Order();
+        $data = $model->getOrder(Yii::$app->request->post());
         if ($data) {
             return $this->jsonReturn(1, 'success', $data);
         }
@@ -43,48 +44,50 @@ class CarController extends ApiController
         return $this->jsonReturn(0, '无车辆');
     }
 
-    //车车详情
+    //订单详情
     public function actionDetail()
     {
-        $model = new Car();
+        $model = new Order();
         $data = $model->getDetail(Yii::$app->request->post());
         if ($data) {
             return $this->jsonReturn(1, 'success', $data);
         }
 
-        return $this->jsonReturn(0, '无车辆');
+        return $this->jsonReturn(0, '要啥自行车');
     }
 
-    //车车添加
+    //订单添加
     public function actionAdd()
     {
-        $model = new Car();
-        if ($model->addCar(Yii::$app->request->post())) {
-            return $this->jsonReturn(1, '添加成功');
+        $model = new Order();
+        $data = $model->addOrder(Yii::$app->request->post());
+        if ($data) {
+            return $this->jsonReturn(1, '下单成功', $data);
         }
 
-        return $this->jsonReturn(0, '添加失败,请重试');
+        return $this->jsonReturn(0, '要啥自行车');
     }
 
-    //车车删除
+    //订单删除
     public function actionDel()
     {
-        $model = new Car();
-        if ($model->delCar(Yii::$app->request->post())) {
+        $model = new Order();
+        if ($model->delOrder(Yii::$app->request->post())) {
             return $this->jsonReturn(1, '删除成功');
         }
 
         return $this->jsonReturn(0, $model->getFirstError('message'));
     }
 
-    //车车修改
+    //订单修改
     public function actionUpdate()
     {
-        $model = new Car();
-        if ($model->updateCar(Yii::$app->request->post())) {
-            return $this->jsonReturn(1, 'success');
+        $model = new Order();
+        if ($model->updateOrder(Yii::$app->request->post())) {
+            return $this->jsonReturn(1, '修改成功');
         }
         //如果返回false 返回错误信息
         return $this->jsonReturn(0, $model->getFirstError('message'));
     }
+
 }

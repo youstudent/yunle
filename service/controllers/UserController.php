@@ -109,28 +109,4 @@ class UserController extends ApiController
         return $this->jsonReturn(0, $model->getFirstError('message'));
     }
 
-    /*
-     * 客户认证
-     */
-    public function actionIdentification()
-    {
-        $model = new Identification();
-        if ($model->approve(Yii::$app->request->post())) {
-            return $this->jsonReturn(1, 'success');
-        }
-        return $this->jsonReturn(0, $model->getFirstError('message'));
-    }
-
-    /*
-     * 客户驾驶证添加
-     */
-    public function actionDriver()
-    {
-        $model = new DrivingLicense();
-        if ($model->add(Yii::$app->request->post())) {
-            return $this->jsonReturn(1, 'success');
-        }
-        return $this->jsonReturn(0, $model->getFirstError('message'));
-    }
-
 }

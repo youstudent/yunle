@@ -20,8 +20,8 @@ namespace api\controllers;
      */
 
 
+use common\models\Member;
 use Yii;
-use common\models\User;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
 use api\models\PasswordResetRequestForm;
@@ -43,9 +43,19 @@ class SiteController extends ApiController
      */
     public function actionLogin()
     {
-        $model = new User();
+        $model = new Member();
 
         if ($model->login(Yii::$app->request->post())) {
+            return $this->jsonReturn(1, 'success');
+        }
+        return $this->jsonReturn($model->getFirstError('code'), $model->getFirstError('message'));
+    }
+
+    public function actionSignup()
+    {
+        $model = new SignupForm();
+
+        if ($model->signup(Yii::$app->request->post())) {
             return $this->jsonReturn(1, 'success');
         }
         return $this->jsonReturn(0, $model->getFirstError('message'));

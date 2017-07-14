@@ -2,6 +2,24 @@
 
 namespace common\models;
 
+/*
+     *
+      ******       ******
+    **********   **********
+  ************* *************
+ *****************************
+ *****************************
+ *****************************
+  ***************************
+    ***********************
+      ********龙龙********
+        *******我*******
+          *****爱*****
+            ***你***
+              ***
+               *
+     */
+
 use Yii;
 
 /**
@@ -18,7 +36,7 @@ class IdentificationImg extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'cdc_identification_img';
+        return '{{%identification_img}}';
     }
 
     /**

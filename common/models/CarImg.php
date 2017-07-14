@@ -36,7 +36,7 @@ class CarImg extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'cdc_car_img';
+        return '{{%car_img}}';
     }
 
     /**

@@ -2,11 +2,11 @@
 /**
  * Created by PhpStorm.
  * User: Administrator
- * Date: 2017/7/8
- * Time: 11:22
+ * Date: 2017/7/13
+ * Time: 11:08
  */
 
-namespace api\controllers;
+namespace service\controllers;
 
 /*
      *
@@ -26,16 +26,16 @@ namespace api\controllers;
                *
      */
 
+use common\models\DrivingLicense;
 use Yii;
-use common\models\Car;
 
-class CarController extends ApiController
+class DrivingController extends ApiController
 {
-    //车车车
+    //驾驶证列表
     public function actionList()
     {
-        $model = new Car();
-        $data = $model->getCar();
+        $model = new DrivingLicense();
+        $data = $model->getDriver(Yii::$app->request->post());
         if ($data) {
             return $this->jsonReturn(1, 'success', $data);
         }
@@ -43,48 +43,37 @@ class CarController extends ApiController
         return $this->jsonReturn(0, '无车辆');
     }
 
-    //车车详情
-    public function actionDetail()
-    {
-        $model = new Car();
-        $data = $model->getDetail(Yii::$app->request->post());
-        if ($data) {
-            return $this->jsonReturn(1, 'success', $data);
-        }
 
-        return $this->jsonReturn(0, '无车辆');
-    }
-
-    //车车添加
+    //驾驶证添加
     public function actionAdd()
     {
-        $model = new Car();
-        if ($model->addCar(Yii::$app->request->post())) {
-            return $this->jsonReturn(1, '添加成功');
+        $model = new DrivingLicense();
+        if ($model->addDriver(Yii::$app->request->post())) {
+            return $this->jsonReturn(1, 'success');
         }
-
-        return $this->jsonReturn(0, '添加失败,请重试');
+        return $this->jsonReturn(0, $model->getFirstError('message'));
     }
 
-    //车车删除
+    //驾驶证删除
     public function actionDel()
     {
-        $model = new Car();
-        if ($model->delCar(Yii::$app->request->post())) {
+        $model = new DrivingLicense();
+        if ($model->delDriver(Yii::$app->request->post())) {
             return $this->jsonReturn(1, '删除成功');
         }
 
         return $this->jsonReturn(0, $model->getFirstError('message'));
     }
 
-    //车车修改
+    //驾驶证修改
     public function actionUpdate()
     {
-        $model = new Car();
-        if ($model->updateCar(Yii::$app->request->post())) {
+        $model = new DrivingLicense();
+        if ($model->updateDriver(Yii::$app->request->post())) {
             return $this->jsonReturn(1, 'success');
         }
         //如果返回false 返回错误信息
         return $this->jsonReturn(0, $model->getFirstError('message'));
     }
+
 }

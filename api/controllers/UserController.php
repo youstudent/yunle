@@ -53,7 +53,7 @@ class UserController extends ApiController
 
 
     /**
-     * 注册会员
+     * 注册
      * @return array
      */
     public function actionRegister()

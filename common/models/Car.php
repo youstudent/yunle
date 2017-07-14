@@ -26,7 +26,7 @@ use Yii;
  * This is the model class for table "cdc_car".
  *
  * @property string $id
- * @property integer $user_id
+ * @property integer $member_id
  * @property string $license_number
  * @property string $type
  * @property string $owner
@@ -52,7 +52,7 @@ class Car extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'cdc_car';
+        return '{{%car}}';
     }
 
     /**
@@ -61,8 +61,8 @@ class Car extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id'], 'required'],
-            [['user_id', 'load_num', 'sign_at', 'certificate_at', 'stick', 'created_at', 'updated_at'], 'integer'],
+            [['member_id'], 'required'],
+            [['member_id', 'load_num', 'sign_at', 'certificate_at', 'stick', 'created_at', 'updated_at'], 'integer'],
             [['license_number', 'type', 'nature', 'brand_num', 'discern_num', 'motor_num'], 'string', 'max' => 50],
             [['owner'], 'string', 'max' => 255],
         ];
@@ -75,7 +75,7 @@ class Car extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'user_id' => 'User ID',
+            'member_id' => 'Member ID',
             'license_number' => 'License Number',
             'brand' => 'Brand',
             'created_at' => 'Created At',
@@ -87,24 +87,27 @@ class Car extends \yii\db\ActiveRecord
      * 获取车车车
      * @return array
      */
-    public function getCar($data)
+    public function getCar($data=null)
     {
         if (!isset($data) || empty($data)) {
-            $user_id = 1;
+            $member_id = 1;
             //TODO:id
         } else {
-            $user_id = $data['id'];
+            $member_id = $data['id'];
         }
 
-
-        $car = Car::find()->select('license_number')
-            ->where(['user_id'=> $user_id])
+        $car = Car::find()->select('license_number, stick')
+            ->where(['member_id'=> $member_id])
             ->orderBy(['stick' => SORT_DESC])
             ->asArray()
+            ->limit(10)
             ->all();
 
         if(!isset($car) || empty($car)){
             return null;
+        }
+        foreach ($car as &$v) {
+            $v['stick'] = Helper::getStick($v['stick']);
         }
         return $car;
     }
@@ -138,14 +141,7 @@ class Car extends \yii\db\ActiveRecord
      */
     public function addCar($data)
     {
-        if (!isset($data['id']) || empty($data['id'])) {
-            $user_id = 1;
-            //TODO:id
-        } else {
-            $user_id = $data['id'];
-        }
         $this->load(['formName'=>$data],'formName');
-        $this->user_id = $user_id;
         $this->created_at = time();
         //TODO: 图片的添加
 

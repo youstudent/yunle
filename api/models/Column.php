@@ -71,29 +71,50 @@ class Column extends \yii\db\ActiveRecord
     public function getColumn($data)
     {
         $size = 2;
-        $pagesize =($data['page']-1)* $size;
-        $col = Column::find()->select('id')->asArray()->all();
-        $colu = [];
-        foreach ($col as $v) {
-            $colu[] = $v['id'];
+        if (!isset($data) || empty($data)) {
+            $page = 0;
+            $column = Column::find()->select('id, name')->asArray()->all();
+
+            foreach ($column as $k => &$v) {
+                $v['articles'] = Article::find()->select('id, title, brief, views')->asArray()
+                    ->where(['column_id'=>$v['id'], 'status'=>1])
+                    ->limit($size)
+                    ->offset($page)
+                    ->all();
+                foreach ($v['articles'] as &$vv) {
+                    $vv['img'] = $this->getImg(Article::findOne(['id'=>$vv['id']])->content);
+                }
+                if ($k == 0) {
+                    $v['flag'] = true;
+                } else {
+                    $v['flag'] = false;
+                }
+                $v['page'] = 1;
+            }
+        } else {
+            $page =($data['page']-1)* $size;
+            $articles = Article::find()->select('id, title, brief, views')->asArray()
+                ->where(['column_id'=>$data['column'], 'status'=>1])
+                ->limit($size)
+                ->offset($page)
+                ->all();
+            foreach ($articles as &$v) {
+                $v['img'] = $this->getImg(Article::findOne(['id'=>$v['id']])->content);
+            }
+            $total = Article::find()->where(['column_id'=>$data['column'], 'status'=>1])->count();
+            $totalPage = ceil($total/$size);
+            $column = ['articles' => $articles, 'page' => $data['page'], 'totalPage' => $totalPage];
         }
 
-        //TODO:首次加载已分类的全部待定
-        if(empty($data['column']) || !isset($data['column'])){
-            $data['column'] = $colu;
-        }
-        $query = (new \yii\db\Query());
-        $column = $query->select('{{%column}}.id, name, title, content')->from(Column::tableName())
-            ->leftJoin(Article::tableName(), '{{%article}}.column_id = {{%column}}.id')
-            ->where(['{{%column}}.id'=>$data['column']])
-            ->orderBy(['{{%article}}.created_at' => SORT_DESC])
-            ->limit($size)
-            ->offset($pagesize)
-            ->all();
         if(!isset($column) || empty($column)){
             return null;
         }
         return $column;
+    }
+    public function getImg($content){
+        $pattern="/<[img|IMG].*?src=[\'|\"](.*?(?:[\.gif|\.jpg]))[\'|\"].*?[\/]?>/";//正则
+        preg_match_all($pattern,$content,$match);//匹配图片
+        return $match[1];//返回所有图片的路径
     }
 
 }
