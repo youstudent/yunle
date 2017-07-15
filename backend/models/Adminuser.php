@@ -3,6 +3,7 @@
 namespace backend\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%adminuser}}".
@@ -38,6 +39,13 @@ class Adminuser extends \yii\db\ActiveRecord
             [['status', 'created_at', 'updated_at'], 'integer'],
             [['username', 'auth_key'], 'string', 'max' => 32],
             [['name', 'password_hash', 'password_reset_token', 'email'], 'string', 'max' => 255],
+            [['username', 'password_hash'], 'required', 'on' => 'addServiceUser']
+        ];
+    }
+    public function scenarios()
+    {
+        return [
+            'addServiceUser' => ['username', 'password'],
         ];
     }
 
@@ -58,5 +66,21 @@ class Adminuser extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
+    }
+
+    public function addServiceUser($form)
+    {
+        $this->scenario = 'addServiceUser';
+
+        $this->username = ArrayHelper::getValue($form, 'username');
+        $this->password_hash = ArrayHelper::getValue($form, 'password');
+
+        if(!$this->validate()){
+            return false;
+        }
+        $this->password_hash = Yii::$app->security->generatePasswordHash($this->password_hash);
+
+        return $this->save();
+
     }
 }

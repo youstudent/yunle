@@ -2,9 +2,11 @@
 
 namespace backend\controllers;
 
+use backend\models\form\ServiceForm;
 use Yii;
 use backend\models\Adminuser;
 use backend\models\searchs\Adminuser as AdminuserSearch;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -63,9 +65,10 @@ class ServiceController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Adminuser();
+        $model = new ServiceForm();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->addService(Yii::$app->request->post())) {
+            return json_encode(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'redirect_url'=> Url::to(['service/index'])]);
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
