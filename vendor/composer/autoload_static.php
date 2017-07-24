@@ -18,6 +18,7 @@ class ComposerStaticInit8d756398758fe022ea4e34456ef1cff1
         'y' => 
         array (
             'yii\\swiftmailer\\' => 16,
+            'yii\\imagine\\' => 12,
             'yii\\gii\\' => 8,
             'yii\\faker\\' => 10,
             'yii\\debug\\' => 10,
@@ -84,6 +85,10 @@ class ComposerStaticInit8d756398758fe022ea4e34456ef1cff1
         'yii\\swiftmailer\\' => 
         array (
             0 => __DIR__ . '/..' . '/yiisoft/yii2-swiftmailer',
+        ),
+        'yii\\imagine\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/yiisoft/yii2-imagine',
         ),
         'yii\\gii\\' => 
         array (
@@ -211,6 +216,13 @@ class ComposerStaticInit8d756398758fe022ea4e34456ef1cff1
             'Prophecy\\' => 
             array (
                 0 => __DIR__ . '/..' . '/phpspec/prophecy/src',
+            ),
+        ),
+        'I' => 
+        array (
+            'Imagine' => 
+            array (
+                0 => __DIR__ . '/..' . '/imagine/imagine/lib',
             ),
         ),
         'H' => 
@@ -739,6 +751,7 @@ class ComposerStaticInit8d756398758fe022ea4e34456ef1cff1
         'SebastianBergmann\\Diff\\Line' => __DIR__ . '/..' . '/sebastian/diff/src/Line.php',
         'SebastianBergmann\\Diff\\Parser' => __DIR__ . '/..' . '/sebastian/diff/src/Parser.php',
         'SebastianBergmann\\Environment\\Console' => __DIR__ . '/..' . '/sebastian/environment/src/Console.php',
+        'SebastianBergmann\\Environment\\OperatingSystem' => __DIR__ . '/..' . '/sebastian/environment/src/OperatingSystem.php',
         'SebastianBergmann\\Environment\\Runtime' => __DIR__ . '/..' . '/sebastian/environment/src/Runtime.php',
         'SebastianBergmann\\Exporter\\Exporter' => __DIR__ . '/..' . '/sebastian/exporter/src/Exporter.php',
         'SebastianBergmann\\GlobalState\\Blacklist' => __DIR__ . '/..' . '/sebastian/global-state/src/Blacklist.php',

@@ -104,7 +104,7 @@ use yii\helpers\Url;
                     <li><a href="javascript:;">Calendar</a></li>
                     <li><a href="javascript:;">Setting</a></li>
                     <li class="divider"></li>
-                    <li><a href="<?= Url::to(['/admin/site/logout']) ?>">注销</a></li>
+                    <li><a href="<?= Url::to(['/admin/user/logout']) ?>">注销</a></li>
                 </ul>
             </li>
         </ul>
