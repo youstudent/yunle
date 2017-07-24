@@ -80,4 +80,16 @@ class Article extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
         ];
     }
+
+    public function getArticle($data)
+    {
+        $article = Article::find()->select('views, content, title')->asArray()
+            ->where(['id'=>$data['id']])
+            ->orderBy(['created_at' => SORT_DESC])
+            ->one();
+        if(!isset($article) || empty($article)){
+            return null;
+        }
+        return $article;
+    }
 }

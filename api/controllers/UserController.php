@@ -77,36 +77,4 @@ class UserController extends ApiController
         return $this->jsonReturn(0, $model->getFirstError('message'));
     }
 
-    /*
-     * 个人认证
-     */
-    public function actionIdentification()
-    {
-        if (!isset($data) || empty($data)) {
-            $user_id = 1;
-            //TODO:id
-        } else {
-            $user_id = $data['id'];
-        }
-        $model = new Identification();
-        if ($model->approve(Yii::$app->request->post())) {
-            return $this->jsonReturn(1, 'success');
-        }
-        return $this->jsonReturn(0, $model->getFirstError('message'));
-    }
-
-    /*
-     * 个人认证浏览
-     */
-    public function actionView()
-    {
-        $model = new Identification();
-        $data = $model->view();
-        if ($data) {
-            return $this->jsonReturn(1, 'success', $data);
-        }
-        return $this->jsonReturn(0, $model->getFirstError('message'));
-    }
-
-
 }

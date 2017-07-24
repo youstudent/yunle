@@ -2,11 +2,11 @@
 /**
  * Created by PhpStorm.
  * User: Administrator
- * Date: 2017/7/13
- * Time: 14:06
+ * Date: 2017/7/19
+ * Time: 13:35
  */
 
-namespace service\controllers;
+namespace api\controllers;
 
 /*
      *
@@ -26,20 +26,19 @@ namespace service\controllers;
                *
      */
 
-use common\models\Order;
+use common\models\InsuranceOrder;
 use Yii;
 
-
-class OrderController extends ApiController
+class InsuranceController extends ApiController
 {
     //订单列表
     public function actionList()
     {
-        $model = new Order();
+        $model = new InsuranceOrder();
         $a =  file_get_contents('php://input', 'r');
         $b = json_decode($a,true);
         $member = $this->getMemberInfo($b['token']);
-        $data = $model->getOrder($b, $member);
+        $data = $model->getOrder($b);
         if ($data) {
             return $this->jsonReturn(1, 'success', $data);
         }
@@ -50,9 +49,10 @@ class OrderController extends ApiController
     //订单详情
     public function actionDetail()
     {
-        $model = new Order();
+        $model = new InsuranceOrder();
         $a =  file_get_contents('php://input', 'r');
         $b = json_decode($a,true);
+
         $data = $model->getDetail($b);
         if ($data) {
             return $this->jsonReturn(1, 'success', $data);
@@ -64,7 +64,7 @@ class OrderController extends ApiController
     //全部动态
     public function actionMany()
     {
-        $model = new Order();
+        $model = new InsuranceOrder();
         $a =  file_get_contents('php://input', 'r');
         $b = json_decode($a,true);
         $data = $model->getMany($b);
@@ -75,13 +75,14 @@ class OrderController extends ApiController
         return $this->jsonReturn(0, '要啥自行车');
     }
 
-    //建单之前的数据返回
+    //建单之前的数据读取
     public function actionInfo()
     {
-        $model = new Order();
+        $model = new InsuranceOrder();
         $a =  file_get_contents('php://input', 'r');
         $b = json_decode($a,true);
         $member = $this->getMemberInfo($b['token']);
+
         $data = $model->getInfo($b, $member);
         if ($data) {
             return $this->jsonReturn(1, 'success', $data);
@@ -93,11 +94,11 @@ class OrderController extends ApiController
     //订单添加
     public function actionAdd()
     {
-        $model = new Order();
+        $model = new InsuranceOrder();
         $a =  file_get_contents('php://input', 'r');
         $b = json_decode($a,true);
-        $member = $this->getMemberInfo($b['token']);
 
+        $member = $this->getMemberInfo($b['token']);
         $data = $model->addOrder($b, $member);
         if ($data) {
             return $this->jsonReturn(1, '下单成功', $data);
@@ -109,11 +110,10 @@ class OrderController extends ApiController
     //订单取消
     public function actionDel()
     {
-        $model = new Order();
+        $model = new InsuranceOrder();
         $a =  file_get_contents('php://input', 'r');
         $b = json_decode($a,true);
-        $member = $this->getMemberInfo($b['token']);
-        if ($model->delOrder($b, $member)) {
+        if ($model->delOrder($b)) {
             return $this->jsonReturn(1, '取消成功');
         }
 
@@ -123,29 +123,12 @@ class OrderController extends ApiController
     //服务商确认
     public function actionUpdate()
     {
-        $model = new Order();
-        $a =  file_get_contents('php://input', 'r');
-        $b = json_decode($a,true);
-        $data = $model->updateOrder($b);
+        $model = new InsuranceOrder();
+        $data = $model->updateOrder(Yii::$app->request->post());
         if ($data) {
             return $this->jsonReturn(1, '订单确认成功',$data);
         }
         //如果返回false 返回错误信息
         return $this->jsonReturn(0, $model->getFirstError('message'));
     }
-
-    //获取服务商列表
-    public function actionService()
-    {
-        $model = new Order();
-        $a =  file_get_contents('php://input', 'r');
-        $b = json_decode($a,true);
-        $data = $model->getService($b);
-        if ($data) {
-            return $this->jsonReturn(1, 'success', $data);
-        }
-        //如果返回false 返回错误信息
-        return $this->jsonReturn(0, $model->getFirstError('message'));
-    }
-
 }

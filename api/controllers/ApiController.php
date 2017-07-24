@@ -46,7 +46,22 @@ class ApiController extends Controller
             'timestamp' => $time,
             'message' => $message,
             'data' => $data,
+            'token' => Yii::$app->session->getId()
         ];
+    }
+
+    public function getMemberInfo($token = '')
+    {
+        if(empty($token)){
+            return $this->jsonReturn(4000, '未登录');
+        }
+        Yii::$app->session->setId($token);
+
+        $member = Yii::$app->session->get('mem');
+        if(empty($member)){
+            return $this->jsonReturn(4001, '登录失效');
+        }
+        return $member;
     }
 
 }

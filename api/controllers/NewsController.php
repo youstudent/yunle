@@ -2,10 +2,9 @@
 /**
  * Created by PhpStorm.
  * User: Administrator
- * Date: 2017/7/8
- * Time: 9:39
+ * Date: 2017/7/15
+ * Time: 17:10
  */
-
 namespace api\controllers;
 
 /*
@@ -26,31 +25,18 @@ namespace api\controllers;
                *
      */
 
-use api\models\Article;
-use Yii;
-use api\models\Column;
+use api\models\News;
 
-class ColumnController extends ApiController
+class NewsController extends ApiController
 {
     public function actionList()
     {
-        $model = new Column();
-        $data = $model->getColumn(Yii::$app->request->post());
+        $model = new News();
+        $data = $model->getNews();
         if ($data) {
             return $this->jsonReturn(1, 'success', $data);
         }
 
-        return $this->jsonReturn(0, '无栏目内容');
-    }
-
-    public function actionDetail()
-    {
-        $model = new Article();
-        $data = $model->getArticle(Yii::$app->request->post());
-        if ($data) {
-            return $this->jsonReturn(1, 'success', $data);
-        }
-
-        return $this->jsonReturn(0, '无详细内容');
+        return $this->jsonReturn(0, '暂无消息');
     }
 }

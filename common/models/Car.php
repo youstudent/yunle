@@ -84,21 +84,21 @@ class Car extends \yii\db\ActiveRecord
     }
 
     /**
-     * 获取车车车
+     * 获取首页车牌车
      * @return array
      */
-    public function getCar($data=null)
+    public function getList($member)
     {
-        if (!isset($data) || empty($data)) {
-            $member_id = 1;
-            //TODO:id
+        //获取个人信息
+        if (!isset($data['member_id']) || empty($data['member_id'])) {
+            $member_id = $member['member']['id'];
         } else {
-            $member_id = $data['id'];
+            $member_id = $data['member_id'];
         }
 
-        $car = Car::find()->select('license_number, stick')
+        $car = Car::find()->select('id, license_number, stick')
             ->where(['member_id'=> $member_id])
-            ->orderBy(['stick' => SORT_DESC])
+            ->orderBy(['stick' => SORT_DESC, 'created_at' => SORT_DESC])
             ->asArray()
             ->limit(10)
             ->all();
@@ -108,6 +108,34 @@ class Car extends \yii\db\ActiveRecord
         }
         foreach ($car as &$v) {
             $v['stick'] = Helper::getStick($v['stick']);
+        }
+        return $car;
+    }
+
+    /**
+     * 获取车车车
+     * @return array
+     */
+    public function getCar($member)
+    {
+        if (!isset($data['member_id']) || empty($data['member_id'])) {
+            $member_id = $member['member']['id'];
+        } else {
+            $member_id = $data['member_id'];
+        }
+
+        $car = Car::find()->select('id, license_number, type, created_at, stick')
+            ->where(['member_id'=> $member_id])
+            ->orderBy(['stick' => SORT_DESC, 'created_at' => SORT_DESC])
+            ->asArray()
+            ->limit(10)
+            ->all();
+
+        if(!isset($car) || empty($car)){
+            return null;
+        }
+        foreach ($car as &$v) {
+            $v['created_at'] = date('Y/m/d H:i', $v['created_at']);
         }
         return $car;
     }
@@ -129,10 +157,12 @@ class Car extends \yii\db\ActiveRecord
             return null;
         }
         //转换时间和加入图片
-        $car['sign_at'] = date('Y年m月d日', $car['sign_at']);
-        $car['certificate_at'] = date('Y年m月d日', $car['certificate_at']);
-        $car['img_path'] = CarImg::find()->select('img_path')->where(['car_id'=> $car['id']])->asArray()->all();
-
+        $img = CarImg::find()->select('img_path')->where(['car_id'=> $car['id']])->asArray()->all();
+        $carImg = [];
+        foreach ($img as &$v) {
+            $carImg[] = $v['img_path'];
+        }
+        $car['img_path'] = $carImg;
         return $car;
     }
 
@@ -169,7 +199,7 @@ class Car extends \yii\db\ActiveRecord
         $discern_num = $this::findOne(['id'=>$data['id']])->discern_num;
         $code = substr($discern_num,(strlen($discern_num)-6));
         if ($data['code'] == $code ) {
-            $del = Car::findOne($data['id'])->delete();
+            Car::findOne($data['id'])->delete();
             return true;
         } else {
             $this->addError('message', '识别码错误');
@@ -182,7 +212,6 @@ class Car extends \yii\db\ActiveRecord
      */
     public function updateCar($data)
     {
-        $data['id'] = 1;
         $car = Car::findOne(['id'=>$data['id']]);
         if (!isset($car) || empty($car)) {
             $this->addError('message', '要啥自行车');
@@ -190,11 +219,9 @@ class Car extends \yii\db\ActiveRecord
         }
         $car->load(['formName'=>$data],'formName');
 
-        if ($car->validate()) {
-            $car->save(false);
+        if ($car->save(false)) {
             return true;
         }
-
         return false;
     }
 
