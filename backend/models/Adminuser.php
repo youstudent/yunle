@@ -83,4 +83,18 @@ class Adminuser extends \yii\db\ActiveRecord
         return $this->save();
 
     }
+
+    public function updateServiceUser($form)
+    {
+        $this->scenario = 'updateServiceUser';
+        if(!$this->load($form) || !$this->validate()){
+            return false;
+        }
+        $model = Adminuser::findOne(['username'=>$this->username]);
+        if($this->password_hash && $model->password_hash != Yii::$app->security->generatePasswordHash($this->password_hash)){
+            $this->password_hash = Yii::$app->security->generatePasswordHash($this->password_hash);
+        }
+        return true;
+    }
+
 }

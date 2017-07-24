@@ -32,36 +32,11 @@
                         'options' => ['class'=>'has-sub'],
                         'items' => [
                             ['label' => '添加服务商', 'url' => ['/service/create']],
+                            ['label' => '服务商', 'url' => ['/service/index']],
                             ['label' => '高级设置','url' => ['/debug']],
                         ],
                     ],
-                    ['label' => '业务员', 'url'=> 'javascript:;'],
-                    [
-                        'label' => '订单',
-                        'url' => 'javascript:;',
-                        'options' => ['class'=>'has-sub'],
-                        'items' => [
-                            ['label' => '高级设置','url' => ['/debug']],
-                        ],
-                    ],
-                    [
-                        'label' => '保险',
-                        'url' => 'javascript:;',
-                        'options' => ['class'=>'has-sub'],
-                        'items' => [
-                            ['label' => '', 'url' => ['/gii']],
-                            ['label' => '高级设置','url' => ['/debug']],
-                        ],
-                    ],
-                    [
-                        'label' => '设置',
-                        'url' => 'javascript:;',
-                        'options' => ['class'=>'has-sub'],
-                        'items' => [
-                            ['label' => '基础设置', 'url' => ['/gii']],
-                            ['label' => '高级设置','url' => ['/debug']],
-                        ],
-                    ],
+                    ['label' => '权限', 'url'=> '/rbac'],
                     [
                         'label' => '权限管理',
                         'url' => 'javascript:;',

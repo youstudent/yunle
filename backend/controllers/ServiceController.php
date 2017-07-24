@@ -3,6 +3,8 @@
 namespace backend\controllers;
 
 use backend\models\form\ServiceForm;
+use backend\models\searchs\ServiceSearch;
+use backend\models\Service;
 use Yii;
 use backend\models\Adminuser;
 use backend\models\searchs\Adminuser as AdminuserSearch;
@@ -37,7 +39,7 @@ class ServiceController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new AdminuserSearch();
+        $searchModel = new ServiceSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -68,7 +70,7 @@ class ServiceController extends Controller
         $model = new ServiceForm();
 
         if ($model->addService(Yii::$app->request->post())) {
-            return json_encode(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'redirect_url'=> Url::to(['service/index'])]);
+            return json_encode(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['service/index'])]);
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -77,22 +79,15 @@ class ServiceController extends Controller
         }
     }
 
-    /**
-     * Updates an existing Adminuser model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionUpdate($id)
+
+    public function actionUpdateField($id, $field)
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->updateField(Yii::$app->request->post(), $field)) {
+            return json_encode(['code'=>1, 'msg'=> 'success', 'data' => '']);
         } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
+            return json_encode(['code'=>0, 'msg'=> 'error', 'data' => '']);
         }
     }
 
@@ -118,10 +113,11 @@ class ServiceController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Adminuser::findOne($id)) !== null) {
+        if (($model = Service::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
 }

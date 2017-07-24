@@ -318,7 +318,7 @@ class RoboFile extends \Robo\Tasks
                         } catch (\ReflectionException $e) {
                         }
 
-                        if (strpos($doc, '@service') === false) {
+                        if (strpos($doc, '@api') === false) {
                             return false;
                         }
                     };
@@ -326,7 +326,7 @@ class RoboFile extends \Robo\Tasks
                 })->processMethod(function (\ReflectionMethod $method, $text) use ($className, $moduleName) {
                     $title = "\n### {$method->name}\n";
                     if (strpos($method->name, '_') === 0) {
-                        $text = str_replace("@service\n", '', $text);
+                        $text = str_replace("@api\n", '', $text);
                         $text = "\n*hidden API method, expected to be used from Helper classes*\n" . $text;
                         $text = str_replace("{{MODULE_NAME}}", $moduleName, $text);
                     };

@@ -162,7 +162,7 @@ class SelfUpdate extends Command
     protected function getGithubTags($repo)
     {
         $jsonTags = $this->retrieveContentFromUrl(
-            'https://service.github.com/repos/' . $repo . '/tags'
+            'https://api.github.com/repos/' . $repo . '/tags'
         );
 
         return array_map(

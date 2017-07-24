@@ -14,7 +14,7 @@ use Yii;
  * @property string $introduction
  * @property string $address
  * @property string $lat
- * @property string $lon
+ * @property string $lng
  * @property integer $level
  * @property integer $status
  * @property integer $created_at
@@ -38,9 +38,10 @@ class Service extends \yii\db\ActiveRecord
         return [
             [['name', 'principal', 'contact_phone'], 'required'],
             [['level', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['name', 'principal', 'contact_phone', 'introduction', 'address', 'lat', 'lon'], 'string', 'max' => 256],
+            [['name', 'principal', 'contact_phone', 'introduction', 'address', 'lat', 'lng'], 'string', 'max' => 256],
         ];
     }
+
 
     /**
      * @inheritdoc
@@ -61,5 +62,11 @@ class Service extends \yii\db\ActiveRecord
             'created_at' => '创建时间',
             'updated_at' => '更新时间',
         ];
+    }
+
+    public function updateField($post, $field)
+    {
+        //TODO::验证filed字段权限
+
     }
 }
