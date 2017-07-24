@@ -2,28 +2,10 @@
 
 namespace common\models;
 
-/*
-     *
-      ******       ******
-    **********   **********
-  ************* *************
- *****************************
- *****************************
- *****************************
-  ***************************
-    ***********************
-      ********龙龙********
-        *******我*******
-          *****爱*****
-            ***你***
-              ***
-               *
-     */
-
 use Yii;
 
 /**
- * This is the model class for table "cdc_act_detail".
+ * This is the model class for table "cdc_act_insurance".
  *
  * @property string $id
  * @property integer $order_id
@@ -34,14 +16,14 @@ use Yii;
  * @property integer $created_at
  * @property integer $updated_at
  */
-class ActDetail extends \yii\db\ActiveRecord
+class ActInsurance extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return '{{%act_detail}}';
+        return 'cdc_act_insurance';
     }
 
     /**
@@ -50,8 +32,9 @@ class ActDetail extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'user_id', 'created_at', 'updated_at'], 'integer'],
-            [['status', 'info', 'user'], 'string', 'max' => 255],
+            [['order_id', 'user_id', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['user'], 'string', 'max' => 50],
+            [['info'], 'string', 'max' => 255],
         ];
     }
 
@@ -64,8 +47,8 @@ class ActDetail extends \yii\db\ActiveRecord
             'id' => 'ID',
             'order_id' => 'Order ID',
             'user_id' => 'User ID',
-            'status' => 'Status',
             'user' => 'User',
+            'status' => 'Status',
             'info' => 'Info',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',

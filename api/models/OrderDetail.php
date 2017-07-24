@@ -1,24 +1,6 @@
 <?php
 
-namespace common\models;
-
-/*
-     *
-      ******       ******
-    **********   **********
-  ************* *************
- *****************************
- *****************************
- *****************************
-  ***************************
-    ***********************
-      ********龙龙********
-        *******我*******
-          *****爱*****
-            ***你***
-              ***
-               *
-     */
+namespace api\models;
 
 use Yii;
 
@@ -30,7 +12,6 @@ use Yii;
  * @property integer $car_id
  * @property integer $member_id
  * @property integer $service_id
- * @property integer $start_at
  */
 class OrderDetail extends \yii\db\ActiveRecord
 {
@@ -39,7 +20,7 @@ class OrderDetail extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%order_detail}}';
+        return 'cdc_order_detail';
     }
 
     /**

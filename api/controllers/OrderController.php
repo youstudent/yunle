@@ -6,7 +6,7 @@
  * Time: 14:06
  */
 
-namespace service\controllers;
+namespace api\controllers;
 
 /*
      *
