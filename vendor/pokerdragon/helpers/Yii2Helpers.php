@@ -16,7 +16,6 @@ class Yii2Helpers
         if (empty($timestamp)) {
             return $default;
         }
-
         return date($format, $timestamp);
     }
 
