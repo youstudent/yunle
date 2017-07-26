@@ -103,28 +103,22 @@ JS
         <div class="panel-body">
             <form class="form-inline"  action="" method="GET">
                 <div class="form-group m-r-15">
-                    <input type="text" class="form-control" style="min-width: 103%;margin-right: 70px;" name="OrderSearch[created_at]" id="daterangepicker" value="<?= $searchModel->created_at ?>" placeholder="创建时间">
+                    <input type="text" class="form-control" style="min-width: 103%;margin-right: 70px;" name="InsuranceOrderSearch[created_at]" id="daterangepicker" value="<?= $searchModel->created_at ?>" placeholder="创建时间">
                 </div>
                 <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="OrderSearch[user]" id="user" value="<?= $searchModel->user ?>" placeholder="用户">
+                    <input type="text" class="form-control" name="InsuranceOrderSearch[user]" id="user" value="<?= $searchModel->user ?>" placeholder="用户">
                 </div>
                 <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="OrderSearch[phone]" id="phone" value="<?= $searchModel->phone ?>" placeholder="联系电话">
+                    <input type="text" class="form-control" name="InsuranceOrderSearch[phone]" id="phone" value="<?= $searchModel->phone ?>" placeholder="联系电话">
                 </div>
                 <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="OrderSearch[car]" id="phone" value="<?= $searchModel->car ?>" placeholder="车牌号">
+                    <input type="text" class="form-control" name="InsuranceOrderSearch[car]" id="phone" value="<?= $searchModel->car ?>" placeholder="车牌号">
                 </div>
                 <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="OrderSearch[service]" id="service" value="<?= $searchModel->service ?>" placeholder="服务商">
-                </div>
-                <div class="form-group m-r-10">
-                    <select class="form-control" name="OrderSearch[type]" id="OrderSearchType">
+                    <select class="form-control" name="InsuranceOrderSearch[status]" id="InsuranceSearchStatus" style="min-width: 105%;">
                         <option value="" selected>全部</option>
-                        <option value="1" <?= $searchModel->type == 1 ? 'selected' : '' ?>>救援</option>
-                        <option value="2" <?= $searchModel->type == 2 ? 'selected' : '' ?>>维修</option>
-                        <option value="3" <?= $searchModel->type == 3 ? 'selected' : '' ?>>保养</option>
-                        <option value="4" <?= $searchModel->type == 4 ? 'selected' : '' ?>>上线审车</option>
-                        <option value="5" <?= $searchModel->type == 5 ? 'selected' : '' ?>>不上线审车</option>
+                        <option value="0" <?= $searchModel->status == 0 && strlen($searchModel->status) ? 'selected' : '' ?>>正常</option>
+                        <option value="100" <?= $searchModel->status == 100 ? 'selected' : '' ?>>取消</option>
                     </select>
 
                 </div>
@@ -138,13 +132,15 @@ JS
                 <tr>
                     <th>#</th>
                     <th>订单号</th>
-                    <th>订单类型</th>
-                    <th>联系人</th>
-                    <th>联系电话</th>
+                    <th>投保人</th>
+                    <th>性别</th>
+                    <th>民族</th>
+                    <th>身份证号</th>
+                    <th>电话</th>
                     <th>车牌号</th>
-                    <th>接车</th>
+                    <th>承包公司</th>
                     <th>价格</th>
-                    <th>服务商</th>
+                    <th>状态</th>
                     <th>创建时间</th>
                     <th>操作</th>
                 </tr>
@@ -153,33 +149,23 @@ JS
                 <?php foreach($dataProvider->getModels() as $index => $model): ?>
                     <tr class="">
                         <td><?= \pd\helpers\Yii2Helpers::serialColumn($dataProvider, $index) ?></td>
-                        <td><?= $model->order_sn ?></td>
+                        <td><?= $model->order ?></td>
+                        <td><?= $model->user ?></td>
+                        <td><?= $model->sex ?></td>
+                        <td><?= $model->nation ?></td>
+                        <td><?= $model->licence ?></td>
+                        <td><?= $model->phone ?></td>
+                        <td><?= $model->car ?></td>
+                        <td><?= $model->company ?></td>
+                        <td><?= $model->cost ?></td>
                         <td>
-                            <?php switch ($model->type):?><?php case 1: ?>
-                                    救援
-                                <?php break;?><?php case 2: ?>
-                                    维修
-                                <?php break;?><?php case 3: ?>
-                                    保养
-                                <?php break;?><?php case 4: ?>
-                                    上线审车
-                                <?php break;?><?php case 5: ?>
-                                    不上线审车
+                            <?php switch ($model->status):?><?php case 0: ?>
+                                <span class="badge badge-primary">正常</span>
+                                <?php break;?><?php case 100: ?>
+                                <span class="badge badge-danger">取消</span>
                                 <?php break;?><?php default: ?>
                             <?php endswitch ?>
                         </td>
-                        <td><?= $model->user ?></td>
-                        <td><?= $model->phone ?></td>
-                        <td><?= $model->car ?></td>
-                        <td><?php if($model->pick == 1): ?>
-                                <span>接车地点 <small><?= $model->pick_addr ?></small></span>
-                                <span>接车时间 <small><?= pd\helpers\Yii2Helpers::dateFormat($model->pick_at) ?></small></span>
-                            <?php  else: ?>
-                                <span>不接车</span>
-                            <?php endif; ?>
-                        </td>
-                        <td><?= $model->cost ?></td>
-                        <td><?= $model->service ?></td>
                         <td><?= pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
                         <td align="center">
                             <div class="btn-group">
@@ -188,7 +174,7 @@ JS
                     </tr>
                     <!-- #modal-dialog -->
                     <div class="modal fade member-edit-modal" id="member-edit-modal-<?= $model->id ?>">
-                        <?= $this->render('_modal_form', ['model'=>$model]) ?>
+
                     </div>
                 <?php endforeach; ?>
                 </tbody>

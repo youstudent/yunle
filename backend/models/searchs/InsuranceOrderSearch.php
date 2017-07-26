@@ -1,34 +1,30 @@
 <?php
 /**
  * User: harlen-angkemac
- * Date: 2017/7/25 - 下午5:17
+ * Date: 2017/7/26 - 下午3:44
  *
  */
 
 namespace backend\models\searchs;
 
 
-use backend\models\Order;
+use backend\models\InsuranceOrder;
 use yii\data\ActiveDataProvider;
 
-class OrderSearch extends Order
+class InsuranceOrderSearch extends InsuranceOrder
 {
-
-    public $salesman_name;
-    public $service_name;
-
     public function rules()
     {
         return [
-            [['type'], 'integer'],
-            [['created_at', 'salesman_name', 'service_name', 'user', 'car', 'service'], 'string'],
+            [['status'], 'integer'],
+            [['created_at','user', 'car'], 'string'],
             [['phone'], 'number'],
         ];
     }
 
     public function search($params)
     {
-        $query = Order::find();
+        $query = InsuranceOrder::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -36,6 +32,7 @@ class OrderSearch extends Order
         if (!($this->load($params) && $this->validate())) {
             return $dataProvider;
         }
+
         //格式化时间
         if ($this->created_at) {
             $start_date = substr($this->created_at, 0, 10);
@@ -52,8 +49,7 @@ class OrderSearch extends Order
                 $query->andFilterWhere(['<=', 'created_at', $end]);
             }
         }
-        $query->andFilterWhere(['type' => $this->type])
-            ->andFilterWhere(['LIKE', 'service', $this->service])
+        $query->andFilterWhere(['type' => $this->status])
             ->andFilterWhere(['LIKE', 'user', $this->user])
             ->andFilterWhere(['LIKE', 'phone', $this->phone]);
 

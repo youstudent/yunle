@@ -1,29 +1,24 @@
 <?php
 /**
  * User: harlen-angkemac
- * Date: 2017/7/25 - 下午5:15
+ * Date: 2017/7/26 - 下午3:29
  *
  */
 
 namespace backend\controllers;
 
 
-use backend\models\form\OrderForm;
-use backend\models\Order;
 use backend\models\searchs\InsuranceOrderSearch;
-use backend\models\searchs\OrderSearch;
-use common\models\ActInsurance;
+use backend\models\searchs\InsuranceSearch;
 use Yii;
-use yii\helpers\Url;
-use yii\web\Controller;
-use yii\web\Response;
+use yii\base\Controller;
 
-class OrderController extends Controller
+class InsuranceController extends Controller
 {
-    //订单列表
+    //会员列表
     public function actionIndex()
     {
-        $searchModel = new OrderSearch();
+        $searchModel = new InsuranceSearch();
 
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -36,7 +31,7 @@ class OrderController extends Controller
 
     public function actionCreate()
     {
-        $model = new OrderForm();
+        $model = new Insurance();
         if($model->addOrder(Yii::$app->request->post())){
             return json_encode(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['member/index'])]);
         }
@@ -49,7 +44,7 @@ class OrderController extends Controller
     //更新会员信息
     public function actionUpdate($id)
     {
-        $model = OrderForm::findOne(['id'=>$id]);
+        $model = Insurance::findOne(['id'=>$id]);
 
         if($model->updateOrder(Yii::$app->request->post())){
             return json_encode(['data'=> '', 'code'=>1, 'message'=> '更新成功', 'url'=> Url::to(['member/index'])]);
@@ -62,7 +57,7 @@ class OrderController extends Controller
     //设置用户状态
     public function actionSetStatus($id, $status)
     {
-        $model = Order::findOne(['id'=>$id]);
+        $model = Insurance::findOne(['id'=>$id]);
         if($model->setStatus($status)){
             return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['member/index'])]);
         }
@@ -71,22 +66,26 @@ class OrderController extends Controller
 
     public function actionSoftDelete($id)
     {
-        $model = Order::findOne(['id'=>$id]);
+        $model = Insurance::findOne(['id'=>$id]);
         if($model->softDelete($id)){
             return json_encode(['data'=> '', 'code'=>1, 'message'=> '删除成功', 'url'=> Url::to(['member/index'])]);
         }
         return json_encode(['data'=> '', 'code'=>1, 'message'=> '删除失败', 'url'=> Url::to(['member/index'])]);
     }
-
-
-
-    public function actionLogModal($id)
+    /**
+     * 保险订单
+     * @return string
+     */
+    public function actionInsuranceOrder()
     {
-        //$data = ActInsurance::find()->where(['order_id'=>$id])->all();
-        Yii::$app->response->format =  Response::FORMAT_RAW;
+        $searchModel = new InsuranceOrderSearch();
 
-        $this->renderPartial('_modal_log', [
-            'model' => ActInsurance::find()
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+
+        return $this->render('order-index', [
+            'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel
         ]);
     }
 }

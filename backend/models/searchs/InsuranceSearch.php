@@ -1,34 +1,21 @@
 <?php
 /**
  * User: harlen-angkemac
- * Date: 2017/7/25 - 下午5:17
+ * Date: 2017/7/26 - 下午3:30
  *
  */
 
 namespace backend\models\searchs;
 
 
-use backend\models\Order;
+use backend\models\Insurance;
 use yii\data\ActiveDataProvider;
 
-class OrderSearch extends Order
+class InsuranceSearch extends Insurance
 {
-
-    public $salesman_name;
-    public $service_name;
-
-    public function rules()
-    {
-        return [
-            [['type'], 'integer'],
-            [['created_at', 'salesman_name', 'service_name', 'user', 'car', 'service'], 'string'],
-            [['phone'], 'number'],
-        ];
-    }
-
     public function search($params)
     {
-        $query = Order::find();
+        $query = Insurance::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

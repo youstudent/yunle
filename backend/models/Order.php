@@ -19,8 +19,8 @@ use Yii;
  * @property integer $distributing
  * @property string $service
  * @property string $cost
- * @property integer $start_at
- * @property integer $end_at
+ * @property integer $created_at
+ * @property integer $update_at
  */
 class Order extends \yii\db\ActiveRecord
 {
@@ -38,7 +38,7 @@ class Order extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['type', 'pick', 'pick_at', 'distributing', 'start_at', 'end_at'], 'integer'],
+            [['type', 'pick', 'pick_at', 'distributing', 'created_at', 'update_at'], 'integer'],
             [['cost'], 'number'],
             [['order'], 'string', 'max' => 100],
             [['user', 'phone', 'car'], 'string', 'max' => 50],
@@ -53,7 +53,7 @@ class Order extends \yii\db\ActiveRecord
     {
         return [
             'id' => '自增id',
-            'order' => '订单号',
+            'order_sn' => '订单号',
             'type' => '类型 1:救援 2:维修 3:保养 4:上线审车 5:不上线审车',
             'user' => '联系人',
             'phone' => '联系人电话',
@@ -64,8 +64,8 @@ class Order extends \yii\db\ActiveRecord
             'distributing' => '派单类型 0:自动 1:手动',
             'service' => '服务商',
             'cost' => '价格',
-            'start_at' => '下单时间',
-            'end_at' => '完成时间',
+            'created_at' => '下单时间',
+            'update_at' => '完成时间',
         ];
     }
 

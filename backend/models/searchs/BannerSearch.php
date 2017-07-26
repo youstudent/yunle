@@ -1,22 +1,18 @@
 <?php
 /**
  * User: harlen-angkemac
- * Date: 2017/7/25 - 下午5:17
+ * Date: 2017/7/26 - 下午4:45
  *
  */
 
 namespace backend\models\searchs;
 
 
-use backend\models\Order;
+use backend\models\Banner;
 use yii\data\ActiveDataProvider;
 
-class OrderSearch extends Order
+class BannerSearch extends Banner
 {
-
-    public $salesman_name;
-    public $service_name;
-
     public function rules()
     {
         return [
@@ -28,7 +24,7 @@ class OrderSearch extends Order
 
     public function search($params)
     {
-        $query = Order::find();
+        $query = Banner::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
