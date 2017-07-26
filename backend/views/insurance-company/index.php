@@ -10,7 +10,7 @@ use yii\widgets\LinkPager;
 /* @var $searchModel backend\models\searchs\Adminuser */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = '服务商管理';
+$this->title = '保险商管理';
 $this->params['breadcrumbs'][] = $this->title;
 
 \pd\coloradmin\web\plugins\DaterangePickerAsset::register($this);
@@ -88,6 +88,7 @@ $('#demo').daterangepicker({
 
 JS
 );
+$i=1;
 ?>
 <div class="adminuser-index">
 
@@ -95,7 +96,7 @@ JS
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="row">
         <div class="col-md-6">
-            <?= Html::a('新增服务商', ['create'], ['class' => 'btn btn-success']) ?>
+            <?= Html::a('新增保险商', ['create'], ['class' => 'btn btn-success']) ?>
         </div>
     </div>
     <p></p>
@@ -113,57 +114,49 @@ JS
         </div>
         <?= \pd\coloradmin\widgets\Alert::widget() ?>
         <div class="panel-body">
-            <form class="form-inline"  action="" method="GET">
+           <!-- <form class="form-inline"  action="" method="GET">
                 <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="ServiceSearch[created_at]" id="demo" value="<?= $searchModel->created_at ?>" placeholder="创建时间">
+                    <input type="text" class="form-control" name="ServiceSearch[created_at]" id="demo" value="<?/*= $searchModel->created_at */?>" placeholder="创建时间">
                 </div>
                 <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="ServiceSearch[name]" id="exampleInputPassword2" value="<?= $searchModel->name ?>" placeholder="服务商">
+                    <input type="text" class="form-control" name="ServiceSearch[name]" id="exampleInputPassword2" value="<?/*= $searchModel->name */?>" placeholder="服务商">
                 </div>
                 <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="ServiceSearch[principal]" id="exampleInputPassword2" value="<?= $searchModel->principal ?>" placeholder="负责人">
+                    <input type="text" class="form-control" name="ServiceSearch[principal]" id="exampleInputPassword2" value="<?/*= $searchModel->principal */?>" placeholder="负责人">
                 </div>
                 <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="ServiceSearch[principal]" id="exampleInputPassword2" value="<?= $searchModel->principal ?>" placeholder="客户经理">
+                    <input type="text" class="form-control" name="ServiceSearch[principal]" id="exampleInputPassword2" value="<?/*= $searchModel->principal */?>" placeholder="客户经理">
                 </div>
                 <div class="form-group m-r-10">
                     <input type="text" class="form-control" id="exampleInputPassword2" placeholder="状态">
                 </div>
                 <button type="submit" class="btn btn-sm btn-primary m-r-5">搜索</button>
                 <button type="button" class="btn btn-sm btn-info m-r-5" onclick="">重置</button>
-            </form>
+            </form>-->
 
             <p></p>
             <table id="data-table" class="table table-striped table-bordered">
                 <thead>
                 <tr>
                     <th class="text-center">#</th>
-                    <th class="text-center">服务商名称</th>
-                    <th class="text-center">负责人</th>
-                    <th class="text-center">客服电话</th>
-                    <th class="text-center">地址</th>
-                    <th class="text-center">状态</th>
+                    <th class="text-center">保险商名称</th>
+                    <th class="text-center">简介</th>
                     <th class="text-center">创建时间</th>
-                    <th class="text-center">客户经理</th>
                     <th class="text-center">操作</th>
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach($dataProvider->getModels() as $index => $model): ?>
+                <?php foreach($data->getModels()  as $index => $model): ?>
                     <tr class="">
-                        <td class="text-center"><?= \pd\helpers\Yii2Helpers::serialColumn($dataProvider, $index) ?></td>
+                        <td class="text-center"><?= \pd\helpers\Yii2Helpers::serialColumn($data, $index) ?></td>
                         <td class="text-center"><?= $model->name ?></td>
-                        <td class="text-center"><?= $model->principal ?></td>
-                        <td class="text-center"><?= $model->contact_phone ?></td>
-                        <td class="text-center"><?= $model->address ?></td>
-                        <td class="text-center"><?= $model->status ?></td>
+                        <td class="text-center"><?= $model->brief?></td>
                         <td class="text-center"><?= \pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
-                        <td class="text-center"><?= $model->status ?></td>
                         <td align="center">
                             <div class="btn-group">
-                                <a href="<?= Url::to(['service/view', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">详情</span></a>
-                                <a href="<?= Url::to(['service/update', 'id'=> $model->id]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
-                                <a href="<?= Url::to(['service/delete', 'id' => $model->id]) ?>" data-confirm="确认删除此数据?" data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                                <a href="<?= Url::to(['insurance-company/view', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">详情</span></a>
+                                <a href="<?= Url::to(['insurance-company/update', 'id'=> $model->id]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
+                                <a href="<?= Url::to(['insurance-company/delete', 'id' => $model->id]) ?>" data-confirm="确认删除此数据?" data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
                             </div>
                         </td>
                     </tr>
@@ -171,7 +164,7 @@ JS
                 </tbody>
             </table>
             <?= LinkPager::widget([
-                'pagination'=>$dataProvider->getPagination(),
+                'pagination'=>$data->getPagination(),
                 'firstPageLabel'=> '首页',
                 'lastPageLabel'=> '末页',
                 'nextPageLabel'=> '前一页',
@@ -181,6 +174,7 @@ JS
                     'class' => 'pagination pull-right'
                 ]
             ]) ?>
+          
         </div>
     </div>
     <!-- end panel -->

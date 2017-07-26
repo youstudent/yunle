@@ -26,6 +26,19 @@
                 'items' => [
                     ['label' => '菜单', 'options' => ['class' => 'nav-header']],
                     ['label' => '会员', 'url'=> ['/gii']],
+                    ['label' => '保险商',
+                         'url' => 'javascript:;',
+                         'options' => ['class'=>'has-sub'],
+                         'items' => [
+                            ['label' => '保险商添加', 'url' => ['/insurance-company/create']],
+                            ['label' => '保险商', 'url' => ['/insurance-company/index']],
+                            ['label' => '险种', 'url' => ['/service/index']],
+                        ],
+                        
+                    ],
+                    
+                    
+                    
                     [
                         'label' => '服务商',
                         'url' => 'javascript:;',
