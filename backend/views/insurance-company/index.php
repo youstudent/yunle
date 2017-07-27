@@ -142,6 +142,7 @@ $i=1;
                     <th class="text-center">保险商名称</th>
                     <th class="text-center">简介</th>
                     <th class="text-center">创建时间</th>
+                    <th class="text-center">修改时间</th>
                     <th class="text-center">操作</th>
                 </tr>
                 </thead>
@@ -152,11 +153,11 @@ $i=1;
                         <td class="text-center"><?= $model->name ?></td>
                         <td class="text-center"><?= $model->brief?></td>
                         <td class="text-center"><?= \pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
+                        <td class="text-center"><?= \pd\helpers\Yii2Helpers::dateFormat($model->updated_at) ?></td>
                         <td align="center">
                             <div class="btn-group">
-                                <a href="<?= Url::to(['insurance-company/view', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">详情</span></a>
                                 <a href="<?= Url::to(['insurance-company/update', 'id'=> $model->id]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
-                                <a href="<?= Url::to(['insurance-company/delete', 'id' => $model->id]) ?>" data-confirm="确认删除此数据?" data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                                <a href="javasrcitp:;" data-confirm="确认删除此会员？" data-url="<?= Url::to(['insurance-company/delete', 'id' => $model->id]) ?>"  data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
                             </div>
                         </td>
                     </tr>

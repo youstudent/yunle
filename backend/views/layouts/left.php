@@ -44,6 +44,16 @@
                             ['label' => '高级设置','url' => ['/debug']],
                         ],
                     ],
+                    [
+                        'label' => '保险商',
+                        'url' => 'javascript:;',
+                        'options' => ['class'=>'has-sub'],
+                        'items' => [
+                            ['label' => '添加保险商', 'url' => ['/insurance-company/create']],
+                            ['label' => '保险商', 'url' => ['/insurance-company/index']],
+                            ['label' => '险种','url' => ['/debug']],
+                        ],
+                    ],
                     ['label' => '订单', 'url'=> ['/order'], 'items'=> [
                         ['label' => '添加订单', 'url' => ['/order/create']],
                         ['label' => '订单列表', 'url' => ['/order/index']],
