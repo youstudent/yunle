@@ -33,8 +33,6 @@ class InsuranceCompanyController extends \yii\web\Controller
             if ($model->add(\Yii::$app->request->post())) {
                 return json_encode(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['insurance-company/index'])]);
             }
-                //$data = $model->getFirstErrors();
-                return json_encode(['data'=> '', 'code'=>0, 'message'=> '添加内容不能为空', 'url'=> Url::to(['insurance-company/index'])]);
         }
         return $this->render('create', [
             'model' => $model,
@@ -52,10 +50,10 @@ class InsuranceCompanyController extends \yii\web\Controller
     {
         $model = InsuranceCompany::findOne(['id'=>$id]);
         if(\Yii::$app->request->isPost){
-            $model->updated_at=time();
             if ($model->load(\Yii::$app->request->post()) && $model->save() ) {
                 return json_encode(['data'=> '', 'code'=>1, 'message'=> '修改成功', 'url'=> Url::to(['insurance-company/index'])]);
             }else{
+                print_r($model->getFirstErrors());die;
                 return json_encode(['data'=> '', 'code'=>0, 'message'=> $model->getFirstErrors(), 'url'=> Url::to(['insurance-company/index'])]);
     
             }
@@ -83,11 +81,10 @@ class InsuranceCompanyController extends \yii\web\Controller
      */
     public function actionDelete($id)
     {
-        $model = InsuranceCompany::findOne(['id'=>$id]);
-        if($model->delete()){
-            return json_encode(['data'=> '', 'code'=>1, 'message'=> '删除成功', 'url'=> Url::to(['insurance-company/index'])]);
-        }
-        return json_encode(['data'=> '', 'code'=>1, 'message'=> '删除失败', 'url'=> Url::to(['insurance-company/index'])]);
+        var_dump($id);EXIT;
+        $this->findModel($id)->delete();
+        
+        return $this->redirect(['index']);
     }
     
     
