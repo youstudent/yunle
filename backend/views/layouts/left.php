@@ -25,18 +25,6 @@
                 'options' => ['class' => 'nav'],
                 'items' => [
                     ['label' => '菜单', 'options' => ['class' => 'nav-header']],
-                    ['label' => '会员', 'url'=> ['/gii']],
-                    ['label' => '保险商',
-                         'url' => 'javascript:;',
-                         'options' => ['class'=>'has-sub'],
-                         'items' => [
-                            ['label' => '保险商添加', 'url' => ['/insurance-company/create']],
-                            ['label' => '保险商', 'url' => ['/insurance-company/index']],
-                            ['label' => '险种', 'url' => ['/service/index']],
-                        ],
-                        
-                    ],
-
                     ['label' => '面板', 'url'=> '/panel'],
                     ['label' => '会员', 'url'=> ['/member'], 'items'=> [
                         ['label' => '添加会员', 'url' => ['/member/create']],
@@ -46,7 +34,6 @@
                         ['label' => '添加业务员', 'url' => ['/salesman/create']],
                         ['label' => '业务员列表', 'url' => ['/salesman/index']],
                     ]],
-
                     [
                         'label' => '服务商',
                         'url' => 'javascript:;',
