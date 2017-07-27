@@ -60,6 +60,14 @@ class ComposerStaticInit8d756398758fe022ea4e34456ef1cff1
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
         ),
+        'M' => 
+        array (
+            'Monolog\\' => 8,
+        ),
+        'J' => 
+        array (
+            'JPush\\' => 6,
+        ),
         'G' => 
         array (
             'GuzzleHttp\\Psr7\\' => 16,
@@ -179,6 +187,14 @@ class ComposerStaticInit8d756398758fe022ea4e34456ef1cff1
         'Psr\\Http\\Message\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-message/src',
+        ),
+        'Monolog\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
+        ),
+        'JPush\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/jpush/jpush/src/JPush',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (

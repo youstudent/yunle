@@ -30,6 +30,8 @@ return array(
     'Stecman\\Component\\Symfony\\Console\\BashCompletion\\' => array($vendorDir . '/stecman/symfony-console-completion/src'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src'),
+    'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
+    'JPush\\' => array($vendorDir . '/jpush/jpush/src/JPush'),
     'GuzzleHttp\\Psr7\\' => array($vendorDir . '/guzzlehttp/psr7/src'),
     'Flc\\Alidayu\\' => array($vendorDir . '/flc/alidayu/src/Alidayu'),
     'Faker\\' => array($vendorDir . '/fzaninotto/faker/src/Faker'),

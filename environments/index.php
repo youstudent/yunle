@@ -38,6 +38,7 @@ return [
             'api/web/assets',
             'service/runtime',
             'service/web/assets',
+            'common/runtime',
         ],
         'setExecutable' => [
             'yii',
@@ -58,6 +59,7 @@ return [
             'api/web/assets',
             'service/runtime',
             'service/web/assets',
+            'common/runtime',
         ],
         'setExecutable' => [
             'yii',
