@@ -81,51 +81,55 @@ class DrivingLicense extends \yii\db\ActiveRecord
     /**
      * 驾驶证列表
      */
-    public function getDriver($member_id)
+    public function getDriver($data)
     {
-        if (!isset($member_id) || empty($member_id)) {
-            $license = DrivingLicense::find()->select('id, name, sex, permit, papers')
-                ->where(['member_id' => $member_id])
-                ->asArray()
-                ->all();
-            if (!isset($license) || empty($license)) {
-                $license = '暂无驾驶证';
-            }
-
-            return $license;
+        if (!isset($data['id']) || empty($data['id'])) {
+            $member_id = 1;
+            //TODO:id
         } else {
-            $arr = 'name, sex, nationality, papers, birthday, certificate_at, permit, start_at, end_at';
-            $license = DrivingLicense::find()->select($arr)
-                ->where(['member_id' => $member_id])
-                ->asArray()
-                ->all();
-            if (!isset($license) || empty($license)) {
-                $license = '暂无添加驾驶证';
-            }
-
+            $member_id = $data['id'];
+        }
+        $arr = 'id, name, sex, nationality, papers, birthday, certificate_at, permit, start_at, end_at';
+        $license = DrivingLicense::find()->select($arr)
+            ->where(['member_id' => $member_id])
+            ->asArray()
+            ->all();
+        //用户类型信息
+        $userType = Member::findOne(['id'=>$member_id]);
+        if (!isset($license) || empty($license)) {
+            $this->addError('message', '暂无添加驾驶证');
+            $license = ['userType'=>$userType->type, 'license'=>$license];
             return $license;
         }
-
+        $license = ['userType'=>$userType->type, 'license'=>$license];
+        return $license;
     }
+
 
     /*
      * 添加驾驶证
      */
     public function addDriver($data)
     {
+        if (!isset($data['id']) || empty($data['id'])) {
+            $member_id = 1;
+            //TODO:id
+        } else {
+            $member_id = $data['id'];
+        }
+
         if (empty($data['name']) || empty($data['sex']) || empty($data['papers']) || empty($data['permit'])) {
             $this->addError('message', '必填项信息不能为空');
             return false;
         }
-        $member = Member::findOne(['id'=>$data['member_id']]);
-        if ($member->type == 0) {
-            $member->type = $data['type'];
-            $member->save(false);
-        }
-
+//        $member = Member::findOne(['id'=>$member_id]);
+//        if ($member->type == 0) {
+//            $member->type = $data['type'];
+//            $member->save(false);
+//        }
 
         $this->load(['formName'=>$data],'formName');
-        $this->member_id = $data['member_id'];
+        $this->member_id = $member_id;
 
         if ($this->save(false)) {
             return true;

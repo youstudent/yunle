@@ -36,9 +36,17 @@
                         ],
                         
                     ],
-                    
-                    
-                    
+
+                    ['label' => '面板', 'url'=> '/panel'],
+                    ['label' => '会员', 'url'=> ['/member'], 'items'=> [
+                        ['label' => '添加会员', 'url' => ['/member/create']],
+                        ['label' => '会员列表', 'url' => ['/member/index']],
+                    ]],
+                    ['label' => '业务员', 'url'=> ['/salesman'], 'items'=> [
+                        ['label' => '添加业务员', 'url' => ['/salesman/create']],
+                        ['label' => '业务员列表', 'url' => ['/salesman/index']],
+                    ]],
+
                     [
                         'label' => '服务商',
                         'url' => 'javascript:;',
@@ -49,6 +57,18 @@
                             ['label' => '高级设置','url' => ['/debug']],
                         ],
                     ],
+                    ['label' => '订单', 'url'=> ['/order'], 'items'=> [
+                        ['label' => '添加订单', 'url' => ['/order/create']],
+                        ['label' => '订单列表', 'url' => ['/order/index']],
+                    ]],
+                    ['label' => '保单', 'url'=> ['/insurance'], 'items'=> [
+                        ['label' => '添加保单', 'url' => ['/insurance/create']],
+                        ['label' => '保单列表', 'url' => ['/insurance/insurance-order']],
+                    ]],
+                    ['label' => '内容管理', 'url'=> ['/article'], 'items'=> [
+                        ['label' => '广告管理', 'url' => ['/banner/index']],
+                        ['label' => '文章管理', 'url' => ['/article/index']],
+                    ]],
                     ['label' => '权限', 'url'=> '/rbac'],
                     [
                         'label' => '权限管理',

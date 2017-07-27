@@ -36,19 +36,53 @@ class OrderController extends ApiController
     public function actionList()
     {
         $model = new Order();
-        $data = $model->getOrder(Yii::$app->request->post());
+        $a =  file_get_contents('php://input', 'r');
+        $b = json_decode($a,true);
+        $member = $this->getMemberInfo($b['token']);
+        $data = $model->getOrder($b, $member);
         if ($data) {
             return $this->jsonReturn(1, 'success', $data);
         }
 
-        return $this->jsonReturn(0, '无车辆');
+        return $this->jsonReturn(0, '暂无订单');
     }
 
     //订单详情
     public function actionDetail()
     {
         $model = new Order();
-        $data = $model->getDetail(Yii::$app->request->post());
+        $a =  file_get_contents('php://input', 'r');
+        $b = json_decode($a,true);
+        $data = $model->getDetail($b);
+        if ($data) {
+            return $this->jsonReturn(1, 'success', $data);
+        }
+
+        return $this->jsonReturn(0, '要啥自行车');
+    }
+
+    //全部动态
+    public function actionMany()
+    {
+        $model = new Order();
+        $a =  file_get_contents('php://input', 'r');
+        $b = json_decode($a,true);
+        $data = $model->getMany($b);
+        if ($data) {
+            return $this->jsonReturn(1, 'success', $data);
+        }
+
+        return $this->jsonReturn(0, '要啥自行车');
+    }
+
+    //建单之前的数据返回
+    public function actionInfo()
+    {
+        $model = new Order();
+        $a =  file_get_contents('php://input', 'r');
+        $b = json_decode($a,true);
+        $member = $this->getMemberInfo($b['token']);
+        $data = $model->getInfo($b, $member);
         if ($data) {
             return $this->jsonReturn(1, 'success', $data);
         }
@@ -60,7 +94,11 @@ class OrderController extends ApiController
     public function actionAdd()
     {
         $model = new Order();
-        $data = $model->addOrder(Yii::$app->request->post());
+        $a =  file_get_contents('php://input', 'r');
+        $b = json_decode($a,true);
+        $member = $this->getMemberInfo($b['token']);
+
+        $data = $model->addOrder($b, $member);
         if ($data) {
             return $this->jsonReturn(1, '下单成功', $data);
         }
@@ -68,23 +106,43 @@ class OrderController extends ApiController
         return $this->jsonReturn(0, '要啥自行车');
     }
 
-    //订单删除
+    //订单取消
     public function actionDel()
     {
         $model = new Order();
-        if ($model->delOrder(Yii::$app->request->post())) {
-            return $this->jsonReturn(1, '删除成功');
+        $a =  file_get_contents('php://input', 'r');
+        $b = json_decode($a,true);
+        $member = $this->getMemberInfo($b['token']);
+        if ($model->delOrder($b, $member)) {
+            return $this->jsonReturn(1, '取消成功');
         }
 
-        return $this->jsonReturn(0, $model->getFirstError('message'));
+        return $this->jsonReturn(0, '取消失败');
     }
 
-    //订单修改
+    //服务商确认
     public function actionUpdate()
     {
         $model = new Order();
-        if ($model->updateOrder(Yii::$app->request->post())) {
-            return $this->jsonReturn(1, '修改成功');
+        $a =  file_get_contents('php://input', 'r');
+        $b = json_decode($a,true);
+        $data = $model->updateOrder($b);
+        if ($data) {
+            return $this->jsonReturn(1, '订单确认成功',$data);
+        }
+        //如果返回false 返回错误信息
+        return $this->jsonReturn(0, $model->getFirstError('message'));
+    }
+
+    //获取服务商列表
+    public function actionService()
+    {
+        $model = new Order();
+        $a =  file_get_contents('php://input', 'r');
+        $b = json_decode($a,true);
+        $data = $model->getService($b);
+        if ($data) {
+            return $this->jsonReturn(1, 'success', $data);
         }
         //如果返回false 返回错误信息
         return $this->jsonReturn(0, $model->getFirstError('message'));

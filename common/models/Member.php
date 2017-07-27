@@ -100,10 +100,15 @@ class Member extends \yii\db\ActiveRecord
         $member->last_login_at = time();
         $member->last_login_ip = Yii::$app->request->getUserIP();
 
+        $mem = [
+            'member' => [ 'id'=> $member->id, 'nickname' => '12345', 'phone'=> $member->phone],
+            'sites' => ['site_name'=> '云乐行车', 'version'=> '1.0', 'adminEmail'=> 'a@a.com']
+        ];
+        Yii::$app->session->set('mem',$mem);
+
         if ($member->save(false)) {
             return true;
         }
-
         return false;
     }
 }

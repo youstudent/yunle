@@ -28,6 +28,7 @@ use Yii;
  * @property string $id
  * @property integer $member_id
  * @property string $name
+ * @property string $nation
  * @property integer $status
  * @property string $licence
  * @property string $sex
@@ -53,7 +54,7 @@ class Identification extends \yii\db\ActiveRecord
         return [
             [['member_id'], 'required'],
             [['member_id', 'status'], 'integer'],
-            [['name', 'sex', 'birthday', 'start_at', 'end_at'], 'string', 'max' => 50],
+            [['name', 'sex', 'nation', 'birthday', 'start_at', 'end_at'], 'string', 'max' => 50],
             [['licence'], 'string', 'max' => 255],
         ];
     }
@@ -67,6 +68,7 @@ class Identification extends \yii\db\ActiveRecord
             'id' => 'ID',
             'member_id' => 'Member ID',
             'name' => 'Name',
+            'nation' => 'Nation',
             'status' => 'Status',
             'licence' => 'Licence',
             'sex' => 'Sex',
@@ -79,10 +81,15 @@ class Identification extends \yii\db\ActiveRecord
     /*
      * 查看认证
      */
-    public function view()
+    public function view($data)
     {
         //TODO:id
-        $member_id = 3;
+        if (!isset($data['id']) || empty($data['id'])) {
+            $member_id = 1;
+            //TODO:id
+        } else {
+            $member_id = $data['id'];
+        }
         $type = Member::findOne(['id'=>$member_id])->type;
         $identification = Identification::findOne(['member_id'=>$member_id]);
         if (!isset($identification) || empty($identification)) {
@@ -103,15 +110,22 @@ class Identification extends \yii\db\ActiveRecord
      */
     public function approve($data)
     {
+        if (!isset($data['id']) || empty($data['id'])) {
+            $member_id = 1;
+            //TODO:id
+        } else {
+            $member_id = $data['id'];
+        }
+
         if (empty($data['name']) || empty($data['licence'])) {
             $this->addError('message', '认证信息不能为空');
             return false;
         }
-        $member = Member::findOne(['id'=>$data['member_id']]);
+        $member = Member::findOne(['id'=>$member_id]);
         $member->type = $data['type'];
 
         $this->load(['formName'=>$data],'formName');
-        $this->member_id = $data['member_id'];
+        $this->member_id = $member_id;
 
         if ($this->save(false) && $member->save(false)) {
             return true;

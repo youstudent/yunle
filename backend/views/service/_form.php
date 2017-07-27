@@ -14,7 +14,7 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
 pd\coloradmin\web\plugins\BaiduMapAsset::register($this);
 $this->registerJs($this->render('_script.js'), \yii\web\View::POS_HEAD);
 $this->registerJs(<<<JS
-//FormWizardValidation.init();
+// FormWizardValidation.init();
 
 var map = new BMap.Map("Bmap");
 map.centerAndZoom("成都", 12);

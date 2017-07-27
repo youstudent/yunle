@@ -26,6 +26,7 @@ namespace api\controllers;
                *
      */
 
+use api\models\Article;
 use Yii;
 use api\models\Column;
 
@@ -40,5 +41,16 @@ class ColumnController extends ApiController
         }
 
         return $this->jsonReturn(0, '无栏目内容');
+    }
+
+    public function actionDetail()
+    {
+        $model = new Article();
+        $data = $model->getArticle(Yii::$app->request->post());
+        if ($data) {
+            return $this->jsonReturn(1, 'success', $data);
+        }
+
+        return $this->jsonReturn(0, '无详细内容');
     }
 }

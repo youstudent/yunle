@@ -3,7 +3,9 @@
 namespace backend\models;
 
 use Yii;
+
 use yii\data\ActiveDataProvider;
+
 
 /**
  * This is the model class for table "{{%insurance_company}}".
@@ -12,6 +14,10 @@ use yii\data\ActiveDataProvider;
  * @property string $name
  * @property string $brief
  * @property integer $created_at
+<<<<<<< HEAD
+=======
+ * @property integer $updated_at
+>>>>>>> 9d09e6c5fe3954eb2b15cbe84ac00ee88cd830d3
  */
 class InsuranceCompany extends \yii\db\ActiveRecord
 {
@@ -29,8 +35,10 @@ class InsuranceCompany extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+
             [['name','brief'],'required'],
             [['created_at','id'], 'integer'],
+            [['created_at', 'updated_at'], 'integer'],
             [['name', 'brief'], 'string', 'max' => 255],
         ];
     }
@@ -86,7 +94,5 @@ class InsuranceCompany extends \yii\db\ActiveRecord
         var_dump($this->save());
         
     }
-    
-    
     
 }

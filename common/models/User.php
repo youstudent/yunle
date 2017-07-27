@@ -167,10 +167,15 @@ class User extends ActiveRecord
 
         $code->status = 1;
         $code->save(false);
-        $user_id = 2;
+        if (!isset($data['id']) || empty($data['id'])) {
+            $member_id = 1;
+            //TODO:id
+        } else {
+            $member_id = $data['id'];
+        }
         //TODO:id
         if ($data['step'] == 2) {
-            $user = User::findOne(['id'=>$user_id]);
+            $user = Member::findOne(['id'=>$member_id]);
             $user->phone = $data['phone'];
             $user->save(false);
         }

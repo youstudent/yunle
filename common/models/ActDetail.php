@@ -27,8 +27,9 @@ use Yii;
  *
  * @property string $id
  * @property integer $order_id
- * @property integer $member_id
- * @property string $status_id
+ * @property integer $user_id
+ * @property string $user
+ * @property integer $status
  * @property string $info
  * @property integer $created_at
  * @property integer $updated_at
@@ -49,8 +50,8 @@ class ActDetail extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'member_id', 'created_at', 'updated_at'], 'integer'],
-            [['status_id', 'info'], 'string', 'max' => 255],
+            [['order_id', 'user_id', 'created_at', 'updated_at'], 'integer'],
+            [['status', 'info', 'user'], 'string', 'max' => 255],
         ];
     }
 
@@ -62,8 +63,9 @@ class ActDetail extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'order_id' => 'Order ID',
-            'member_id' => 'member ID',
-            'status_id' => 'Status ID',
+            'user_id' => 'User ID',
+            'status' => 'Status',
+            'user' => 'User',
             'info' => 'Info',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
