@@ -66,6 +66,7 @@
                         ['label' => '广告管理', 'url' => ['/banner/index']],
                         ['label' => '文章管理', 'url' => ['/article/index']],
                     ]],
+                    ['label' => '设置', 'url'=> '/system'],
                     ['label' => '权限', 'url'=> '/rbac'],
                     [
                         'label' => '权限管理',

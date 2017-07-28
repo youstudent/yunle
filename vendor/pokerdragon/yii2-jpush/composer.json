@@ -1,0 +1,16 @@
+{
+    "name": "pokerdragon/yii2-jpush",
+    "type": "library",
+    "description": "JPush API PHP Client",
+    "license": "MIT",
+    "require": {
+        "php": ">=5.4.0",
+        "yiisoft/yii2": "~2.0.6",
+        "jpush/jpush": "3.5.21"
+    },
+    "autoload" : {
+        "psr-4": {
+          "pd\\jpush\\": ""
+        }
+    }
+}

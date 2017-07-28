@@ -3,8 +3,9 @@ return [
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
     'name' => '云乐享车',
     'components' => [
-        'cache' => [
+        'cache'       => [
             'class' => 'yii\caching\FileCache',
+            'cachePath' => '@common/runtime/cache',
         ],
         'db' => [
             'class' => 'yii\db\Connection',
