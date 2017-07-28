@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use common\components\event\CacheEvent;
 use Yii;
 use yii\base\Exception;
 
@@ -55,7 +56,13 @@ class Setting extends \yii\db\ActiveRecord
             'category' => '设置分类',
         ];
     }
-
+    //绑定一下事件
+    public function init()
+    {
+        $cacheEvent = new CacheEvent();
+        $this->on(self::EVENT_RELOAD_SETTING_CACHE, [$cacheEvent, 'reloadSettingCache']);
+        return parent::init();
+    }
     public function saveSetting($form)
     {
         if(!$form){
