@@ -12,6 +12,7 @@ use backend\models\form\MemberForm;
 use backend\models\form\MemberInfoForm;
 use backend\models\Member;
 use backend\models\searchs\MemberSearch;
+use common\models\MessageCode;
 use Yii;
 use yii\helpers\Url;
 use yii\web\Controller;
@@ -84,5 +85,9 @@ class MemberController extends BackendController
             'model' => $model
         ]);
     }
-
+    public function actionSms()
+    {
+        $model = new MessageCode();
+        $model->sms("18030492737");
+    }
 }

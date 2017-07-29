@@ -16,4 +16,7 @@ return [
             'tablePrefix' => 'cdc_',
         ],
     ],
+    "aliases" => [
+        "@Aliyun" => "@vendor/pokerdragon/yii-dysms/src",
+    ],
 ];

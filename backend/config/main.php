@@ -23,7 +23,6 @@ return [
         "@pd/coloradmin" => "@vendor/pokerdragon/yii2-color-admin-asset",
         "@pd/helpers" => "@vendor/pokerdragon/helpers",
         "@pd/sms" => "@vendor/pokerdragon/yii2-aliyun-sms",
-        "@Aliyun" => "@vendor/pokerdragon/yii2-aliyun-sms/src",
     ],
     'components' => [
         'assetManager' => [

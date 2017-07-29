@@ -2,6 +2,7 @@
 namespace common\components;
 use common\models\Setting;
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * User: harlen-angkemac
@@ -17,7 +18,7 @@ class Helper
 
     public static function getServiceSetting($service_id, $reload_cache)
     {
-        if($reload_cache){
+        if($reload_cache || !Helper::getCacheServiceSetting($service_id)){
             $setting = Setting::find()->where(['service_id'=>$service_id])->indexBy('name')->select('value,name')->column();
             Yii::$app->cache->set('service_setting_'. $service_id, $setting);
             return $setting;

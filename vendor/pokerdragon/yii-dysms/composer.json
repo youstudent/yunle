@@ -1,5 +1,5 @@
 {
-    "name": "pokerdragon/aliyun-dysms-php-sdk",
+    "name": "pokerdragon/dysms",
     "description": "Aliyun SMS SDK for PHP",
     "keywords": [ "aliyun", "SMS", "sdk" ],
     "type": "library",
@@ -13,8 +13,7 @@
     "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
-          "pd\\Aliyun\\": "src/",
-          "pd\\sms\\": ""
+            "Aliyun\\": "src/"
         }
     }
 }
