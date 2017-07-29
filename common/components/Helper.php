@@ -32,4 +32,36 @@ class Helper
         return Yii::$app->cache->get('service_setting_'. $service_id);
     }
 
+    /**
+     * 生成一个消息推送构造器
+     * @param $app_id
+     * @return bool|\JPush\PushPayload
+     */
+    public static function  createjPush($app_id= 'member')
+    {
+        $setting = Helper::getSystemSetting();
+        $app_key = ArrayHelper::getValue($setting, $app_id == 'member' ? 'jpush_member_appkey' : 'jpush_service_appkey', '');
+        $master_secret = ArrayHelper::getValue($setting, $app_id == 'member' ? 'jpush_member_master_secret' : 'jpush_service_master_secret', '');
+
+        if(empty($app_key) || empty($master_secret)){
+            return false;
+        }
+        $log_path = \Yii::getAlias('@common') . '\runtime\log\jpush.log';
+        //init
+        $client = new \JPush\Client($app_key, $master_secret, $log_path);
+
+
+        return $client->push();
+//        $pusher->setPlatform('all');
+//        $pusher->addAllAudience();
+//        $pusher->setNotificationAlert('Hello, JPush');
+//        try {
+//            $pusher->send();
+//        } catch (\JPush\Exceptions\JPushException $e) {
+//            // try something else here
+//            print $e;
+//        }
+
+    }
+
 }
