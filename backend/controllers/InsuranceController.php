@@ -14,7 +14,7 @@ use common\models\Insurance;
 use Yii;
 use yii\base\Controller;
 
-class InsuranceController extends Controller
+class InsuranceController extends BackendController
 {
     //会员列表
     public function actionIndex()
@@ -24,7 +24,7 @@ class InsuranceController extends Controller
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
 
-        return $this->render('index', [
+        return $this->renderPjax('index', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel
         ]);
@@ -37,7 +37,7 @@ class InsuranceController extends Controller
             return json_encode(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['member/index'])]);
         }
 
-        return $this->render('create', [
+        return $this->renderPjax('create', [
             'model' => $model
         ]);
     }
@@ -50,7 +50,7 @@ class InsuranceController extends Controller
         if($model->updateOrder(Yii::$app->request->post())){
             return json_encode(['data'=> '', 'code'=>1, 'message'=> '更新成功', 'url'=> Url::to(['member/index'])]);
         }
-        return $this->render('update', [
+        return $this->renderPjax('update', [
             'model' => $model
         ]);
     }
@@ -84,7 +84,7 @@ class InsuranceController extends Controller
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
 
-        return $this->render('order-index', [
+        return $this->renderPjax('order-index', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel
         ]);

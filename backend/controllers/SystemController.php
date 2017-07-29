@@ -14,7 +14,7 @@ use Yii;
 use yii\helpers\Url;
 use yii\web\Controller;
 
-class SystemController extends Controller
+class SystemController extends BackendController
 {
     public function actionIndex()
     {
@@ -22,7 +22,7 @@ class SystemController extends Controller
         if($model->saveSetting(Yii::$app->request->post())){
             return json_encode(['data'=> '', 'code'=>1, 'message'=> '保存成功', 'url'=> Url::to(['system/index'])]);
         }
-        return $this->render('index', [
+        return $this->renderPjax('index', [
             'setting' => $model->getSetting()
         ]);
     }

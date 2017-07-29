@@ -53,7 +53,7 @@ class Identification extends \yii\db\ActiveRecord
     {
         return [
             [['member_id'], 'required'],
-            [['member_id', 'status'], 'integer'],
+            [['member_id'], 'integer'],
             [['name', 'sex', 'nation', 'birthday', 'start_at', 'end_at'], 'string', 'max' => 50],
             [['licence'], 'string', 'max' => 255],
         ];
@@ -66,15 +66,14 @@ class Identification extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'member_id' => 'Member ID',
-            'name' => 'Name',
-            'nation' => 'Nation',
-            'status' => 'Status',
-            'licence' => 'Licence',
-            'sex' => 'Sex',
-            'birthday' => 'Birthday',
-            'start_at' => 'Start At',
-            'end_at' => 'End At',
+            'member_id' => '会员id',
+            'name' => '姓名',
+            'nation' => '民族',
+            'licence' => '代码',
+            'sex' => '性别',
+            'birthday' => '生日',
+            'start_at' => '身份证生效时间',
+            'end_at' => '身份证失效时间',
         ];
     }
 

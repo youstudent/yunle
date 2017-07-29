@@ -14,7 +14,7 @@ use Yii;
 use yii\helpers\Url;
 use yii\web\Controller;
 
-class SalesmanController extends Controller
+class SalesmanController extends BackendController
 {
     //列表
     public function actionIndex()
@@ -24,7 +24,7 @@ class SalesmanController extends Controller
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
 
-        return $this->render('index', [
+        return $this->renderPjax('index', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel
         ]);
@@ -37,7 +37,7 @@ class SalesmanController extends Controller
             return json_encode(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['salesman/index'])]);
         }
 
-        return $this->render('create', [
+        return $this->renderPjax('create', [
             'model' => $model
         ]);
     }
@@ -50,7 +50,7 @@ class SalesmanController extends Controller
         if($model->updateUser(Yii::$app->request->post())){
             return json_encode(['data'=> '', 'code'=>1, 'message'=> '更新成功', 'url'=> Url::to(['salesman/index'])]);
         }
-        return $this->render('update', [
+        return $this->renderPjax('update', [
             'model' => $model
         ]);
     }

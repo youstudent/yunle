@@ -5,7 +5,7 @@ namespace backend\controllers;
 use backend\models\InsuranceCompany;
 use yii\helpers\Url;
 
-class InsuranceCompanyController extends \yii\web\Controller
+class InsuranceCompanyController extends BackendController
 {
     /**
      *
@@ -16,7 +16,7 @@ class InsuranceCompanyController extends \yii\web\Controller
     {
         $model = new InsuranceCompany();
         $data  =$model->getList();
-        return $this->render('index',['data'=>$data,'model'=>$model]);
+        return $this->renderPjax('index',['data'=>$data,'model'=>$model]);
     }
     
     
@@ -34,7 +34,7 @@ class InsuranceCompanyController extends \yii\web\Controller
                 return json_encode(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['insurance-company/index'])]);
             }
         }
-        return $this->render('create', [
+        return $this->renderPjax('create', [
             'model' => $model,
             'create' =>'create'
         ]);
@@ -66,7 +66,7 @@ class InsuranceCompanyController extends \yii\web\Controller
             var_dump($new->save(false));exit;*/
            
         }
-        return $this->render('update', [
+        return $this->renderPjax('update', [
             'model' => $model,
             'create' =>'update'
         ]);

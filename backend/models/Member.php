@@ -2,6 +2,8 @@
 
 namespace backend\models;
 
+use common\models\Identification;
+use common\models\MemberImg;
 use Yii;
 
 /**
@@ -55,10 +57,10 @@ class Member extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'phone' => '电话',
-            'pid' => '推荐人id',
+            'pid' => '推荐人',
             'email' => '邮箱',
-            'status' => '状态 1:正常 0:冻结',
-            'type' => '用户类型 0:未选择 1:个人用户 2:组织用户',
+            'status' => '状态',
+            'type' => '用户类型',
             'last_login_at' => '最后登录时间',
             'last_login_ip' => 'Last Login Ip',
             'access_token' => 'Access Token',
@@ -87,4 +89,15 @@ class Member extends \yii\db\ActiveRecord
         $this->status = $status;
         return $this->save();
     }
+
+    protected function getMemberImg()
+    {
+        return $this->hasOne(MemberImg::className(), ['member_id'=> 'id']);
+    }
+
+    protected function getMemberInfo()
+    {
+        return $this->hasOne(Identification::className(), ['member_id'=> 'id'])->alias('md');
+    }
+
 }

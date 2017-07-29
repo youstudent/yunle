@@ -14,7 +14,7 @@ use Yii;
 use yii\helpers\Url;
 use yii\web\Controller;
 
-class BannerController extends Controller
+class BannerController extends BackendController
 {
     public function actionIndex()
     {
@@ -23,7 +23,7 @@ class BannerController extends Controller
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
 
-        return $this->render('index', [
+        return $this->renderPjax('index', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel
         ]);
@@ -36,7 +36,7 @@ class BannerController extends Controller
             return json_encode(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['banner/index'])]);
         }
 
-        return $this->render('create', [
+        return $this->renderPjax('create', [
             'model' => $model
         ]);
     }

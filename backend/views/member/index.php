@@ -112,6 +112,9 @@ JS
                     <input type="text" class="form-control" name="MemberSearch[phone]" id="phone" value="<?= $searchModel->phone ?>" placeholder="手机号">
                 </div>
                 <div class="form-group m-r-10">
+                    <input type="text" class="form-control" name="MemberSearch[member_name]" id="phone" value="<?= $searchModel->member_name ?>" placeholder="姓名">
+                </div>
+                <div class="form-group m-r-10">
                     <select class="form-control" name="MemberSearch[status]" id="MemberSearchStatus">
                         <option value="" selected>全部</option>
                         <option value="<?= Member::STATUS_ACTIVE ?>" <?= $searchModel->status == Member::STATUS_ACTIVE ? 'selected' : '' ?>>正常</option>
@@ -137,6 +140,7 @@ JS
                 <tr>
                     <th>#</th>
                     <th>会员类型</th>
+                    <th>头像</th>
                     <th>会员名称</th>
                     <th>联系电话</th>
                     <th>状态</th>
@@ -150,7 +154,8 @@ JS
                     <tr class="">
                         <td><?= \pd\helpers\Yii2Helpers::serialColumn($dataProvider, $index) ?></td>
                         <td><?= $model->type == 1 ? '<span class="badge badge-info">个人</span>' : '<span class="badge badge-warning">组织</span>' ?></td>
-                        <td>小强</td>
+                        <td><?= $model->memberImg ? '<div class="thumbnail"> '.$model->memberImg->img_path .'</div>': ''?></td>
+                        <td><?= $model->memberInfo ? $model->memberInfo->name : '' ?></td>
                         <td><?= $model->phone ?></td>
                         <td><?= $model->status == 1 ? '<span class="badge badge-info">正常</span>' : '<span class="badge badge-danger">冻结</span>' ?></td>
                         <td><?= $model->salesmanName ? $model->salesmanName->username : '<span class="text-danger">未设置</span>' ?></td>
@@ -158,6 +163,7 @@ JS
 
                         <td align="center">
                             <div class="btn-group">
+                                <a href="javascript:;" data-url="<?= Url::to(['member/info', 'id'=> $model->id]) ?>" data-toggle="modal" data-target="#realinfo" onclick="pokerDragon.ajaxModal($(this));"><span class="btn btn-info m-r-1 m-b-5 btn-xs">实名信息</span></a>
                                 <a href="<?= Url::to(['member/view', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">业务员</span></a>
                                 <a href="<?= Url::to(['order/index', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">订单</span></a>
                                 <a href="<?= Url::to(['insurance/index', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">保险</span></a>
@@ -190,4 +196,6 @@ JS
     </div>
     <!-- end panel -->
 </div>
+<div id="ajax-modal-content">
 
+</div>

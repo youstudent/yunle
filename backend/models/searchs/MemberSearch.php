@@ -14,6 +14,7 @@ use yii\data\ActiveDataProvider;
 class MemberSearch extends Member
 {
     public $salesman_username;
+    public $member_name;
 
 
     public function rules()
@@ -21,7 +22,7 @@ class MemberSearch extends Member
         return [
             ['type', 'integer'],
             [['phone', 'status'], 'number'],
-            [['created_at','salesman_username'],'string'],
+            [['created_at','salesman_username', 'member_name'],'string'],
         ];
     }
 
@@ -31,6 +32,7 @@ class MemberSearch extends Member
         $query = Member::find();
         $query->where(['m.deleted_at'=> null]);
         $query->alias('m')->joinWith("salesmanName");
+        $query->joinWith("memberInfo");
 
 
         $dataProvider = new ActiveDataProvider([
@@ -68,6 +70,7 @@ class MemberSearch extends Member
 
         $query->andFilterWhere(['LIKE', 'u.username' , $this->salesman_username]);
         $query->andFilterWhere(['LIKE', 'm.phone' , $this->phone]);
+        $query->andFilterWhere(['LIKE', 'md.name' , $this->member_name]);
 
         return $dataProvider;
     }

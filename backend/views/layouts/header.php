@@ -95,7 +95,7 @@ use yii\helpers\Url;
             <li class="dropdown navbar-user">
                 <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
                     <img src="<?= $directoryAsset ?>/img/user-3.jpg" alt=""/>
-                    <span class="hidden-xs"><?= Yii::$app->user->getIdentity()->username ?></span> <b class="caret"></b>
+                    <span class="hidden-xs"><?= Yii::$app->user->getIdentity() ? Yii::$app->user->getIdentity()->username : '默认管理员' ?></span> <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu animated fadeInLeft">
                     <li class="arrow"></li>

@@ -10,10 +10,10 @@ namespace backend\controllers;
 
 use yii\web\Controller;
 
-class PanelController extends Controller
+class PanelController extends BackendController
 {
     public function actionIndex()
     {
-        return $this->render('index', []);
+        return $this->renderPjax('index', []);
     }
 }

@@ -12,7 +12,7 @@ use stdClass;
 use Yii;
 use yii\web\Controller;
 
-class RbacController extends Controller
+class RbacController extends BackendController
 {
     public function actionIndex()
     {
@@ -20,7 +20,7 @@ class RbacController extends Controller
         $menu = Yii::$app->params['menu'];
 
 
-        return $this->render('index', [
+        return $this->renderPjax('index', [
             'menu' => json_encode($menu, JSON_UNESCAPED_UNICODE)
         ]);
     }

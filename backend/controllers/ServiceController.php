@@ -16,7 +16,7 @@ use yii\filters\VerbFilter;
 /**
  * ServiceController implements the CRUD actions for Adminuser model.
  */
-class ServiceController extends Controller
+class ServiceController extends BackendController
 {
     /**
      * @inheritdoc
@@ -42,7 +42,7 @@ class ServiceController extends Controller
         $searchModel = new ServiceSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', [
+        return $this->renderPjax('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
@@ -55,7 +55,7 @@ class ServiceController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
+        return $this->renderPjax('view', [
             'model' => $this->findModel($id),
         ]);
     }
@@ -73,7 +73,7 @@ class ServiceController extends Controller
             return json_encode(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['service/index'])]);
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
-            return $this->render('create', [
+            return $this->renderPjax('create', [
                 'model' => $model,
             ]);
         }

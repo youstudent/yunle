@@ -18,7 +18,7 @@ use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\Response;
 
-class OrderController extends Controller
+class OrderController extends BackendController
 {
     //订单列表
     public function actionIndex()
@@ -28,7 +28,7 @@ class OrderController extends Controller
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
 
-        return $this->render('index', [
+        return $this->renderPjax('index', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel
         ]);
@@ -41,7 +41,7 @@ class OrderController extends Controller
             return json_encode(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['member/index'])]);
         }
 
-        return $this->render('create', [
+        return $this->renderPjax('create', [
             'model' => $model
         ]);
     }
@@ -54,7 +54,7 @@ class OrderController extends Controller
         if($model->updateOrder(Yii::$app->request->post())){
             return json_encode(['data'=> '', 'code'=>1, 'message'=> '更新成功', 'url'=> Url::to(['member/index'])]);
         }
-        return $this->render('update', [
+        return $this->renderPjax('update', [
             'model' => $model
         ]);
     }
@@ -85,7 +85,7 @@ class OrderController extends Controller
         //$data = ActInsurance::find()->where(['order_id'=>$id])->all();
         Yii::$app->response->format =  Response::FORMAT_RAW;
 
-        $this->renderPartial('_modal_log', [
+        $this->renderPjaxPartial('_modal_log', [
             'model' => ActInsurance::find()
         ]);
     }
