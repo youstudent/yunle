@@ -88,6 +88,6 @@ class MemberController extends BackendController
     public function actionSms()
     {
         $model = new MessageCode();
-        $model->sms("18030492737");
+        $model->sms("13161672102");
     }
 }

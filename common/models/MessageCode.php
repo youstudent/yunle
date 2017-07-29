@@ -58,7 +58,7 @@ class MessageCode extends \yii\db\ActiveRecord
      */
     public function sms(String $phone)
     {
-        if(!$this->checkCode($phone, 120)){
+        if(!$this->checkCode($phone, 0)){
             return false;
         }
         // 生成验证码
@@ -133,12 +133,12 @@ class MessageCode extends \yii\db\ActiveRecord
     /**
      * 判断用户规定间隔时间内是否已经获取过一次验证码。未获取返回 ture 获取了 返回true
      * @param String $phone
-     * @param Int $time
+     * @param Int $seconds
      * @return bool
      */
-    protected function checkCode(String $phone, Int $time = 60)
+    protected function checkCode(String $phone, Int $seconds)
     {
-        return !MessageCode::find()->andWhere(['>=', 'created_at', time()-60]);
+        return !MessageCode::find()->andWhere(['>=', 'created_at', time()- $seconds])->andWhere(['phone'=>$phone])->andWhere(['!=', 'status', -1])->one();
     }
 
 }
