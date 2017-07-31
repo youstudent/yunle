@@ -27,6 +27,7 @@ namespace api\controllers;
      */
 
 use common\models\InsuranceOrder;
+use common\models\Warranty;
 use Yii;
 
 class InsuranceController extends ApiController
@@ -117,7 +118,7 @@ class InsuranceController extends ApiController
     }
 
     //确认购买
-    public function affirm()
+    public function actionAffirm()
     {
         $model = new InsuranceOrder();
         $form = $this->getForm(Yii::$app->request->post('data'));
@@ -130,7 +131,7 @@ class InsuranceController extends ApiController
     }
 
     //取消购买
-    public function abandon()
+    public function actionAbandon()
     {
         $model = new InsuranceOrder();
         $form = $this->getForm(Yii::$app->request->post('data'));
@@ -141,4 +142,33 @@ class InsuranceController extends ApiController
 
         return $this->jsonReturn(0, '取消失败');
     }
+
+    //我的保单
+    public function actionWarranty()
+    {
+        $model = new Warranty();
+        $form = $this->getForm(Yii::$app->request->post('data'));
+        $member = $this->getMemberInfo();
+
+        $data = $model->getList($form, $member);
+        if ($data) {
+            return $this->jsonReturn(1,'success', $data);
+        }
+        return $this->jsonReturn(0, '暂无保单');
+    }
+
+    //保单详情
+    public function actionWarranties()
+    {
+        $model = new Warranty();
+        $form = $this->getForm(Yii::$app->request->post('data'));
+
+        $data = $model->getDetail($form);
+        if ($data) {
+            return $this->jsonReturn(1,'success', $data);
+        }
+        return $this->jsonReturn(0, '肯定有,这个错肯定是我的错');
+    }
+
+
 }

@@ -149,7 +149,7 @@ class Order extends \yii\db\ActiveRecord
 
         array_multisort($datetime,SORT_DESC,$listAll);
         foreach ($listAll as &$v) {
-            $v['created_at'] = date('Y-m-d H:i', $v['created_at']);
+            $v['created_at'] = date('Y年m月d日 H:i', $v['created_at']);
             $v['typeName'] = Helper::getType($v['type']);
             if ($v['type'] == 6) {
                 $v['actionName'] = Helper::getInsuranceStatus($v['action']);

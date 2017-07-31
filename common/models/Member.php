@@ -1,5 +1,5 @@
 <?php
-
+/**  */
 namespace common\models;
 
 /*
@@ -30,6 +30,9 @@ use Yii;
  * @property integer $pid
  * @property string $email
  * @property integer $status
+ * @property integer $system_switch
+ * @property integer $order_switch
+ * @property integer $check_switch
  * @property integer $type
  * @property integer $last_login_at
  * @property string $last_login_ip
@@ -91,13 +94,17 @@ class Member extends \yii\db\ActiveRecord
             return false;
         }
 
+        //TODO:测试要去除
         // 验证码
-        $code = MessageCode::findOne(['phone' => $data['phone'], 'code' => $data['code'], 'status'=>0]);
-        if (!isset($code) || empty($code)) {
-            $this->addError('message', '验证码错误');
-            $this->addError('code', 3);
-            return false;
+        if ($data['code'] != 0000) {
+            $code = MessageCode::findOne(['phone' => $data['phone'], 'code' => $data['code'], 'status'=>0]);
+            if (!isset($code) || empty($code)) {
+                $this->addError('message', '验证码错误');
+                $this->addError('code', 3);
+                return false;
+            }
         }
+
 
         //账号验证
         $member = Member::findOne(['phone'=>$data['phone']]);
@@ -119,7 +126,7 @@ class Member extends \yii\db\ActiveRecord
         $member->last_login_ip = Yii::$app->request->getUserIP();
 
         $mem = [
-            'member' => [ 'id'=> $member->id, 'phone'=> $member->phone],
+            'member' => [ 'id'=> $member->id, 'phone'=> $member->phone, 'type'=> $member->type],
             'sites' => ['site_name'=> '云乐享车', 'version'=> '1.0', 'adminEmail'=> 'a@a.com']
         ];
         Yii::$app->session->set('mem',$mem);
@@ -156,6 +163,7 @@ class Member extends \yii\db\ActiveRecord
         }
 
         $phone = $member['member']['phone'];
+        $type = $member['member']['type'];
         $ident = Identification::findOne(['member_id'=>$member_id, 'status'=>1]);
         if (!isset($ident) || empty($ident)) {
             $status = 0;
@@ -164,7 +172,7 @@ class Member extends \yii\db\ActiveRecord
             $status = 1;
             $name = $ident->name;
         }
-        $person = ['photo'=>$photo, 'phone'=>$phone, 'status'=>$status, 'name'=>$name];
+        $person = ['photo'=>$photo, 'type'=>$type, 'phone'=>$phone, 'status'=>$status, 'name'=>$name];
 
         //三种状态订单数量
         $count1 = OrderDetail::find()->select('member_id, action')
@@ -193,5 +201,38 @@ class Member extends \yii\db\ActiveRecord
 
         $info = ['person'=>$person, 'topStatus'=>$topStatus, 'butler'=>$butler];
         return $info;
+    }
+
+    /*
+     * 开关
+     */
+    public function setSwitch($data, $member)
+    {
+        $member_id = $member['member']['id'];
+        $member = Member::findOne(['id'=>$member_id]);
+
+        if (isset($data['system_switch']) || !empty($data['system_switch'])) {
+            $member->system_switch = $data['system_switch'];
+            if (!$member->save(false)) {
+                return false;
+            }
+            return true;
+        }
+        if (isset($data['order_switch']) || !empty($data['order_switch'])) {
+            $member->order_switch = $data['order_switch'];
+            if (!$member->save(false)) {
+                return false;
+            }
+            return true;
+        }
+        if (isset($data['check_switch']) || !empty($data['check_switch'])) {
+            $member->check_switch = $data['check_switch'];
+            if (!$member->save(false)) {
+                return false;
+            }
+            return true;
+        }
+
+        return false;
     }
 }

@@ -138,13 +138,15 @@ class Identification extends \yii\db\ActiveRecord
         $member = Member::findOne(['id'=>$member_id]);
         $member->type = $data['type'];
 
-        $this->load(['formName'=>$data],'formName');
-        $this->member_id = $member_id;
-        $this->created_at = time();
+        $end = Identification::findOne(['member_id' => $member_id]);
+        $end->load(['formName'=>$data],'formName');
+        $end->member_id = $member_id;
+        $end->status = 1;
+        $end->created_at = time();
 
         $this->transaction = Yii::$app->db->beginTransaction();
         try{
-            if(!$this->save(false)){
+            if(!$end->save(false)){
                 $this->errorMsg = '保存失败';
                 $this->transaction->rollBack();
                 return null;
@@ -155,7 +157,7 @@ class Identification extends \yii\db\ActiveRecord
                 return null;
             }
 
-            $ident_id = $this->attributes['id'];
+            $ident_id = $end->attributes['id'];
             $upload = new Upload();
             $type = 'identification';
             $img = $upload->setImageInformation($data['img'], $ident_id, $type);

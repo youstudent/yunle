@@ -77,8 +77,21 @@ class UserController extends ApiController
         if ($data) {
             return $this->jsonReturn(1, 'success', $data);
         }
-        $data['step'] = 1;
         return $this->jsonReturn(0, $model->getFirstError('message'));
+    }
+
+    /*
+     * 设置
+     */
+    public function actionSwitch()
+    {
+        $model = new Member();
+        $form = $this->getForm(Yii::$app->request->post('data'));
+        $member = $this->getMemberInfo();
+        if ($model->setSwitch($form,$member)) {
+            return $this->jsonReturn(1, 'success');
+        }
+        return $this->jsonReturn(0, '设置失败');
     }
 
 

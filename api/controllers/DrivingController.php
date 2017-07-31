@@ -46,6 +46,20 @@ class DrivingController extends ApiController
         return $this->jsonReturn(0, $model->getFirstError('message'), $data);
     }
 
+    //驾驶证详情
+    public function actionDetail()
+    {
+        $model = new DrivingLicense();
+        $form = $this->getForm(Yii::$app->request->post('data'));
+
+        $data = $model->getDetail($form);
+        if ($data) {
+            return $this->jsonReturn(1, 'success', $data);
+        }
+
+        return $this->jsonReturn(0, '无车辆');
+    }
+
 
     //驾驶证添加
     public function actionAdd()

@@ -96,7 +96,7 @@ class DrivingLicense extends \yii\db\ActiveRecord
             $member_id = $data['member_id'];
         }
 
-        $arr = 'id, name, sex, nationality, papers, birthday, certificate_at, permit, start_at, end_at';
+        $arr = 'id, name, sex, papers, permit';
         $license = DrivingLicense::find()->select($arr)
             ->where(['member_id' => $member_id])
             ->asArray()
@@ -183,6 +183,31 @@ class DrivingLicense extends \yii\db\ActiveRecord
             return false;
         }
         return true;
+    }
+
+    /*
+     * 驾驶证详情
+     */
+    public function getDetail($data)
+    {
+        //详情所需字段
+        $arr = ['id','name','sex','nationality','papers','birthday','certificate_at','permit','start_at','end_at'];
+        $driver = DrivingLicense::find()->select($arr)
+            ->where(['id'=> $data['driver_id']])
+            ->asArray()
+            ->one();
+
+        if(!isset($driver) || empty($driver)){
+            return null;
+        }
+        //转换时间和加入图片
+        $img = DrivingImg::find()->select('img_path')->where(['driver_id'=> $driver['id']])->asArray()->all();
+        $driverImg = [];
+        foreach ($img as &$v) {
+            $driverImg[] = $_SERVER['HTTP_HOST'].$v['img_path'];
+        }
+        $driver['img_path'] = $driverImg;
+        return $driver;
     }
 
     /**
