@@ -12,10 +12,10 @@ namespace common\models;
  *****************************
   ***************************
     ***********************
-      ********龙龙********
-        *******我*******
-          *****爱*****
-            ***你***
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
               ***
                *
      */
@@ -27,7 +27,7 @@ use yii\db\Exception;
  * This is the model class for table "cdc_insurance_order".
  *
  * @property string $id
- * @property string $order
+ * @property string $order_sn
  * @property integer $type
  * @property string $user
  * @property string $sex
@@ -38,18 +38,19 @@ use yii\db\Exception;
  * @property string $company
  * @property string $cost
  * @property integer $status
- * @property integer $start_at
- * @property integer $end_at
+ * @property integer $created_at
+ * @property integer $updated_at
  */
 class InsuranceOrder extends \yii\db\ActiveRecord
 {
     public $transaction;
+    public $errorMsg;
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'cdc_insurance_order';
+        return '{{%insurance_order}}';
     }
 
     /**
@@ -58,10 +59,10 @@ class InsuranceOrder extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['type', 'cost', 'status', 'start_at', 'end_at'], 'integer'],
-            [['order'], 'string', 'max' => 100],
+            [['type', 'cost', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['order_sn'], 'string', 'max' => 100],
             [['user', 'sex', 'nation', 'licence', 'phone', 'car', 'company'], 'string', 'max' => 50],
-            [['order'], 'unique'],
+            [['order_sn'], 'unique'],
         ];
     }
 
@@ -72,7 +73,7 @@ class InsuranceOrder extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'order' => 'Order',
+            'order_sn' => 'Order Sn',
             'type' => 'Type',
             'user' => 'User',
             'sex' => 'Sex',
@@ -83,8 +84,8 @@ class InsuranceOrder extends \yii\db\ActiveRecord
             'company' => 'Company',
             'cost' => 'Cost',
             'status' => 'Status',
-            'start_at' => 'Start At',
-            'end_at' => 'End At',
+            'created_at' => 'Created At',
+            'updated_at' => 'Updated At',
         ];
     }
 
@@ -93,9 +94,10 @@ class InsuranceOrder extends \yii\db\ActiveRecord
      */
     public static function getOrder($member_id)
     {
-        $list = InsuranceDetail::find()->select('car_id, order_id, start_at')
+        $list = InsuranceDetail::find()->select('car_id, order_id, created_at')
             ->where(['member_id'=> $member_id])
-            ->orderBy(['start_at' => SORT_DESC])
+            ->orderBy(['created_at' => SORT_DESC])
+            ->limit(15)
             ->asArray()
             ->all();
 
@@ -107,7 +109,7 @@ class InsuranceOrder extends \yii\db\ActiveRecord
             $v['user'] = self::getNames($v['order_id'])->user;
             $v['phone'] = self::getNames($v['order_id'])->phone;
             $v['type'] = self::getNames($v['order_id'])->type;
-            $v['action'] = Helper::getInsAction($v['order_id'],self::getNames($v['order_id'])->type);
+            $v['action'] = Helper::getInsAction($v['order_id']);
         }
         return $list;
     }
@@ -118,13 +120,12 @@ class InsuranceOrder extends \yii\db\ActiveRecord
     public function getDetail($data)
     {
         //订单详情
-        $str = 'order, car, type, start_at, end_at, cost';
+        $str = 'order_sn, car, type, created_at, cost';
         $detail = InsuranceOrder::find()->select($str)->asArray()
             ->where(['id'=>$data['order_id']])
             ->one();
         $detail['type'] = Helper::getType($detail['type']);
-        $detail['start_at'] = date('Y-m-d H:i',$detail['start_at']);
-        $detail['end_at'] = date('Y-m-d H:i',$detail['end_at']);
+        $detail['created_at'] = date('Y-m-d H:i',$detail['created_at']);
 
         //动态列表
         $act = ActInsurance::find()->select('status, user, created_at')
@@ -141,12 +142,19 @@ class InsuranceOrder extends \yii\db\ActiveRecord
             ->one();
         if ($actEnd['status'] == 1) {
             $top = '待核保';
-        } elseif ($actEnd['status'] == 99) {
+        } elseif ($actEnd['status'] == 99 || $actEnd['status'] == 100) {
             $top = '已完成';
         } else {
             $top = '处理中';
         }
-
+        //按钮状态
+        if ($actEnd['status'] == 1) {
+            $buttonStatus = 1;
+        } elseif ($actEnd['status'] == 97) {
+            $buttonStatus = 2;
+        } else {
+            $buttonStatus = 3;
+        }
         foreach ($act as &$v) {
             $v['created_at'] = date('Y-m-d H:i', $v['created_at']);
             $v['status'] = Helper::getInsuranceStatus($v['status']);
@@ -163,7 +171,8 @@ class InsuranceOrder extends \yii\db\ActiveRecord
             ->all();
         $insurance = ['person'=>$person, 'company'=>$company, 'element'=>$element];
         $detail = ['act'=>$act, 'detail'=>$detail, 'topStatus'=>$top];
-        $all = ['order_id'=>$data['order_id'], 'order'=>$detail, 'insurance'=>$insurance];
+
+        $all = ['buttonStatus'=>$buttonStatus, 'order_id'=>$data['order_id'], 'order'=>$detail, 'insurance'=>$insurance];
         return $all;
     }
 
@@ -192,19 +201,23 @@ class InsuranceOrder extends \yii\db\ActiveRecord
         //获取个人信息
         if (!isset($data['member_id']) || empty($data['member_id'])) {
             $member_id = $member['member']['id'];
-            //TODO:id
         } else {
             $member_id = $data['member_id'];
         }
         $model= Member::findOne(['id'=>$member_id]);
-        $phone = $model->phone;
-        $type = $model->type;
-
-        if ($type == 1) {
-            $type = '个人用户';
-        } else {
-            $type = '组织用户';
+        if (!isset($model) || empty($model)) {
+            $this->errorMsg = '未实名认证';
+            return false;
         }
+
+        $phone = $model->phone;
+        $typeNum = $model->type;
+        if ($typeNum == 1) {
+            $typeName = '个人用户';
+        } else {
+            $typeName = '组织用户';
+        }
+        $type = ['typeNum'=>$typeNum, 'typeName'=>$typeName];
         $person = Identification::find()->select('name, sex, nation, licence')
             ->where(['member_id'=>$member_id])
             ->asArray()
@@ -214,7 +227,6 @@ class InsuranceOrder extends \yii\db\ActiveRecord
             ->where(['member_id'=> $member_id])
             ->orderBy(['stick' => SORT_DESC, 'created_at' => SORT_DESC])
             ->asArray()
-            ->limit(10)
             ->all();
         //承保公司
 
@@ -242,7 +254,6 @@ class InsuranceOrder extends \yii\db\ActiveRecord
     {
         if (!isset($data['member_id']) || empty($data['member_id'])) {
             $member_id = $member['member']['id'];
-            //TODO:id
         } else {
             $member_id = $data['member_id'];
         }
@@ -277,10 +288,20 @@ class InsuranceOrder extends \yii\db\ActiveRecord
                 $this->transaction->rollBack();
                 return false;
             }
+
+            //生成保单
+            $warrantyMolde =new Warranty();
+            $warranty = $warrantyMolde->createdWarranty($data, $order_id, $member_id);
+            if ($warranty == false) {
+                $this->errorMsg = '保单创建失败';
+                $this->transaction->rollBack();
+                return false;
+            }
+
             $this->transaction->commit();
 
             $orderSn = Helper::getOrder($order_id);
-            $order = ['id'=>$order_id, 'order'=>$orderSn];
+            $order = ['order_id'=>$order_id, 'orderSn'=>$orderSn];
             return $order;
         } catch (Exception $exception){
             $this->transaction->rollBack();
@@ -297,11 +318,53 @@ class InsuranceOrder extends \yii\db\ActiveRecord
         //取消订单
         $order = ActInsurance::findOne(['order_id'=>$data['order_id']]);
         $order->status = 100;
-        $order->info = '取消';
+        $order->info = '取消订单';
         $order->id = null;
         $order->created_at = time();
         $order->isNewRecord = 1;
-        if ($order->save(false)) {
+        $insurance = InsuranceDetail::findOne(['order_id'=>$data['order_id']]);
+        $insurance->action = '已取消';
+        if ($order->save(false) && $insurance->save(false)) {
+            return true;
+        }
+        return false;
+    }
+
+    /*
+     * 确认购买
+     */
+    public function affirm($data)
+    {
+        //确认购买
+        $order = ActInsurance::findOne(['order_id'=>$data['order_id']]);
+        $order->status = 3;
+        $order->info = '确认购买';
+        $order->id = null;
+        $order->created_at = time();
+        $order->isNewRecord = 1;
+        $insurance = InsuranceDetail::findOne(['order_id'=>$data['order_id']]);
+        $insurance->action = '已付款';
+        if ($order->save(false) && $insurance->save(false)) {
+            return true;
+        }
+        return false;
+    }
+
+    /*
+     * 取消购买
+     */
+    public function abandon($data)
+    {
+        //取消购买
+        $order = ActInsurance::findOne(['order_id'=>$data['order_id']]);
+        $order->status = 100;
+        $order->info = '取消购买';
+        $order->id = null;
+        $order->created_at = time();
+        $order->isNewRecord = 1;
+        $insurance = InsuranceDetail::findOne(['order_id'=>$data['order_id']]);
+        $insurance->action = '已取消';
+        if ($order->save(false) && $insurance->save(false)) {
             return true;
         }
         return false;
@@ -312,17 +375,19 @@ class InsuranceOrder extends \yii\db\ActiveRecord
      */
     public function createOrderSnapshoot($data, $member_id)
     {
+
         $order = new InsuranceOrder();
         $yCode = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L');
         $orderSn = $yCode[intval(date('Y')) - 2017] . strtoupper(dechex(date('m'))) . date('d') . substr(time(), -5) . substr(microtime(), 2, 5) . sprintf('%02d', rand(0, 99));
-        $this->load(['formName'=>$data],'formName');
-        $order->order = $orderSn;
-        $order->start_at = time();
+        $order->load(['formName'=>$data],'formName');
+        $order->order_sn = $orderSn;
+        $order->type = 6;
+        $order->created_at = time();
 
         if ($order->save(false)) {
 //            $order_id = Yii::$app->db->getLastInsertID();
             $order_id = $order->attributes['id'];
-            return $order_id?$order_id:null;
+            return $order_id ? $order_id : null;
         }
         return false;
     }
@@ -336,6 +401,8 @@ class InsuranceOrder extends \yii\db\ActiveRecord
         $order->car_id = $data['car_id'];
         $order->member_id = $member_id;
         $order->order_id = $order_id;
+        $order->action = '待核保';
+        $order->created_at = time();
 
         if ($order->save(false)) {
             return $order?$order:null;
@@ -367,12 +434,12 @@ class InsuranceOrder extends \yii\db\ActiveRecord
      */
     public function createAct($order_id, $member_id)
     {
-        $act = new ActDetail();
+        $act = new ActInsurance();
         $act->user_id = $member_id;
         $act->user = Helper::getName($member_id);
         $act->order_id = $order_id;
         $act->status = 1;
-        $act->info = '待核保';
+        $act->info = '订单创建成功,等待核保';
         $act->created_at = time();
 
         if ($act->save(false)) {

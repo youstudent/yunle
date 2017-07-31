@@ -12,10 +12,10 @@ namespace common\models;
  *****************************
   ***************************
     ***********************
-      ********龙龙********
-        *******我*******
-          *****爱*****
-            ***你***
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
               ***
                *
      */
@@ -27,6 +27,8 @@ use Yii;
  *
  * @property integer $id
  * @property integer $ident_id
+ * @property integer $created_at
+ * @property integer $updated_at
  * @property string $img_path
  */
 class IdentificationImg extends \yii\db\ActiveRecord

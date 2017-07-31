@@ -12,10 +12,10 @@ namespace api\models;
  *****************************
   ***************************
     ***********************
-      ********龙龙********
-        *******我*******
-          *****爱*****
-            ***你***
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
               ***
                *
      */
@@ -84,7 +84,7 @@ class Article extends \yii\db\ActiveRecord
     public function getArticle($data)
     {
         $article = Article::find()->select('views, content, title')->asArray()
-            ->where(['id'=>$data['id']])
+            ->where(['id'=>$data['article_id']])
             ->orderBy(['created_at' => SORT_DESC])
             ->one();
         if(!isset($article) || empty($article)){

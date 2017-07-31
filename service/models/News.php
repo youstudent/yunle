@@ -43,7 +43,7 @@ class News extends \yii\db\ActiveRecord
             'id' => 'ID',
             'member_id' => 'Member ID',
             'user_id' => 'User ID',
-            'news' => 'News',
+            'news' => 'Notice',
             'created_at' => 'Created At',
         ];
     }

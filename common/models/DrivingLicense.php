@@ -12,15 +12,16 @@ namespace common\models;
  *****************************
   ***************************
     ***********************
-      ********龙龙********
-        *******我*******
-          *****爱*****
-            ***你***
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
               ***
                *
      */
 
 use Yii;
+use yii\db\Exception;
 
 /**
  * This is the model class for table "cdc_driving_license".
@@ -36,9 +37,15 @@ use Yii;
  * @property string $permit
  * @property string $start_at
  * @property string $end_at
+ * @property integer $status
+ * @property integer $created_at
+ * @property integer $updated_at
  */
 class DrivingLicense extends \yii\db\ActiveRecord
 {
+    public $img_ids;
+    protected $transaction;
+    public $errorMsg;
     /**
      * @inheritdoc
      */
@@ -81,14 +88,14 @@ class DrivingLicense extends \yii\db\ActiveRecord
     /**
      * 驾驶证列表
      */
-    public function getDriver($data)
+    public function getDriver($data, $member)
     {
-        if (!isset($data['id']) || empty($data['id'])) {
-            $member_id = 1;
-            //TODO:id
+        if (!isset($data['member_id']) || empty($data['member_id'])) {
+            $member_id = $member['member']['id'];
         } else {
-            $member_id = $data['id'];
+            $member_id = $data['member_id'];
         }
+
         $arr = 'id, name, sex, nationality, papers, birthday, certificate_at, permit, start_at, end_at';
         $license = DrivingLicense::find()->select($arr)
             ->where(['member_id' => $member_id])
@@ -97,7 +104,6 @@ class DrivingLicense extends \yii\db\ActiveRecord
         //用户类型信息
         $userType = Member::findOne(['id'=>$member_id]);
         if (!isset($license) || empty($license)) {
-            $this->addError('message', '暂无添加驾驶证');
             $license = ['userType'=>$userType->type, 'license'=>$license];
             return $license;
         }
@@ -109,13 +115,12 @@ class DrivingLicense extends \yii\db\ActiveRecord
     /*
      * 添加驾驶证
      */
-    public function addDriver($data)
+    public function addDriver($data, $member)
     {
-        if (!isset($data['id']) || empty($data['id'])) {
-            $member_id = 1;
-            //TODO:id
+        if (!isset($data['member_id']) || empty($data['member_id'])) {
+            $member_id = $member['member']['id'];
         } else {
-            $member_id = $data['id'];
+            $member_id = $data['member_id'];
         }
 
         if (empty($data['name']) || empty($data['sex']) || empty($data['papers']) || empty($data['permit'])) {
@@ -129,27 +134,55 @@ class DrivingLicense extends \yii\db\ActiveRecord
 //        }
 
         $this->load(['formName'=>$data],'formName');
-        $this->member_id = $member_id;
-
-        if ($this->save(false)) {
-            return true;
+        $user = Member::findOne(['id'=>$member_id]);
+        if (!isset($user) || empty($user)) {
+            $this->addError('message', '用户不存在');
+            return false;
         }
-        return false;
-        //TODO: 图片的添加
-        //同步上传逻辑,处理图片
-//        $upload = new Upload();
-//        $img_id = $upload->uploadCarImgs(null);
-//        if(!isset($img_id)){
-//            $this->errorMsg = '图片获取失败';
-//            return null;
+        $this->member_id = $member_id;
+        $this->created_at = time();
+        //生成消息提示给业务员
+//        $real = Identification::findOne(['member_id'=>$member_id]);
+//        if (!isset($real) || empty($real)) {
+//            $realName = $user->phone;
+//        } else {
+//            $realName = $real->name;
 //        }
-//        if(!$this->save()){
-//            $this->errorMsg = '保存失败';
-//            return null;
+//        $newsA = '您的会员【'. $realName .'】的驾驶证【'. $data['name'] .'】信息更改请求通过';
+//        $modelA = 'user';
+//        $user_idA = $user->pid;
+//        $newA = \common\models\Notice::userNews($modelA, $user_idA, $newsA);
+//        //生成消息提示给客户
+//        $newsB = '您【'. $data['name'] .'】的驾驶证信息更改请求通过';
+//        $modelB = 'member';
+//        $user_idB = $member_id;
+//        $newB = \common\models\Notice::userNews($modelB, $user_idB, $newsB);
+//        if (!$newA || !$newB) {
+//            return false;
 //        }
-//        //更新上传文件
-//        CarImg::bindCar($this->id, $img_id);
-//        return $this->id ? $this : null;
+        $this->transaction = Yii::$app->db->beginTransaction();
+        try{
+            if(!$this->save(false)){
+                $this->errorMsg = '保存失败';
+                $this->transaction->rollBack();
+                return null;
+            }
+
+            $driver_id = $this->attributes['id'];
+            $upload = new Upload();
+            $type = 'driver';
+            $img = $upload->setImageInformation($data['img'], $driver_id, $type);
+            if (!$img) {
+                $this->errorMsg = '保存失败';
+                $this->transaction->rollBack();
+                return null;
+            }
+            $this->transaction->commit();
+        } catch (Exception $exception){
+            $this->transaction->rollBack();
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -157,7 +190,7 @@ class DrivingLicense extends \yii\db\ActiveRecord
      */
     public function delDriver($data)
     {
-        $driver = $this::findOne(['id'=>$data['id']])->delete();
+        $driver = $this::findOne(['id'=>$data['driver_id']])->delete();
         if ($driver) {
             return true;
         }
@@ -169,15 +202,16 @@ class DrivingLicense extends \yii\db\ActiveRecord
      */
     public function updateDriver($data)
     {
-        $driver = $this::findOne(['id'=>$data['id']]);
+        $driver = $this::findOne(['id'=>$data['driver_id']]);
+
         if (!isset($driver) || empty($driver)) {
             $this->addError('message', '要啥自行车');
             return false;
         }
         $driver->load(['formName'=>$data],'formName');
+        $driver->status = 0;
 
-        if ($driver->validate()) {
-            $driver->save(false);
+        if ($driver->save(false)) {
             return true;
         }
 

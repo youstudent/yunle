@@ -12,15 +12,16 @@ namespace common\models;
  *****************************
   ***************************
     ***********************
-      ********龙龙********
-        *******我*******
-          *****爱*****
-            ***你***
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
               ***
                *
      */
 
 use Yii;
+use yii\db\Exception;
 
 /**
  * This is the model class for table "cdc_car".
@@ -38,14 +39,14 @@ use Yii;
  * @property integer $sign_at
  * @property integer $certificate_at
  * @property integer $stick
+ * @property integer $status
  * @property integer $created_at
  * @property integer $updated_at
  */
 class Car extends \yii\db\ActiveRecord
 {
-    //暂存图片的id
     public $img_ids;
-
+    protected $transaction;
     public $errorMsg;
     /**
      * @inheritdoc
@@ -87,7 +88,7 @@ class Car extends \yii\db\ActiveRecord
      * 获取首页车牌车
      * @return array
      */
-    public function getList($member)
+    public function getList($data, $member)
     {
         //获取个人信息
         if (!isset($data['member_id']) || empty($data['member_id'])) {
@@ -116,7 +117,7 @@ class Car extends \yii\db\ActiveRecord
      * 获取车车车
      * @return array
      */
-    public function getCar($member)
+    public function getCar($data, $member)
     {
         if (!isset($data['member_id']) || empty($data['member_id'])) {
             $member_id = $member['member']['id'];
@@ -149,7 +150,7 @@ class Car extends \yii\db\ActiveRecord
         //详情所需字段
         $arr = ['id','license_number','type','owner','nature','brand_num','discern_num','motor_num','load_num','sign_at','certificate_at'];
         $car = Car::find()->select($arr)
-            ->where(['id'=> $data['id']])
+            ->where(['id'=> $data['car_id']])
             ->asArray()
             ->one();
 
@@ -160,7 +161,7 @@ class Car extends \yii\db\ActiveRecord
         $img = CarImg::find()->select('img_path')->where(['car_id'=> $car['id']])->asArray()->all();
         $carImg = [];
         foreach ($img as &$v) {
-            $carImg[] = $v['img_path'];
+            $carImg[] = $_SERVER['HTTP_HOST'].$v['img_path'];
         }
         $car['img_path'] = $carImg;
         return $car;
@@ -169,26 +170,40 @@ class Car extends \yii\db\ActiveRecord
     /**
      * 添加车车
      */
-    public function addCar($data)
+    public function addCar($data, $member)
     {
+        if (!isset($data['member_id']) || empty($data['member_id'])) {
+            $member_id = $member['member']['id'];
+        } else {
+            $member_id = $data['member_id'];
+        }
         $this->load(['formName'=>$data],'formName');
+        $this->member_id = $member_id;
         $this->created_at = time();
-        //TODO: 图片的添加
+        $this->transaction = Yii::$app->db->beginTransaction();
+        try{
+            if(!$this->save(false)){
+                $this->errorMsg = '保存失败';
+                $this->transaction->rollBack();
+                return null;
+            }
 
-        //同步上传逻辑,处理图片
-        $upload = new Upload();
-        $img_id = $upload->uploadCarImgs(null);
-        if(!isset($img_id)){
-            $this->errorMsg = '图片获取失败';
-            return null;
+            $car_id = $this->attributes['id'];
+            $upload = new Upload();
+            $type = 'car';
+            $img = $upload->setImageInformation($data['img'], $car_id, $type);
+            if (!$img) {
+                $this->errorMsg = '保存失败';
+                $this->transaction->rollBack();
+                return null;
+            }
+            $this->transaction->commit();
+        } catch (Exception $exception){
+            $this->transaction->rollBack();
+            return false;
         }
-        if(!$this->save()){
-            $this->errorMsg = '保存失败';
-            return null;
-        }
-        //更新上传文件
-        CarImg::bindCar($this->id, $img_id);
-        return $this->id ? $this : null;
+
+        return true;
     }
 
     /**
@@ -196,10 +211,10 @@ class Car extends \yii\db\ActiveRecord
      */
     public function delCar($data)
     {
-        $discern_num = $this::findOne(['id'=>$data['id']])->discern_num;
+        $discern_num = $this::findOne(['id'=>$data['car_id']])->discern_num;
         $code = substr($discern_num,(strlen($discern_num)-6));
         if ($data['code'] == $code ) {
-            Car::findOne($data['id'])->delete();
+            Car::findOne(['id'=>$data['car_id']])->delete();
             return true;
         } else {
             $this->addError('message', '识别码错误');
@@ -212,15 +227,35 @@ class Car extends \yii\db\ActiveRecord
      */
     public function updateCar($data)
     {
-        $car = Car::findOne(['id'=>$data['id']]);
+        $car = Car::findOne(['id'=>$data['car_id']]);
         if (!isset($car) || empty($car)) {
             $this->addError('message', '要啥自行车');
             return false;
         }
         $car->load(['formName'=>$data],'formName');
-
+        $car->status = 0;
         if ($car->save(false)) {
             return true;
+        }
+        return false;
+    }
+
+    /*
+     * 设置默认
+     */
+    public function changeDefault($data, $member)
+    {
+        $old = Car::findOne(['stick'=>1]);
+        $old->stick = 0;
+        if (!$old->save(false)) {
+            return false;
+        }
+        $car = Car::findOne(['id'=>$data['car_id']]);
+        $car->stick = 1;
+
+        if ($car->save(false)) {
+            $newList = $this->getCar($data,$member);
+            return $newList;
         }
         return false;
     }

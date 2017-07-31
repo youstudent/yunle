@@ -18,40 +18,22 @@ namespace api\controllers;
  *****************************
   ***************************
     ***********************
-      ********龙龙********
-        *******我*******
-          *****爱*****
-            ***你***
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
               ***
                *
      */
 
 use api\models\SignupForm;
 use common\models\Identification;
+use common\models\Member;
 use common\models\User;
 use yii;
 
 class UserController extends ApiController
 {
-    /**
-     * 获取会员个人信息和团队信息
-     * @return array
-     */
-    public function actionUser()
-    {
-
-    }
-    
-    /**
-     * 密码修改
-     * @return array
-     */
-    public function actionPass()
-    {
-
-    }
-
-
     /**
      * 注册
      * @return array
@@ -59,7 +41,9 @@ class UserController extends ApiController
     public function actionRegister()
     {
         $model = new SignupForm();
-        if ($model->signup(Yii::$app->request->post())) {
+        $form = json_decode(Yii::$app->request->post('data'),true);
+
+        if ($model->signup($form)) {
             return $this->jsonReturn(1, 'success');
         }
         return $this->jsonReturn(0, $model->getFirstError('message'));
@@ -71,10 +55,31 @@ class UserController extends ApiController
     public function actionPhone()
     {
         $model = new User();
-        if ($model->phone(Yii::$app->request->post())) {
-            return $this->jsonReturn(1, 'success');
+        $form = $this->getForm(Yii::$app->request->post('data'));
+        $member = $this->getMemberInfo();
+        if ($model->phone($form,$member)) {
+            $data['step'] = 2;
+            return $this->jsonReturn(1, 'success', $data);
         }
+        $data['step'] = 1;
+        return $this->jsonReturn(0, $model->getFirstError('message'), $data);
+    }
+
+    /*
+     * 个人信息
+     */
+    public function actionInfo()
+    {
+        $model = new Member();
+        $form = $this->getForm(Yii::$app->request->post('data'));
+        $member = $this->getMemberInfo();
+        $data = $model->info($form,$member);
+        if ($data) {
+            return $this->jsonReturn(1, 'success', $data);
+        }
+        $data['step'] = 1;
         return $this->jsonReturn(0, $model->getFirstError('message'));
     }
+
 
 }

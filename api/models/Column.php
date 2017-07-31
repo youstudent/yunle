@@ -12,10 +12,10 @@ namespace api\models;
  *****************************
   ***************************
     ***********************
-      ********龙龙********
-        *******我*******
-          *****爱*****
-            ***你***
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
               ***
                *
      */
@@ -71,18 +71,19 @@ class Column extends \yii\db\ActiveRecord
     public function getColumn($data)
     {
         $size = 2;
-        if (!isset($data) || empty($data)) {
+        if (!isset($data['page']) || empty($data['page'])) {
             $page = 0;
             $column = Column::find()->select('id, name')->asArray()->all();
 
             foreach ($column as $k => &$v) {
-                $v['articles'] = Article::find()->select('id, title, brief, views')->asArray()
+                $v['articles'] = Article::find()->select('id, title, views')->asArray()
                     ->where(['column_id'=>$v['id'], 'status'=>1])
                     ->limit($size)
                     ->offset($page)
                     ->all();
                 foreach ($v['articles'] as &$vv) {
                     $vv['img'] = $this->getImg(Article::findOne(['id'=>$vv['id']])->content);
+                    $vv['brief'] = $this->getBrief(Article::findOne(['id'=>$vv['id']])->content);
                 }
                 if ($k == 0) {
                     $v['flag'] = true;
@@ -93,13 +94,14 @@ class Column extends \yii\db\ActiveRecord
             }
         } else {
             $page =($data['page']-1)* $size;
-            $articles = Article::find()->select('id, title, brief, views')->asArray()
+            $articles = Article::find()->select('id, title, views')->asArray()
                 ->where(['column_id'=>$data['column'], 'status'=>1])
                 ->limit($size)
                 ->offset($page)
                 ->all();
             foreach ($articles as &$v) {
                 $v['img'] = $this->getImg(Article::findOne(['id'=>$v['id']])->content);
+                $v['brief'] = $this->getBrief(Article::findOne(['id'=>$v['id']])->content);
             }
             $total = Article::find()->where(['column_id'=>$data['column'], 'status'=>1])->count();
             $totalPage = ceil($total/$size);
@@ -115,6 +117,12 @@ class Column extends \yii\db\ActiveRecord
         $pattern="/<[img|IMG].*?src=[\'|\"](.*?(?:[\.gif|\.jpg]))[\'|\"].*?[\/]?>/";//正则
         preg_match_all($pattern,$content,$match);//匹配图片
         return $match[1];//返回所有图片的路径
+    }
+    //TODO:截取前20文字
+    public function getBrief($content){
+       $content = strip_tags(htmlspecialchars_decode($content));
+       $brief = substr($content,0,20);
+       return $brief;
     }
 
 }

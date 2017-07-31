@@ -6,6 +6,24 @@
  * Time: 19:33
  */
 
+/*
+     *
+      ******       ******
+    **********   **********
+  ************* *************
+ *****************************
+ *****************************
+ *****************************
+  ***************************
+    ***********************
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
+              ***
+               *
+     */
+
 namespace common\models;
 
 
@@ -35,7 +53,7 @@ class Helper{
             return '订单不存在';
         }
         $model = InsuranceOrder::findOne(['id'=>$order_id]);
-        return $model->order;
+        return $model->order_sn;
     }
 
     //获得车牌号
@@ -78,6 +96,282 @@ class Helper{
         return $model->licence;
     }
 
+    public static function getStatusList()
+    {
+        //不同保单对应的动态字段值
+        $status = [
+            [
+                'typeId' => 0,
+                'typeName' => '全部',
+                'act'=>[
+                    [
+                        'actId' => 0,
+                        'actName' => '全部'
+                    ]
+                ]
+            ],
+            [
+                'typeId' => 1,
+                'typeName' => '救援',
+                'act'=>[
+                    [
+                        'actId' => 0,
+                        'actName' => '全部'
+                    ],
+                    [
+                        'actId' => 1,
+                        'actName' => '待接单'
+                    ],
+                    [
+                        'actId' => 2,
+                        'actName' => '已接单'
+                    ],
+                    [
+                        'actId' => 3,
+                        'actName' => '接车中'
+                    ],
+                    [
+                        'actId' => 4,
+                        'actName' => '正在返回'
+                    ],
+                    [
+                        'actId' => 5,
+                        'actName' => '已接车'
+                    ],
+                    [
+                        'actId' => 6,
+                        'actName' => '已评估'
+                    ],
+                    [
+                        'actId' => 7,
+                        'actName' => '处理中'
+                    ],
+                    [
+                        'actId' => 8,
+                        'actName' => '待交车'
+                    ],[
+                        'actId' => 99,
+                        'actName' => '已完成'
+                    ],[
+                        'actId' => 100,
+                        'actName' => '已取消'
+                    ]
+                ]
+            ],
+            [
+                'typeId' => 2,
+                'typeName' => '维修',
+                'act'=>[
+                    [
+                        'actId' => 0,
+                        'actName' => '全部'
+                    ],
+                    [
+                        'actId' => 1,
+                        'actName' => '待接单'
+                    ],
+                    [
+                        'actId' => 2,
+                        'actName' => '已接单'
+                    ],
+                    [
+                        'actId' => 3,
+                        'actName' => '接车中'
+                    ],
+                    [
+                        'actId' => 4,
+                        'actName' => '正在返回'
+                    ],
+                    [
+                        'actId' => 5,
+                        'actName' => '已接车'
+                    ],
+                    [
+                        'actId' => 6,
+                        'actName' => '已评估'
+                    ],
+                    [
+                        'actId' => 7,
+                        'actName' => '处理中'
+                    ],
+                    [
+                        'actId' => 8,
+                        'actName' => '待交车'
+                    ],
+                    [
+                        'actId' => 99,
+                        'actName' => '已完成'
+                    ],
+                    [
+                        'actId' => 100,
+                        'actName' => '已取消'
+                    ]
+                ]
+            ],
+            [
+                'typeId' => 3,
+                'typeName' => '保养',
+                'act'=>[
+                    [
+                        'actId' => 0,
+                        'actName' => '全部'
+                    ],
+                    [
+                        'actId' => 1,
+                        'actName' => '待接单'
+                    ],
+                    [
+                        'actId' => 2,
+                        'actName' => '已接单'
+                    ],
+                    [
+                        'actId' => 3,
+                        'actName' => '接车中'
+                    ],
+                    [
+                        'actId' => 4,
+                        'actName' => '正在返回'
+                    ],
+                    [
+                        'actId' => 5,
+                        'actName' => '已接车'
+                    ],
+                    [
+                        'actId' => 6,
+                        'actName' => '已评估'
+                    ],
+                    [
+                        'actId' => 7,
+                        'actName' => '处理中'
+                    ],
+                    [
+                        'actId' => 8,
+                        'actName' => '待交车'
+                    ],
+                    [
+                        'actId' => 99,
+                        'actName' => '已完成'
+                    ],
+                    [
+                        'actId' => 100,
+                        'actName' => '已取消'
+                    ]
+                ]
+            ],
+            [
+                'typeId' => 4,
+                'typeName' => '上线审车',
+                'act'=>[
+                    [
+                        'actId' => 0,
+                        'actName' => '全部'
+                    ],
+                    [
+                        'actId' => 1,
+                        'actName' => '待接单'
+                    ],
+                    [
+                        'actId' => 2,
+                        'actName' => '已接单'
+                    ],
+                    [
+                        'actId' => 3,
+                        'actName' => '处理中'
+                    ],
+                    [
+                        'actId' => 4,
+                        'actName' => '待交车'
+                    ],
+                    [
+                        'actId' => 5,
+                        'actName' => '已出发'
+                    ],
+                    [
+                        'actId' => 6,
+                        'actName' => '返修中'
+                    ],
+                    [
+                        'actId' => 99,
+                        'actName' => '已完成'
+                    ],
+                    [
+                        'actId' => 100,
+                        'actName' => '已取消'
+                    ]
+                ]
+            ],
+            [
+                'typeId' => 5,
+                'typeName' => '不上线审车',
+                'act'=>[
+                    [
+                        'actId' => 0,
+                        'actName' => '全部'
+                    ],
+                    [
+                        'actId' => 1,
+                        'actName' => '待邮寄'
+                    ],
+                    [
+                        'actId' => 2,
+                        'actName' => '处理中'
+                    ],
+                    [
+                        'actId' => 98,
+                        'actName' => '未通过'
+                    ],
+                    [
+                        'actId' => 99,
+                        'actName' => '已完成'
+                    ],
+                    [
+                        'actId' => 100,
+                        'actName' => '已取消'
+                    ]
+                ]
+            ],
+            [
+                'typeId' => 6,
+                'typeName' => '保险',
+                'act'=>[
+                    [
+                        'actId' => 0,
+                        'actName' => '全部'
+                    ],
+                    [
+                        'actId' => 1,
+                        'actName' => '待核保'
+                    ],
+                    [
+                        'actId' => 2,
+                        'actName' => '等待确认'
+                    ],
+                    [
+                        'actId' => 3,
+                        'actName' => '等待付款'
+                    ],
+                    [
+                        'actId' => 97,
+                        'actName' => '核保成功'
+                    ],
+                    [
+                        'actId' => 98,
+                        'actName' => '核保失败'
+                    ],
+                    [
+                        'actId' => 99,
+                        'actName' => '已完成'
+                    ],
+                    [
+                        'actId' => 100,
+                        'actName' => '已取消'
+                    ]
+                ]
+            ]
+        ];
+
+        return $status;
+    }
     //获得订单类型名称
     public static function getType($type)
     {
@@ -86,29 +380,29 @@ class Helper{
                 $type = '订单类型未选择';
                 break;
             case 1:
-                $type = '救援';
+                $type = '汽车救援';
                 break;
             case 2:
-                $type = '维修';
+                $type = '汽车维修';
                 break;
             case 3:
-                $type = '保养';
+                $type = '汽车保养';
                 break;
             case 4:
-                $type = '上线审车';
+                $type = '汽车审车(上线)';
                 break;
             case 5:
-                $type = '不上线审车';
+                $type = '汽车审车(不上线)';
                 break;
             case 6;
-                $type = '保险';
+                $type = '汽车保险';
                 break;
         }
         return $type;
     }
 
     //获得订单动态详情状态
-    public static function getAction($order_id, $type)
+    public static function getAction($order_id)
     {
         $model = ActDetail::find()->where(['order_id'=>$order_id])
             ->orderBy(['created_at' => SORT_DESC])
@@ -121,7 +415,7 @@ class Helper{
         return $model['status'];
     }
     //获得保险订单动态详情状态
-    public static function getInsAction($order_id, $type)
+    public static function getInsAction($order_id)
     {
         $model = ActInsurance::find()->where(['order_id'=>$order_id])
             ->orderBy(['created_at' => SORT_DESC])
@@ -188,22 +482,88 @@ class Helper{
     }
 
     //获取type拼接状态
-    public static function getStatus($status)
+    public static function getStatus($status, $type)
     {
-        switch ($status) {
-            case 1:
-                $status = '待派单';
-                break;
-            case 2:
-                $status = '订单已分派给服务商:'.$status.',待接单';
-                break;
-            case 99:
-                $status = '已完成';
-                break;
-            case 100:
-                $status = '已取消';
-                break;
+        if ($type == 1 || $type == 2 || $type == 3) {
+            switch ($status) {
+                case 1:
+                    $status = '待接单';
+                    break;
+                case 2:
+                    $status = '已接单';
+                    break;
+                case 3:
+                    $status = '接车中';
+                    break;
+                case 4:
+                    $status = '正在返回';
+                    break;
+                case 5:
+                    $status = '已接车';
+                    break;
+                case 6:
+                    $status = '已评估';
+                    break;
+                case 7:
+                    $status = '处理中';
+                    break;
+                case 8:
+                    $status = '待交车';
+                    break;
+                case 99:
+                    $status = '已完成';
+                    break;
+                case 100:
+                    $status = '已取消';
+                    break;
+            }
+        } elseif($type == 4) {
+            switch ($status) {
+                case 1:
+                    $status = '待接单';
+                    break;
+                case 2:
+                    $status = '已接单';
+                    break;
+                case 3:
+                    $status = '处理中';
+                    break;
+                case 4:
+                    $status = '待交车';
+                    break;
+                case 5:
+                    $status = '已出发';
+                    break;
+                case 6:
+                    $status = '返修中';
+                    break;
+                case 99:
+                    $status = '已完成';
+                    break;
+                case 100:
+                    $status = '已取消';
+                    break;
+            }
+        } else {
+            switch ($status) {
+                case 1:
+                    $status = '待寄出';
+                    break;
+                case 2:
+                    $status = '处理中';
+                    break;
+                case 98:
+                    $status = '未通过';
+                    break;
+                case 99:
+                    $status = '已完成';
+                    break;
+                case 100:
+                    $status = '已取消';
+                    break;
+            }
         }
+
         return $status;
     }
 
@@ -248,25 +608,28 @@ class Helper{
     {
         switch ($status) {
             case 1:
-                $status = '订单创建成功,等待审核';
+                $status = '待核保';
                 break;
             case 2:
-                $status = '核保成功,等待是否购买';
+                $status = '待确认';
                 break;
             case 3:
-                $status = '核保失败,原因为: '.$info;
-                break;
-            case 4:
                 $status = '确认购买';
                 break;
-            case 5:
+            case 4:
                 $status = '已付款';
                 break;
+            case 97:
+                $status = '核保成功';
+                break;
+            case 98:
+                $status = '核保失败';
+                break;
             case 99:
-                $status = '订单处理完成';
+                $status = '已完成';
                 break;
             case 100:
-                $status = '取消订单';
+                $status = '已取消';
                 break;
         }
         return $status;
@@ -288,8 +651,8 @@ class Helper{
         $calcLatitude = $lat2 - $lat1;
         $stepOne = pow(sin($calcLatitude / 2), 2) + cos($lat1) * cos($lat2) * pow(sin($calcLongitude / 2), 2);
         $stepTwo = 2 * asin(min(1, sqrt($stepOne)));
-        $calculatedDistance = $earthRadius * $stepTwo;
-        $distance = round($calculatedDistance);
+        $calculatedDistance = $earthRadius * $stepTwo / 1000;
+        $distance = round($calculatedDistance,1) ;
         return $distance;
     }
     //获取营业状态

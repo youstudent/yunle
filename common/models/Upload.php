@@ -12,10 +12,10 @@ namespace common\models;
  *****************************
   ***************************
     ***********************
-      ********龙龙********
-        *******我*******
-          *****爱*****
-            ***你***
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
               ***
                *
      */
@@ -28,82 +28,60 @@ use yii\helpers\FileHelper;
 class Upload extends Model
 {
     public $img_path;
-
     public $db_save_path;
 
-    /**
-     * 初始化上传
-     * @param $params
-     */
-    public function upload($params)
-    {
-        $type = $params['type'];
-        switch ($type) {
-            case 'car':
-                return $this->uploadCarImgs($params);
-                break;
+    public function setImageInformation($image, $id, $type){
+        foreach($image as $v){
+            Header( "Content-type: image/jpeg");
+            preg_match('/^(data:\s*image\/(\w+);base64,)/', $v, $result);
+            $extension = $result[2];
+            $file = base64_decode(str_replace($result[1], '', $v));
+
+            $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            $img_path = $this->getSavePath($type, $chars, $extension);
+
+            file_put_contents(Yii::getAlias('@webroot').$img_path, $file);
+
+            switch ($type) {
+                case 'car':
+                    $model = new CarImg();
+                    $model->car_id = $id;
+                    $model->img_path = $img_path;
+                    $model->created_at = time();
+                    if (!$model->save(false)) {
+                        return false;
+                    }
+                    break;
+                case  'driver':
+                    $model = new DrivingImg();
+                    $model->driver_id = $id;
+                    $model->img_path = $img_path;
+                    $model->created_at = time();
+                    if (!$model->save(false)) {
+                        return false;
+                    }
+                    break;
+                case  'identification':
+                    $model = new IdentificationImg();
+                    $model->ident_id = $id;
+                    $model->img_path = $img_path;
+                    $model->created_at = time();
+                    if (!$model->save(false)) {
+                        return false;
+                    }
+                    break;
+            }
+
         }
+        return true;
     }
 
-    public function uploadCarImgs($params)
-    {
-        $model = new CarImg();
-        $this->img_path = UploadedFile::getInstance($model, 'img_path');
-        if (isset($this->img_path)) {
-            //获取文件上传的相对路径
-            $img_path = $this->getSavePath('car', $this->img_path->name);
-            $this->img_path->saveAs(Yii::getAlias('@webroot') . $img_path);
-            $model->img_path = '/public'.$this->db_save_path;
-            $model->save();
-            return $model->id;
-        }
-        return null;
-    }
-//    public function uploadGoodsImgs($params)
-//    {
-//        $model = new GoodsImg();
-//        $this->img_path = UploadedFile::getInstance($model, 'img_path');
-//        if (isset($this->img_path)) {
-//            //获取文件上传的相对路径
-//            $img_path = $this->getSavePath('goods', $this->img_path->name);
-//            $this->img_path->saveAs(Yii::getAlias('@webroot') . $img_path);
-//            $model->img_path = '/public'.$this->db_save_path;
-//            $model->save();
-//            return $model->id;
-//        }
-//        return null;
-//    }
-//
-//    public function uploadFruiterImgs($params)
-//    {
-//        $model = new FruiterImg();
-//        $this->img_path = UploadedFile::getInstance($model, 'img_path');
-//        if (isset($this->img_path)) {
-//            //获取文件上传的相对路径
-//            $img_path = $this->getSavePath('fruiter', $this->img_path->name);
-//            $model->fruiter_id = $params['fruiter_id'];
-//            $this->img_path->saveAs(Yii::getAlias('@webroot') . $img_path);
-//            $model->img_path = '/public'.$this->db_save_path;
-//            $model->save();
-//            return $model->id;
-//        }
-//        return null;
-//    }
-
-    public function uploadBannerImgs($params)
-    {
-
-    }
-
-    public function getSavePath($type, $filename)
+    public function getSavePath($type, $chars ,$extension)
     {
         $save_path = '';
-        switch ($type) {
-            case 'car':
-                $this->db_save_path = '/upload/car_imgs/' . date('Y-m-d') . '/' . sha1($filename . time()) . '.' . $this->getFileExtension($filename);
-                $save_path = '/public' . $this->db_save_path;
-                break;
-        }
+        $this->db_save_path = '/upload/'. $type .'_imgs/' . date('Y-m-d') . '/' . sha1($chars[ mt_rand(0, strlen($chars) - 1) ] . time()) . '.' . $extension;
+        $save_path = '/public' . $this->db_save_path;
+
         if (!empty($save_path)) {
             $save_dir = dirname(Yii::getAlias('@webroot') . $save_path);
             if (!is_dir($save_dir)) {
@@ -114,9 +92,9 @@ class Upload extends Model
         return $save_path;
     }
 
-    protected function getFileExtension($filename)
-    {
-        return strtolower(pathinfo($filename)['extension']);
-    }
+//    protected function getFileExtension($filename)
+//    {
+//        return strtolower(pathinfo($filename)['extension']);
+//    }
 
 }

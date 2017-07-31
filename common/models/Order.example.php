@@ -102,25 +102,10 @@ class Order extends \yii\db\ActiveRecord
         } else {
             $member_id = $data['member_id'];
         }
-        if (!isset($data['search']) || empty($data['search'])) {
+        if ($data['search']) {
+            $search = [$data['search']];
+        } else {
             $search = '';
-        } else {
-            $search = $data['search'];
-        }
-        if (!isset($data['top']) || empty($data['top'])) {
-            $top = 0;
-        } else {
-            $top = $data['top'];
-        }
-        if (!isset($data['type']) || empty($data['type'])) {
-            $type = 0;
-        } else {
-            $type = $data['type'];
-        }
-        if (!isset($data['status']) || empty($data['status'])) {
-            $status = 0;
-        } else {
-            $status = $data['status'];
         }
         $list = OrderDetail::find()->select('car_id, order_id, created_at')
             ->where(['member_id'=> $member_id])
@@ -157,56 +142,21 @@ class Order extends \yii\db\ActiveRecord
                 $v['actionName'] = Helper::getStatus($v['action'],$v['type']);
             }
         }
-
+        $type = 1;
+        $status = 100;
+        $search = '';
         $aaa = [];
-        $bbb = [];
-        $ccc = [];
         foreach ($listAll as &$v) {
             if (preg_match("/($search)/is", $v['phone']) ||
                 preg_match("/($search)/is", $v['user']) ||
-                preg_match("/($search)/is", $v['car'])){
+                preg_match("/($search)/is", $v['car']) ||
+                ($v['type'] == $type && $v['action'] == $status)){
                 $aaa[] = $v;
             }
         }
 
-        foreach ($aaa as &$v) {
-            if ($type == 0) {
-                $bbb[] = $v;
-            }
-
-            if ($status == 0) {
-                if ($v['type'] == $type) {
-                    $bbb[] = $v;
-                }
-            } else {
-                if ($v['type'] == $type && $v['action'] == $status) {
-                    $bbb[] = $v;
-                }
-            }
-        }
-
-        foreach ($bbb as &$v) {
-            if ($top == 1) {
-                if ($v['actionName'] == '待接单') {
-                    $ccc[] = $v;
-                }
-            } elseif ($top == 2) {
-                if ($v['actionName'] == '待交车') {
-                    $ccc[] = $v;
-                }
-            } elseif ($top == 3) {
-                if ($v['actionName'] == '核保成功') {
-                    $ccc[] = $v;
-                }
-            } else {
-                $ccc[] = $v;
-            }
-        }
-
         $status = Helper::getStatusList();
-
-        $newList = ['orderList'=>$ccc,'statusList'=>$status];
-
+        $newList = ['orderList'=>$aaa,'statusList'=>$status];
         return $newList;
     }
 
@@ -241,7 +191,7 @@ class Order extends \yii\db\ActiveRecord
             ->one();
         if ($actEnd['status'] == 2) {
             $top = '待接单';
-        } elseif ($actEnd['status'] == 99 || $actEnd['status'] == 100) {
+        } elseif ($actEnd['status'] == 99) {
             $top = '已完成';
         } else {
             $top = '待处理';
@@ -287,6 +237,8 @@ class Order extends \yii\db\ActiveRecord
         $fac['tag'] = Helper::getServiceTag($fac['id']);
         $fac['status'] = Helper::getClose($status);
         $fac['img_path'] = ServiceImg::findOne(['service_id'=>$fac['id'],'type'=>1])->img_path;
+
+
 
         $all = ['order'=>$order, 'insurance'=>$insurance, 'service'=>$fac];
         return $all;
@@ -334,6 +286,7 @@ class Order extends \yii\db\ActiveRecord
             ->where(['member_id'=> $member_id])
             ->orderBy(['stick' => SORT_DESC, 'created_at' => SORT_DESC])
             ->asArray()
+            ->limit(10)
             ->all();
         if (!isset($car) || empty($car)) {
             $car = '';
@@ -393,9 +346,7 @@ class Order extends \yii\db\ActiveRecord
                 $this->transaction->rollBack();
                 return false;
             }
-            //创建订单详情
-            $service = Order::findOne(['id'=>$order_id])->service;
-            $act = $this->createAct($service,$order_id, $member_id);
+            $act = $this->createAct($order_id, $member_id);
             if ($act == false) {
                 $this->errorMsg = '订单动态详情创建失败';
                 $this->transaction->rollBack();
@@ -461,14 +412,12 @@ class Order extends \yii\db\ActiveRecord
         //取消订单
         $a = ActDetail::findOne(['order_id'=>$data['order_id']]);
         $a->status = 100;
-        $a->info = '取消订单';
+        $a->info = '已取消';
         $a->user_id = $member['member']['id'];
         $a->id = null;
         $a->created_at = time();
         $a->isNewRecord = 1;
-        $order = OrderDetail::findOne(['order_id'=>$data['order_id']]);
-        $order->action = '已取消';
-        if ($a->save(false) && $order->save(false)) {
+        if ($a->save(false)) {
             return true;
         }
         return false;
@@ -519,7 +468,6 @@ class Order extends \yii\db\ActiveRecord
         $orderDetail->member_id = $member_id;
         $orderDetail->order_id = $order_id;
         $orderDetail->car_id = $data['car_id'];
-        $orderDetail->action = '待接单';
         $orderDetail->service_id = $data['service_id'];
         $orderDetail->created_at = time();
 
@@ -532,12 +480,11 @@ class Order extends \yii\db\ActiveRecord
     /*
      * 生成动态
      */
-    public function createAct($service, $order_id, $member_id)
+    public function createAct($order_id, $member_id)
     {
         $act = new ActDetail();
         $act->user_id = $member_id;
         $act->order_id = $order_id;
-        $act->info = '订单已分派给服务商'.$service.'，等待接单';
         $act->status = 1;
         $act->created_at = time();
 
@@ -561,7 +508,7 @@ class Order extends \yii\db\ActiveRecord
             $v['level'] = intval($v['level']);
             $v['tag'] = Helper::getServiceTag($v['id']);
             //图片
-            $v['img'] = $_SERVER['HTTP_HOST'].ServiceImg::findOne(['service_id'=>$v['id'],'type'=>1])->img_path;
+            $v['img'] = ServiceImg::findOne(['service_id'=>$v['id'],'type'=>1])->img_path;
             //距离
             $v['distance'] = Helper::getDistance($data['lat'], $data['lng'], $v['lat'], $v['lng']);
             //是否营业
@@ -623,7 +570,7 @@ class Order extends \yii\db\ActiveRecord
             'status'=>Helper::getClose($status),
             'contact_phone'=>$service->contact_phone,
             'introduction'=>$service->introduction
-            ];
+        ];
         return $fac;
     }
 

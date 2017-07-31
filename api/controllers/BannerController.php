@@ -7,6 +7,7 @@
  */
 
 namespace api\controllers;
+
 /*
      *
       ******       ******
@@ -17,23 +18,26 @@ namespace api\controllers;
  *****************************
   ***************************
     ***********************
-      ********龙龙********
-        *******我*******
-          *****爱*****
-            ***你***
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
               ***
                *
      */
 
 use api\models\Banner;
+use Yii;
 
 class BannerController extends ApiController
 {
     //轮播图
     public function actionList()
     {
+
         $model = new Banner();
-        $data = $model->getBanner();
+        $form = $this->getForm(Yii::$app->request->post('data'));
+        $data = $model->getBanner($form);
         if ($data) {
             return $this->jsonReturn(1, 'success', $data);
         }

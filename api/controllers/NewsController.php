@@ -17,22 +17,25 @@ namespace api\controllers;
  *****************************
   ***************************
     ***********************
-      ********龙龙********
-        *******我*******
-          *****爱*****
-            ***你***
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
               ***
                *
      */
 
-use api\models\News;
+use common\models\Notice;
 
 class NewsController extends ApiController
 {
     public function actionList()
     {
-        $model = new News();
-        $data = $model->getNews();
+        $model = new Notice();
+        $member = $this->getMemberInfo();
+        $member_id = $member['member']['id'];
+        $modelName = 'member';
+        $data = $model->getNews($modelName ,$member_id);
         if ($data) {
             return $this->jsonReturn(1, 'success', $data);
         }
