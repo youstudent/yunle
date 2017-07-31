@@ -71,15 +71,15 @@ class Identification extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'member_id' => 'Member ID',
-            'name' => 'Name',
-            'nation' => 'Nation',
+            'member_id' => '会员id',
+            'name' => '姓名',
+            'nation' => '民族',
             'status' => 'Status',
-            'licence' => 'Licence',
-            'sex' => 'Sex',
-            'birthday' => 'Birthday',
-            'start_at' => 'Start At',
-            'end_at' => 'End At',
+            'licence' => '代码',
+            'sex' => '性别',
+            'birthday' => '生日',
+            'start_at' => '身份证生效时间',
+            'end_at' => '身份证失效时间',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
