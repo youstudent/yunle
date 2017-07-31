@@ -12,10 +12,10 @@ namespace api\models;
  *****************************
   ***************************
     ***********************
-      ********龙龙********
-        *******我*******
-          *****爱*****
-            ***你***
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
               ***
                *
      */
@@ -70,17 +70,16 @@ class Banner extends \yii\db\ActiveRecord
      * 获取轮播图
      * @return array
      */
-    public function getBanner()
+    public function getBanner($form)
     {
         $query = (new \yii\db\Query());
         $banner = $query->select('name, describe, img_path')->from(Banner::tableName())
             ->leftJoin(BannerImg::tableName(), '{{%banner_img}}.banner_id = {{%banner}}.id')
             ->where(['status' => 1])
             ->all();
-//TODO:图片地址需要处理
-//        if($banner['img_path']){
-//            $banner['img_path'] = Yii::$app->params['img_domain'].$banner['img_path'];
-//        }
+        foreach ($banner as &$v) {
+            $v['img_path'] = $_SERVER['HTTP_HOST'].$v['img_path'];
+        }
         if(!isset($banner) || empty($banner)){
             return null;
         }

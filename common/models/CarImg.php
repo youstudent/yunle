@@ -12,10 +12,10 @@ namespace common\models;
  *****************************
   ***************************
     ***********************
-      ********龙龙********
-        *******我*******
-          *****爱*****
-            ***你***
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
               ***
                *
      */
@@ -27,6 +27,8 @@ use Yii;
  *
  * @property integer $id
  * @property integer $car_id
+ * @property integer $created_at
+ * @property integer $updated_at
  * @property string $img_path
  */
 class CarImg extends \yii\db\ActiveRecord
@@ -45,7 +47,7 @@ class CarImg extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['car_id'], 'integer'],
+            [['car_id', 'created_at', 'updated_at'], 'integer'],
             [['img_path'], 'required'],
             [['img_path'], 'string', 'max' => 255],
         ];
@@ -60,27 +62,8 @@ class CarImg extends \yii\db\ActiveRecord
             'id' => 'ID',
             'car_id' => 'Car ID',
             'img_path' => 'Img Path',
+            'created_at' => 'Created At',
+            'updated_at' => 'Updated At',
         ];
-    }
-
-    public static function bindCar($car_id, $ids, $is_reaplace = false)
-    {
-        $ids = trim($ids, ',');
-        if(strpos($ids, ',') === false){
-            $ids  =(int)$ids;
-            //var_dump($ids);exit;
-            // $ids[] = $ids;
-        }else{
-            $ids = explode(',', $ids);
-        }
-        if($is_reaplace){
-            //先将以前的取消掉
-            Yii::$app->db->createCommand()->update(self::tableName(), ['car_id'=>0], ['car_id'=>$car_id])->execute();
-        }
-        $model = CarImg::findOne(['id'=>$ids]);
-        $model->car_id = $car_id;
-        $model->save();
-
-        return true;
     }
 }

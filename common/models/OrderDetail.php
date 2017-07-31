@@ -12,10 +12,10 @@ namespace common\models;
  *****************************
   ***************************
     ***********************
-      ********龙龙********
-        *******我*******
-          *****爱*****
-            ***你***
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
               ***
                *
      */
@@ -30,7 +30,9 @@ use Yii;
  * @property integer $car_id
  * @property integer $member_id
  * @property integer $service_id
- * @property integer $start_at
+ * @property string $action
+ * @property integer $created_at
+ * @property integer $updated_at
  */
 class OrderDetail extends \yii\db\ActiveRecord
 {

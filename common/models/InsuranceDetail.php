@@ -2,6 +2,24 @@
 
 namespace common\models;
 
+/*
+     *
+      ******       ******
+    **********   **********
+  ************* *************
+ *****************************
+ *****************************
+ *****************************
+  ***************************
+    ***********************
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
+              ***
+               *
+     */
+
 use Yii;
 
 /**
@@ -11,7 +29,7 @@ use Yii;
  * @property integer $order_id
  * @property integer $car_id
  * @property integer $member_id
- * @property integer $type
+ * @property string  $action
  * @property integer $created_at
  */
 class InsuranceDetail extends \yii\db\ActiveRecord

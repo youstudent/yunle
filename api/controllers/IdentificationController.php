@@ -6,7 +6,7 @@
  * Time: 11:04
  */
 
-namespace service\controllers;
+namespace api\controllers;
 
 /*
      *
@@ -18,10 +18,10 @@ namespace service\controllers;
  *****************************
   ***************************
     ***********************
-      ********龙龙********
-        *******我*******
-          *****爱*****
-            ***你***
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
               ***
                *
      */
@@ -37,7 +37,10 @@ class IdentificationController extends ApiController
     public function actionApprove()
     {
         $model = new Identification();
-        if ($model->approve(Yii::$app->request->post())) {
+        $form = $this->getForm(Yii::$app->request->post('data'));
+        $member = $this->getMemberInfo();
+
+        if ($model->approve($form, $member)) {
             return $this->jsonReturn(1, 'success');
         }
         return $this->jsonReturn(0, $model->getFirstError('message'));
@@ -49,7 +52,9 @@ class IdentificationController extends ApiController
     public function actionView()
     {
         $model = new Identification();
-        $data = $model->view(Yii::$app->request->post());
+        $form = $this->getForm(Yii::$app->request->post('data'));
+        $member = $this->getMemberInfo();
+        $data = $model->view($form, $member);
         if ($data) {
             return $this->jsonReturn(1, 'success', $data);
         }

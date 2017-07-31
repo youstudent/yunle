@@ -18,10 +18,10 @@ namespace api\controllers;
  *****************************
   ***************************
     ***********************
-      ********龙龙********
-        *******我*******
-          *****爱*****
-            ***你***
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
               ***
                *
      */
@@ -35,8 +35,11 @@ class DrivingController extends ApiController
     public function actionList()
     {
         $model = new DrivingLicense();
-        $data = $model->getDriver(Yii::$app->request->post());
-        if ($data['license'] != null) {
+        $form = $this->getForm(Yii::$app->request->post('data'));
+        $member = $this->getMemberInfo();
+
+        $data = $model->getDriver($form, $member);
+        if ($data) {
             return $this->jsonReturn(1, 'success', $data);
         }
 
@@ -48,7 +51,10 @@ class DrivingController extends ApiController
     public function actionAdd()
     {
         $model = new DrivingLicense();
-        if ($model->addDriver(Yii::$app->request->post())) {
+        $form = $this->getForm(Yii::$app->request->post('data'));
+        $member = $this->getMemberInfo();
+
+        if ($model->addDriver($form, $member)) {
             return $this->jsonReturn(1, 'success');
         }
         return $this->jsonReturn(0, $model->getFirstError('message'));
@@ -58,7 +64,9 @@ class DrivingController extends ApiController
     public function actionDel()
     {
         $model = new DrivingLicense();
-        if ($model->delDriver(Yii::$app->request->post())) {
+        $form = $this->getForm(Yii::$app->request->post('data'));
+
+        if ($model->delDriver($form)) {
             return $this->jsonReturn(1, '删除成功');
         }
 
@@ -69,7 +77,9 @@ class DrivingController extends ApiController
     public function actionUpdate()
     {
         $model = new DrivingLicense();
-        if ($model->updateDriver(Yii::$app->request->post())) {
+        $form = $this->getForm(Yii::$app->request->post('data'));
+
+        if ($model->updateDriver($form)) {
             return $this->jsonReturn(1, 'success');
         }
         //如果返回false 返回错误信息

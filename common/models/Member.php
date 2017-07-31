@@ -2,6 +2,24 @@
 
 namespace common\models;
 
+/*
+     *
+      ******       ******
+    **********   **********
+  ************* *************
+ *****************************
+ *****************************
+ *****************************
+  ***************************
+    ***********************
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
+              ***
+               *
+     */
+
 use Yii;
 
 /**
@@ -101,8 +119,8 @@ class Member extends \yii\db\ActiveRecord
         $member->last_login_ip = Yii::$app->request->getUserIP();
 
         $mem = [
-            'member' => [ 'id'=> $member->id, 'nickname' => '12345', 'phone'=> $member->phone],
-            'sites' => ['site_name'=> '云乐行车', 'version'=> '1.0', 'adminEmail'=> 'a@a.com']
+            'member' => [ 'id'=> $member->id, 'phone'=> $member->phone],
+            'sites' => ['site_name'=> '云乐享车', 'version'=> '1.0', 'adminEmail'=> 'a@a.com']
         ];
         Yii::$app->session->set('mem',$mem);
 
@@ -110,5 +128,70 @@ class Member extends \yii\db\ActiveRecord
             return true;
         }
         return false;
+    }
+
+    /**
+     * 退出登录
+     * @param
+     * @return bool|array
+     */
+    public function logout()
+    {
+        Yii::$app->session->destroy();
+        Yii::$app->session->removeAll();
+        return true;
+    }
+
+    /*
+     * 个人信息
+     */
+    public function info($data, $member)
+    {
+        $member_id = $member['member']['id'];
+        $img = MemberImg::findOne(['member_id'=>$member_id]);
+        if (!isset($img) || empty($img)) {
+            $photo = '';
+        } else {
+            $photo = $_SERVER['HTTP_HOST'].$img->img_path;
+        }
+
+        $phone = $member['member']['phone'];
+        $ident = Identification::findOne(['member_id'=>$member_id, 'status'=>1]);
+        if (!isset($ident) || empty($ident)) {
+            $status = 0;
+            $name = '';
+        } else {
+            $status = 1;
+            $name = $ident->name;
+        }
+        $person = ['photo'=>$photo, 'phone'=>$phone, 'status'=>$status, 'name'=>$name];
+
+        //三种状态订单数量
+        $count1 = OrderDetail::find()->select('member_id, action')
+            ->where(['member_id'=>$member_id, 'action'=>'待接单'])
+            ->count();
+        $count2 = OrderDetail::find()->select('member_id, action')
+            ->where(['member_id'=>$member_id, 'action'=>'待交车'])
+            ->count();
+        $count3 = InsuranceDetail::find()->select('member_id, action')
+            ->where(['member_id'=>$member_id, 'action'=>'核保成功'])
+            ->count();
+        $topStatus = [['statusName'=> '待接单','top'=>1,'count'=>$count1], ['statusName'=> '待交车', 'top'=>2,'count'=>$count2], ['statusName'=> '待交车', 'top'=>3,'count'=>$count3]];
+
+        //我的管家
+        $pid = Member::findOne(['id'=>$member_id])->pid;
+        $myButler = User::findOne(['id'=>$pid]);
+        if (!isset($myButler) || empty($myButler)) {
+            $butlerName = '你从哪里来?';
+            $level = '五星好不好';
+        } else {
+            $butlerName = $myButler->name;
+            $level = $myButler->level;
+            $phone = $myButler->phone;
+        }
+        $butler = ['butlerName'=>$butlerName, 'level'=>$level, 'phone'=>$phone];
+
+        $info = ['person'=>$person, 'topStatus'=>$topStatus, 'butler'=>$butler];
+        return $info;
     }
 }

@@ -2526,7 +2526,7 @@ Sir Carson vytřeštil bleděmodré oči. „Prosím za prominutí, o jaké kons
 „Nu, o těch záhadných nočních depeších, o tajemné organizaci, která je vysílá
 –“
 Sir Reginald Carson ho zarazil. „Fantazie,“ řekl s politováním, „čiré
-fantazie. Já vím, nadhodily to dokonce Daily News, když naše společnost
+fantazie. Já vím, nadhodily to dokonce Daily Notice, když naše společnost
 vypsala onu poměrně značnou odměnu –“
 „Vím,“ řekl rychle Prokop, obávaje se, aby se o ní pomalý lord nerozhovořil.
 „Ano. Čirý nesmysl. Celá věc má jen obchodní pozadí. Někdo má zájem na tom,

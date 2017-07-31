@@ -1,6 +1,6 @@
 <?php
 
-namespace api\models;
+namespace common\models;
 
 /*
      *
@@ -26,19 +26,19 @@ use Yii;
  * This is the model class for table "cdc_news".
  *
  * @property integer $id
- * @property integer $member_id
+ * @property string $model
  * @property integer $user_id
- * @property string $news
+ * @property string $content
  * @property integer $created_at
  */
-class News extends \yii\db\ActiveRecord
+class Notice extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return '{{%news}}';
+        return '{{%notice}}';
     }
 
     /**
@@ -48,8 +48,8 @@ class News extends \yii\db\ActiveRecord
     {
         return [
             [['user_id', 'created_at'], 'integer'],
-            [['news'], 'string', 'max' => 255],
-            [['model'], 'string', 'max' => 50]
+            [['model'], 'string', 'max' => 50],
+            [['content'], 'string', 'max' => 255],
         ];
     }
 
@@ -62,18 +62,15 @@ class News extends \yii\db\ActiveRecord
             'id' => 'ID',
             'model' => 'Model',
             'user_id' => 'User ID',
-            'news' => 'Notice',
+            'content' => 'Content',
             'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
         ];
     }
 
-    public function getNews()
+    public function getNews($model, $user_id)
     {
-        $id = 1;
-        //TODO:id
-        $news = $this::find()->select('news, created_at')->asArray()
-            ->where(['user_id'=>$id, 'model'=>1])
+        $news = $this::find()->select('content, created_at')->asArray()
+            ->where(['user_id'=>$user_id, 'model'=>$model])
             ->orderBy(['created_at' => SORT_DESC])
             ->all();
         if (!isset($news) || empty($news)) {
@@ -85,4 +82,21 @@ class News extends \yii\db\ActiveRecord
         return $news;
     }
 
+    /*
+     * 节点消息添加
+     */
+    public static function userNews($model, $user_id, $news)
+    {
+        $new = new Notice();
+        $new->model = $model;
+        $new->user_id = $user_id;
+        $new->content = $news;
+        $new->created_at = time();
+
+        if ($new->save(false)) {
+            return true;
+        }
+
+        return false;
+    }
 }

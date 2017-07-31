@@ -1,12 +1,43 @@
 <?php
 namespace common\models;
 
+<<<<<<< .mine
 use Aliyun\Api\Sms\Request\V20170525\SendSmsRequest;
 use Aliyun\Core\Config;
 use Aliyun\Core\DefaultAcsClient;
 use Aliyun\Core\Profile\DefaultProfile;
 use yii\db\Exception;
 use yii\helpers\ArrayHelper;
+
+
+
+
+
+
+
+
+
+
+
+=======
+/*
+     *
+      ******       ******
+    **********   **********
+  ************* *************
+ *****************************
+ *****************************
+ *****************************
+  ***************************
+    ***********************
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
+              ***
+               *
+     */
+>>>>>>> .theirs
 
 /**
  * This is the model class for table "cdc_message_code".

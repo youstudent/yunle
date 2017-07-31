@@ -40,11 +40,11 @@ class MemberImg extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => '鑷id',
-            'member_id' => '鐢ㄦ埛id',
-            'img_path' => '鍥剧墖鍦板潃',
-            'created_at' => '鍒涘缓鏃堕棿',
-            'updated_at' => '淇敼鏃堕棿',
+            'id' => '自增id',
+            'member_id' => '用户id',
+            'img_path' => '图片地址',
+            'created_at' => '创建时间',
+            'updated_at' => '修改时间',
         ];
     }
 }

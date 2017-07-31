@@ -11,10 +11,10 @@ namespace api\controllers;
  *****************************
   ***************************
     ***********************
-      ********龙龙********
-        *******我*******
-          *****爱*****
-            ***你***
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
               ***
                *
      */
@@ -44,9 +44,9 @@ class SiteController extends ApiController
     public function actionLogin()
     {
         $model = new Member();
-        $a =  file_get_contents('php://input', 'r');
-        $b = json_decode($a,true);
-        if ($model->login($b)) {
+        $json_data = Yii::$app->request->post('data');
+        $form = json_decode($json_data,true);
+        if ($model->login($form)) {
             return $this->jsonReturn(1, 'success');
         }
         return $this->jsonReturn($model->getFirstError('code'), $model->getFirstError('message'));
@@ -62,17 +62,6 @@ class SiteController extends ApiController
         return $this->jsonReturn(0, $model->getFirstError('message'));
     }
 
-    public function loginAfter()
-    {
-        //1 保存当前登录用户到session
-        $mem = [
-            'member' => [ 'id'=> 1, 'username' => '12345', 'mobile'=> '123456'],
-            'sites' => ['site_name'=> '云乐行车', 'version'=> '1.0', 'adminEmail'=> 'a@a.com']
-        ];
-        Yii::$app->session->set('mem',$mem);
-
-    }
-
     /**
      * Logs out the current user.
      *
@@ -80,8 +69,9 @@ class SiteController extends ApiController
      */
     public function actionLogout()
     {
-        Yii::$app->user->logout();
-
+        if (Yii::$app->user->logout()) {
+            return $this->jsonReturn(1, 'success');
+        }
         return $this->goHome();
     }
 

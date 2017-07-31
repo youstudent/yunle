@@ -12,10 +12,10 @@ namespace common\models;
  *****************************
   ***************************
     ***********************
-      ********龙龙********
-        *******我*******
-          *****爱*****
-            ***你***
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
               ***
                *
      */
@@ -26,7 +26,9 @@ use Yii;
  * This is the model class for table "cdc_driving_img".
  *
  * @property integer $id
- * @property integer $driving_license_id
+ * @property integer $driver_id
+ * @property integer $created_at
+ * @property integer $updated_at
  * @property string $img_path
  */
 class DrivingImg extends \yii\db\ActiveRecord
@@ -45,7 +47,7 @@ class DrivingImg extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['driving_license_id'], 'integer'],
+            [['driver_id'], 'integer'],
             [['img_path'], 'required'],
             [['img_path'], 'string', 'max' => 255],
         ];
@@ -58,7 +60,7 @@ class DrivingImg extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'driving_license_id' => 'Driving License ID',
+            'driver_id' => 'Driver ID',
             'img_path' => 'Img Path',
         ];
     }

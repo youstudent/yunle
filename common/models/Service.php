@@ -2,6 +2,24 @@
 
 namespace common\models;
 
+/*
+     *
+      ******       ******
+    **********   **********
+  ************* *************
+ *****************************
+ *****************************
+ *****************************
+  ***************************
+    ***********************
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
+              ***
+               *
+     */
+
 use Yii;
 
 /**
@@ -17,6 +35,8 @@ use Yii;
  * @property string $lng
  * @property integer $level
  * @property integer $status
+ * @property integer $open_at
+ * @property integer $close_at
  * @property integer $created_at
  * @property integer $updated_at
  */
@@ -27,7 +47,7 @@ class Service extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'cdc_service';
+        return '{{%service}}';
     }
 
     /**
@@ -37,7 +57,7 @@ class Service extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'principal', 'contact_phone'], 'required'],
-            [['level', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['level', 'status', 'open_at', 'close_at', 'created_at', 'updated_at'], 'integer'],
             [['name', 'principal', 'contact_phone', 'introduction', 'address', 'lat', 'lng'], 'string', 'max' => 256],
         ];
     }
@@ -59,6 +79,8 @@ class Service extends \yii\db\ActiveRecord
             'level' => 'Level',
             'status' => 'Status',
             'created_at' => 'Created At',
+            'open_at' => 'Open At',
+            'close_at' => 'Close At',
             'updated_at' => 'Updated At',
         ];
     }

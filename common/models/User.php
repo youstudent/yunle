@@ -11,10 +11,10 @@ namespace common\models;
  *****************************
   ***************************
     ***********************
-      ********龙龙********
-        *******我*******
-          *****爱*****
-            ***你***
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
               ***
                *
      */
@@ -31,6 +31,7 @@ use yii\web\IdentityInterface;
  *
  * @property string $id
  * @property string $username
+ * @property string $name
  * @property integer $pid
  * @property integer $role_id
  * @property string $phone
@@ -46,6 +47,7 @@ use yii\web\IdentityInterface;
  * @property string $access_token
  * @property string $login_count
  * @property integer $type
+ * @property integer $level
  */
 class User extends ActiveRecord
 {
@@ -64,7 +66,7 @@ class User extends ActiveRecord
     {
         return [
             [['pid', 'role_id', 'status', 'created_at', 'updated_at', 'last_login_at', 'type'], 'integer'],
-            [['username', 'phone', 'last_login_ip', 'login_count'], 'string', 'max' => 50],
+            [['username', 'phone', 'last_login_ip', 'login_count', 'name'], 'string', 'max' => 50],
             [['password'], 'string', 'max' => 80],
             [['password_reset_token', 'email', 'auth_key', 'access_token'], 'string', 'max' => 60],
             [['username'], 'unique'],
@@ -80,6 +82,7 @@ class User extends ActiveRecord
         return [
             'id' => 'ID',
             'username' => 'Username',
+            'name' => 'name',
             'pid' => 'Pid',
             'role_id' => 'Role ID',
             'phone' => 'Phone',
@@ -153,10 +156,15 @@ class User extends ActiveRecord
     /*
      * 手机号更换
      */
-    public function phone($data)
+    public function phone($data, $member)
     {
         if (empty($data['phone']) || empty($data['code'])) {
             $this->addError('message', '手机号或验证码不能为空');
+            return false;
+        }
+
+        if ($data['step'] == 1 && $data['phone'] != $member['member']['phone']) {
+            $this->addError('message', '手机号不正确请核对');
             return false;
         }
         $code = MessageCode::findOne(['phone' => $data['phone'], 'code' => $data['code'], 'status'=>0]);
@@ -164,16 +172,15 @@ class User extends ActiveRecord
             $this->addError('message', '验证码错误');
             return false;
         }
-
         $code->status = 1;
         $code->save(false);
-        if (!isset($data['id']) || empty($data['id'])) {
-            $member_id = 1;
-            //TODO:id
+        //获取个人信息
+        if (!isset($data['member_id']) || empty($data['member_id'])) {
+            $member_id = $member['member']['id'];
         } else {
-            $member_id = $data['id'];
+            $member_id = $data['member_id'];
         }
-        //TODO:id
+
         if ($data['step'] == 2) {
             $user = Member::findOne(['id'=>$member_id]);
             $user->phone = $data['phone'];

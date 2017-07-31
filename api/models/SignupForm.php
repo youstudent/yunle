@@ -11,18 +11,21 @@ namespace api\models;
  *****************************
   ***************************
     ***********************
-      ********龙龙********
-        *******我*******
-          *****爱*****
-            ***你***
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
               ***
                *
      */
 
+use common\models\Identification;
 use common\models\Member;
+use common\models\MemberCode;
 use Yii;
 use common\models\InvitationCode;
 use yii\base\Model;
+use yii\db\Exception;
 
 /**
  * Signup form
@@ -32,7 +35,7 @@ class SignupForm extends Model
     public $username;
     public $email;
     public $password;
-
+    public $transaction;
 
     /**
      * @inheritdoc
@@ -62,29 +65,71 @@ class SignupForm extends Model
      */
     public function signup($data)
     {
-        //TODO:根据token验证一次
-        $code = InvitationCode::findOne(['code'=>$data['invite_code']]);
-        $phone = Member::findOne(['phone'=>$data['phone']]);
-
-        if(isset($code) || !empty($code)){
-            $this->addError('message', '该手机号已被注册');
-            return false;
-        }
+        $code = InvitationCode::findOne(['code'=>$data['code']]);
 
         if(!isset($code) || empty($code)){
             $this->addError('message', '邀请码不存在');
             return false;
         }
+        $this->transaction = Yii::$app->db->beginTransaction();
+        try{
+            // 生成账号
+            $user = new Member();
+            $user->pid = $code->user_id;
+            $user->phone = $data['phone'];
+            $user->created_at = time();
+            $user->last_login_at = time();
+            $user->last_login_ip = Yii::$app->request->getUserIP();
+            if (!$user->save(false)) {
+                $this->errorMsg = '账号注册失败';
+                $this->transaction->rollBack();
+                return false;
+            }
 
-        // 生成账号
-        $user = new Member();
-        $user->pid = $code->user_id;
-        $user->phone = $data['phone'];
-        $user->created_at = time();
-        $user->last_login_at = time();
-        $user->last_login_ip = Yii::$app->request->getUserIP();
+            $id = $user->attributes['id'];
+            //生成记录
+            $inviteCode = new MemberCode();
+            $inviteCode->member_id = $id;
+            $inviteCode->code_id = $code->id;
+            $inviteCode->created_at = time();
+            if (!$inviteCode->save(false)) {
+                $this->errorMsg = '邀请码绑定失败';
+                $this->transaction->rollBack();
+                return false;
+            }
 
-        //TODO:此处在修改一次token
-        return $user->save(false) ? $user : null;
+            //生成认证空记录
+            $identification = new Identification();
+            $identification->member_id = $id;
+            $identification->created_at = time();
+            if (!$identification->save(false)) {
+                $this->errorMsg = '认证信息失败';
+                $this->transaction->rollBack();
+                return false;
+            }
+
+            //生成消息提示给业务员
+            $news = '您成功邀请一位新会员，手机号：【'. $data['phone'] .'】';
+            $model = 'user';
+            $user_id = $code->user_id;
+            $new = \common\models\Notice::userNews($model, $user_id, $news);
+            if (!$new) {
+                $this->errorMsg = '通知消息发送失败';
+                $this->transaction->rollBack();
+                return false;
+            }
+
+            $mem = [
+                'member' => [ 'id'=> $id, 'phone'=> $data['phone']],
+                'sites' => ['site_name'=> '云乐享车', 'version'=> '1.0', 'adminEmail'=> 'a@a.com']
+            ];
+            Yii::$app->session->set('mem',$mem);
+
+            $this->transaction->commit();
+            return true;
+        } catch (Exception $exception){
+            $this->transaction->rollBack();
+            return false;
+        }
     }
 }

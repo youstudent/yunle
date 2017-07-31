@@ -18,10 +18,10 @@ namespace api\controllers;
  *****************************
   ***************************
     ***********************
-      ********龙龙********
-        *******我*******
-          *****爱*****
-            ***你***
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
               ***
                *
      */
@@ -35,10 +35,9 @@ class InsuranceController extends ApiController
     public function actionList()
     {
         $model = new InsuranceOrder();
-        $a =  file_get_contents('php://input', 'r');
-        $b = json_decode($a,true);
-        $member = $this->getMemberInfo($b['token']);
-        $data = $model->getOrder($b);
+        $form = $this->getForm(Yii::$app->request->post('data'));
+        $member = $this->getMemberInfo();
+        $data = $model->getOrder($member['member']['id']);
         if ($data) {
             return $this->jsonReturn(1, 'success', $data);
         }
@@ -50,85 +49,96 @@ class InsuranceController extends ApiController
     public function actionDetail()
     {
         $model = new InsuranceOrder();
-        $a =  file_get_contents('php://input', 'r');
-        $b = json_decode($a,true);
+        $form = $this->getForm(Yii::$app->request->post('data'));
 
-        $data = $model->getDetail($b);
+        $data = $model->getDetail($form);
         if ($data) {
             return $this->jsonReturn(1, 'success', $data);
         }
 
-        return $this->jsonReturn(0, '要啥自行车');
+        return $this->jsonReturn(0, $model->errorMsg);
     }
 
     //全部动态
     public function actionMany()
     {
         $model = new InsuranceOrder();
-        $a =  file_get_contents('php://input', 'r');
-        $b = json_decode($a,true);
-        $data = $model->getMany($b);
+        $form = $this->getForm(Yii::$app->request->post('data'));
+
+        $data = $model->getMany($form);
         if ($data) {
             return $this->jsonReturn(1, 'success', $data);
         }
 
-        return $this->jsonReturn(0, '要啥自行车');
+        return $this->jsonReturn(0, $model->errorMsg);
     }
 
     //建单之前的数据读取
     public function actionInfo()
     {
         $model = new InsuranceOrder();
-        $a =  file_get_contents('php://input', 'r');
-        $b = json_decode($a,true);
-        $member = $this->getMemberInfo($b['token']);
+        $form = $this->getForm(Yii::$app->request->post('data'));
+        $member = $this->getMemberInfo();
 
-        $data = $model->getInfo($b, $member);
+        $data = $model->getInfo($form, $member);
         if ($data) {
             return $this->jsonReturn(1, 'success', $data);
         }
 
-        return $this->jsonReturn(0, '要啥自行车');
+        return $this->jsonReturn(0, $model->errorMsg);
     }
 
     //订单添加
     public function actionAdd()
     {
         $model = new InsuranceOrder();
-        $a =  file_get_contents('php://input', 'r');
-        $b = json_decode($a,true);
+        $form = $this->getForm(Yii::$app->request->post('data'));
+        $member = $this->getMemberInfo();
 
-        $member = $this->getMemberInfo($b['token']);
-        $data = $model->addOrder($b, $member);
+        $data = $model->addOrder($form, $member);
         if ($data) {
             return $this->jsonReturn(1, '下单成功', $data);
         }
 
-        return $this->jsonReturn(0, '要啥自行车');
+        return $this->jsonReturn(0, $model->errorMsg);
     }
 
     //订单取消
     public function actionDel()
     {
         $model = new InsuranceOrder();
-        $a =  file_get_contents('php://input', 'r');
-        $b = json_decode($a,true);
-        if ($model->delOrder($b)) {
+        $form = $this->getForm(Yii::$app->request->post('data'));
+
+        if ($model->delOrder($form)) {
             return $this->jsonReturn(1, '取消成功');
         }
 
         return $this->jsonReturn(0, '取消失败');
     }
 
-    //服务商确认
-    public function actionUpdate()
+    //确认购买
+    public function affirm()
     {
         $model = new InsuranceOrder();
-        $data = $model->updateOrder(Yii::$app->request->post());
-        if ($data) {
-            return $this->jsonReturn(1, '订单确认成功',$data);
+        $form = $this->getForm(Yii::$app->request->post('data'));
+
+        if ($model->affirm($form)) {
+            return $this->jsonReturn(1, '确认成功');
         }
-        //如果返回false 返回错误信息
-        return $this->jsonReturn(0, $model->getFirstError('message'));
+
+        return $this->jsonReturn(0, '确认失败');
+    }
+
+    //取消购买
+    public function abandon()
+    {
+        $model = new InsuranceOrder();
+        $form = $this->getForm(Yii::$app->request->post('data'));
+
+        if ($model->abandon($form)) {
+            return $this->jsonReturn(1, '取消成功');
+        }
+
+        return $this->jsonReturn(0, '取消失败');
     }
 }

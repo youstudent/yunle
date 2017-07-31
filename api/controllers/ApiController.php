@@ -12,10 +12,10 @@ namespace api\controllers;
  *****************************
   ***************************
     ***********************
-      ********龙龙********
-        *******我*******
-          *****爱*****
-            ***你***
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
               ***
                *
      */
@@ -50,13 +50,20 @@ class ApiController extends Controller
         ];
     }
 
-    public function getMemberInfo($token = '')
+    public function getForm($json_data)
     {
-        if(empty($token)){
+
+        $form = json_decode($json_data,true);
+        if(empty($form['token'])){
             return $this->jsonReturn(4000, '未登录');
         }
-        Yii::$app->session->setId($token);
+        Yii::$app->session->setId($form['token']);
 
+        return $form;
+    }
+
+    public function getMemberInfo()
+    {
         $member = Yii::$app->session->get('mem');
         if(empty($member)){
             return $this->jsonReturn(4001, '登录失效');

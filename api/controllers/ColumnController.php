@@ -18,10 +18,10 @@ namespace api\controllers;
  *****************************
   ***************************
     ***********************
-      ********龙龙********
-        *******我*******
-          *****爱*****
-            ***你***
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
               ***
                *
      */
@@ -35,7 +35,8 @@ class ColumnController extends ApiController
     public function actionList()
     {
         $model = new Column();
-        $data = $model->getColumn(Yii::$app->request->post());
+        $form = $this->getForm(Yii::$app->request->post('data'));
+        $data = $model->getColumn($form);
         if ($data) {
             return $this->jsonReturn(1, 'success', $data);
         }
@@ -46,7 +47,9 @@ class ColumnController extends ApiController
     public function actionDetail()
     {
         $model = new Article();
-        $data = $model->getArticle(Yii::$app->request->post());
+        $form = $this->getForm(Yii::$app->request->post('data'));
+
+        $data = $model->getArticle($form);
         if ($data) {
             return $this->jsonReturn(1, 'success', $data);
         }
