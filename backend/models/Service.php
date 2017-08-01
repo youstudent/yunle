@@ -37,7 +37,7 @@ class Service extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'principal', 'contact_phone'], 'required'],
-            [['level', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['level', 'status', 'created_at', 'updated_at', 'deleted_at'], 'integer'],
             [['name', 'principal', 'contact_phone', 'introduction', 'address', 'lat', 'lng'], 'string', 'max' => 256],
         ];
     }
@@ -61,6 +61,7 @@ class Service extends \yii\db\ActiveRecord
             'status' => '状态; 10 已启用',
             'created_at' => '创建时间',
             'updated_at' => '更新时间',
+            'deleted_at' => '删除时间',
         ];
     }
 
@@ -68,5 +69,12 @@ class Service extends \yii\db\ActiveRecord
     {
         //TODO::验证filed字段权限
 
+    }
+
+    public static function dropDownList($json = false)
+    {
+        $list = Service::find()->where(['deleted_at'=> null])->select('name')->asArray()->column();
+        if($json) $list = json_encode($list, JSON_UNESCAPED_UNICODE);
+        return $list;
     }
 }

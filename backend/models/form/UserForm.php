@@ -14,11 +14,28 @@ use yii\base\Exception;
 
 class UserForm extends User
 {
-    public function addUser($form)
+    public function rules()
     {
-        if(!$this->load($form)){
-            return false;
-        }
+        return [
+            [['pid', 'status', 'last_login_at', 'created_at', 'updated_at', 'deleted_at'], 'integer'],
+            [['username', 'phone', 'last_login_ip'], 'string', 'max' => 50],
+            [['password'], 'string', 'max' => 80],
+            [['access_token'], 'string', 'max' => 60],
+            [['username'], 'unique'],
+            [['access_token'], 'unique'],
+        ];
+    }
+
+    public function scenarios()
+    {
+        return [
+            'create'  => ['username', 'name', 'pid', 'phone', 'password', 'status', 'level', 'system_switch', 'check_switch'],
+            'update'  => ['username', 'name', 'pid', 'phone', 'password', 'status', 'level', 'system_switch', 'check_switch'],
+        ];
+    }
+
+    public function addUser()
+    {
         if(!$this->validate()){
             return false;
         }

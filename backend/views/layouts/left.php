@@ -27,11 +27,9 @@
                     ['label' => '菜单', 'options' => ['class' => 'nav-header']],
                     ['label' => '面板', 'url'=> '/panel'],
                     ['label' => '会员', 'url'=> ['/member'], 'items'=> [
-                        ['label' => '添加会员', 'url' => ['/member/create']],
                         ['label' => '会员列表', 'url' => ['/member/index']],
                     ]],
                     ['label' => '业务员', 'url'=> ['/salesman'], 'items'=> [
-                        ['label' => '添加业务员', 'url' => ['/salesman/create']],
                         ['label' => '业务员列表', 'url' => ['/salesman/index']],
                     ]],
                     [

@@ -55,6 +55,13 @@ if (Yii::$app->controller->action->id === 'login') {
         ) ?>
 
     </div>
+    <!-- #form_modal_common -->
+    <div class="modal fade" id="_form-modal">
+        <div class="modal-dialog _form-modal">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
     <?php $this->endBody() ?>
     </body>
     </html>

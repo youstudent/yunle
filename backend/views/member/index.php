@@ -83,7 +83,7 @@ JS
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="row">
         <div class="col-md-6">
-            <?= Html::a('添加会员', ['create'], ['class' => 'btn btn-success']) ?>
+            <a href="<?= Url::to(['create']) ?>" class="btn btn-success" data-toggle="modal" data-target="#_form-modal" data-backdrop="static" >添加会员</a>
         </div>
     </div>
     <p></p>
@@ -163,21 +163,16 @@ JS
 
                         <td align="center">
                             <div class="btn-group">
-                                <a href="javascript:;" data-url="<?= Url::to(['member/info', 'id'=> $model->id]) ?>" data-toggle="modal" data-target="#realinfo" onclick="pokerDragon.ajaxModal($(this));"><span class="btn btn-info m-r-1 m-b-5 btn-xs">实名信息</span></a>
-                                <a href="<?= Url::to(['member/view', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">业务员</span></a>
-                                <a href="<?= Url::to(['order/index', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">订单</span></a>
+                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_form-modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">会员信息</span></a>
+                                <a href="<?= Url::to(['view', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">业务员</span></a>
+                                <a href="<?= Url::to(['index', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">订单</span></a>
                                 <a href="<?= Url::to(['insurance/index', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">保险</span></a>
-                                <a href="#member-edit-modal-<?= $model->id ?>" data-url="<?= Url::to(['member/update', 'id'=> $model->id]) ?>" data-toggle="modal" ><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
-                                <a href="javasrcitp:;" data-confirm="确认冻结此会员？" data-url="<?= Url::to(['member/set-status','id' => $model->id, 'status'=> Member::STATUS_INACTIVE]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">冻结</span></a>
-                                <a href="javasrcitp:;" data-confirm="确认激活此会员？" data-url="<?= Url::to(['member/set-status','id' => $model->id, 'status'=> Member::STATUS_ACTIVE]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">激活</span></a>
-                                <a href="javasrcitp:;" data-confirm="确认删除此会员？" data-url="<?= Url::to(['member/soft-delete', 'id' => $model->id]) ?>"  data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                                <a href="javasrcitp:;" data-confirm="确认冻结此会员？" data-url="<?= Url::to(['set-status','id' => $model->id, 'status'=> Member::STATUS_INACTIVE]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">冻结</span></a>
+                                <a href="javasrcitp:;" data-confirm="确认激活此会员？" data-url="<?= Url::to(['set-status','id' => $model->id, 'status'=> Member::STATUS_ACTIVE]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">激活</span></a>
+                                <a href="javasrcitp:;" data-confirm="确认删除此会员？" data-url="<?= Url::to(['soft-delete', 'id' => $model->id]) ?>"  data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
                             </div>
                         </td>
                     </tr>
-                    <!-- #modal-dialog -->
-                    <div class="modal fade member-edit-modal" id="member-edit-modal-<?= $model->id ?>">
-                        <?= $this->render('_modal_form', ['model'=>$model]) ?>
-                    </div>
                 <?php endforeach; ?>
                 </tbody>
             </table>
@@ -196,6 +191,5 @@ JS
     </div>
     <!-- end panel -->
 </div>
-<div id="ajax-modal-content">
 
-</div>
+

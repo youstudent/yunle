@@ -21,7 +21,7 @@ class BackendController extends Controller
     public function renderPjax($view, $params = [])
     {
         if (array_key_exists('HTTP_X_PJAX', $_SERVER) && $_SERVER['HTTP_X_PJAX']) {
-            return $this->renderPartial($view, $params);
+            return $this->renderAjax($view, $params);
         } else {
             return $this->render($view, $params);
         }

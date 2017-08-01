@@ -33,11 +33,14 @@ class SalesmanController extends BackendController
     public function actionCreate()
     {
         $model = new UserForm();
-        if($model->addUser(Yii::$app->request->post())){
-            return json_encode(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['salesman/index'])]);
+        if($model->load(Yii::$app->request->post())){
+            if($model->addUser()){
+                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['index'])]);
+            }
+            return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '添加失败', 'url'=> '']);
         }
 
-        return $this->renderPjax('create', [
+        return $this->renderAjax('create', [
             'model' => $model
         ]);
     }
@@ -50,7 +53,7 @@ class SalesmanController extends BackendController
         if($model->updateUser(Yii::$app->request->post())){
             return json_encode(['data'=> '', 'code'=>1, 'message'=> '更新成功', 'url'=> Url::to(['salesman/index'])]);
         }
-        return $this->renderPjax('update', [
+        return $this->renderAjax('update', [
             'model' => $model
         ]);
     }
@@ -72,5 +75,31 @@ class SalesmanController extends BackendController
             return json_encode(['data'=> '', 'code'=>1, 'message'=> '删除成功', 'url'=> Url::to(['salesman/index'])]);
         }
         return json_encode(['data'=> '', 'code'=>1, 'message'=> '删除失败', 'url'=> Url::to(['salesman/index'])]);
+    }
+
+    /**
+     * 组装一个select回去
+     * @param $pid 服务商id
+     * @param $sid 销售人员id
+     * @return string
+     */
+    public function actionDropDownList($pid, $sid)
+    {
+        Yii::$app->response->format = Yii\web\Response::FORMAT_JSON;
+        return UserForm::dropDownListHtml($pid, $sid);
+    }
+
+    public function actionValidateForm($scenario, $id = null)
+    {
+        Yii::$app->response->format = \Yii\web\Response::FORMAT_JSON;
+        if($id){
+            $model = UserForm::findOne($id);
+        }else{
+            $model = new UserForm();
+        }
+
+        $model->scenario = $scenario;
+        $model->load(Yii::$app->request->post());
+        return \yii\bootstrap\ActiveForm::validate($model);
     }
 }

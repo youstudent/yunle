@@ -81,4 +81,29 @@ class User extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Service::className(), ['id'=> 'pid'])->alias('s');
     }
+
+    public static function dropDownList($pid)
+    {
+        return  User::find()->where(['pid'=>$pid, 'deleted_at' => null])->select('name,id')->indexBy('id')->column();
+    }
+
+    public static function dropDownListHtml($pid, $salesman_id)
+    {
+        $data = User::dropDownList($pid);
+        $html = '';
+        if($data){
+            foreach($data as $k => $v){
+                if($k === intval($salesman_id)){
+                    $html .= "<option value=".$k ." selected>".$v."</options>";
+                }else{
+                    $html .= "<option value=".$k .">".$v."</options>";
+                }
+
+            }
+        }else{
+            $html = '<option value="">当前服务商无业务员</option>';
+        }
+        return $html;
+    }
+
 }

@@ -21,6 +21,7 @@ namespace common\models;
      */
 
 use Yii;
+use yii\base\Exception;
 
 /**
  * This is the model class for table "cdc_identification".
@@ -38,6 +39,8 @@ use Yii;
  */
 class Identification extends \yii\db\ActiveRecord
 {
+    public $id_start_end_time;
+
     /**
      * @inheritdoc
      */
@@ -74,6 +77,8 @@ class Identification extends \yii\db\ActiveRecord
             'birthday' => '生日',
             'start_at' => '身份证生效时间',
             'end_at' => '身份证失效时间',
+            'status' => '实名认证状态',
+            'id_start_end_time' => '身份证有效期限',
         ];
     }
 
@@ -145,5 +150,25 @@ class Identification extends \yii\db\ActiveRecord
 //        //更新上传文件
 //        CarImg::bindCar($this->id, $img_id);
 //        return $this->id ? $this : null;
+    }
+
+    public function updateInfo()
+    {
+        //$this->scenario = 'update';
+        if(!$this->validate()){
+            return false;
+        }
+
+        $model = $this;
+        return Yii::$app->db->transaction(function() use($model){
+            if($model->id_start_end_time){
+                $id_valid_time = explode("-", $model->id_start_end_time);
+                list($this->start_at, $this->end_at) = $id_valid_time;
+            }
+            if(!$model->save()){
+                throw new Exception("更新会员认证信息失败");
+            }
+            return $model;
+        });
     }
 }

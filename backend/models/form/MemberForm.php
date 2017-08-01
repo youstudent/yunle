@@ -8,8 +8,11 @@
 namespace backend\models\form;
 
 use backend\models\Member;
+use backend\models\User;
+use common\models\Identification;
 use Yii;
 use yii\base\Exception;
+use yii\helpers\ArrayHelper;
 
 class MemberForm extends Member
 {
@@ -17,15 +20,54 @@ class MemberForm extends Member
     public $service;
     public $salesman;
 
+    public $extend;
+
+    public function rules()
+    {
+        return [
+            [['phone'], 'filter', 'filter' => 'trim'],
+            [['phone', 'pid', 'status', 'type', 'service'], 'required'],
+            ['phone', 'match', 'pattern' => "/\b0?(13|14|15|18)[0-9]{9}$/i", 'message' => '手机号格式不正确'],
+            ['phone', 'unique', 'targetClass' => '\backend\models\Member', 'message' => '手机号已存在.', 'on' => 'create'],
+            ['phone', 'validateUpdatePhone' ,'message' => '手机号已存在.', 'on' => 'update'],
+            [['pid', 'status', 'type', 'last_login_at', 'created_at', 'updated_at', 'service'], 'integer'],
+            [['last_login_ip'], 'string', 'max' => 50],
+        ];
+    }
+
+    public function scenarios()
+    {
+        return [
+            'create' => ['phone', 'pid', 'status', 'type', 'service'],
+            'update' => ['phone', 'pid', 'status', 'type', 'service'],
+        ];
+    }
+
+    public function attributes()
+    {
+        return ArrayHelper::merge(parent::attributes(), [
+            'service', 'salesman',
+        ]);
+    }
+
+    public function attributeLabels()
+    {
+        return ArrayHelper::merge(parent::attributeLabels(), [
+            'service' => '服务商',
+            'salesman' => '业务员'
+        ]);
+    }
+
     public function attributeHints()
     {
         return [
-          'realname' => '真实姓名',
+            'phone' => '一个电话仅能使用一次',
         ];
     }
 
     public function addMember($form)
     {
+        $this->scenario = 'create';
         if(!$this->load($form)){
             return false;
         }
@@ -37,18 +79,17 @@ class MemberForm extends Member
         return Yii::$app->db->transaction(function() use($memberForm){
            $memberForm->created_at = time();
            $memberForm->updated_at = time();
-           if(!$memberForm->save()){
+           if(!$memberForm->save() || !$memberForm->createIdentification($memberForm->id)){
                throw new Exception("添加会员信息失败");
            }
            return $memberForm;
         });
     }
 
-    public function updateMember($form)
+
+
+    public function updateMember()
     {
-        if(!$this->load($form)){
-            return false;
-        }
         if(!$this->validate()){
             return false;
         }
@@ -56,11 +97,42 @@ class MemberForm extends Member
         $memberForm = $this;
         return Yii::$app->db->transaction(function() use($memberForm){
             $memberForm->updated_at = time();
-            if(!$memberForm->save()){
+            if(!$memberForm->save() || !$memberForm->memberInfo->save()){
                 throw new Exception("更新会员信息失败");
             }
             return $memberForm;
         });
     }
 
+    /**
+     * 创建会员的实名信息
+     * @param $member_id
+     * @return bool
+     */
+    private function createIdentification($member_id)
+    {
+        $model = new Identification();
+        $model->member_id = $member_id;
+        $model->status = 0;
+        return $model->save();
+    }
+
+    public static function getOne($member_id)
+    {
+        $model = MemberForm::findOne($member_id);
+        $model->service = User::findOne(['id'=>$member_id])->pid;
+        return $model;
+    }
+
+    public function validateUpdatePhone($attribute, $params)
+    {
+        if(!$this->hasErrors()){
+            if($this->phone != $this->getOldAttribute('phone')){
+                $count = MemberForm::find()->where(['phone' => $this->phone ])->count();
+                if($count > 0){
+                    $this->addError($attribute, '手机号不能重复');
+                }
+            }
+        }
+    }
 }
