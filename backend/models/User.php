@@ -53,7 +53,8 @@ class User extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'username' => '用户名',
-            'pid' => '推荐人id',
+            'name' => '姓名',
+            'pid' => '服务商',
             'phone' => '电话',
             'password' => '密码',
             'status' => '状态 1:正常 0:冻结',
@@ -62,6 +63,8 @@ class User extends \yii\db\ActiveRecord
             'access_token' => 'Access Token',
             'created_at' => '创建时间',
             'updated_at' => '更新时间',
+            'system_switch' => '系统通知',
+            'check_switch' => '审核通知',
         ];
     }
 

@@ -40,9 +40,7 @@ class InsuranceSearch extends Insurance
             }
         }
         $query->andFilterWhere(['type' => $this->type])
-            ->andFilterWhere(['LIKE', 'service', $this->service])
-            ->andFilterWhere(['LIKE', 'user', $this->user])
-            ->andFilterWhere(['LIKE', 'phone', $this->phone]);
+            ->andFilterWhere(['LIKE', 'title', $this->title]);
 
 
         return $dataProvider;

@@ -56,24 +56,24 @@ class Adminuser extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'username' => 'Username',
-            'name' => '服务商店名或',
+            'username' => '用户名',
+            'name' => '服务商名',
             'auth_key' => 'Auth Key',
-            'password_hash' => 'Password Hash',
+            'password_hash' => '密码',
             'password_reset_token' => 'Password Reset Token',
             'email' => 'Email',
-            'status' => 'Status',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'status' => '状态',
+            'created_at' => '创建时间',
+            'updated_at' => '更新时间',
         ];
     }
 
-    public function addServiceUser($form)
+    public function addServiceUser($model)
     {
         $this->scenario = 'addServiceUser';
 
-        $this->username = ArrayHelper::getValue($form, 'username');
-        $this->password_hash = ArrayHelper::getValue($form, 'password');
+        $this->username = $model->username;
+        $this->password_hash = $model->password;
 
         if(!$this->validate()){
             return false;

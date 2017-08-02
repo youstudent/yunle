@@ -18,11 +18,18 @@ class UserForm extends User
     {
         return [
             [['pid', 'status', 'last_login_at', 'created_at', 'updated_at', 'deleted_at'], 'integer'],
-            [['username', 'phone', 'last_login_ip'], 'string', 'max' => 50],
+            [['username', 'last_login_ip'], 'string', 'max' => 50],
             [['password'], 'string', 'max' => 80],
             [['access_token'], 'string', 'max' => 60],
-            [['username'], 'unique'],
-            [['access_token'], 'unique'],
+            [['username'], 'unique', 'on'=> ['create']],
+            [['username'], 'checkUsername', 'on'=> ['update']],
+            [['username', 'name', 'pid', 'phone', 'password', 'status', 'system_switch', 'check_switch'], 'required', 'on' => ['create']],
+            [['username', 'name', 'pid', 'phone', 'status', 'system_switch', 'check_switch'], 'required', 'on' => ['update']],
+            [['username', 'phone', 'name'], 'filter', 'filter' => 'trim' ],
+            [['username'], 'string', 'max' => 16, 'min'=>6],
+            [['username'], 'match', 'pattern' => \pd\helpers\PregRule::USERNAME ],
+            [['phone'], 'match', 'pattern' => \pd\helpers\PregRule::PHONE],
+            ['password', 'string', 'max' => 60, 'min'=>6, 'on' => 'create'],
         ];
     }
 
@@ -39,39 +46,45 @@ class UserForm extends User
         if(!$this->validate()){
             return false;
         }
-
-        $memberForm = $this;
-        return Yii::$app->db->transaction(function() use($memberForm){
-            $memberForm->created_at = time();
-            $memberForm->updated_at = time();
-            $memberForm->password = Yii::$app->security->generatePasswordHash($memberForm->password);
-            if(!$memberForm->save()){
+        return Yii::$app->db->transaction(function(){
+            $this->created_at = time();
+            $this->updated_at = time();
+            $this->password = Yii::$app->security->generatePasswordHash($this->password);
+            if(!$this->save()){
                 throw new Exception("添加会员信息失败");
             }
-            return $memberForm;
+            return $this;
         });
     }
 
-    public function updateUser($form)
+    public function updateUser()
     {
-        if(!$this->load($form)){
-            return false;
-        }
         if(!$this->validate()){
             return false;
         }
 
-        $memberForm = $this;
-        return Yii::$app->db->transaction(function() use($memberForm){
-            $memberForm->updated_at = time();
+        return Yii::$app->db->transaction(function(){
+            $this->updated_at = time();
 
-            if($memberForm->password){
-                $memberForm->password = Yii::$app->security->generatePasswordHash($memberForm->password);
+            if($this->password){
+                $this->password = Yii::$app->security->generatePasswordHash($this->password);
             }
-            if(!$memberForm->save()){
+            if(!$this->save()){
                 throw new Exception("更新会员信息失败");
             }
-            return $memberForm;
+            return $this;
         });
+    }
+
+    public function checkUsername($attribute, $params)
+    {
+        if(!$this->hasErrors()){
+            if($this->username != $this->getOldAttribute('username')){
+                $count = UserForm::find()->where(['username' => $this->username ])->count();
+                if($count > 0){
+                    $this->addError($attribute, '用户名不能重复');
+                }
+            }
+        }
     }
 }

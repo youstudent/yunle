@@ -27,7 +27,7 @@ class MemberForm extends Member
         return [
             [['phone'], 'filter', 'filter' => 'trim'],
             [['phone', 'pid', 'status', 'type', 'service'], 'required'],
-            ['phone', 'match', 'pattern' => "/\b0?(13|14|15|18)[0-9]{9}$/i", 'message' => '手机号格式不正确'],
+            ['phone', 'match', 'pattern' => \pd\helpers\PregRule::PHONE, 'message' => '手机号格式不正确'],
             ['phone', 'unique', 'targetClass' => '\backend\models\Member', 'message' => '手机号已存在.', 'on' => 'create'],
             ['phone', 'validateUpdatePhone' ,'message' => '手机号已存在.', 'on' => 'update'],
             [['pid', 'status', 'type', 'last_login_at', 'created_at', 'updated_at', 'service'], 'integer'],
@@ -75,14 +75,13 @@ class MemberForm extends Member
             return false;
         }
 
-        $memberForm = $this;
-        return Yii::$app->db->transaction(function() use($memberForm){
-           $memberForm->created_at = time();
-           $memberForm->updated_at = time();
-           if(!$memberForm->save() || !$memberForm->createIdentification($memberForm->id)){
+        return Yii::$app->db->transaction(function(){
+           $this->created_at = time();
+            $this->updated_at = time();
+           if(!$this->save() || !$this->createIdentification($this->id)){
                throw new Exception("添加会员信息失败");
            }
-           return $memberForm;
+           return $this;
         });
     }
 
@@ -94,13 +93,12 @@ class MemberForm extends Member
             return false;
         }
 
-        $memberForm = $this;
-        return Yii::$app->db->transaction(function() use($memberForm){
-            $memberForm->updated_at = time();
-            if(!$memberForm->save() || !$memberForm->memberInfo->save()){
+        return Yii::$app->db->transaction(function(){
+            $this->updated_at = time();
+            if(!$this->save() || !$this->memberInfo->save()){
                 throw new Exception("更新会员信息失败");
             }
-            return $memberForm;
+            return $this;
         });
     }
 

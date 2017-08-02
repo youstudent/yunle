@@ -33,6 +33,8 @@ class SalesmanController extends BackendController
     public function actionCreate()
     {
         $model = new UserForm();
+        $model->scenario = 'create';
+
         if($model->load(Yii::$app->request->post())){
             if($model->addUser()){
                 return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['index'])]);
@@ -49,10 +51,15 @@ class SalesmanController extends BackendController
     public function actionUpdate($id)
     {
         $model = UserForm::findOne(['id'=>$id]);
+        $model->scenario = 'update';
 
-        if($model->updateUser(Yii::$app->request->post())){
-            return json_encode(['data'=> '', 'code'=>1, 'message'=> '更新成功', 'url'=> Url::to(['salesman/index'])]);
+        if($model->load(Yii::$app->request->post())){
+            if($model->updateUser()){
+                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '更新成功', 'url'=> Url::to(['salesman/index'])]);
+            }
+            return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '添加失败', 'url'=> '']);
         }
+
         return $this->renderAjax('update', [
             'model' => $model
         ]);

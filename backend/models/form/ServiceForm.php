@@ -12,6 +12,7 @@ use backend\models\Service;
 use backend\models\ServiceImg;
 use Yii;
 use yii\db\Exception;
+use yii\helpers\ArrayHelper;
 
 class ServiceForm  extends Service
 {
@@ -22,84 +23,91 @@ class ServiceForm  extends Service
     public $attachment;
     public $saleman_id;
 
+    public function rules()
+    {
+        return [
+            [['name', 'principal', 'contact_phone', 'open_at', 'close_at'], 'required'],
+            [['level', 'status', 'created_at', 'updated_at', 'deleted_at', 'level', 'pid'], 'integer'],
+            [['name', 'principal', 'contact_phone', 'introduction', 'address', 'lat', 'lng', 'open_at', 'close_at'], 'string', 'max' => 256],
+            [['pid', 'username', 'password', 'name', 'status', 'address', 'lat', 'lng', 'open_at', 'close_at'], 'required', 'on' => 'create'],
+            [['open_at', 'close_at', 'introduction'], 'string'],
+            [['username', 'password'], 'string', 'min'=> 6, 'max' => 16],
+            [['username'], 'unique', 'targetClass' => '\backend\models\Adminuser', 'message' => '用户名已存在', 'on' => ['create']],
+            [['pid', 'name', 'status', 'address', 'lat', 'lng', 'open_at', 'close_at'], 'required', 'on' => 'created_service'],
+        ];
+    }
+
+    public function scenarios()
+    {
+        return [
+            'create' => ['name', 'principal', 'contact_phone', 'level', 'status', 'introduction', 'address', 'lat', 'lng', 'username', 'password', 'open_at', 'close_at', 'level'],
+            'created_service' => ['name', 'principal', 'contact_phone', 'level', 'status', 'introduction', 'address', 'lat', 'lng', 'username', 'password', 'open_at', 'close_at', 'level'],
+            'update' => ['name', 'principal', 'contact_phone', 'level', 'status', 'introduction', 'address', 'lat', 'lng'],
+        ];
+    }
+
+    public function attributeLabels()
+    {
+        return ArrayHelper::merge(parent::attributeLabels(), [
+            'username' => '登录名',
+            'password' => '密码',
+        ]);
+    }
     /**
      * 添加服务商
      * @param $form
      * @return bool|mixed
      */
-    public function addService($form)
+    public function addService()
     {
-        if(!$this->load($form, '')){
-            return false;
-        }
 
         //添加一个管理员用户
-        $model = &$this;
-        return Yii::$app->db->transaction(function() use ($model, $form)
+        return Yii::$app->db->transaction(function()
         {
-            $adminuser = new Adminuser();
-            if(!$adminuser->addServiceUser($form)){
-                $model->addError('username', '用户名不可用');
+            $adminuserModel = new Adminuser();
+            if(!$adminuserModel->addServiceUser($this)){
+                $this->addErrors($adminuserModel->getFirstErrors());
                 throw new Exception("添加会员信息失败");
             }
-
-            $model->created_at = time();
-            $model->updated_at = time();
-            if(!$model->save()){
+            $this->scenario = 'created_service';
+            $this->created_at = time();
+            $this->updated_at = time();
+            if(!$this->save()){
                 throw new Exception("添加会员信息失败");
             }
 
             //TODO::添加一个服务商的角色并绑定账号
-
-            //处理绑定关系
-            if($this->head){
-                $serviceImg = ServiceImg::findOne($this->head);
-                $serviceImg->service_id = $model->id;
-                $serviceImg->type = 1;
-                $serviceImg->status = 1;
-                if(!$serviceImg->save()){
-                    throw new Exception("添加会员信息失败");
-                }
-            }
-
-            if(count($this->attachment)){
-                $serviceImgs = ServiceImg::find()->where(['id'=> $this->attachment])->all();
-                foreach($serviceImgs as $serviceImg){
-                    $serviceImg->service_id = $model->id;
-                    $serviceImg->status = 1;
-                    $serviceImg->save();
-                    if(!$serviceImg->save()){
-                        throw new Exception("添加会员信息失败");
-                    }
-                }
-            }
-            return $model;
+            return $this;
         });
     }
 
     /**
      * 更新服务商
-     * @param $form
      * @return bool|mixed
      */
-    public function updateService($form)
+    public function updateService()
     {
-        if(!$this->load($form, '')){
-            return false;
-        }
 
-        $model = &$this;
         //编辑用户的信息
-        return Yii::$app->db->transaction(function() use ($model, $form)
+        return Yii::$app->db->transaction(function()
         {
             $adminuser = new Adminuser();
-            if(!$adminuser->updateServiceUser($form)){
-                throw new Exception("添加会员信息失败");
+            if(!$adminuser->updateServiceUser($this)){
+                throw new Exception("更新服务商信息失败");
             }
             //处理图片变更, 对比新旧，删除旧的部分
 
+            if(!$this->save()){
+                throw new Exception("更新服务商信息失败");
+            }
+            return $this;
         });
     }
 
-
+    public static function getOne($id)
+    {
+        $model = ServiceForm::findOne($id);
+        $model->username = 'sssxxxx';
+        return $model;
+    }
 }

@@ -13,7 +13,7 @@ use yii\helpers\Url;
 <!-- #modal-dialog -->
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h4 class="modal-title">添加业务员</h4>
+    <h4 class="modal-title">编辑业务员</h4>
 </div>
 <div class="modal-body">
     <div class="panel-body panel-form">
@@ -31,7 +31,7 @@ use yii\helpers\Url;
                 ],
             ],
             'enableAjaxValidation' => true,
-            'validationUrl'        => $model->isNewRecord ? Url::toRoute(['validate-form', 'scenario' => 'create']) : Url::toRoute(['validate-form', 'scenario' => 'update', 'id' => $model->id]),
+            'validationUrl'        => $model->isNewRecord ? Url::toRoute(['validate-form', 'scenario' => 'create']) : Url::toRoute(['validate-form', 'scenario' => 'update', 'id'=> $model->id]),
         ]) ?>
 
         <?= $form->field($model, 'username')->textInput() ?>
@@ -42,9 +42,9 @@ use yii\helpers\Url;
 
         <?= $form->field($model, 'phone')->textInput() ?>
 
+        <?php $model->password='';  ?>
         <?= $form->field($model, 'password')->textInput() ?>
 
-        <?php $model->system_switch = 1; $model->check_switch = 1;$model->status=1; ?>
         <?= $form->field($model, 'status')->dropDownList(['冻结', '正常'])->label('用户状态') ?>
 
         <?= $form->field($model, 'system_switch')->dropDownList(['不接收', '接收'])->label('系统通知') ?>
@@ -57,7 +57,7 @@ use yii\helpers\Url;
 </div>
 <div class="modal-footer">
     <a href="javascript:;" class="btn btn-sm btn-white" data-dismiss="modal">关闭</a>
-    <a href="javascript:;" class="btn btn-sm btn-success btn-submit" data-form-id="UserForm">添加</a>
+    <a href="javascript:;" class="btn btn-sm btn-success btn-submit" data-form-id="UserForm">保存</a>
 </div>
 <script>
     $(function (){
@@ -65,7 +65,7 @@ use yii\helpers\Url;
             var f = $('#UserForm');
             f.on('beforeSubmit', function (e) {
                 swal({
-                        title: "确认添加会员",
+                        title: "确认保存会员信息",
                         text: "",
                         type: "warning",
                         showCancelButton: true,

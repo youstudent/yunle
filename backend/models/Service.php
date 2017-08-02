@@ -15,10 +15,13 @@ use Yii;
  * @property string $address
  * @property string $lat
  * @property string $lng
+ * @property string $open_at
+ * @property string $close_at
  * @property integer $level
  * @property integer $status
  * @property integer $created_at
  * @property integer $updated_at
+ * @property integer $pid
  */
 class Service extends \yii\db\ActiveRecord
 {
@@ -56,12 +59,15 @@ class Service extends \yii\db\ActiveRecord
             'introduction' => '简介',
             'address' => '地址',
             'lat' => '纬度',
-            'lon' => '经度',
+            'lng' => '经度',
             'level' => '星级',
-            'status' => '状态; 10 已启用',
+            'status' => '状态',
+            'open_at' => '营业开始时间',
+            'close_at' => '营业结束时间',
             'created_at' => '创建时间',
             'updated_at' => '更新时间',
             'deleted_at' => '删除时间',
+            'pid' => '客户经理',
         ];
     }
 

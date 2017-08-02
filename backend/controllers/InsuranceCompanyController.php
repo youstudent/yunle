@@ -3,7 +3,10 @@
 namespace backend\controllers;
 
 use backend\models\InsuranceCompany;
+use Yii;
+use yii\bootstrap\ActiveForm;
 use yii\helpers\Url;
+use yii\web\Response;
 
 class InsuranceCompanyController extends BackendController
 {
@@ -29,14 +32,15 @@ class InsuranceCompanyController extends BackendController
     public function actionCreate()
     {
         $model = new InsuranceCompany();
-        if(\Yii::$app->request->isPost){
-            if ($model->add(\Yii::$app->request->post())) {
-                return json_encode(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['insurance-company/index'])]);
+        $model->scenario = 'create';
+        if($model->load(Yii::$app->request->post())){
+            if($model->addInsuranceCompany()){
+                return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['salesman/index'])]);
             }
+            return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作失败', 'url'=> Url::to(['salesman/index'])]);
         }
-        return $this->renderPjax('create', [
+        return $this->renderAjax('create', [
             'model' => $model,
-            'create' =>'create'
         ]);
     }
     
@@ -49,26 +53,15 @@ class InsuranceCompanyController extends BackendController
     public function actionUpdate($id)
     {
         $model = InsuranceCompany::findOne(['id'=>$id]);
-        if(\Yii::$app->request->isPost){
-            if ($model->load(\Yii::$app->request->post()) && $model->save() ) {
-                return json_encode(['data'=> '', 'code'=>1, 'message'=> '修改成功', 'url'=> Url::to(['insurance-company/index'])]);
-            }else{
-                print_r($model->getFirstErrors());die;
-                return json_encode(['data'=> '', 'code'=>0, 'message'=> $model->getFirstErrors(), 'url'=> Url::to(['insurance-company/index'])]);
-    
+        $model->scenario = 'update';
+        if($model->load(Yii::$app->request->post())){
+            if($model->updateInsuranceCompany()){
+                return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['salesman/index'])]);
             }
-           // $models = new InsuranceCompany();
-            //$data  = \Yii::$app->request->post();
-           // $model->editCompany(\Yii::$app->request->post());
-           /* $new->id=$data['id'];
-            $new->name=$data['name'];
-            $new->brief=$data['brief'];
-            var_dump($new->save(false));exit;*/
-           
+            return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作失败', 'url'=> Url::to(['salesman/index'])]);
         }
-        return $this->renderPjax('update', [
+        return $this->renderAjax('update', [
             'model' => $model,
-            'create' =>'update'
         ]);
     }
     
@@ -86,6 +79,19 @@ class InsuranceCompanyController extends BackendController
         
         return $this->redirect(['index']);
     }
-    
+
+    public function actionValidateForm($scenario, $id = null)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if($id){
+            $model = InsuranceCompany::findOne($id);
+        }else{
+            $model = new InsuranceCompany();
+        }
+
+        $model->scenario = $scenario;
+        $model->load(Yii::$app->request->post());
+        return ActiveForm::validate($model);
+    }
     
 }

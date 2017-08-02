@@ -163,13 +163,13 @@ JS
 
                         <td align="center">
                             <div class="btn-group">
-                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_form-modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">会员信息</span></a>
+                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_form-modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">详细资料</span></a>
                                 <a href="<?= Url::to(['view', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">业务员</span></a>
                                 <a href="<?= Url::to(['index', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">订单</span></a>
                                 <a href="<?= Url::to(['insurance/index', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">保险</span></a>
-                                <a href="javasrcitp:;" data-confirm="确认冻结此会员？" data-url="<?= Url::to(['set-status','id' => $model->id, 'status'=> Member::STATUS_INACTIVE]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">冻结</span></a>
-                                <a href="javasrcitp:;" data-confirm="确认激活此会员？" data-url="<?= Url::to(['set-status','id' => $model->id, 'status'=> Member::STATUS_ACTIVE]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">激活</span></a>
-                                <a href="javasrcitp:;" data-confirm="确认删除此会员？" data-url="<?= Url::to(['soft-delete', 'id' => $model->id]) ?>"  data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                                <a href="javascript:;" data-confirm="确认冻结此会员？" data-url="<?= Url::to(['set-status','id' => $model->id, 'status'=> Member::STATUS_INACTIVE]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">冻结</span></a>
+                                <a href="javascript:;" data-confirm="确认激活此会员？" data-url="<?= Url::to(['set-status','id' => $model->id, 'status'=> Member::STATUS_ACTIVE]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">激活</span></a>
+                                <a href="javascript:;" data-confirm="确认删除此会员？" data-url="<?= Url::to(['soft-delete', 'id' => $model->id]) ?>"  data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
                             </div>
                         </td>
                     </tr>

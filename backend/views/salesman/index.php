@@ -146,7 +146,8 @@ JS
                         <td><?= \pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
                         <td align="center">
                             <div class="btn-group">
-                                <a href="<?= Url::to(['member/view', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">会员</span></a>
+                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_form-modal"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">信息</span></a>
+                                <a href="<?= Url::to(['member/index', 'MemberSearch[salesman_username]'=> $model->username ]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">客户列表</span></a>
                                 <a href="<?= Url::to(['order/index', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">订单</span></a>
                                 <a href="<?= Url::to(['insurance/index', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">保险</span></a>
                                 <a href="#member-edit-modal-<?= $model->id ?>" data-url="<?= Url::to(['salesman/update', 'id'=> $model->id]) ?>" data-toggle="modal" ><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
@@ -156,10 +157,6 @@ JS
                             </div>
                         </td>
                     </tr>
-                    <!-- #modal-dialog -->
-                    <div class="modal fade member-edit-modal" id="member-edit-modal-<?= $model->id ?>">
-                        <?= $this->render('_modal_form', ['model'=>$model]) ?>
-                    </div>
                 <?php endforeach; ?>
                 </tbody>
             </table>

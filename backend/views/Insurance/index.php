@@ -8,10 +8,10 @@ use yii\widgets\ActiveForm;
 use yii\widgets\LinkPager;
 
 /* @var $this yii\web\View */
-/* @var $searchModel backend\models\searchs\OrderSearch */
+/* @var $searchModel backend\models\searchs\InsuranceSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = '订单列表';
+$this->title = '险种列表';
 $this->params['breadcrumbs'][] = $this->title;
 
 \pd\coloradmin\web\plugins\DaterangePickerAsset::register($this);
@@ -83,7 +83,7 @@ JS
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="row">
         <div class="col-md-6">
-            <?= Html::a('添加订单', ['create'], ['class' => 'btn btn-success']) ?>
+            <a href="<?= Url::to(['create']) ?>" class="btn btn-success" data-toggle="modal" data-target="#_form-modal" data-backdrop="static" >添加</a>
         </div>
     </div>
     <p></p>
@@ -102,25 +102,8 @@ JS
         <?= \pd\coloradmin\widgets\Alert::widget() ?>
         <div class="panel-body">
             <form class="form-inline"  action="" method="GET">
-                <div class="form-group m-r-15">
-                    <input type="text" class="form-control" style="min-width: 103%;margin-right: 70px;" name="InsuranceOrderSearch[created_at]" id="daterangepicker" value="<?= $searchModel->created_at ?>" placeholder="创建时间">
-                </div>
                 <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="InsuranceOrderSearch[user]" id="user" value="<?= $searchModel->user ?>" placeholder="用户">
-                </div>
-                <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="InsuranceOrderSearch[phone]" id="phone" value="<?= $searchModel->phone ?>" placeholder="联系电话">
-                </div>
-                <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="InsuranceOrderSearch[car]" id="phone" value="<?= $searchModel->car ?>" placeholder="车牌号">
-                </div>
-                <div class="form-group m-r-10">
-                    <select class="form-control" name="InsuranceOrderSearch[status]" id="InsuranceSearchStatus" style="min-width: 105%;">
-                        <option value="" selected>全部</option>
-                        <option value="0" <?= $searchModel->status == 0 && strlen($searchModel->status) ? 'selected' : '' ?>>正常</option>
-                        <option value="100" <?= $searchModel->status == 100 ? 'selected' : '' ?>>取消</option>
-                    </select>
-
+                    <input type="text" class="form-control" name="InsuranceSearch[title]" id="title" value="<?= $searchModel->title ?>" placeholder="名字">
                 </div>
                 <button type="submit" class="btn btn-sm btn-primary m-r-5">搜索</button>
                 <button type="button" class="btn btn-sm btn-info m-r-5" onclick="">重置</button>
@@ -131,16 +114,9 @@ JS
                 <thead>
                 <tr>
                     <th>#</th>
-                    <th>订单号</th>
-                    <th>投保人</th>
-                    <th>性别</th>
-                    <th>民族</th>
-                    <th>身份证号</th>
-                    <th>电话</th>
-                    <th>车牌号</th>
-                    <th>承包公司</th>
+                    <th>名称</th>
+                    <th>类型</th>
                     <th>价格</th>
-                    <th>状态</th>
                     <th>创建时间</th>
                     <th>操作</th>
                 </tr>
@@ -149,33 +125,18 @@ JS
                 <?php foreach($dataProvider->getModels() as $index => $model): ?>
                     <tr class="">
                         <td><?= \pd\helpers\Yii2Helpers::serialColumn($dataProvider, $index) ?></td>
-                        <td><?= $model->order ?></td>
-                        <td><?= $model->user ?></td>
-                        <td><?= $model->sex ?></td>
-                        <td><?= $model->nation ?></td>
-                        <td><?= $model->licence ?></td>
-                        <td><?= $model->phone ?></td>
-                        <td><?= $model->car ?></td>
-                        <td><?= $model->company ?></td>
+                        <td><?= $model->title ?></td>
+                        <td><?= $model->type == 1 ? '<span class="badge badge-info">商业险</span>' : '<span class="badge badge-danger">交强险</span>' ?></td>
                         <td><?= $model->cost ?></td>
-                        <td>
-                            <?php switch ($model->status):?><?php case 0: ?>
-                                <span class="badge badge-primary">正常</span>
-                                <?php break;?><?php case 100: ?>
-                                <span class="badge badge-danger">取消</span>
-                                <?php break;?><?php default: ?>
-                            <?php endswitch ?>
-                        </td>
-                        <td><?= pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
+                        <td><?= \pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
+
                         <td align="center">
                             <div class="btn-group">
-                                <a href="javascript:;" data-url="<?= Url::to(['order/log-modal', 'id'=> $model->id]) ?>" onclick="pokerDragon.modalAjax($(this))"><span class="btn btn-info m-r-1 m-b-5 btn-xs">流程</span></a>
+                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_form-modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">编辑</span></a>
+                                <a href="javascript:;" data-confirm="确认删除此条记录？" data-url="<?= Url::to(['soft-delete', 'id' => $model->id]) ?>"  data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                            </div>
                         </td>
                     </tr>
-                    <!-- #modal-dialog -->
-                    <div class="modal fade member-edit-modal" id="member-edit-modal-<?= $model->id ?>">
-
-                    </div>
                 <?php endforeach; ?>
                 </tbody>
             </table>
@@ -195,8 +156,4 @@ JS
     <!-- end panel -->
 </div>
 
-<?php
-
-
-?>
 

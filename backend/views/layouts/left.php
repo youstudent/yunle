@@ -26,38 +26,26 @@
                 'items' => [
                     ['label' => '菜单', 'options' => ['class' => 'nav-header']],
                     ['label' => '面板', 'url'=> '/panel'],
-                    ['label' => '会员', 'url'=> ['/member'], 'items'=> [
-                        ['label' => '会员列表', 'url' => ['/member/index']],
-                    ]],
-                    ['label' => '业务员', 'url'=> ['/salesman'], 'items'=> [
-                        ['label' => '业务员列表', 'url' => ['/salesman/index']],
+                    ['label' => '组织管理', 'url'=> ['/member'], 'items'=> [
+                        ['label' => '会员', 'url' => ['/member/index']],
+                        ['label' => '业务员', 'url' => ['/salesman/index']],
+                        ['label' => '服务商', 'url' => ['/service/index']],
+
+
                     ]],
                     [
-                        'label' => '服务商',
+                        'label' => '保险',
                         'url' => 'javascript:;',
                         'options' => ['class'=>'has-sub'],
                         'items' => [
-                            ['label' => '添加服务商', 'url' => ['/service/create']],
-                            ['label' => '服务商', 'url' => ['/service/index']],
-                            ['label' => '高级设置','url' => ['/debug']],
-                        ],
-                    ],
-                    [
-                        'label' => '保险商',
-                        'url' => 'javascript:;',
-                        'options' => ['class'=>'has-sub'],
-                        'items' => [
-                            ['label' => '添加保险商', 'url' => ['/insurance-company/create']],
                             ['label' => '保险商', 'url' => ['/insurance-company/index']],
-                            ['label' => '险种','url' => ['/debug']],
+                            ['label' => '险种','url' => ['/insurance/index']],
                         ],
                     ],
                     ['label' => '订单', 'url'=> ['/order'], 'items'=> [
-                        ['label' => '添加订单', 'url' => ['/order/create']],
                         ['label' => '订单列表', 'url' => ['/order/index']],
                     ]],
                     ['label' => '保单', 'url'=> ['/insurance'], 'items'=> [
-                        ['label' => '添加保单', 'url' => ['/insurance/create']],
                         ['label' => '保单列表', 'url' => ['/insurance/insurance-order']],
                     ]],
                     ['label' => '内容管理', 'url'=> ['/article'], 'items'=> [
