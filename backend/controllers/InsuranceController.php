@@ -19,7 +19,7 @@ use yii\web\Response;
 
 class InsuranceController extends BackendController
 {
-    //会员列表
+    //保险列表
     public function actionIndex()
     {
         $searchModel = new InsuranceSearch();
@@ -78,18 +78,18 @@ class InsuranceController extends BackendController
     {
         $model = Insurance::findOne(['id'=>$id]);
         if($model->setStatus($status)){
-            return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['member/index'])]);
+            return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['index'])]);
         }
-        return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作失败', 'url'=> Url::to(['member/index'])]);
+        return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作失败', 'url'=> Url::to(['index'])]);
     }
 
-    public function actionSoftDelete($id)
+    public function actionDelete($id)
     {
         $model = Insurance::findOne(['id'=>$id]);
-        if($model->softDelete($id)){
-            return json_encode(['data'=> '', 'code'=>1, 'message'=> '删除成功', 'url'=> Url::to(['member/index'])]);
+        if($model->delete()) {
+            return json_encode(['data' => '', 'code' => 1, 'message' => '删除成功', 'url' => Url::to(['index'])]);
         }
-        return json_encode(['data'=> '', 'code'=>1, 'message'=> '删除失败', 'url'=> Url::to(['member/index'])]);
+        return json_encode(['data'=> '', 'code'=>1, 'message'=> '删除失败', 'url'=> Url::to(['index'])]);
     }
     /**
      * 保险订单

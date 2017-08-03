@@ -6,8 +6,8 @@
  */
 use yii\helpers\Url;
 
-$this->title = '添加文章';
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = '广告创建';
+
 ?>
 
 <!-- begin row -->
@@ -31,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
             <div class="panel-body">
                 <?php $form = \yii\bootstrap\ActiveForm::begin([
-                    'id'                   => 'ArticleForm',
+                    'id'                   => 'BannerForm',
                     'layout'               => 'horizontal',
                     'fieldConfig'          => [
                         'template'             => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
@@ -47,15 +47,17 @@ $this->params['breadcrumbs'][] = $this->title;
                     'validationUrl'        => $model->isNewRecord ? Url::toRoute(['validate-form', 'scenario' => 'create']) : Url::toRoute(['validate-form', 'scenario' => 'update']),
                 ]) ?>
 
-                <?= $form->field($model, 'title')->textInput() ?>
+                <?= $form->field($model, 'name')->textInput() ?>
 
-                <?= $form->field($model, 'author')->textInput() ?>
+                <?= $form->field($model, 'describe')->textInput() ?>
 
-                <?= $form->field($model, 'column_id')->textInput() ?>
+                <!--                --><? //= $form->field($model, 'action_type')->dropDownList(['内链', '外链']) ?>
 
-                <?= $form->field($model, 'views')->textInput() ?>
+                <?= $form->field($model, 'action_value')->textInput() ?>
 
-                <?= $form->field($model, 'content')->textarea() ?>
+                <?php $model->status = 1; ?>
+
+                <?= $form->field($model, 'status')->dropDownList(['禁用', '正常']) ?>
 
                 <?php \yii\bootstrap\ActiveForm::end() ?>
 
@@ -72,7 +74,7 @@ $this->registerJs(<<<JS
 
 $(function () {
     $('.btn-submit').on('click', function () {
-        var f = $('#ArticleForm');
+        var f = $('#BannerForm');
         f.on('beforeSubmit', function (e) {
             swal({
                     title: "确认添加",

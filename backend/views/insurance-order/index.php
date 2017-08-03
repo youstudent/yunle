@@ -11,7 +11,7 @@ use yii\widgets\LinkPager;
 /* @var $searchModel backend\models\searchs\OrderSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = '订单列表';
+$this->title = '保险订单列表';
 $this->params['breadcrumbs'][] = $this->title;
 
 \pd\coloradmin\web\plugins\DaterangePickerAsset::register($this);
@@ -138,13 +138,14 @@ JS
                 <tr>
                     <th>#</th>
                     <th>订单号</th>
-                    <th>订单类型</th>
-                    <th>联系人</th>
+                    <th>投保人</th>
+                    <th>性别</th>
+                    <th>民族</th>
+                    <th>身份证号</th>
                     <th>联系电话</th>
                     <th>车牌号</th>
-                    <th>接车</th>
+                    <th>承保公司</th>
                     <th>价格</th>
-                    <th>服务商</th>
                     <th>状态</th>
                     <th>创建时间</th>
                     <th>操作</th>
@@ -154,37 +155,20 @@ JS
                 <?php foreach($dataProvider->getModels() as $index => $model): ?>
                     <tr class="">
                         <td><?= \pd\helpers\Yii2Helpers::serialColumn($dataProvider, $index) ?></td>
-                        <td><?= $model->order->order_sn ?></td>
-                        <td>
-                            <?php switch ($model->order->type):?><?php case 1: ?>
-                                    救援
-                                <?php break;?><?php case 2: ?>
-                                    维修
-                                <?php break;?><?php case 3: ?>
-                                    保养
-                                <?php break;?><?php case 4: ?>
-                                    上线审车
-                                <?php break;?><?php case 5: ?>
-                                    不上线审车
-                                <?php break;?><?php default: ?>
-                            <?php endswitch ?>
-                        </td>
-                        <td><?= $model->order->user ?></td>
-                        <td><?= $model->order->phone ?></td>
-                        <td><?= $model->order->car ?></td>
-                        <td><?php if($model->order->pick == 1): ?>
-                                <span>接车地点 <small><?= $model->order->pick_addr ?></small></span>
-                                <span>接车时间 <small><?= $model->order->pick_at ?></small></span>
-                            <?php  else: ?>
-                                <span>不接车</span>
-                            <?php endif; ?>
-                        </td>
-                        <td><?= $model->order->cost ?></td>
-                        <td><?= $model->order->service ?></td>
+                        <td><?= $model->insuranceOrder->order_sn ?></td>
+                        <td><?= $model->insuranceOrder->user ?></td>
+                        <td><?= $model->insuranceOrder->sex ?></td>
+                        <td><?= $model->insuranceOrder->nation ?></td>
+                        <td><?= $model->insuranceOrder->licence ?></td>
+                        <td><?= $model->insuranceOrder->phone ?></td>
+                        <td><?= $model->insuranceOrder->car ?></td>
+                        <td><?= $model->insuranceOrder->company ?></td>
+                        <td><?= $model->insuranceOrder->cost ?></td>
                         <td><?= $model->action ?></td>
-                        <td><?= pd\helpers\Yii2Helpers::dateFormat($model->order->created_at) ?></td>
+                        <td><?= pd\helpers\Yii2Helpers::dateFormat($model->insuranceOrder->created_at) ?></td>
                         <td align="center">
                             <div class="btn-group">
+                                <a href="<?= Url::to(['info', 'id'=> $model->order_id]) ?>" data-toggle="modal" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">保单详情</span></a>
                                 <a href="javascript:;" data-url="<?= Url::to(['log-modal', 'id'=> $model->id]) ?>" onclick="pokerDragon.modalAjax($(this))"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">变更状态</span></a>
                                 <a href="<?= Url::to(['log', 'id'=> $model->order_id]) ?>" data-toggle="modal" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">流程日志</span></a>
                             </div>

@@ -14,23 +14,44 @@ use yii\base\Exception;
 
 class ArticleForm extends Article
 {
-    public function addArticle($form)
+    public function scenarios()
     {
-        if(!$this->load($form)){
+        return [
+            'create' => ['title', 'author', 'content', 'status', 'column_id', 'views'],
+            'update' => ['title', 'author', 'content', 'status', 'column_id', 'views'],
+        ];
+    }
+
+    public function addArticle()
+    {
+        if(!$this->validate()){
             return false;
         }
+
+        return Yii::$app->db->transaction(function(){
+            $this->created_at = time();
+            $this->updated_at = time();
+            if(!$this->save()){
+                throw new Exception('error');
+            }
+            return $this;
+        });
+    }
+
+    public function updateArticle()
+    {
 
         if(!$this->validate()){
             return false;
         }
-        $articleModel = &$this;
-        return Yii::$app->db->transaction(function() use($articleModel){
-            $articleModel->created_at = time();
-            $articleModel->updated_at = time();
-            if(!$articleModel->save()){
+
+        return Yii::$app->db->transaction(function(){
+            $this->created_at = time();
+            $this->updated_at = time();
+            if(!$this->save()){
                 throw new Exception('error');
             }
-            return $articleModel;
+            return $this;
         });
     }
 }

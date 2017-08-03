@@ -129,9 +129,9 @@ JS
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-md-3 control-label">短信模板</label>
+                                <label class="col-md-3 control-label">短信签名</label>
                                 <div class="col-md-9">
-                                    <textarea class="form-control" name="ali_sms_template"  placeholder="阿里大于短信模板" rows="5"><?= ArrayHelper::getValue($setting['ali_sms_template'], 'value', '') ?></textarea>
+                                    <textarea class="form-control" name="ali_sms_template_sign"  placeholder="短信签名" rows="5"><?= ArrayHelper::getValue($setting['ali_sms_template_sign'], 'value', '') ?></textarea>
                                 </div>
                             </div>
                         </div>
@@ -139,13 +139,13 @@ JS
                             <div class="form-group">
                                 <label class="col-md-3 control-label">AppKey</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" name="jpush_client_appkey" value="<?= ArrayHelper::getValue($setting['jpush_client_appkey'], 'value', '') ?>" placeholder="极光推送"/>
+                                    <input type="text" class="form-control" name="jpush_member_appkey" value="<?= ArrayHelper::getValue($setting['jpush_member_appkey'], 'value', '') ?>" placeholder="极光推送"/>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-md-3 control-label">Master Secret</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" name="jpush_client_master_secret" value="<?= ArrayHelper::getValue($setting['jpush_client_master_secret'], 'value', '') ?>" placeholder="极光推送" />
+                                    <input type="text" class="form-control" name="jpush_member_master_secret" value="<?= ArrayHelper::getValue($setting['jpush_member_master_secret'], 'value', '') ?>" placeholder="极光推送" />
                                 </div>
                             </div>
                         </div>

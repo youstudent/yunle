@@ -8,12 +8,14 @@
 namespace backend\controllers;
 
 
+use backend\models\ActDetail;
 use backend\models\form\OrderForm;
 use backend\models\Order;
 use backend\models\searchs\InsuranceOrderSearch;
 use backend\models\searchs\OrderSearch;
 use common\models\ActInsurance;
 use Yii;
+use yii\data\ActiveDataProvider;
 use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\Response;
@@ -24,7 +26,6 @@ class OrderController extends BackendController
     public function actionIndex()
     {
         $searchModel = new OrderSearch();
-
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
 
@@ -46,7 +47,7 @@ class OrderController extends BackendController
         ]);
     }
 
-    //更新会员信息
+
     public function actionUpdate($id)
     {
         $model = OrderForm::findOne(['id'=>$id]);
@@ -59,34 +60,16 @@ class OrderController extends BackendController
         ]);
     }
 
-    //设置用户状态
-    public function actionSetStatus($id, $status)
+    public function actionLog($id)
     {
-        $model = Order::findOne(['id'=>$id]);
-        if($model->setStatus($status)){
-            return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['member/index'])]);
-        }
-        return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作失败', 'url'=> Url::to(['member/index'])]);
-    }
-
-    public function actionSoftDelete($id)
-    {
-        $model = Order::findOne(['id'=>$id]);
-        if($model->softDelete($id)){
-            return json_encode(['data'=> '', 'code'=>1, 'message'=> '删除成功', 'url'=> Url::to(['member/index'])]);
-        }
-        return json_encode(['data'=> '', 'code'=>1, 'message'=> '删除失败', 'url'=> Url::to(['member/index'])]);
-    }
-
-
-
-    public function actionLogModal($id)
-    {
-        //$data = ActInsurance::find()->where(['order_id'=>$id])->all();
-        Yii::$app->response->format =  Response::FORMAT_RAW;
-
-        $this->renderPjaxPartial('_modal_log', [
-            'model' => ActInsurance::find()
+        $dataProvider = new ActiveDataProvider([
+            'query' => ActDetail::find()->where(['order_id'=>$id]),
         ]);
+
+        return $this->renderAjax('log', [
+            'dataProvider' => $dataProvider,
+        ]);
+
     }
+
 }

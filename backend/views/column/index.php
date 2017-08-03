@@ -8,10 +8,10 @@ use yii\widgets\ActiveForm;
 use yii\widgets\LinkPager;
 
 /* @var $this yii\web\View */
-/* @var $searchModel backend\models\searchs\InsuranceSearch */
+/* @var $searchModel backend\models\searchs\OrderSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = '险种列表';
+$this->title = '文章列表';
 $this->params['breadcrumbs'][] = $this->title;
 
 \pd\coloradmin\web\plugins\DaterangePickerAsset::register($this);
@@ -83,7 +83,7 @@ JS
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="row">
         <div class="col-md-6">
-            <a href="<?= Url::to(['create']) ?>" class="btn btn-success" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static" >添加</a>
+            <?= Html::a('添加文章', ['create'], ['class' => 'btn btn-success']) ?>
         </div>
     </div>
     <p></p>
@@ -101,42 +101,32 @@ JS
         </div>
         <?= \pd\coloradmin\widgets\Alert::widget() ?>
         <div class="panel-body">
-            <form class="form-inline"  action="" method="GET">
-                <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="InsuranceSearch[title]" id="title" value="<?= $searchModel->title ?>" placeholder="名字">
-                </div>
-                <button type="submit" class="btn btn-sm btn-primary m-r-5">搜索</button>
-                <button type="reset" class="btn btn-sm btn-info m-r-5" onclick="">重置</button>
-            </form>
 
-            <p></p>
             <table id="data-table" class="table table-striped table-bordered">
                 <thead>
                 <tr>
                     <th>#</th>
                     <th>名称</th>
-                    <th>类型</th>
-                    <th>价格</th>
-                    <th>创建时间</th>
-                    <th>操作</th>
+                    <th>描述</th>
                 </tr>
                 </thead>
                 <tbody>
                 <?php foreach($dataProvider->getModels() as $index => $model): ?>
                     <tr class="">
                         <td><?= \pd\helpers\Yii2Helpers::serialColumn($dataProvider, $index) ?></td>
-                        <td><?= $model->title ?></td>
-                        <td><?= $model->type == 1 ? '<span class="badge badge-info">商业险</span>' : '<span class="badge badge-danger">交强险</span>' ?></td>
-                        <td><?= $model->cost ?></td>
-                        <td><?= \pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
-
+                        <td><?= $model->name ?></td>
+                        <td><?= $model->description ?></td>
                         <td align="center">
                             <div class="btn-group">
-                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">编辑</span></a>
-                                <a href="javascript:;" data-confirm="确认删除此条记录？" data-url="<?= Url::to(['delete', 'id' => $model->id]) ?>"  data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">编辑</span></a>
+                                <a href="javascript:;" data-url="<?= Url::to(['delete', 'id'=> $model->id]) ?>" onclick="pokerDragon.modalAjax($(this))"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
                             </div>
                         </td>
                     </tr>
+                    <!-- #modal-dialog -->
+                    <div class="modal fade member-edit-modal" id="member-edit-modal-<?= $model->id ?>">
+
+                    </div>
                 <?php endforeach; ?>
                 </tbody>
             </table>
@@ -156,4 +146,8 @@ JS
     <!-- end panel -->
 </div>
 
+<?php
+
+
+?>
 

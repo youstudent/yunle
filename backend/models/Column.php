@@ -3,6 +3,7 @@
 namespace backend\models;
 
 use Yii;
+use yii\base\Exception;
 
 /**
  * This is the model class for table "{{%column}}".
@@ -35,6 +36,14 @@ class Column extends \yii\db\ActiveRecord
         ];
     }
 
+    public function scenarios()
+    {
+        return [
+            'create' => ['name', 'created_at', 'updated_at', 'description'],
+            'update' => ['name', 'created_at', 'updated_at', 'description'],
+        ];
+    }
+
     /**
      * @inheritdoc
      */
@@ -47,5 +56,34 @@ class Column extends \yii\db\ActiveRecord
             'created_at' => '创建时间',
             'updated_at' => '更新时间',
         ];
+    }
+
+    public function addColumn()
+    {
+        if(!$this->validate()){
+            return false;
+        }
+        return Yii::$app->db->transaction(function(){
+            $this->created_at = time();
+            $this->updated_at = time();
+            if(!$this->save()){
+                throw new Exception('error');
+            }
+            return $this;
+        });
+    }
+
+    public function updateColumn()
+    {
+        if(!$this->validate()){
+            return false;
+        }
+        return Yii::$app->db->transaction(function(){
+            $this->updated_at = time();
+            if(!$this->save()){
+                throw new Exception('error');
+            }
+            return $this;
+        });
     }
 }

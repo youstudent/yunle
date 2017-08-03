@@ -83,7 +83,7 @@ JS
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="row">
         <div class="col-md-6">
-            <a href="<?= Url::to(['create']) ?>" class="btn btn-success" data-toggle="modal" data-target="#_form-modal" data-backdrop="static" >添加会员</a>
+            <a href="<?= Url::to(['create']) ?>" class="btn btn-success" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static" >添加会员</a>
         </div>
     </div>
     <p></p>
@@ -131,7 +131,7 @@ JS
 
                 </div>
                 <button type="submit" class="btn btn-sm btn-primary m-r-5">搜索</button>
-                <button type="button" class="btn btn-sm btn-info m-r-5" onclick="">重置</button>
+                <button type="reset" class="btn btn-sm btn-info m-r-5" onclick="">重置</button>
             </form>
 
             <p></p>
@@ -154,7 +154,7 @@ JS
                     <tr class="">
                         <td><?= \pd\helpers\Yii2Helpers::serialColumn($dataProvider, $index) ?></td>
                         <td><?= $model->type == 1 ? '<span class="badge badge-info">个人</span>' : '<span class="badge badge-warning">组织</span>' ?></td>
-                        <td><?= $model->memberImg ? '<div class="thumbnail"> '.$model->memberImg->img_path .'</div>': ''?></td>
+                        <td><?= $model->memberImg ? '<div class="thumbnail"><img src=" '.$model->memberImg->img_path .' " style="width:40px;height:50px;"></div>': ''?></td>
                         <td><?= $model->memberInfo ? $model->memberInfo->name : '' ?></td>
                         <td><?= $model->phone ?></td>
                         <td><?= $model->status == 1 ? '<span class="badge badge-info">正常</span>' : '<span class="badge badge-danger">冻结</span>' ?></td>
@@ -163,8 +163,8 @@ JS
 
                         <td align="center">
                             <div class="btn-group">
-                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_form-modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">详细资料</span></a>
-                                <a href="<?= Url::to(['view', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">业务员</span></a>
+                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">详细资料</span></a>
+                                <a href="<?= Url::to(['view', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">变更业务员</span></a>
                                 <a href="<?= Url::to(['index', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">订单</span></a>
                                 <a href="<?= Url::to(['insurance/index', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">保险</span></a>
                                 <a href="javascript:;" data-confirm="确认冻结此会员？" data-url="<?= Url::to(['set-status','id' => $model->id, 'status'=> Member::STATUS_INACTIVE]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">冻结</span></a>

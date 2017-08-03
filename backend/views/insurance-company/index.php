@@ -95,7 +95,7 @@ JS
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="row">
         <div class="col-md-6">
-            <a href="<?= Url::to(['create']) ?>" class="btn btn-success" data-toggle="modal" data-target="#_form-modal" data-backdrop="static" >新增</a>
+            <a href="<?= Url::to(['create']) ?>" class="btn btn-success" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static" >新增</a>
         </div>
     </div>
     <p></p>
@@ -130,7 +130,7 @@ JS
                     <input type="text" class="form-control" id="exampleInputPassword2" placeholder="状态">
                 </div>
                 <button type="submit" class="btn btn-sm btn-primary m-r-5">搜索</button>
-                <button type="button" class="btn btn-sm btn-info m-r-5" onclick="">重置</button>
+                <button type="reset" class="btn btn-sm btn-info m-r-5" onclick="">重置</button>
             </form>-->
 
             <p></p>
@@ -155,7 +155,7 @@ JS
                         <td class="text-center"><?= \pd\helpers\Yii2Helpers::dateFormat($model->updated_at) ?></td>
                         <td align="center">
                             <div class="btn-group">
-                                <a href="<?= Url::to(['insurance-company/update', 'id'=> $model->id]) ?>" data-toggle="modal" data-target="#_form-modal" data-backdrop="static"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
+                                <a href="<?= Url::to(['insurance-company/update', 'id'=> $model->id]) ?>" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
                                 <a href="javasrcitp:;" data-confirm="确认删除此会员？" data-url="<?= Url::to(['insurance-company/delete', 'id' => $model->id]) ?>"  data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
                             </div>
                         </td>
