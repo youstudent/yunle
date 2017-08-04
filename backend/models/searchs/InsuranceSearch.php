@@ -45,8 +45,7 @@ class InsuranceSearch extends Insurance
                 $query->andFilterWhere(['<=','m.created_at',$end]);
             }
         }
-
-
+        
         return $dataProvider;
     }
 }
