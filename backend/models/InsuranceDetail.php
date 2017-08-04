@@ -11,6 +11,7 @@ use Yii;
  * @property integer $order_id
  * @property integer $car_id
  * @property integer $member_id
+ * @property string $action
  * @property integer $created_at
  * @property integer $updated_at
  */
@@ -31,6 +32,7 @@ class InsuranceDetail extends \yii\db\ActiveRecord
     {
         return [
             [['order_id', 'car_id', 'member_id', 'created_at', 'updated_at'], 'integer'],
+            [['action'], 'string', 'max' => 50],
         ];
     }
 
@@ -44,8 +46,14 @@ class InsuranceDetail extends \yii\db\ActiveRecord
             'order_id' => '订单id',
             'car_id' => '车辆id',
             'member_id' => '投保人',
+            'action' => '最新动态',
             'created_at' => '创建时间',
             'updated_at' => '修改时间',
         ];
+    }
+
+    public function getInsuranceOrder()
+    {
+        return $this->hasOne(InsuranceOrder::className(), ['id'=> 'order_id'])->alias('io');
     }
 }

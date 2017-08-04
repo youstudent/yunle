@@ -22,7 +22,7 @@ class SiteController extends BackendController
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['login', 'error'],
+                        'actions' => ['login', 'error', 'test'],
                         'allow' => true,
                     ],
                     [
@@ -96,4 +96,9 @@ class SiteController extends BackendController
         return Yii::$app->getResponse()->redirect(['/site/login']);
     }
 
+    public function actionTest()
+    {
+        $menu = Yii::$app->params['app_menu'];
+        return json_encode(['data' => $menu, 'code' => 1, 'message' => ''], JSON_UNESCAPED_UNICODE);
+    }
 }

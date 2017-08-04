@@ -9,15 +9,18 @@ use yii\helpers\Url;
 
 /* @var $model backend\models\form\MemberForm */
 
+$this->title = '广告添加';
+$this->params['breadcrumbs'][] = $this->title;
+
 ?>
 <!-- #modal-dialog -->
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h4 class="modal-title">添加会员</h4>
+    <h4 class="modal-title">添加险种</h4>
 </div>
 <div class="modal-body">
     <?php $form = \yii\bootstrap\ActiveForm::begin([
-        'id'                   => 'MemberForm',
+        'id'                   => 'InsuranceForm',
         'layout'               => 'horizontal',
         'fieldConfig'          => [
             'template'             => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
@@ -30,26 +33,16 @@ use yii\helpers\Url;
             ],
         ],
         'enableAjaxValidation' => true,
-        'validationUrl'        => $model->isNewRecord ? Url::toRoute(['validate-form', 'scenario' => 'create']) : Url::toRoute(['validate-form', 'scenario' => 'update' , 'id'=>$model->id]),
+        'validationUrl'        => $model->isNewRecord ? Url::toRoute(['validate-form', 'scenario' => 'create']) : Url::toRoute(['validate-form', 'scenario' => 'update']),
     ]) ?>
 
-    <?= $form->field($model, 'phone')->textInput() ?>
+    <?= $form->field($model, 'title')->textInput() ?>
 
-    <?= $form->field($model, 'type')->dropDownList([1 => '个人', 2 => '组织'], ['prompt' => '请选择']) ?>
+    <?= $form->field($model, 'type')->dropDownList([1 => '交强险', 2 => '商业险']) ?>
 
-    <?= $form->field($model, 'service')->dropDownList(\backend\models\Service::find()
-        ->where(['status' => 1])
-        ->select('name,id')->
-        indexBy('id')->
-        column(), [
-        'prompt'   => '请选择',
-        'onChange' => 'pd_selectSid($(this))']) ?>
+    <?= $form->field($model, 'cost')->textInput() ?>
 
-
-    <?= $form->field($model, 'pid')->dropDownList([]) ?>
-
-
-    <?= $form->field($model, 'status')->dropDownList([0 => '冻结', 1 => '正常'], ['prompt' => '请选择']) ?>
+    <?= $form->field($model, 'deduction')->dropDownList(['计免赔', '不计免赔']) ?>
 
     <?php \yii\bootstrap\ActiveForm::end() ?>
 
@@ -57,31 +50,16 @@ use yii\helpers\Url;
 <div class="modal-footer">
     <a href="javascript:;" class="btn btn-sm btn-white" data-dismiss="modal">取消</a>
     <a href="#" class="btn btn-sm btn-success  btn-submit" data-toggle="modal"
-       data-form-id="MemberForm">添加</a>
+       data-form-id="InsuranceForm">添加</a>
 </div>
 
 <script>
-    $(function (){
-        $('.field-memberform-pid').hide();
-        pd_selectSid = function(that){
-            $('.field-memberform-pid').hide();
-            var pid = that.val();
-            if(!pid){
-                return false;
-            }
-            var sid = <?= !$model->isNewRecord ? $model->pid : 0 ?>;
-            if(!pid){return false;}
-            var url = "<?= Url::to(['salesman/drop-down-list']); ?>?pid=" + pid + "&sid=" + sid;
-            $.get(url, function(rep){
-                $('#memberform-pid').html(rep);
-                $('.field-memberform-pid').show();
-            });
-        }
+    $(function () {
         $('.btn-submit').on('click', function () {
-            var f = $('#MemberForm');
+            var f = $('#InsuranceForm');
             f.on('beforeSubmit', function (e) {
                 swal({
-                        title: "确认添加会员",
+                        title: "确认添加",
                         text: "",
                         type: "warning",
                         showCancelButton: true,
@@ -118,14 +96,6 @@ use yii\helpers\Url;
             });
             f.submit();
         });
-        function getSalesman(that) {
-            var sid = that.val();
-            if (!sid) {
-                return false;
-            }
-            that.attr('data-service-id', sid);
-
-        }
     })
 </script>
 

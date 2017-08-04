@@ -95,7 +95,7 @@ JS
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="row">
         <div class="col-md-6">
-            <?= Html::a('新增服务商', ['create'], ['class' => 'btn btn-success']) ?>
+            <a href="<?= Url::to(['create']) ?>" class="btn btn-success">添加服务商</a>
         </div>
     </div>
     <p></p>
@@ -137,31 +137,31 @@ JS
             <table id="data-table" class="table table-striped table-bordered">
                 <thead>
                 <tr>
-                    <th class="text-center">#</th>
-                    <th class="text-center">服务商名称</th>
-                    <th class="text-center">负责人</th>
-                    <th class="text-center">客服电话</th>
-                    <th class="text-center">地址</th>
-                    <th class="text-center">状态</th>
-                    <th class="text-center">创建时间</th>
-                    <th class="text-center">客户经理</th>
-                    <th class="text-center">操作</th>
+                    <th>#</th>
+                    <th>服务商名称</th>
+                    <th>负责人</th>
+                    <th>客服电话</th>
+                    <th>地址</th>
+                    <th>状态</th>
+                    <th>客户经理</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
                 </tr>
                 </thead>
                 <tbody>
                 <?php foreach($dataProvider->getModels() as $index => $model): ?>
                     <tr class="">
-                        <td class="text-center"><?= \pd\helpers\Yii2Helpers::serialColumn($dataProvider, $index) ?></td>
-                        <td class="text-center"><?= $model->name ?></td>
-                        <td class="text-center"><?= $model->principal ?></td>
-                        <td class="text-center"><?= $model->contact_phone ?></td>
-                        <td class="text-center"><?= $model->address ?></td>
-                        <td class="text-center"><?= $model->status ?></td>
-                        <td class="text-center"><?= \pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
-                        <td class="text-center"><?= $model->status ?></td>
+                        <td><?= \pd\helpers\Yii2Helpers::serialColumn($dataProvider, $index) ?></td>
+                        <td><?= $model->name ?></td>
+                        <td><?= $model->principal ?></td>
+                        <td><?= $model->contact_phone ?></td>
+                        <td><?= $model->address ?></td>
+                        <td><?= $model->status == 1 ? '<span class="badge badge-info">正常</span>' : '<span class="badge badge-danger">冻结</span>' ?></td>
+                        <td><?= $model->pid && backend\models\Adminuser::findOne($model->pid) ? backend\models\Adminuser::findOne($model->pid)->username : '未设置'   ?></td>
+                        <td><?= \pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
                         <td align="center">
                             <div class="btn-group">
-                                <a href="<?= Url::to(['service/view', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">详情</span></a>
+                                <a href="<?= Url::to(['service/update', 'id'=> $model->id]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">修改绑定</span></a>
                                 <a href="<?= Url::to(['service/update', 'id'=> $model->id]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
                                 <a href="<?= Url::to(['service/delete', 'id' => $model->id]) ?>" data-confirm="确认删除此数据?" data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
                             </div>

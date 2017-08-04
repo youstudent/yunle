@@ -1,71 +1,70 @@
 <?php
 /**
  * User: harlen-angkemac
- * Date: 2017/7/26 - 下午4:43
+ * Date: 2017/8/3 - 下午8:50
  *
  */
 
 namespace backend\controllers;
 
 
-use backend\models\Banner;
-use backend\models\form\BannerForm;
-use backend\models\searchs\BannerSearch;
+use backend\models\Column;
 use Yii;
+use yii\data\ActiveDataProvider;
 use yii\helpers\Url;
-use yii\web\Controller;
 
-class BannerController extends BackendController
+class ColumnController extends BackendController
 {
     public function actionIndex()
     {
-        $searchModel = new BannerSearch();
 
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+        $dataProvider = new ActiveDataProvider([
+            'query' => Column::find(),
+        ]);
 
         return $this->renderPjax('index', [
             'dataProvider' => $dataProvider,
-            'searchModel' => $searchModel
         ]);
     }
 
     public function actionCreate()
     {
-        $model = new BannerForm();
+        $model = new Column();
         $model->scenario = 'create';
 
         if($model->load(Yii::$app->request->post())){
-            if($model->addBanner()){
+            if($model->addColumn()){
                 return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['index'])]);
             }
-            return $this->asJson(['data'=> '', 'code'=>0]);
+            return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '添加失败']);
         }
+
         return $this->renderPjax('create', [
             'model' => $model
         ]);
     }
 
-
     public function actionUpdate($id)
     {
-        $model = BannerForm::findOne($id);
+        $model =  Column::findOne($id);
         $model->scenario = 'update';
 
         if($model->load(Yii::$app->request->post())){
-            if($model->updateBanner()){
-                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '保存成功', 'url'=> Url::to(['index'])]);
+            if($model->updateColumn()){
+                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['index'])]);
             }
-            return $this->asJson(['data'=> '', 'code'=>0]);
+            return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '添加失败']);
         }
-        return $this->renderPjax('update', [
+
+        return $this->renderPjax('create', [
             'model' => $model
         ]);
     }
 
     public function actionDelete($id)
     {
-        BannerForm::findOne($id)->delete();
+        //TODO::检查栏目下是否有文章
+        Column::findOne($id)->delete();
         return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '删除成功', 'url'=> Url::to(['index'])]);
     }
 
@@ -73,14 +72,13 @@ class BannerController extends BackendController
     {
         Yii::$app->response->format = \Yii\web\Response::FORMAT_JSON;
         if($id){
-            $model = BannerForm::findOne($id);
+            $model = Column::findOne($id);
         }else{
-            $model = new BannerForm();
+            $model = new Column();
         }
 
         $model->scenario = $scenario;
         $model->load(Yii::$app->request->post());
         return \yii\bootstrap\ActiveForm::validate($model);
     }
-
 }

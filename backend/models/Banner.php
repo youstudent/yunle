@@ -31,8 +31,8 @@ class Banner extends \yii\db\ActiveRecord
     {
         return [
             [['describe'], 'string'],
-            [['status', 'created_at', 'updated_at'], 'integer'],
-            [['name'], 'string', 'max' => 30],
+            [['status', 'created_at', 'updated_at', 'action_type'], 'integer'],
+            [['name', 'action_value'], 'string', 'max' => 30],
         ];
     }
 
@@ -43,11 +43,13 @@ class Banner extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'banner名字',
-            'describe' => 'banner描述',
-            'status' => '状态 1:正常 0:禁用',
+            'name' => '广告标题',
+            'describe' => '广告标题',
+            'status' => '状态',
             'created_at' => '创建时间',
             'updated_at' => '修改时间',
+            'action_type' => '跳转类型',
+            'action_value' => '地址',
         ];
     }
 }

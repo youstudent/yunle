@@ -8,10 +8,11 @@
 namespace backend\models\searchs;
 
 
-use backend\models\InsuranceOrder;
+use backend\models\InsuranceDetail;
 use yii\data\ActiveDataProvider;
+use yii\helpers\ArrayHelper;
 
-class InsuranceOrderSearch extends InsuranceOrder
+class InsuranceDetailSearch extends InsuranceDetail
 {
     public function rules()
     {
@@ -22,13 +23,34 @@ class InsuranceOrderSearch extends InsuranceOrder
         ];
     }
 
+    public function attributes()
+    {
+        return ArrayHelper::merge(parent::attributes(), [
+            'order_sn',
+            'order_user',
+            'order_phone',
+            'order_car',
+            'order_service',
+            'order_type',
+            'order_nation',
+            'order_licence',
+            'order_company',
+            'order_cost',
+            'order_status',
+            'order_created_at',
+        ]);
+    }
+
     public function search($params)
     {
-        $query = InsuranceOrder::find();
+        $query = InsuranceDetail::find();
+        $query->alias('ind')->joinWith('insuranceOrder');
+
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+        ;
         if (!($this->load($params) && $this->validate())) {
             return $dataProvider;
         }
@@ -39,19 +61,19 @@ class InsuranceOrderSearch extends InsuranceOrder
             $start = strtotime($start_date);
 
             if ($start > 0) {
-                $query->andFilterWhere(['>=', 'created_at', $start]);
+                $query->andFilterWhere(['>=', 'io.created_at', $start]);
             }
 
             $end_date = substr($this->created_at, 12);
             $end = strtotime($end_date);
 
             if ($end > 0) {
-                $query->andFilterWhere(['<=', 'created_at', $end]);
+                $query->andFilterWhere(['<=', 'io.created_at', $end]);
             }
         }
         $query->andFilterWhere(['type' => $this->status])
-            ->andFilterWhere(['LIKE', 'user', $this->user])
-            ->andFilterWhere(['LIKE', 'phone', $this->phone]);
+            ->andFilterWhere(['LIKE', 'io.user', $this->user])
+            ->andFilterWhere(['LIKE', 'io.phone', $this->phone]);
 
 
         return $dataProvider;

@@ -11,13 +11,12 @@ use yii\widgets\LinkPager;
 /* @var $searchModel backend\models\searchs\MemberSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = '业务员列表';
+$this->title = '业务员管理';
 $this->params['breadcrumbs'][] = $this->title;
 
 \pd\coloradmin\web\plugins\DaterangePickerAsset::register($this);
 
 $this->registerJs(<<<JS
-
 $('#daterangepicker').daterangepicker({
     "showDropdowns": true,
     "timePicker": true,
@@ -83,7 +82,7 @@ JS
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="row">
         <div class="col-md-6">
-            <?= Html::a('添加会员', ['create'], ['class' => 'btn btn-success']) ?>
+            <a href="<?= Url::to(['create']) ?>" class="btn btn-success" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static" >添加业务员</a>
         </div>
     </div>
     <p></p>
@@ -143,11 +142,12 @@ JS
                         <td><?= $model->username ?></td>
                         <td><?= $model->phone ?></td>
                         <td><?= $model->status == 1 ? '<span class="badge badge-info">正常</span>' : '<span class="badge badge-danger">冻结</span>' ?></td>
-                        <td><span class="badge badge-warning"><?= $model->service ? $model->service->name : '未设置' ?></span></td>
+                        <td><?= $model->service ? $model->service->name : '<span class="badge badge-warning">'. '未设置'. '</span>' ?></span></td>
                         <td><?= \pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
                         <td align="center">
                             <div class="btn-group">
-                                <a href="<?= Url::to(['member/view', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">会员</span></a>
+                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">信息</span></a>
+                                <a href="<?= Url::to(['member/index', 'MemberSearch[salesman_username]'=> $model->username ]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">客户列表</span></a>
                                 <a href="<?= Url::to(['order/index', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">订单</span></a>
                                 <a href="<?= Url::to(['insurance/index', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">保险</span></a>
                                 <a href="#member-edit-modal-<?= $model->id ?>" data-url="<?= Url::to(['salesman/update', 'id'=> $model->id]) ?>" data-toggle="modal" ><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
@@ -157,10 +157,6 @@ JS
                             </div>
                         </td>
                     </tr>
-                    <!-- #modal-dialog -->
-                    <div class="modal fade member-edit-modal" id="member-edit-modal-<?= $model->id ?>">
-                        <?= $this->render('_modal_form', ['model'=>$model]) ?>
-                    </div>
                 <?php endforeach; ?>
                 </tbody>
             </table>

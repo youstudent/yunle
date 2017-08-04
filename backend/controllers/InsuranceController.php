@@ -13,14 +13,16 @@ use backend\models\searchs\InsuranceSearch;
 use common\models\Insurance;
 use Yii;
 use yii\base\Controller;
+use yii\bootstrap\ActiveForm;
+use yii\helpers\Url;
+use yii\web\Response;
 
 class InsuranceController extends BackendController
 {
-    //会员列表
+    //保险列表
     public function actionIndex()
     {
         $searchModel = new InsuranceSearch();
-
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
 
@@ -30,28 +32,44 @@ class InsuranceController extends BackendController
         ]);
     }
 
+    /**
+     * Creates a new Adminuser model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return mixed
+     */
     public function actionCreate()
     {
         $model = new Insurance();
-        if($model->addOrder(Yii::$app->request->post())){
-            return json_encode(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['member/index'])]);
+        $model->scenario = 'create';
+        if($model->load(Yii::$app->request->post())){
+            if($model->addInsurance()){
+                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['index'])]);
+            }
+            return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '操作失败']);
         }
-
-        return $this->renderPjax('create', [
-            'model' => $model
+        return $this->renderAjax('create', [
+            'model' => $model,
         ]);
     }
 
-    //更新会员信息
+
+    /**
+     * Creates a new Adminuser model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return mixed
+     */
     public function actionUpdate($id)
     {
         $model = Insurance::findOne(['id'=>$id]);
-
-        if($model->updateOrder(Yii::$app->request->post())){
-            return json_encode(['data'=> '', 'code'=>1, 'message'=> '更新成功', 'url'=> Url::to(['member/index'])]);
+        $model->scenario = 'update';
+        if($model->load(Yii::$app->request->post())){
+            if($model->updateInsurance()){
+                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['index'])]);
+            }
+            return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '操作失败']);
         }
-        return $this->renderPjax('update', [
-            'model' => $model
+        return $this->renderAjax('update', [
+            'model' => $model,
         ]);
     }
 
@@ -60,18 +78,18 @@ class InsuranceController extends BackendController
     {
         $model = Insurance::findOne(['id'=>$id]);
         if($model->setStatus($status)){
-            return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['member/index'])]);
+            return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['index'])]);
         }
-        return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作失败', 'url'=> Url::to(['member/index'])]);
+        return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作失败', 'url'=> Url::to(['index'])]);
     }
 
-    public function actionSoftDelete($id)
+    public function actionDelete($id)
     {
         $model = Insurance::findOne(['id'=>$id]);
-        if($model->softDelete($id)){
-            return json_encode(['data'=> '', 'code'=>1, 'message'=> '删除成功', 'url'=> Url::to(['member/index'])]);
+        if($model->delete()) {
+            return json_encode(['data' => '', 'code' => 1, 'message' => '删除成功', 'url' => Url::to(['index'])]);
         }
-        return json_encode(['data'=> '', 'code'=>1, 'message'=> '删除失败', 'url'=> Url::to(['member/index'])]);
+        return json_encode(['data'=> '', 'code'=>1, 'message'=> '删除失败', 'url'=> Url::to(['index'])]);
     }
     /**
      * 保险订单
@@ -89,9 +107,18 @@ class InsuranceController extends BackendController
             'searchModel' => $searchModel
         ]);
     }
-    
-    
-    /**
-     *   
-     */
+
+    public function actionValidateForm($scenario, $id = null)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if($id){
+            $model = Insurance::findOne($id);
+        }else{
+            $model = new Insurance();
+        }
+
+        $model->scenario = $scenario;
+        $model->load(Yii::$app->request->post());
+        return ActiveForm::validate($model);
+    }
 }

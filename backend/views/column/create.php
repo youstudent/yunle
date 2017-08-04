@@ -19,9 +19,9 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="panel-heading">
                 <div class="panel-heading-btn">
                     <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i
-                                class="fa fa-expand"></i></a>
+                            class="fa fa-expand"></i></a>
                     <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i
-                                class="fa fa-repeat"></i></a>
+                            class="fa fa-repeat"></i></a>
                     <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning"
                        data-click="panel-collapse"><i class="fa fa-minus"></i></a>
                     <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger"
@@ -47,15 +47,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     'validationUrl'        => $model->isNewRecord ? Url::toRoute(['validate-form', 'scenario' => 'create']) : Url::toRoute(['validate-form', 'scenario' => 'update']),
                 ]) ?>
 
-                <?= $form->field($model, 'title')->textInput() ?>
+                <?= $form->field($model, 'name')->textInput() ?>
 
-                <?= $form->field($model, 'author')->textInput() ?>
-
-                <?= $form->field($model, 'column_id')->textInput() ?>
-
-                <?= $form->field($model, 'views')->textInput() ?>
-
-                <?= $form->field($model, 'content')->textarea() ?>
+                <?= $form->field($model, 'description')->textInput() ?>
 
                 <?php \yii\bootstrap\ActiveForm::end() ?>
 

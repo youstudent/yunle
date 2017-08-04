@@ -32,12 +32,54 @@ class ArticleController extends BackendController
     public function actionCreate()
     {
         $model = new ArticleForm();
-        if($model->addArticle(Yii::$app->request->post())){
-            return json_encode(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['backend/index'])]);
+        $model->scenario = 'create';
+
+        if($model->load(Yii::$app->request->post())){
+            if($model->addArticle()){
+                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['index'])]);
+            }
+            return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '添加失败']);
         }
 
         return $this->renderPjax('create', [
             'model' => $model
         ]);
+    }
+
+    public function actionUpdate($id)
+    {
+        $model =  ArticleForm::findOne($id);
+        $model->scenario = 'update';
+
+        if($model->load(Yii::$app->request->post())){
+            if($model->updateArticle()){
+                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['index'])]);
+            }
+            return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '添加失败']);
+        }
+
+        return $this->renderPjax('create', [
+            'model' => $model
+        ]);
+    }
+
+    public function actionDelete($id)
+    {
+        ArticleForm::findOne($id)->delete();
+        return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '删除成功', 'url'=> Url::to(['index'])]);
+    }
+
+    public function actionValidateForm($scenario, $id = null)
+    {
+        Yii::$app->response->format = \Yii\web\Response::FORMAT_JSON;
+        if($id){
+            $model = ArticleForm::findOne($id);
+        }else{
+            $model = new ArticleForm();
+        }
+
+        $model->scenario = $scenario;
+        $model->load(Yii::$app->request->post());
+        return \yii\bootstrap\ActiveForm::validate($model);
     }
 }

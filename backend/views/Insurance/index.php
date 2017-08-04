@@ -8,10 +8,10 @@ use yii\widgets\ActiveForm;
 use yii\widgets\LinkPager;
 
 /* @var $this yii\web\View */
-/* @var $searchModel backend\models\searchs\OrderSearch */
+/* @var $searchModel backend\models\searchs\InsuranceSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = '订单列表';
+$this->title = '险种列表';
 $this->params['breadcrumbs'][] = $this->title;
 
 \pd\coloradmin\web\plugins\DaterangePickerAsset::register($this);
@@ -83,7 +83,7 @@ JS
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="row">
         <div class="col-md-6">
-            <?= Html::a('添加订单', ['create'], ['class' => 'btn btn-success']) ?>
+            <a href="<?= Url::to(['create']) ?>" class="btn btn-success" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static" >添加</a>
         </div>
     </div>
     <p></p>
@@ -102,31 +102,8 @@ JS
         <?= \pd\coloradmin\widgets\Alert::widget() ?>
         <div class="panel-body">
             <form class="form-inline"  action="" method="GET">
-                <div class="form-group m-r-15">
-                    <input type="text" class="form-control" style="min-width: 103%;margin-right: 70px;" name="OrderSearch[order_created_at]" id="daterangepicker" value="<?= $searchModel->order_created_at ?>" placeholder="创建时间">
-                </div>
                 <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="OrderSearch[order_user]" id="user" value="<?= $searchModel->order_user ?>" placeholder="联系人">
-                </div>
-                <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="OrderSearch[order_phone]" id="phone" value="<?= $searchModel->order_phone ?>" placeholder="联系电话">
-                </div>
-                <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="OrderSearch[order_car]" id="phone" value="<?= $searchModel->order_car ?>" placeholder="车牌号">
-                </div>
-                <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="OrderSearch[order_service]" id="service" value="<?= $searchModel->order_service ?>" placeholder="服务商">
-                </div>
-                <div class="form-group m-r-10">
-                    <select class="form-control" name="OrderSearch[order_type]" id="OrderSearchType">
-                        <option value="" selected>全部</option>
-                        <option value="1" <?= $searchModel->order_type == 1 ? 'selected' : '' ?>>救援</option>
-                        <option value="2" <?= $searchModel->order_type == 2 ? 'selected' : '' ?>>维修</option>
-                        <option value="3" <?= $searchModel->order_type == 3 ? 'selected' : '' ?>>保养</option>
-                        <option value="4" <?= $searchModel->order_type == 4 ? 'selected' : '' ?>>上线审车</option>
-                        <option value="5" <?= $searchModel->order_type == 5 ? 'selected' : '' ?>>不上线审车</option>
-                    </select>
-
+                    <input type="text" class="form-control" name="InsuranceSearch[title]" id="title" value="<?= $searchModel->title ?>" placeholder="名字">
                 </div>
                 <button type="submit" class="btn btn-sm btn-primary m-r-5">搜索</button>
                 <button type="reset" class="btn btn-sm btn-info m-r-5" onclick="">重置</button>
@@ -137,15 +114,9 @@ JS
                 <thead>
                 <tr>
                     <th>#</th>
-                    <th>订单号</th>
-                    <th>订单类型</th>
-                    <th>联系人</th>
-                    <th>联系电话</th>
-                    <th>车牌号</th>
-                    <th>接车</th>
+                    <th>名称</th>
+                    <th>类型</th>
                     <th>价格</th>
-                    <th>服务商</th>
-                    <th>状态</th>
                     <th>创建时间</th>
                     <th>操作</th>
                 </tr>
@@ -154,39 +125,15 @@ JS
                 <?php foreach($dataProvider->getModels() as $index => $model): ?>
                     <tr class="">
                         <td><?= \pd\helpers\Yii2Helpers::serialColumn($dataProvider, $index) ?></td>
-                        <td><?= $model->order->order_sn ?></td>
-                        <td>
-                            <?php switch ($model->order->type):?><?php case 1: ?>
-                                    救援
-                                <?php break;?><?php case 2: ?>
-                                    维修
-                                <?php break;?><?php case 3: ?>
-                                    保养
-                                <?php break;?><?php case 4: ?>
-                                    上线审车
-                                <?php break;?><?php case 5: ?>
-                                    不上线审车
-                                <?php break;?><?php default: ?>
-                            <?php endswitch ?>
-                        </td>
-                        <td><?= $model->order->user ?></td>
-                        <td><?= $model->order->phone ?></td>
-                        <td><?= $model->order->car ?></td>
-                        <td><?php if($model->order->pick == 1): ?>
-                                <span>接车地点 <small><?= $model->order->pick_addr ?></small></span>
-                                <span>接车时间 <small><?= $model->order->pick_at ?></small></span>
-                            <?php  else: ?>
-                                <span>不接车</span>
-                            <?php endif; ?>
-                        </td>
-                        <td><?= $model->order->cost ?></td>
-                        <td><?= $model->order->service ?></td>
-                        <td><?= $model->action ?></td>
-                        <td><?= pd\helpers\Yii2Helpers::dateFormat($model->order->created_at) ?></td>
+                        <td><?= $model->title ?></td>
+                        <td><?= $model->type == 1 ? '<span class="badge badge-info">商业险</span>' : '<span class="badge badge-danger">交强险</span>' ?></td>
+                        <td><?= $model->cost ?></td>
+                        <td><?= \pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
+
                         <td align="center">
                             <div class="btn-group">
-                                <a href="javascript:;" data-url="<?= Url::to(['log-modal', 'id'=> $model->id]) ?>" onclick="pokerDragon.modalAjax($(this))"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">变更状态</span></a>
-                                <a href="<?= Url::to(['log', 'id'=> $model->order_id]) ?>" data-toggle="modal" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">流程日志</span></a>
+                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">编辑</span></a>
+                                <a href="javascript:;" data-confirm="确认删除此条记录？" data-url="<?= Url::to(['delete', 'id' => $model->id]) ?>"  data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
                             </div>
                         </td>
                     </tr>
@@ -209,8 +156,4 @@ JS
     <!-- end panel -->
 </div>
 
-<?php
-
-
-?>
 
