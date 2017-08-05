@@ -8,6 +8,7 @@
 namespace backend\controllers;
 
 
+use backend\models\Banner;
 use backend\models\form\BannerForm;
 use backend\models\searchs\BannerSearch;
 use Yii;
@@ -32,12 +33,54 @@ class BannerController extends BackendController
     public function actionCreate()
     {
         $model = new BannerForm();
-        if($model->addBanner(Yii::$app->request->post())){
-            return json_encode(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['banner/index'])]);
-        }
+        $model->scenario = 'create';
 
+        if($model->load(Yii::$app->request->post())){
+            if($model->addBanner()){
+                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['index'])]);
+            }
+            return $this->asJson(['data'=> '', 'code'=>0]);
+        }
         return $this->renderPjax('create', [
             'model' => $model
         ]);
     }
+
+
+    public function actionUpdate($id)
+    {
+        $model = BannerForm::findOne($id);
+        $model->scenario = 'update';
+
+        if($model->load(Yii::$app->request->post())){
+            if($model->updateBanner()){
+                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '保存成功', 'url'=> Url::to(['index'])]);
+            }
+            return $this->asJson(['data'=> '', 'code'=>0]);
+        }
+        return $this->renderPjax('update', [
+            'model' => $model
+        ]);
+    }
+
+    public function actionDelete($id)
+    {
+        BannerForm::findOne($id)->delete();
+        return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '删除成功', 'url'=> Url::to(['index'])]);
+    }
+
+    public function actionValidateForm($scenario, $id = null)
+    {
+        Yii::$app->response->format = \Yii\web\Response::FORMAT_JSON;
+        if($id){
+            $model = BannerForm::findOne($id);
+        }else{
+            $model = new BannerForm();
+        }
+
+        $model->scenario = $scenario;
+        $model->load(Yii::$app->request->post());
+        return \yii\bootstrap\ActiveForm::validate($model);
+    }
+
 }

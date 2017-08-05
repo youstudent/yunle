@@ -59,7 +59,6 @@ class ServiceController extends BackendController
             'model' => $this->findModel($id),
         ]);
     }
-
     /**
      * Creates a new Adminuser model.
      * If creation is successful, the browser will be redirected to the 'view' page.
@@ -68,27 +67,34 @@ class ServiceController extends BackendController
     public function actionCreate()
     {
         $model = new ServiceForm();
+        $model->scenario = 'create';
 
-        if ($model->addService(Yii::$app->request->post())) {
-            return json_encode(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['service/index'])]);
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->renderPjax('create', [
-                'model' => $model,
-            ]);
+        if($model->load(Yii::$app->request->post())){
+            if($model->addService()){
+                return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['salesman/index'])]);
+            }
+            return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作失败', 'url'=> Url::to(['salesman/index'])]);
         }
+        return $this->renderPjax('create', [
+            'model' => $model
+        ]);
     }
 
 
-    public function actionUpdateField($id, $field)
+    public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model =  ServiceForm::getOne($id);
+        $model->scenario = 'update';
 
-        if ($model->updateField(Yii::$app->request->post(), $field)) {
-            return json_encode(['code'=>1, 'msg'=> 'success', 'data' => '']);
-        } else {
-            return json_encode(['code'=>0, 'msg'=> 'error', 'data' => '']);
+        if($model->load(Yii::$app->request->post())){
+            if($model->updateService()){
+                return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['salesman/index'])]);
+            }
+            return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作失败', 'url'=> Url::to(['salesman/index'])]);
         }
+        return $this->renderPjax('update', [
+            'model' => $model
+        ]);
     }
 
     /**
@@ -119,5 +125,17 @@ class ServiceController extends BackendController
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+    public function actionValidateForm($scenario, $id = null)
+    {
+        Yii::$app->response->format = \Yii\web\Response::FORMAT_JSON;
+        if($id){
+            $model = ServiceForm::findOne($id);
+        }else{
+            $model = new ServiceForm();
+        }
 
+        $model->scenario = $scenario;
+        $model->load(Yii::$app->request->post());
+        return \yii\bootstrap\ActiveForm::validate($model);
+    }
 }

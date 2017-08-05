@@ -12,10 +12,13 @@ use backend\models\form\MemberForm;
 use backend\models\form\MemberInfoForm;
 use backend\models\Member;
 use backend\models\searchs\MemberSearch;
+use common\models\Identification;
 use common\models\MessageCode;
 use Yii;
+use yii\bootstrap\ActiveForm;
 use yii\helpers\Url;
 use yii\web\Controller;
+use yii\web\Response;
 
 class MemberController extends BackendController
 {
@@ -35,10 +38,11 @@ class MemberController extends BackendController
     public function actionCreate()
     {
         $model = new MemberForm();
+
         if ($model->addMember(Yii::$app->request->post())) {
             return json_encode(['data' => '', 'code' => 1, 'message' => '添加成功', 'url' => Url::to(['member/index'])]);
         }
-        return $this->renderPjax('create', [
+        return $this->renderAjax('create', [
             'model' => $model,
         ]);
     }
@@ -46,13 +50,19 @@ class MemberController extends BackendController
     //更新会员信息
     public function actionUpdate($id)
     {
-        $model = MemberForm::findOne(['id' => $id]);
+        $member = MemberForm::getOne($id);
+        $identification = Identification::findOne(['member_id'=>$member->id]);
 
-        if ($model->updateMember(Yii::$app->request->post())) {
-            return json_encode(['data' => '', 'code' => 1, 'message' => '更新成功', 'url' => Url::to(['member/index'])]);
+        $member->scenario = 'update';
+        if ($member->load(Yii::$app->request->post()) && $identification->load(Yii::$app->request->post())) {
+            if( $member->updateMember() && $identification->updateInfo() ){
+                return $this->asJson(['data' => '', 'code' => 1, 'message' => '更新成功', 'url' => Url::to(['member/index'])]);
+            }
+            return $this->asJson(['data' => '', 'code' => 0, 'message' => '更新失败']);
         }
-        return $this->renderPjax('update', [
-            'model' => $model,
+        return $this->renderAjax('update', [
+            'member' => $member,
+            'identification' => $identification,
         ]);
     }
 
@@ -85,9 +95,23 @@ class MemberController extends BackendController
             'model' => $model
         ]);
     }
-    public function actionSms()
+    public function actionTest()
     {
-        $model = new MessageCode();
-        $model->sms("13161672102");
+        $menu = Yii::$app->params['app_menu'];
+        return json_encode(['data' => $menu, 'code' => 1, 'message' => ''], JSON_UNESCAPED_UNICODE);
+    }
+
+    public function actionValidateForm($scenario, $id = null)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if($id){
+            $model = MemberForm::findOne($id);
+        }else{
+            $model = new MemberForm();
+        }
+
+        $model->scenario = $scenario;
+        $model->load(Yii::$app->request->post());
+        return ActiveForm::validate($model);
     }
 }

@@ -14,7 +14,7 @@ use Yii;
  * @property integer $service_id
  * @property integer $start_at
  */
-class OrderDail extends \yii\db\ActiveRecord
+class OrderDetail extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
@@ -48,4 +48,16 @@ class OrderDail extends \yii\db\ActiveRecord
             'start_at' => '创建时间',
         ];
     }
+
+    public function getMember()
+    {
+        return $this->hasOne(Member::className(), ['member_id' => 'id']);
+    }
+
+    public function getOrder()
+    {
+        return $this->hasOne(Order::className(), ['id' => 'order_id'])->alias('o');
+    }
+
+
 }

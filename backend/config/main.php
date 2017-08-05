@@ -25,16 +25,16 @@ return [
         "@pd/sms" => "@vendor/pokerdragon/yii2-aliyun-sms",
     ],
     'components' => [
-        'assetManager' => [
-            'bundles' => [
-                'yii\web\JqueryAsset' => [
-                    'sourcePath' => null,   // 一定不要发布该资源
-                    'js' => [
-
-                    ]
-                ],
-            ],
-        ],
+//        'assetManager' => [
+//            'bundles' => [
+//                'yii\web\JqueryAsset' => [
+//                    'sourcePath' => null,   // 一定不要发布该资源
+//                    'js' => [
+//
+//                    ]
+//                ],
+//            ],
+//        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'KIyOZVHLRMgh-Uef6sMAJL630ctmmj4f',

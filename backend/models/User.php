@@ -53,7 +53,8 @@ class User extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'username' => '用户名',
-            'pid' => '推荐人id',
+            'name' => '姓名',
+            'pid' => '服务商',
             'phone' => '电话',
             'password' => '密码',
             'status' => '状态 1:正常 0:冻结',
@@ -62,6 +63,8 @@ class User extends \yii\db\ActiveRecord
             'access_token' => 'Access Token',
             'created_at' => '创建时间',
             'updated_at' => '更新时间',
+            'system_switch' => '系统通知',
+            'check_switch' => '审核通知',
         ];
     }
 
@@ -81,4 +84,29 @@ class User extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Service::className(), ['id'=> 'pid'])->alias('s');
     }
+
+    public static function dropDownList($pid)
+    {
+        return  User::find()->where(['pid'=>$pid, 'deleted_at' => null])->select('name,id')->indexBy('id')->column();
+    }
+
+    public static function dropDownListHtml($pid, $salesman_id)
+    {
+        $data = User::dropDownList($pid);
+        $html = '';
+        if($data){
+            foreach($data as $k => $v){
+                if($k === intval($salesman_id)){
+                    $html .= "<option value=".$k ." selected>".$v."</options>";
+                }else{
+                    $html .= "<option value=".$k .">".$v."</options>";
+                }
+
+            }
+        }else{
+            $html = '<option value="">当前服务商无业务员</option>';
+        }
+        return $html;
+    }
+
 }

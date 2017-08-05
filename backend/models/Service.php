@@ -15,10 +15,13 @@ use Yii;
  * @property string $address
  * @property string $lat
  * @property string $lng
+ * @property string $open_at
+ * @property string $close_at
  * @property integer $level
  * @property integer $status
  * @property integer $created_at
  * @property integer $updated_at
+ * @property integer $pid
  */
 class Service extends \yii\db\ActiveRecord
 {
@@ -37,7 +40,7 @@ class Service extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'principal', 'contact_phone'], 'required'],
-            [['level', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['level', 'status', 'created_at', 'updated_at', 'deleted_at'], 'integer'],
             [['name', 'principal', 'contact_phone', 'introduction', 'address', 'lat', 'lng'], 'string', 'max' => 256],
         ];
     }
@@ -56,11 +59,15 @@ class Service extends \yii\db\ActiveRecord
             'introduction' => '简介',
             'address' => '地址',
             'lat' => '纬度',
-            'lon' => '经度',
+            'lng' => '经度',
             'level' => '星级',
-            'status' => '状态; 10 已启用',
+            'status' => '状态',
+            'open_at' => '营业开始时间',
+            'close_at' => '营业结束时间',
             'created_at' => '创建时间',
             'updated_at' => '更新时间',
+            'deleted_at' => '删除时间',
+            'pid' => '客户经理',
         ];
     }
 
@@ -68,5 +75,12 @@ class Service extends \yii\db\ActiveRecord
     {
         //TODO::验证filed字段权限
 
+    }
+
+    public static function dropDownList($json = false)
+    {
+        $list = Service::find()->where(['deleted_at'=> null])->select('name')->asArray()->column();
+        if($json) $list = json_encode($list, JSON_UNESCAPED_UNICODE);
+        return $list;
     }
 }

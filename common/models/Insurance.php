@@ -21,6 +21,7 @@ namespace common\models;
      */
 
 use Yii;
+use yii\db\Exception;
 
 /**
  * This is the model class for table "cdc_insurance".
@@ -51,6 +52,16 @@ class Insurance extends \yii\db\ActiveRecord
         return [
             [['type', 'cost', 'deduction', 'created_at', 'updated_at'], 'integer'],
             [['title'], 'string', 'max' => 50],
+            [['title'], 'unique', 'on' => ['update']],
+            [['title'], 'validateUpdateTitle', 'on' => ['update']]
+        ];
+    }
+
+    public function scenarios()
+    {
+        return [
+            'create' => ['title', 'type', 'cost', 'deduction'],
+            'update' => ['title', 'type', 'cost', 'deduction'],
         ];
     }
 
@@ -61,12 +72,54 @@ class Insurance extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'title' => 'Title',
-            'type' => 'Type',
-            'cost' => 'Cost',
-            'deduction' => 'Deduction',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'title' => '名称',
+            'type' => '类型',
+            'cost' => '估价',
+            'deduction' => '免赔',
+            'created_at' => '创建时间',
+            'updated_at' => '更新时间',
         ];
+    }
+
+    public function addInsurance()
+    {
+        if(!$this->validate()){
+            return false;
+        }
+        return Yii::$app->db->transaction(function(){
+           $this->created_at = time();
+           $this->updated_at = time();
+           if(!$this->save()){
+               throw new Exception("添加失败");
+           }
+           return $this;
+        });
+    }
+
+    public function updateInsurance()
+    {
+        if(!$this->validate()){
+            return false;
+        }
+        return Yii::$app->db->transaction(function(){
+            $this->updated_at = time();
+            if(!$this->save()){
+                throw new Exception("添加失败");
+            }
+            return $this;
+        });
+    }
+
+
+    public function validateUpdateTitle($attribute, $params)
+    {
+        if(!$this->hasErrors()){
+            if($this->title != $this->getOldAttribute('title')){
+                $count = Insurance::find()->where(['title' => $this->title ])->count();
+                if($count > 0){
+                    $this->addError($attribute, '险种不能重复');
+                }
+            }
+        }
     }
 }

@@ -5,6 +5,7 @@ namespace backend\models;
 use Yii;
 
 use yii\data\ActiveDataProvider;
+use yii\db\Exception;
 
 
 /**
@@ -14,10 +15,6 @@ use yii\data\ActiveDataProvider;
  * @property string $name
  * @property string $brief
  * @property integer $created_at
-<<<<<<< HEAD
-=======
- * @property integer $updated_at
->>>>>>> 9d09e6c5fe3954eb2b15cbe84ac00ee88cd830d3
  */
 class InsuranceCompany extends \yii\db\ActiveRecord
 {
@@ -40,6 +37,16 @@ class InsuranceCompany extends \yii\db\ActiveRecord
             [['created_at','id'], 'integer'],
             [['created_at', 'updated_at'], 'integer'],
             [['name', 'brief'], 'string', 'max' => 255],
+            [['name'], 'unique', 'on'=> 'create'],
+            [['name'], 'validateUpdateName', 'on' => 'update']
+        ];
+    }
+
+    public function scenarios()
+    {
+        return [
+            'create' => ['name', 'brief', 'status'],
+            'update' => ['name', 'brief', 'status'],
         ];
     }
 
@@ -53,6 +60,7 @@ class InsuranceCompany extends \yii\db\ActiveRecord
             'name' => '保险商名',
             'brief' => '介绍',
             'created_at' => '创建时间',
+            'status' => '状态',
         ];
     }
     
@@ -74,25 +82,48 @@ class InsuranceCompany extends \yii\db\ActiveRecord
     /**
      *  添加服务商
      */
-    public function add($data){
-        if(!$this->load($data) || !$this->validate()){
+    public function addInsuranceCompany(){
+        if(!$this->validate()){
             return false;
         }
-        $this->created_at=time();
-        return $this->save();
+        return Yii::$app->db->transaction(function(){
+            $this->created_at=time();
+            if(!$this->save()){
+                throw new Exception('添加失败');
+            }
+            return $this;
+        });
+
     }
-    
-    
+
+
     /**
-     *  修改
+     *  添加服务商
      */
-    public function editCompany($data){
-        if(!$this->load($data) || !$this->validate()){
+    public function updateInsuranceCompany(){
+        if(!$this->validate()){
             return false;
         }
-        $this->created_at=time();
-        var_dump($this->save());
-        
+        return Yii::$app->db->transaction(function(){
+            $this->created_at=time();
+            if(!$this->save()){
+                throw new Exception('保存失败');
+            }
+            return $this;
+        });
+
     }
-    
+
+    public function validateUpdateName($attribute, $params)
+    {
+        if(!$this->hasErrors()){
+            if($this->name != $this->getOldAttribute('name')){
+                $count = InsuranceCompany::find()->where(['name' => $this->name ])->count();
+                if($count > 0){
+                    $this->addError($attribute, '保险商名不能重复');
+                }
+            }
+        }
+    }
+
 }

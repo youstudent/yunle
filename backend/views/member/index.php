@@ -83,7 +83,7 @@ JS
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="row">
         <div class="col-md-6">
-            <?= Html::a('添加会员', ['create'], ['class' => 'btn btn-success']) ?>
+            <a href="<?= Url::to(['create']) ?>" class="btn btn-success" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static" >添加会员</a>
         </div>
     </div>
     <p></p>
@@ -131,7 +131,7 @@ JS
 
                 </div>
                 <button type="submit" class="btn btn-sm btn-primary m-r-5">搜索</button>
-                <button type="button" class="btn btn-sm btn-info m-r-5" onclick="">重置</button>
+                <button type="reset" class="btn btn-sm btn-info m-r-5" onclick="">重置</button>
             </form>
 
             <p></p>
@@ -154,7 +154,7 @@ JS
                     <tr class="">
                         <td><?= \pd\helpers\Yii2Helpers::serialColumn($dataProvider, $index) ?></td>
                         <td><?= $model->type == 1 ? '<span class="badge badge-info">个人</span>' : '<span class="badge badge-warning">组织</span>' ?></td>
-                        <td><?= $model->memberImg ? '<div class="thumbnail"> '.$model->memberImg->img_path .'</div>': ''?></td>
+                        <td><?= $model->memberImg ? '<div class="thumbnail"><img src=" '.$model->memberImg->img_path .' " style="width:40px;height:50px;"></div>': ''?></td>
                         <td><?= $model->memberInfo ? $model->memberInfo->name : '' ?></td>
                         <td><?= $model->phone ?></td>
                         <td><?= $model->status == 1 ? '<span class="badge badge-info">正常</span>' : '<span class="badge badge-danger">冻结</span>' ?></td>
@@ -163,21 +163,16 @@ JS
 
                         <td align="center">
                             <div class="btn-group">
-                                <a href="javascript:;" data-url="<?= Url::to(['member/info', 'id'=> $model->id]) ?>" data-toggle="modal" data-target="#realinfo" onclick="pokerDragon.ajaxModal($(this));"><span class="btn btn-info m-r-1 m-b-5 btn-xs">实名信息</span></a>
-                                <a href="<?= Url::to(['member/view', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">业务员</span></a>
-                                <a href="<?= Url::to(['order/index', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">订单</span></a>
+                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">详细资料</span></a>
+                                <a href="<?= Url::to(['view', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">变更业务员</span></a>
+                                <a href="<?= Url::to(['index', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">订单</span></a>
                                 <a href="<?= Url::to(['insurance/index', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">保险</span></a>
-                                <a href="#member-edit-modal-<?= $model->id ?>" data-url="<?= Url::to(['member/update', 'id'=> $model->id]) ?>" data-toggle="modal" ><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
-                                <a href="javasrcitp:;" data-confirm="确认冻结此会员？" data-url="<?= Url::to(['member/set-status','id' => $model->id, 'status'=> Member::STATUS_INACTIVE]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">冻结</span></a>
-                                <a href="javasrcitp:;" data-confirm="确认激活此会员？" data-url="<?= Url::to(['member/set-status','id' => $model->id, 'status'=> Member::STATUS_ACTIVE]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">激活</span></a>
-                                <a href="javasrcitp:;" data-confirm="确认删除此会员？" data-url="<?= Url::to(['member/soft-delete', 'id' => $model->id]) ?>"  data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                                <a href="javascript:;" data-confirm="确认冻结此会员？" data-url="<?= Url::to(['set-status','id' => $model->id, 'status'=> Member::STATUS_INACTIVE]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">冻结</span></a>
+                                <a href="javascript:;" data-confirm="确认激活此会员？" data-url="<?= Url::to(['set-status','id' => $model->id, 'status'=> Member::STATUS_ACTIVE]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">激活</span></a>
+                                <a href="javascript:;" data-confirm="确认删除此会员？" data-url="<?= Url::to(['soft-delete', 'id' => $model->id]) ?>"  data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
                             </div>
                         </td>
                     </tr>
-                    <!-- #modal-dialog -->
-                    <div class="modal fade member-edit-modal" id="member-edit-modal-<?= $model->id ?>">
-                        <?= $this->render('_modal_form', ['model'=>$model]) ?>
-                    </div>
                 <?php endforeach; ?>
                 </tbody>
             </table>
@@ -196,6 +191,5 @@ JS
     </div>
     <!-- end panel -->
 </div>
-<div id="ajax-modal-content">
 
-</div>
+

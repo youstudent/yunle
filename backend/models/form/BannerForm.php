@@ -14,23 +14,42 @@ use yii\base\Exception;
 
 class BannerForm extends Banner
 {
-    public function addBanner($form)
+
+    public function scenarios()
     {
-        if(!$this->load($form)){
-            return false;
-        }
+        return [
+            'create' => ['name', 'describe', 'status', 'created_at', 'updated_at', 'action_type', 'action_value'],
+            'update' => ['name', 'describe', 'status', 'created_at', 'updated_at', 'action_type', 'action_value'],
+        ];
+    }
+
+    public function addBanner()
+    {
 
         if(!$this->validate()){
             return false;
         }
-        $bannerModel = &$this;
-        return Yii::$app->db->transaction(function() use($bannerModel){
-            $bannerModel->created_at = time();
-            $bannerModel->updated_at = time();
-            if(!$bannerModel->save()){
+        return Yii::$app->db->transaction(function(){
+            $this->created_at = time();
+            $this->updated_at = time();
+            if(!$this->save()){
                 throw new Exception('error');
             }
-            return $bannerModel;
+            return $this;
+        });
+    }
+
+    public function updateBanner()
+    {
+        if(!$this->validate()){
+            return false;
+        }
+        return Yii::$app->db->transaction(function(){
+            $this->updated_at = time();
+            if(!$this->save()){
+                throw new Exception('error');
+            }
+            return $this;
         });
     }
 }

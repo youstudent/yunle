@@ -130,7 +130,6 @@ JS
                     <th>#</th>
                     <th>标题</th>
                     <th>作者</th>
-                    <th>预览</th>
                     <th>栏目</th>
                     <th>浏览量</th>
                     <th>状态</th>
@@ -144,7 +143,7 @@ JS
                         <td><?= \pd\helpers\Yii2Helpers::serialColumn($dataProvider, $index) ?></td>
                         <td><?= $model->title ?></td>
                         <td><?= $model->author ?></td>
-                        <td><?= $model->content ?></td>
+
                         <td><?= $model->column_id ?></td>
                         <td><?= $model->views ?></td>
                         <td><?= pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
@@ -158,7 +157,9 @@ JS
                         </td>
                         <td align="center">
                             <div class="btn-group">
-                                <a href="javascript:;" data-url="<?= Url::to(['order/log-modal', 'id'=> $model->id]) ?>" onclick="pokerDragon.modalAjax($(this))"><span class="btn btn-info m-r-1 m-b-5 btn-xs">流程</span></a>
+                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">编辑</span></a>
+                                <a href="javascript:;" data-url="<?= Url::to(['delete', 'id'=> $model->id]) ?>" onclick="pokerDragon.modalAjax($(this))"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                            </div>
                         </td>
                     </tr>
                     <!-- #modal-dialog -->
