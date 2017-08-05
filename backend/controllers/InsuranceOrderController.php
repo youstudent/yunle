@@ -9,6 +9,7 @@ namespace backend\controllers;
 
 
 use backend\models\ActInsurance;
+use backend\models\InsuranceDetail;
 use backend\models\InsuranceElement;
 use backend\models\InsuranceOrder;
 use backend\models\searchs\InsuranceDetailSearch;
@@ -51,4 +52,25 @@ class InsuranceOrderController extends BackendController
             'model' => $model
         ]);
     }
+
+    public function actionArchives()
+    {
+        $searchModel = new InsuranceDetailSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->renderPjax('index', [
+            'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel
+        ]);
+    }
+
+    public function actionDetail($id)
+    {
+        $model =  InsuranceDetail::findOne($id);
+
+        return $this->renderPjax('detail', [
+            'model' => $model
+        ]);
+    }
+
 }

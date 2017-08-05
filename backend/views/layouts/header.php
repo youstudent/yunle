@@ -4,6 +4,56 @@ use yii\helpers\Url;
 
 /* @var $this \yii\web\View */
 /* @var $content string */
+
+pd\coloradmin\web\plugins\SwitcheryAsset::register($this);
+$this->registerJs(<<<JS
+var green = "#00acac", red = "#ff5b57", blue = "#348fe2", purple = "#727cb6", orange = "#f59c1a", black = "#2d353c",
+    renderSwitcher = function () {
+        0 !== $("[data-render=switchery]").length && $("[data-render=switchery]").each(function () {
+            var t = green;
+            if ($(this).attr("data-theme"))switch ($(this).attr("data-theme")) {
+                case"red":
+                    t = red;
+                    break;
+                case"blue":
+                    t = blue;
+                    break;
+                case"purple":
+                    t = purple;
+                    break;
+                case"orange":
+                    t = orange;
+                    break;
+                case"black":
+                    t = black
+            }
+            var a = {};
+            a.color = t, a.secondaryColor = $(this).attr("data-secondary-color") ? $(this).attr("data-secondary-color") : "#dfdfdf", a.className = $(this).attr("data-classname") ? $(this).attr("data-classname") : "switchery", a.disabled = $(this).attr("data-disabled") ? !0 : !1, a.disabledOpacity = $(this).attr("data-disabled-opacity") ? parseFloat($(this).attr("data-disabled-opacity")) : .5, a.speed = $(this).attr("data-speed") ? $(this).attr("data-speed") : "0.5s";
+            new Switchery(this, a)
+        })
+    }, checkSwitcherState = function () {
+        $('[data-click="check-switchery-state"]').live("click", function () {
+            alert($('[data-id="switchery-state"]').prop("checked"))
+        }), $('[data-change="check-switchery-state-text"]').live("change", function () {
+            if($(this).prop("checked")){
+                $('[data-id="switchery-state-text"]').attr('class', 'btn btn-xs btn-primary disabled m-l-5');
+                $('[data-id="switchery-state-text"]').text('营业中') 
+            }else{
+                $('[data-id="switchery-state-text"]').attr('class', 'btn btn-xs btn-danger disabled m-l-5');
+                $('[data-id="switchery-state-text"]').text('停业');
+            }
+        })
+    }, FormSliderSwitcher = function () {
+        "use strict";
+        return {
+            init: function () {
+                renderSwitcher(), checkSwitcherState()
+            }
+        }
+    }();
+       FormSliderSwitcher.init();
+JS
+);
 ?>
 
 <!-- begin #header -->
@@ -26,8 +76,8 @@ use yii\helpers\Url;
             <li>
                 <form class="navbar-form full-width">
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Enter keyword"/>
-                        <button type="submit" class="btn btn-search"><i class="fa fa-search"></i></button>
+                        <input type="checkbox" data-render="switchery" data-theme="blue" data-change="check-switchery-state-text" checked />
+                        <a href="#" class="btn btn-xs btn-primary disabled m-l-5" data-id="switchery-state-text">营业中</a>
                     </div>
                 </form>
             </li>

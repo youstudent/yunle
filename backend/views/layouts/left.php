@@ -4,27 +4,18 @@
     <div data-scrollbar="true" data-height="100%">
         <!-- begin sidebar user -->
         <ul class="nav">
-            <li class="nav-profile">
-                <div class="image">
-                    <a href="javascript:;"><img src="<?= $directoryAsset ?>/img/user-13.jpg" alt=""/></a>
-                </div>
-                <div class="info">
-                    Sean Ngu
-                    <small>Front end developer</small>
-                </div>
-            </li>
+
         </ul>
         <!-- end sidebar user -->
 
         <!-- begin sidebar nav -->
         <?php
         //$menu = \mdm\admin\components\MenuHelper::getAssignedMenu(0);
-        ?>
-        <?= pd\coloradmin\widgets\Menu::widget(
+        $menu =
             [
                 'options' => ['class' => 'nav'],
                 'items'   => [
-                    ['label' => '菜单', 'options' => ['class' => 'nav-header']],
+                    ['label' => '', 'options' => ['class' => 'nav-header']],
                     ['label' => '面板', 'url' => '/panel'],
                     [
                         'label'   => '组织',
@@ -47,6 +38,16 @@
                         ],
                     ],
                     [
+                        'label'   => '审核',
+                        'url'     => 'javascript:;',
+                        'options' => ['class' => 'has-sub'],
+                        'items'   => [
+                            ['label' => '身份证', 'url' => ['/a/wall']],
+                            ['label' => '行驶证', 'url' => ['/b/index']],
+                            ['label' => '服务商', 'url' => ['/c-order/index']],
+                        ],
+                    ],
+                    [
                         'label'   => '内容',
                         'url'     => 'javascript:;',
                         'options' => ['class' => 'has-sub'],
@@ -57,6 +58,17 @@
                         ],
                     ],
                     [
+                        'label'   => '档案',
+                        'url'     => 'javascript:;',
+                        'options' => ['class' => 'has-sub'],
+                        'items'   => [
+                            ['label' => '驾照', 'url' => ['/driver/index']],
+                            ['label' => '身份证', 'url' => ['/identity/index']],
+                            ['label' => '行驶证', 'url' => ['/car/index']],
+                            ['label' => '保单', 'url' => ['/insurance-order/index']],
+                        ],
+                    ],
+                    [
                         'label'   => '设置',
                         'url'     => 'javascript:;',
                         'options' => ['class' => 'has-sub'],
@@ -64,6 +76,17 @@
                             ['label' => '系统', 'url' => ['/system/index']],
                             ['label' => '保险商', 'url' => ['/insurance-company/index']],
                             ['label' => '险种', 'url' => ['/insurance/index']],
+                            ['label' => '我的信息', 'url' => ['/service/profile']],
+                        ],
+                    ],
+                    [
+                        'label'   => '权限',
+                        'url'     => 'javascript:;',
+                        'options' => ['class' => 'has-sub'],
+                        'items'   => [
+                            ['label' => '角色', 'url' => ['/system/index']],
+                            ['label' => '员工', 'url' => ['/abc/index']],
+                            ['label' => '账号', 'url' => ['/insurance-company/index']],
                         ],
                     ],
                     [
@@ -80,8 +103,10 @@
                         ],
                     ],
                 ],
-            ]
-        ) ?>
+            ];
+        ?>
+        <?= pd\coloradmin\widgets\Menu::widget($menu) ?>
+
         <!-- begin sidebar minify button -->
         <li><a href="javascript:;" class="sidebar-minify-btn" data-click="sidebar-minify"><i
                         class="fa fa-angle-double-left"></i></a></li>

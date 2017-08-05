@@ -10,6 +10,8 @@ $this->title = '添加文章';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
+
+
 <!-- begin row -->
 <div class="row">
     <!-- begin col-6 -->
@@ -32,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="panel-body">
                 <?php $form = \yii\bootstrap\ActiveForm::begin([
                     'id'                   => 'ArticleForm',
-                    'layout'               => 'horizontal',
+                    'layout'               => 'default',
                     'fieldConfig'          => [
                         'template'             => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
                         'horizontalCssClasses' => [
@@ -55,10 +57,17 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <?= $form->field($model, 'views')->textInput() ?>
 
-                <?= $form->field($model, 'content')->textarea() ?>
+                <?= $form->field($model, 'content')->widget(\yii\redactor\widgets\Redactor::className(), [
+                    'clientOptions' => [
+                        'imageManagerJson' => ['/redactor/upload/image-json'],
+                        'imageUpload' => ['/redactor/upload/image'],
+                        'fileUpload' => ['/redactor/upload/file'],
+                        'lang' => 'zh_cn',
+                        'plugins' => ['clips', 'fontcolor','imagemanager']
+                    ]
+                ]) ?>
 
                 <?php \yii\bootstrap\ActiveForm::end() ?>
-
                 <button type="button" class="btn btn-sm btn-primary m-r-5 btn-submit">保存</button>
             </div>
         </div>
@@ -68,8 +77,9 @@ $this->params['breadcrumbs'][] = $this->title;
 </div>
 <!-- end row -->
 <?php
-$this->registerJs(<<<JS
 
+
+$this->registerJs(<<<JS
 $(function () {
     $('.btn-submit').on('click', function () {
         var f = $('#ArticleForm');

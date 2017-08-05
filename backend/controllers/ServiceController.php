@@ -125,6 +125,14 @@ class ServiceController extends BackendController
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
+    public function actionProfile()
+    {
+        return $this->renderPjax('profile', [
+           'model' => new Service(),
+        ]);
+    }
+
     public function actionValidateForm($scenario, $id = null)
     {
         Yii::$app->response->format = \Yii\web\Response::FORMAT_JSON;

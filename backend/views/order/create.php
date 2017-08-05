@@ -4,84 +4,130 @@
  * Date: 2017/7/24 - 下午4:15
  *
  */
-use yii\bootstrap\Html;
 use yii\helpers\Url;
 
-/* @var $model backend\models\form\MemberForm */
+/* @var $this yii\web\view */
+/* @var $model backend\models\form\OrderForm */
+
+
 
 ?>
+
 <!-- #modal-dialog -->
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h4 class="modal-title">添加会员</h4>
+    <h4 class="modal-title">添加订单</h4>
 </div>
 <div class="modal-body">
-    <?php $form = \yii\bootstrap\ActiveForm::begin([
-        'id'                   => 'MemberForm',
-        'layout'               => 'horizontal',
-        'fieldConfig'          => [
-            'template'             => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
-            'horizontalCssClasses' => [
-                'label'   => 'control-label col-md-4 col-sm-4',
-                'offset'  => '',
-                'wrapper' => 'col-md-6 col-sm-6',
-                'error'   => '',
-                'hint'    => '',
+    <div class="panel-body panel-form">
+        <?php $form = \yii\bootstrap\ActiveForm::begin([
+            'id'                   => 'OrderForm',
+            'layout'               => 'horizontal',
+            'fieldConfig'          => [
+                'template'             => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
+                'horizontalCssClasses' => [
+                    'label'   => 'control-label col-md-4 col-sm-4',
+                    'offset'  => '',
+                    'wrapper' => 'col-md-6 col-sm-6',
+                    'error'   => '',
+                    'hint'    => '',
+                ],
             ],
-        ],
-        'enableAjaxValidation' => true,
-        'validationUrl'        => $model->isNewRecord ? Url::toRoute(['validate-form', 'scenario' => 'create']) : Url::toRoute(['validate-form', 'scenario' => 'update' , 'id'=>$model->id]),
-    ]) ?>
+            'enableAjaxValidation' => true,
+            'validationUrl'        => $model->isNewRecord ? Url::toRoute(['validate-form', 'scenario' => 'create']) : Url::toRoute(['validate-form', 'scenario' => 'update']),
+        ]) ?>
 
-    <?= $form->field($model, 'phone')->textInput() ?>
+        <?= $form->field($model, 'type')->dropDownList([
+                1 => '救援',
+                2 => '维修',
+                3 => '保养',
+                4 => '线上审车',
+                5 => '线下审车',
+        ]) ?>
 
-    <?= $form->field($model, 'type')->dropDownList([1 => '个人', 2 => '组织'], ['prompt' => '请选择']) ?>
+        <?= $form->field($model, 'pick')->dropDownList([
+            0 => '不需要',
+            1 => '需要'
+        ]) ?>
 
-    <?= $form->field($model, 'service')->dropDownList(\backend\models\Service::find()
-        ->where(['status' => 1])
-        ->select('name,id')->
-        indexBy('id')->
-        column(), [
-        'prompt'   => '请选择',
-        'onChange' => 'pd_selectSid($(this))']) ?>
+        <?= $form->field($model, 'pick_at')->textInput() ?>
 
-
-    <?= $form->field($model, 'pid')->dropDownList([]) ?>
+        <?= $form->field($model, 'pick_addr')->textInput() ?>
 
 
-    <?= $form->field($model, 'status')->dropDownList([0 => '冻结', 1 => '正常'], ['prompt' => '请选择']) ?>
+        <?= $form->field($model, 'user')->textInput() ?>
 
-    <?php \yii\bootstrap\ActiveForm::end() ?>
+        <?= $form->field($model, 'member_id', ['template'=> "{input}"])->textInput()->hiddenInput() ?>
 
+        <?= $form->field($model, 'phone')->textInput() ?>
+
+        <?= $form->field($model, 'car')->dropDownList(
+                \backend\models\Car::find()->where(['member_id'=>$model->member_id])->select('license_number')->indexBy('id')->column()
+        ) ?>
+
+
+        <?= $form->field($model, 'distributing')->dropDownList([
+                0 => '自动',
+                1 => '手动'
+        ]) ?>
+
+        <?= $form->field($model, 'service')->dropDownList(
+                \backend\models\Service::find()->where(['status'=>1])->select('name,id')->indexBy('id')->column()
+        ) ?>
+
+        <?= $form->field($model, 'cost')->textInput() ?>
+
+
+        <?php \yii\bootstrap\ActiveForm::end() ?>
+    </div>
 </div>
 <div class="modal-footer">
-    <a href="javascript:;" class="btn btn-sm btn-white" data-dismiss="modal">取消</a>
-    <a href="#" class="btn btn-sm btn-success  btn-submit" data-toggle="modal"
-       data-form-id="MemberForm">添加</a>
+    <a href="javascript:;" class="btn btn-sm btn-white" data-dismiss="modal">关闭</a>
+    <a href="javascript:;" class="btn btn-sm btn-success btn-submit" data-form-id="OrderForm">添加</a>
 </div>
-
 <script>
     $(function (){
-        $('.field-memberform-pid').hide();
-        pd_selectSid = function(that){
-            $('.field-memberform-pid').hide();
-            var pid = that.val();
-            if(!pid){
-                return false;
+        $('input[name="OrderForm[pick_at]"]').daterangepicker({
+            singleDatePicker: true,
+            timePicker: true,
+            showDropdowns: true,
+            locale:{
+                "separator": "-",
+                "format": "YYYY-MM-DD",
+                "daysOfWeek": [
+                    "日",
+                    "一",
+                    "二",
+                    "三",
+                    "四",
+                    "五",
+                    "六"
+                ],
+                "monthNames": [
+                    "一月",
+                    "二月",
+                    "三月",
+                    "四月",
+                    "五月",
+                    "六月",
+                    "七月",
+                    "八月",
+                    "九月",
+                    "十月",
+                    "十一月",
+                    "十二月"
+                ],
             }
-            var sid = <?= !$model->isNewRecord ? $model->pid : 0 ?>;
-            if(!pid){return false;}
-            var url = "<?= Url::to(['salesman/drop-down-list']); ?>?pid=" + pid + "&sid=" + sid;
-            $.get(url, function(rep){
-                $('#memberform-pid').html(rep);
-                $('.field-memberform-pid').show();
-            });
-        }
+        },function(start, end, label){
+            $('input[name="Identification[start_at]"]').val(start.format('YYYY.MM.DD'));
+            $('input[name="Identification[end_at]"]').val(end.format('YYYY.MM.DD'));
+        });
+
         $('.btn-submit').on('click', function () {
-            var f = $('#MemberForm');
+            var f = $('#OrderForm');
             f.on('beforeSubmit', function (e) {
                 swal({
-                        title: "确认添加会员",
+                        title: "确认更新会员信息",
                         text: "",
                         type: "warning",
                         showCancelButton: true,
@@ -127,5 +173,5 @@ use yii\helpers\Url;
 
         }
     })
-</script>
 
+</script>
