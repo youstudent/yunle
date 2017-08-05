@@ -66,7 +66,7 @@ class InsuranceOrderController extends BackendController
 
     public function actionDetail($id)
     {
-        $model =  InsuranceDetail::findOne($id);
+        $model =  InsuranceDetail::getDetail($id);
 
         return $this->renderPjax('detail', [
             'model' => $model

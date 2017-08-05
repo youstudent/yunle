@@ -17,10 +17,12 @@ use Yii;
  * @property string $phone
  * @property string $car
  * @property string $company
+ * @property string $check_action
  * @property integer $cost
  * @property integer $status
  * @property integer $created_at
  * @property integer $updated_at
+ * @property integer $check_at
  */
 class InsuranceOrder extends \yii\db\ActiveRecord
 {

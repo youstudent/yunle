@@ -17,6 +17,10 @@ use Yii;
  */
 class InsuranceDetail extends \yii\db\ActiveRecord
 {
+    public $insurance;
+    public $car;
+    public $person;
+    public $element;
     /**
      * @inheritdoc
      */
@@ -55,5 +59,17 @@ class InsuranceDetail extends \yii\db\ActiveRecord
     public function getInsuranceOrder()
     {
         return $this->hasOne(InsuranceOrder::className(), ['id'=> 'order_id'])->alias('io');
+    }
+
+    public static function getDetail($id)
+    {
+        $model = InsuranceDetail::findOne(['order_id'=>$id]);
+        $model->insurance = InsuranceOrder::findOne($id);
+        $model->car = Car::findOne(['id'=>$model->car_id]);
+        $model->person = Member::findOne(['id'=>$model->member_id]);
+        $model->element = InsuranceElement::findAll(['order_id'=>$id]);
+
+        return $model;
+
     }
 }

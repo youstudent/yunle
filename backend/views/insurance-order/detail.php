@@ -40,15 +40,15 @@
                     </tr>
                     <tbody>
                     <tr>
-                        <td><?= $model->insuranceOrder->order_sn ?></td>
-                        <td><?= $model->insuranceOrder->car ?></td>
-                        <td><?= $model->insuranceOrder->phone ?></td>
-                        <td><?= $model->insuranceOrder->created_at ?></td>
-                        <td>核保时间</td>
-                        <td>核保结果</td>
-                        <td>状态</td>
-                        <td><?= $model->insuranceOrder->cost ?></td>
-                        <td>完成时间</td>
+                        <td><?= $model->insurance->order_sn ?></td>
+                        <td><?= $model->insurance->car ?></td>
+                        <td><?= $model->insurance->phone ?></td>
+                        <td><?= $model->insurance->created_at ?></td>
+                        <td><?= $model->insurance->check_at?$model->insurance->check_at:'未审核'; ?></td>
+                        <td><?= $model->insurance->check_action?$model->insurance->check_action:'未审核'; ?></td>
+                        <td><?= $model->insurance->payment_action?$model->insurance->payment_action:'未付款'; ?></td>
+                        <td><?= $model->insurance->cost ?></td>
+                        <td><?= $model->insurance->updated_at?$model->insurance->updated_at:'未完成'; ?></td>
                     </tr>
                     </tbody>
                 </table>
@@ -57,9 +57,9 @@
                 <table id="data-table-title" class="table table-striped table-bordered">
                     <thead>
                     <tr>
-                        <th><?= $model->car->car ?></th>
+                        <th>车牌号</th>
                         <th>车辆类型</th>
-                        <th> </th>
+                        <th>所有人</th>
                         <th>使用性质</th>
                         <th>品牌型号</th>
                         <th>车辆识别代号</th>
@@ -70,28 +70,36 @@
                     </tr>
                     <tbody>
                     <tr>
-                        <td><?= $model->user ?></td>
-                        <td><?= $model->licence ?></td>
+                        <td><?= $model->car->license_number ?></td>
+                        <td><?= $model->car->type ?></td>
+                        <td><?= $model->car->owner ?></td>
+                        <td><?= $model->car->nature ?></td>
+                        <td><?= $model->car->brand_num ?></td>
+                        <td><?= $model->car->discern_num ?></td>
+                        <td><?= $model->car->motor_num ?></td>
+                        <td><?= $model->car->load_num ?></td>
+                        <td><?= $model->car->sign_at ?></td>
+                        <td><?= $model->car->certificate_at ?></td>
                     </tr>
                     </tbody>
                 </table>
             </div>
             <div class="tab-pane fade" id="insurance-info">
-                <table id="data-table-title" class="table table-striped table-bordered">
-                    <thead>
-                    <tr>
-                        <th>公司名称</th>
-                        <th>组织机构代码</th>
-                        <th>承保公司</th>
-                        <th>保单保险</th>
-                    </tr>
-                    <tbody>
-                    <tr>
-                        <td><?= $model->user ?></td>
-                        <td><?= $model->licence ?></td>
-                    </tr>
-                    </tbody>
-                </table>
+<!--                <table id="data-table-title" class="table table-striped table-bordered">-->
+<!--                    <thead>-->
+<!--                    <tr>-->
+<!--                        <th>公司名称</th>-->
+<!--                        <th>组织机构代码</th>-->
+<!--                        <th>承保公司</th>-->
+<!--                    </tr>-->
+<!--                    <tbody>-->
+<!--                    <tr>-->
+<!--                        <td>--><?//= $model->insurance->user ?><!--</td>-->
+<!--                        <td>--><?//= $model->insurance->licence ?><!--</td>-->
+<!--                        <td>--><?//= $model->insurance->company ?><!--</td>-->
+<!--                    </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
                 <table id="data-table-title" class="table table-striped table-bordered">
                     <thead>
                     <tr>
@@ -99,15 +107,35 @@
                         <th>性别</th>
                         <th>民族</th>
                         <th>身份证号</th>
-                        <th>承包公司</th>
+                        <th>承保公司</th>
                     </tr>
                     <tbody>
                     <tr>
-                        <td><?= $model->user ?></td>
-                        <td><?= $model->licence ?></td>
+                        <td><?= $model->insurance->user ?></td>
+                        <td><?= $model->insurance->sex ?></td>
+                        <td><?= $model->insurance->nation ?></td>
+                        <td><?= $model->insurance->licence ?></td>
+                        <td><?= $model->insurance->company ?></td>
                     </tr>
                     </tbody>
                 </table>
+<!--                <table id="data-table-title" class="table table-striped table-bordered">-->
+<!--                    <thead>-->
+<!--                    <tr>-->
+<!--                        <th>保险名称</th>-->
+<!--                        <th>要素</th>-->
+<!--                        <th>啊啊</th>-->
+<!--                    </tr>-->
+<!--                    <tbody>-->
+<!--                    --><?// foreach ($model->element as $v) {?>
+<!--                    <tr>-->
+<!--                        <td>--><?//= $v->insurance ?><!--</td>-->
+<!--                        <td>--><?//= $v->element ?><!--</td>-->
+<!--                        <td>--><?//= $v->dedution ?><!--</td>-->
+<!--                    </tr>-->
+<!--                    --><?// } ?>
+<!--                    </tbody>-->
+<!--                </table>-->
             </div>
             <div class="tab-pane fade" id="pay-info">
                 <table id="data-table-title" class="table table-striped table-bordered">
@@ -129,9 +157,11 @@
                         <td>123</td>
                         <td>123</td>
                         <td>123</td>
+                        <td>123</td>
                     </tr>
                     <tr>
                         <td>较强想</td>
+                        <td>123</td>
                         <td>123</td>
                         <td>123</td>
                         <td>123</td>
