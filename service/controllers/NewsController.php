@@ -9,14 +9,19 @@
 namespace service\controllers;
 
 
-use service\models\News;
+use Yii;
+use common\models\Notice;
 
 class NewsController extends ApiController
 {
     public function actionList()
     {
-        $model = new News();
-        $data = $model->getNews();
+        $model = new Notice();
+        $form = $this->getForm(Yii::$app->request->post('data'));
+        $user = $this->getUserInfo();
+        $user_id = $user['user']['id'];
+        $modelName = 'user';
+        $data = $model->getNews($form, $modelName ,$user_id);
         if ($data) {
             return $this->jsonReturn(1, 'success', $data);
         }

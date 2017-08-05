@@ -146,19 +146,53 @@ class Warranty extends \yii\db\ActiveRecord
     /*
      * 保单列表
      */
-    public function getList($data, $member)
+    public function getList($data, $member=null)
     {
-        if (!isset($data['member_id']) || empty($data['member_id'])) {
+        if (!isset($member['user']['id']) || empty($member['user']['id'])) {
             $member_id = $member['member']['id'];
         } else {
-            $member_id = $data['member_id'];
+            $member_id = $member['user']['id'];
+        }
+        //搜索
+        if (!isset($data['search']) || empty($data['search'])) {
+            $search = '';
+        } else {
+            $search = $data['search'];
+        }
+        //筛选
+        if (!isset($data['status']) || empty($data['status'])) {
+            $status = 0;
+        } else {
+            $status = $data['status'];
+        }
+        if (!isset($data['page']) || empty($data['page'])) {
+            $data['page'] = 1;
+        }
+        if (!empty($search) || $status !=0) {
+            $data['searchPage'] = 1;
+        } else {
+            $data['searchPage'] = 0;
         }
 
-        $warranty = Warranty::find()->select('id, order_id, start_at, end_at')
+        $count = Warranty::find()->where(['member_id'=>$member_id, 'state'=>1])->count();
+        $size = 3;
+        $pageTotal = ceil($count/$size);
+        $pageSize = ($data['page']-1)* $size;
+        $warranty = Warranty::find()->select('id, order_id, start_at, end_at, created_at')
             ->where(['member_id'=>$member_id, 'state'=>1])
             ->asArray()
-            ->orderBy(['created_at' => SORT_DESC])
+            ->orderBy(['end_at' => SORT_ASC])
+            ->limit($size)
+            ->offset($pageSize)
             ->all();
+        if (!empty($search) || $status != 0) {
+            $warranty = Warranty::find()->select('id, order_id, start_at, end_at, created_at')
+                ->where(['member_id'=>$member_id, 'state'=>1])
+                ->asArray()
+                ->orderBy(['created_at' => SORT_ASC])
+                ->all();
+        }
+
         if (!isset($warranty) || empty($warranty)) {
             return null;
         }
@@ -171,7 +205,38 @@ class Warranty extends \yii\db\ActiveRecord
 
         }
 
-        return $warranty;
+        //筛选
+        $aaa = [];
+        $bbb = [];
+        foreach ($warranty as &$v) {
+            if (preg_match("/($search)/is", $v['user']) ||
+                preg_match("/($search)/is", $v['car'])){
+                $aaa[] = $v;
+            }
+        }
+
+        foreach ($aaa as &$v) {
+            if ($status == 0) {
+                $bbb[] = $v;
+            }
+            if ($status == $v['status']['statusNum']) {
+                $bbb[] = $v;
+            }
+        }
+
+        if (!isset($bbb) || empty($bbb)) {
+            return null;
+        }
+
+        if ($data['searchPage'] == 1) {
+            $pageTotal = ceil(count($bbb) / $size);
+            $a = array_chunk($bbb,$size,false);
+            $bbb = $a[$data['page']-1];
+        }
+
+        $pageInfo = ['page'=>$data['page'], 'pageTotal'=>$pageTotal];
+        $all = ['list'=>$bbb,'pageInfo'=>$pageInfo];
+        return $all;
     }
 
     /*
@@ -190,11 +255,12 @@ class Warranty extends \yii\db\ActiveRecord
         $sex = $this->getNames($oldWarranty->order_id)->sex;
         $nation = $this->getNames($oldWarranty->order_id)->nation;
         $licence = $this->getNames($oldWarranty->order_id)->licence;
+        $phone = $this->getNames($oldWarranty->order_id)->phone;
 
         if ($memberType == 1) {
-            $warranty['person'] = ['name'=>$name, 'sex'=>$sex, 'nation'=>$nation, 'licence'=>$licence];
+            $warranty['person'] = ['user'=>$name, 'sex'=>$sex, 'nation'=>$nation, 'licence'=>$licence, 'phone'=>$phone];
         } else {
-            $warranty['person'] = ['name'=>$name, 'licence'=>$licence];
+            $warranty['person'] = ['user'=>$name, 'licence'=>$licence];
         }
 
         $warranty['compensatory'] = $this->getCompensatory($oldWarranty->compensatory_id);
@@ -253,11 +319,11 @@ class Warranty extends \yii\db\ActiveRecord
         $at = time();
 
         if ($at < $start) {
-            $statusNum = 0;
+            $statusNum = 2;
             $statusName = '未起保';
             $days = 0;
         } elseif ($at > $end) {
-            $statusNum = 2;
+            $statusNum = 3;
             $statusName = '已到期';
             $days = 0;
         } else {
@@ -280,6 +346,99 @@ class Warranty extends \yii\db\ActiveRecord
             ->all();
 
         return $element;
+    }
+
+
+    /*
+     * 服务端保单
+     */
+    public function getWarranty($data,$user)
+    {
+        $member_id = $user['user']['id'];
+        //搜索
+        if (!isset($data['search']) || empty($data['search'])) {
+            $search = '';
+        } else {
+            $search = $data['search'];
+        }
+        //筛选
+        if (!isset($data['status']) || empty($data['status'])) {
+            $status = 0;
+        } else {
+            $status = $data['status'];
+        }
+        if (!isset($data['page']) || empty($data['page'])) {
+            $data['page'] = 1;
+        }
+
+        $client = Member::find()->select('id, pid')->where(['pid'=>$member_id])->asArray()->all();
+
+        $warranty1 = [];
+        $warranty = [];
+        foreach ($client as &$v) {
+            $warranty1[] = Warranty::find()->select('id, order_id, start_at, end_at, created_at')
+                ->where(['member_id'=>$v['id'], 'state'=>1])
+                ->asArray()
+                ->all();
+        }
+        $warranty2 = array_filter($warranty1);
+        //除空去键
+        foreach ($warranty2 as $v) {
+            foreach ($v as $vv) {
+                $warranty[] = $vv;
+            }
+        }
+
+        //排序处理
+        $datetime = array();
+        foreach ($warranty as &$v) {
+            $datetime[] = $v['end_at'];
+        }
+        array_multisort($datetime,SORT_ASC,$warranty);
+
+        if (!isset($warranty) || empty($warranty)) {
+            return null;
+        }
+        foreach ($warranty as &$v) {
+            $v['car'] = $this->getNames($v['order_id'])->car;
+            $v['user'] = $this->getNames($v['order_id'])->user;
+            $v['status'] = $this->getStatus($v['start_at'], $v['end_at']);
+            $v['start_at'] = date('Y年m月d日 H:i', $v['start_at']);
+            $v['end_at'] = date('Y年m月d日 H:i', $v['end_at']);
+
+        }
+
+        //筛选
+        $aaa = [];
+        $bbb = [];
+        foreach ($warranty as &$v) {
+            if (preg_match("/($search)/is", $v['user']) ||
+                preg_match("/($search)/is", $v['car'])){
+                $aaa[] = $v;
+            }
+        }
+
+        foreach ($aaa as &$v) {
+            if ($status == 0) {
+                $bbb[] = $v;
+            }
+            if ($status == $v['status']['statusNum']) {
+                $bbb[] = $v;
+            }
+        }
+
+        if (!isset($bbb) || empty($bbb)) {
+            return null;
+        }
+
+        $size = 3;
+        $pageTotal = ceil(count($bbb) / $size);
+        $a = array_chunk($bbb,$size,false);
+        $bbb = $a[$data['page']-1];
+
+        $pageInfo = ['page'=>$data['page'], 'pageTotal'=>$pageTotal];
+        $all = ['list'=>$bbb,'pageInfo'=>$pageInfo];
+        return $all;
     }
 
 

@@ -88,7 +88,7 @@ class DrivingLicense extends \yii\db\ActiveRecord
     /**
      * 驾驶证列表
      */
-    public function getDriver($data, $member)
+    public function getDriver($data, $member=null)
     {
         if (!isset($data['member_id']) || empty($data['member_id'])) {
             $member_id = $member['member']['id'];
@@ -115,7 +115,7 @@ class DrivingLicense extends \yii\db\ActiveRecord
     /*
      * 添加驾驶证
      */
-    public function addDriver($data, $member)
+    public function addDriver($data, $member=null)
     {
         if (!isset($data['member_id']) || empty($data['member_id'])) {
             $member_id = $member['member']['id'];
@@ -196,7 +196,6 @@ class DrivingLicense extends \yii\db\ActiveRecord
             ->where(['id'=> $data['driver_id']])
             ->asArray()
             ->one();
-
         if(!isset($driver) || empty($driver)){
             return null;
         }
@@ -204,7 +203,7 @@ class DrivingLicense extends \yii\db\ActiveRecord
         $img = DrivingImg::find()->select('img_path')->where(['driver_id'=> $driver['id']])->asArray()->all();
         $driverImg = [];
         foreach ($img as &$v) {
-            $driverImg[] = $_SERVER['HTTP_HOST'].$v['img_path'];
+            $driverImg[] = Yii::$app->params['img_domain'].$v['img_path'];
         }
         $driver['img_path'] = $driverImg;
         return $driver;

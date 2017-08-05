@@ -25,6 +25,7 @@ namespace api\controllers;
                *
      */
 
+use Yii;
 use common\models\Notice;
 
 class NewsController extends ApiController
@@ -32,10 +33,11 @@ class NewsController extends ApiController
     public function actionList()
     {
         $model = new Notice();
+        $form = $this->getForm(Yii::$app->request->post('data'));
         $member = $this->getMemberInfo();
         $member_id = $member['member']['id'];
         $modelName = 'member';
-        $data = $model->getNews($modelName ,$member_id);
+        $data = $model->getNews($form, $modelName ,$member_id);
         if ($data) {
             return $this->jsonReturn(1, 'success', $data);
         }

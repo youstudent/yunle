@@ -38,7 +38,7 @@ class ServiceTag extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'cdc_service_tag';
+        return '{{%service_tag}}';
     }
 
     /**

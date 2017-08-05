@@ -37,7 +37,7 @@ class InsuranceCompany extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'cdc_insurance_company';
+        return '{{%insurance_company}}';
     }
 
     /**

@@ -88,7 +88,7 @@ class Identification extends \yii\db\ActiveRecord
     /*
      * 查看认证
      */
-    public function view($data, $member)
+    public function view($data, $member=null)
     {
         //获取member_id
         if (!isset($data['member_id']) || empty($data['member_id'])) {
@@ -115,14 +115,14 @@ class Identification extends \yii\db\ActiveRecord
         foreach ($identificationImg as &$v) {
             $img[] = $v['img_path'];
         }
-        $identification['img'] = $img;
+        $identification['img'] = Yii::$app->params['img_domain'].$img;
         return $identification;
     }
 
     /*
      * 认证
      */
-    public function approve($data, $member)
+    public function approve($data, $member=null)
     {
         //获取member_id
         if (!isset($data['member_id']) || empty($data['member_id'])) {

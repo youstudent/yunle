@@ -18,10 +18,10 @@ namespace service\controllers;
  *****************************
   ***************************
     ***********************
-      ********龙龙********
-        *******我*******
-          *****爱*****
-            ***你***
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
               ***
                *
      */
@@ -35,45 +35,51 @@ class DrivingController extends ApiController
     public function actionList()
     {
         $model = new DrivingLicense();
-        $data = $model->getDriver(Yii::$app->request->post());
+        $form = $this->getForm(Yii::$app->request->post('data'));
+        $member = $this->getUserInfo();
+
+        $data = $model->getDriver($form, $member);
+        if ($data) {
+            return $this->jsonReturn(1, 'success', $data);
+        }
+
+        return $this->jsonReturn(0, $model->getFirstError('message'), $data);
+    }
+
+    //驾驶证添加
+    public function actionAdd()
+    {
+        $model = new DrivingLicense();
+        $form = $this->getForm(Yii::$app->request->post('data'));
+
+        if ($model->addDriver($form)) {
+            return $this->jsonReturn(1, 'success');
+        }
+        return $this->jsonReturn(0, $model->getFirstError('message'));
+    }
+    //驾驶证修改
+    public function actionUpdate()
+    {
+        $model = new DrivingLicense();
+        $form = $this->getForm(Yii::$app->request->post('data'));
+
+        if ($model->updateDriver($form)) {
+            return $this->jsonReturn(1, 'success');
+        }
+        //如果返回false 返回错误信息
+        return $this->jsonReturn(0, $model->getFirstError('message'));
+    }
+    //驾驶证详情
+    public function actionDetail()
+    {
+        $model = new DrivingLicense();
+        $form = $this->getForm(Yii::$app->request->post('data'));
+
+        $data = $model->getDetail($form);
         if ($data) {
             return $this->jsonReturn(1, 'success', $data);
         }
 
         return $this->jsonReturn(0, '无车辆');
     }
-
-
-    //驾驶证添加
-    public function actionAdd()
-    {
-        $model = new DrivingLicense();
-        if ($model->addDriver(Yii::$app->request->post())) {
-            return $this->jsonReturn(1, 'success');
-        }
-        return $this->jsonReturn(0, $model->getFirstError('message'));
-    }
-
-    //驾驶证删除
-    public function actionDel()
-    {
-        $model = new DrivingLicense();
-        if ($model->delDriver(Yii::$app->request->post())) {
-            return $this->jsonReturn(1, '删除成功');
-        }
-
-        return $this->jsonReturn(0, $model->getFirstError('message'));
-    }
-
-    //驾驶证修改
-    public function actionUpdate()
-    {
-        $model = new DrivingLicense();
-        if ($model->updateDriver(Yii::$app->request->post())) {
-            return $this->jsonReturn(1, 'success');
-        }
-        //如果返回false 返回错误信息
-        return $this->jsonReturn(0, $model->getFirstError('message'));
-    }
-
 }

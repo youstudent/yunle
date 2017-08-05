@@ -67,19 +67,32 @@ class Notice extends \yii\db\ActiveRecord
         ];
     }
 
-    public function getNews($model, $user_id)
+    public function getNews($data, $model, $user_id)
     {
+        if (!isset($data['page']) || empty($data['page'])) {
+            $data['page'] = 1;
+        }
+        $count = $this::find()->where(['user_id'=>$user_id, 'model'=>$model])->count();
+        //TODO:size修改
+        $size = 3;
+        $pageTotal = ceil($count/$size);
+        $pageInfo = ['page'=>$data['page'], 'pageTotal'=>$pageTotal];
+        $pageSize = ($data['page']-1)* $size;
         $news = $this::find()->select('content, created_at')->asArray()
             ->where(['user_id'=>$user_id, 'model'=>$model])
             ->orderBy(['created_at' => SORT_DESC])
+            ->limit($size)
+            ->offset($pageSize)
             ->all();
+
         if (!isset($news) || empty($news)) {
             return null;
         }
         foreach ($news as &$v) {
             $v['created_at'] = date('Y/m/d H:i', $v['created_at']);
         }
-        return $news;
+        $all = ['list'=>$news, 'pageInfo'=>$pageInfo];
+        return $all;
     }
 
     /*

@@ -12,10 +12,10 @@ namespace service\controllers;
  *****************************
   ***************************
     ***********************
-      ********龙龙********
-        *******我*******
-          *****爱*****
-            ***你***
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
               ***
                *
      */
@@ -46,7 +46,29 @@ class ApiController extends Controller
             'timestamp' => $time,
             'message' => $message,
             'data' => $data,
+            'token' => Yii::$app->session->getId()
         ];
+    }
+
+    public function getForm($json_data)
+    {
+
+        $form = json_decode($json_data,true);
+        if(empty($form['token'])){
+            return $this->jsonReturn(4000, '未登录');
+        }
+        Yii::$app->session->setId($form['token']);
+
+        return $form;
+    }
+
+    public function getUserInfo()
+    {
+        $user = Yii::$app->session->get('user');
+        if(empty($user)){
+            return $this->jsonReturn(4001, '登录失效');
+        }
+        return $user;
     }
 
 }

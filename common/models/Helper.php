@@ -27,14 +27,15 @@
 namespace common\models;
 
 
-class Helper{
+class Helper
+{
     /**
      * 订单中心字段转换
      * @param facilitator_id
      * @param $car_id
      * @param $user_id
      * @param oder_id
-     * @param $type   1:救援 2:审车 3:维修 4:保养
+     * @param $type 1:救援 2:审车 3:维修 4:保养
      * @param $distributing
      * @param $pick
      */
@@ -42,7 +43,7 @@ class Helper{
     //获得服务商名称和简介
     public static function getFacilitator($facilitator_id)
     {
-        $name = Service::findOne(['id'=>$facilitator_id])->name;
+        $name = Service::findOne(['id' => $facilitator_id])->name;
         return $name;
     }
 
@@ -52,7 +53,7 @@ class Helper{
         if ($order_id == 0) {
             return '订单不存在';
         }
-        $model = InsuranceOrder::findOne(['id'=>$order_id]);
+        $model = InsuranceOrder::findOne(['id' => $order_id]);
         return $model->order_sn;
     }
 
@@ -62,7 +63,7 @@ class Helper{
         if ($car_id == 0) {
             return '车车不存在';
         }
-        $model = Car::findOne(['id'=>$car_id]);
+        $model = Car::findOne(['id' => $car_id]);
         return $model->license_number;
     }
 
@@ -72,7 +73,7 @@ class Helper{
         if ($member_id == 0) {
             return '用户不存在';
         }
-        $model = Member::findOne(['id'=>$member_id]);
+        $model = Member::findOne(['id' => $member_id]);
         return $model->phone;
     }
 
@@ -82,7 +83,7 @@ class Helper{
         if ($member_id == 0) {
             return '用户不存在';
         }
-        $model = Identification::findOne(['member_id'=>$member_id]);
+        $model = Identification::findOne(['member_id' => $member_id]);
         return $model->name;
     }
 
@@ -92,7 +93,7 @@ class Helper{
         if ($member_id == 0) {
             return '用户不存在';
         }
-        $model = Identification::findOne(['member_id'=>$member_id]);
+        $model = Identification::findOne(['member_id' => $member_id]);
         return $model->licence;
     }
 
@@ -103,7 +104,7 @@ class Helper{
             [
                 'typeId' => 0,
                 'typeName' => '全部',
-                'act'=>[
+                'act' => [
                     [
                         'actId' => 0,
                         'actName' => '全部'
@@ -113,7 +114,7 @@ class Helper{
             [
                 'typeId' => 1,
                 'typeName' => '救援',
-                'act'=>[
+                'act' => [
                     [
                         'actId' => 0,
                         'actName' => '全部'
@@ -149,10 +150,10 @@ class Helper{
                     [
                         'actId' => 8,
                         'actName' => '待交车'
-                    ],[
+                    ], [
                         'actId' => 99,
                         'actName' => '已完成'
-                    ],[
+                    ], [
                         'actId' => 100,
                         'actName' => '已取消'
                     ]
@@ -161,7 +162,7 @@ class Helper{
             [
                 'typeId' => 2,
                 'typeName' => '维修',
-                'act'=>[
+                'act' => [
                     [
                         'actId' => 0,
                         'actName' => '全部'
@@ -211,7 +212,7 @@ class Helper{
             [
                 'typeId' => 3,
                 'typeName' => '保养',
-                'act'=>[
+                'act' => [
                     [
                         'actId' => 0,
                         'actName' => '全部'
@@ -261,7 +262,7 @@ class Helper{
             [
                 'typeId' => 4,
                 'typeName' => '上线审车',
-                'act'=>[
+                'act' => [
                     [
                         'actId' => 0,
                         'actName' => '全部'
@@ -303,7 +304,7 @@ class Helper{
             [
                 'typeId' => 5,
                 'typeName' => '不上线审车',
-                'act'=>[
+                'act' => [
                     [
                         'actId' => 0,
                         'actName' => '全部'
@@ -333,7 +334,7 @@ class Helper{
             [
                 'typeId' => 6,
                 'typeName' => '保险',
-                'act'=>[
+                'act' => [
                     [
                         'actId' => 0,
                         'actName' => '全部'
@@ -372,6 +373,299 @@ class Helper{
 
         return $status;
     }
+    //处理订单的四大类
+    public static function getStatusLists()
+    {
+        //不同保单对应的动态字段值
+        $status = [
+            [
+                'typeId' => 0,
+                'typeName' => '全部',
+                'act' => [
+                    [
+                        'actId' => 0,
+                        'actName' => '全部'
+                    ]
+                ]
+            ],
+            [
+                'typeId' => 1,
+                'typeName' => '救援',
+                'act' => [
+                    [
+                        'actId' => 0,
+                        'actName' => '全部'
+                    ],
+                    [
+                        'actId' => 1,
+                        'actName' => '待接单'
+                    ],
+                    [
+                        'actId' => 2,
+                        'actName' => '已接单'
+                    ],
+                    [
+                        'actId' => 3,
+                        'actName' => '接车中'
+                    ],
+                    [
+                        'actId' => 4,
+                        'actName' => '正在返回'
+                    ],
+                    [
+                        'actId' => 5,
+                        'actName' => '已接车'
+                    ],
+                    [
+                        'actId' => 6,
+                        'actName' => '已评估'
+                    ],
+                    [
+                        'actId' => 7,
+                        'actName' => '处理中'
+                    ],
+                    [
+                        'actId' => 8,
+                        'actName' => '待交车'
+                    ], [
+                        'actId' => 99,
+                        'actName' => '已完成'
+                    ], [
+                        'actId' => 100,
+                        'actName' => '已取消'
+                    ]
+                ]
+            ],
+            [
+                'typeId' => 2,
+                'typeName' => '维修',
+                'act' => [
+                    [
+                        'actId' => 0,
+                        'actName' => '全部'
+                    ],
+                    [
+                        'actId' => 1,
+                        'actName' => '待接单'
+                    ],
+                    [
+                        'actId' => 2,
+                        'actName' => '已接单'
+                    ],
+                    [
+                        'actId' => 3,
+                        'actName' => '接车中'
+                    ],
+                    [
+                        'actId' => 4,
+                        'actName' => '正在返回'
+                    ],
+                    [
+                        'actId' => 5,
+                        'actName' => '已接车'
+                    ],
+                    [
+                        'actId' => 6,
+                        'actName' => '已评估'
+                    ],
+                    [
+                        'actId' => 7,
+                        'actName' => '处理中'
+                    ],
+                    [
+                        'actId' => 8,
+                        'actName' => '待交车'
+                    ],
+                    [
+                        'actId' => 99,
+                        'actName' => '已完成'
+                    ],
+                    [
+                        'actId' => 100,
+                        'actName' => '已取消'
+                    ]
+                ]
+            ],
+            [
+                'typeId' => 3,
+                'typeName' => '保养',
+                'act' => [
+                    [
+                        'actId' => 0,
+                        'actName' => '全部'
+                    ],
+                    [
+                        'actId' => 1,
+                        'actName' => '待接单'
+                    ],
+                    [
+                        'actId' => 2,
+                        'actName' => '已接单'
+                    ],
+                    [
+                        'actId' => 3,
+                        'actName' => '接车中'
+                    ],
+                    [
+                        'actId' => 4,
+                        'actName' => '正在返回'
+                    ],
+                    [
+                        'actId' => 5,
+                        'actName' => '已接车'
+                    ],
+                    [
+                        'actId' => 6,
+                        'actName' => '已评估'
+                    ],
+                    [
+                        'actId' => 7,
+                        'actName' => '处理中'
+                    ],
+                    [
+                        'actId' => 8,
+                        'actName' => '待交车'
+                    ],
+                    [
+                        'actId' => 99,
+                        'actName' => '已完成'
+                    ],
+                    [
+                        'actId' => 100,
+                        'actName' => '已取消'
+                    ]
+                ]
+            ],
+            [
+                'typeId' => 4,
+                'typeName' => '上线审车',
+                'act' => [
+                    [
+                        'actId' => 0,
+                        'actName' => '全部'
+                    ],
+                    [
+                        'actId' => 1,
+                        'actName' => '待接单'
+                    ],
+                    [
+                        'actId' => 2,
+                        'actName' => '已接单'
+                    ],
+                    [
+                        'actId' => 3,
+                        'actName' => '处理中'
+                    ],
+                    [
+                        'actId' => 4,
+                        'actName' => '待交车'
+                    ],
+                    [
+                        'actId' => 5,
+                        'actName' => '已出发'
+                    ],
+                    [
+                        'actId' => 6,
+                        'actName' => '返修中'
+                    ],
+                    [
+                        'actId' => 99,
+                        'actName' => '已完成'
+                    ],
+                    [
+                        'actId' => 100,
+                        'actName' => '已取消'
+                    ]
+                ]
+            ],
+        ];
+
+        return $status;
+    }
+    //处理订单的两个菜单
+    public static function getUpdateLists()
+    {
+        //不同保单对应的动态字段值
+        $status = [
+            [
+                'listId' => 1,
+                'typeName' => '非审车',
+                'act' => [
+                    [
+                        'actId' => 2,
+                        'actName' => '已接单'
+                    ],
+                    [
+                        'actId' => 3,
+                        'actName' => '接车中'
+                    ],
+                    [
+                        'actId' => 4,
+                        'actName' => '正在返回'
+                    ],
+                    [
+                        'actId' => 5,
+                        'actName' => '已接车'
+                    ],
+                    [
+                        'actId' => 6,
+                        'actName' => '已评估'
+                    ],
+                    [
+                        'actId' => 7,
+                        'actName' => '处理中'
+                    ],
+                    [
+                        'actId' => 8,
+                        'actName' => '待交车'
+                    ], [
+                        'actId' => 99,
+                        'actName' => '已完成'
+                    ], [
+                        'actId' => 100,
+                        'actName' => '已取消'
+                    ]
+                ]
+            ],
+            [
+                'listId' => 2,
+                'typeName' => '审车',
+                'act' => [
+                    [
+                        'actId' => 2,
+                        'actName' => '已接单'
+                    ],
+                    [
+                        'actId' => 3,
+                        'actName' => '处理中'
+                    ],
+                    [
+                        'actId' => 4,
+                        'actName' => '待交车'
+                    ],
+                    [
+                        'actId' => 5,
+                        'actName' => '已出发'
+                    ],
+                    [
+                        'actId' => 6,
+                        'actName' => '返修中'
+                    ],
+                    [
+                        'actId' => 99,
+                        'actName' => '已完成'
+                    ],
+                    [
+                        'actId' => 100,
+                        'actName' => '已取消'
+                    ]
+                ]
+            ],
+        ];
+
+        return $status;
+    }
+
     //获得订单类型名称
     public static function getType($type)
     {
@@ -404,7 +698,7 @@ class Helper{
     //获得订单动态详情状态
     public static function getAction($order_id)
     {
-        $model = ActDetail::find()->where(['order_id'=>$order_id])
+        $model = ActDetail::find()->where(['order_id' => $order_id])
             ->orderBy(['created_at' => SORT_DESC])
             ->one();
         if (!isset($model) || empty($model)) {
@@ -414,10 +708,11 @@ class Helper{
 
         return $model['status'];
     }
+
     //获得保险订单动态详情状态
     public static function getInsAction($order_id)
     {
-        $model = ActInsurance::find()->where(['order_id'=>$order_id])
+        $model = ActInsurance::find()->where(['order_id' => $order_id])
             ->orderBy(['created_at' => SORT_DESC])
             ->one();
         if (!isset($model) || empty($model)) {
@@ -517,7 +812,7 @@ class Helper{
                     $status = '已取消';
                     break;
             }
-        } elseif($type == 4) {
+        } elseif ($type == 4) {
             switch ($status) {
                 case 1:
                     $status = '待接单';
@@ -573,7 +868,7 @@ class Helper{
     //获取险种要素名
     public static function getElement($element)
     {
-        $model = Element::findOne(['id'=>$element]);
+        $model = Element::findOne(['id' => $element]);
         return $model->name;
     }
 
@@ -591,7 +886,7 @@ class Helper{
     //获取险种名
     public static function getInsuranceName($insurance_id)
     {
-        $name = Insurance::findOne(['id'=>$insurance_id])->title;
+        $name = Insurance::findOne(['id' => $insurance_id])->title;
 
         return $name;
     }
@@ -599,10 +894,11 @@ class Helper{
     //获取保险公司名
     public static function getInsuranceCompany($company_id)
     {
-        $company = InsuranceCompany::findOne(['id'=>$company_id])->name;
+        $company = InsuranceCompany::findOne(['id' => $company_id])->name;
         return $company;
 
     }
+
     //保险动态详情
     public static function getInsuranceStatus($status, $info = null)
     {
@@ -643,20 +939,21 @@ class Helper{
     public static function getDistance($lat1, $lng1, $lat2, $lng2)
     {
         $earthRadius = 6367000; //approximate radius of earth in meters
-        $lat1 = ($lat1 * pi() ) / 180;
-        $lng1 = ($lng1 * pi() ) / 180;
-        $lat2 = ($lat2 * pi() ) / 180;
-        $lng2 = ($lng2 * pi() ) / 180;
+        $lat1 = ($lat1 * pi()) / 180;
+        $lng1 = ($lng1 * pi()) / 180;
+        $lat2 = ($lat2 * pi()) / 180;
+        $lng2 = ($lng2 * pi()) / 180;
         $calcLongitude = $lng2 - $lng1;
         $calcLatitude = $lat2 - $lat1;
         $stepOne = pow(sin($calcLatitude / 2), 2) + cos($lat1) * cos($lat2) * pow(sin($calcLongitude / 2), 2);
         $stepTwo = 2 * asin(min(1, sqrt($stepOne)));
         $calculatedDistance = $earthRadius * $stepTwo / 1000;
-        $distance = round($calculatedDistance,1) ;
+        $distance = round($calculatedDistance, 1);
         return $distance;
     }
+
     //获取营业状态
-    public static function getOpen($at1 = '', $at2 ='')
+    public static function getOpen($at1 = '', $at2 = '')
     {
         //获取当天的年份
         $y = date("Y");
@@ -664,10 +961,10 @@ class Helper{
         $m = date("m");
         //获取当天的号数
         $d = date("d");
-        $at = time() + 8*3600;
-        $at1 = mktime(10,0,0,$m,$d,$y);
+        $at = time() + 8 * 3600;
+        $at1 = mktime(00, 01, 0, $m, $d, $y);
 //        echo $at;die;
-        $at2 = mktime(21,10,0,$m,$d,$y);
+        $at2 = mktime(23, 59, 0, $m, $d, $y);
 //        echo $at2;die;
         if ($at >= $at1 && $at <= $at2) {
             $status = 1;
@@ -676,6 +973,7 @@ class Helper{
         }
         return $status;
     }
+
     //获取营业状态名
     public static function getClose($status)
     {
@@ -686,11 +984,12 @@ class Helper{
         }
         return $status;
     }
+
     //获取服务商标签
     public static function getServiceTag($service_id)
     {
         $tagIds = ServiceTag::find()->select('tag_id')
-            ->where(['service_id'=>$service_id])
+            ->where(['service_id' => $service_id])
             ->asArray()
             ->all();;
         $tag = [];
@@ -699,10 +998,56 @@ class Helper{
         }
         return $tag;
     }
+
     public static function getTags($id)
     {
-        $tag = Tag::findOne(['id'=>$id])->name;
+        $tag = Tag::findOne(['id' => $id])->name;
         return $tag;
     }
 
+    //临时接口数据
+    public static function getRbac()
+    {
+        return [
+            'home' => ['title' => '首页', 'len' => '2', 'show' => 1, 'sub' => [
+                'wait_order' => ['title' => '待处理订单', 'len' => '4', 'show' => 1, 'sub' => [
+                    'rescue_order' => ['title' => '救援订单', 'len' => '0', 'show' => 1, 'sub' => []],
+                    'fix_order' => ['title' => '维修订单', 'len' => '0', 'show' => 1, 'sub' => []],
+                    'upkeep_order' => ['title' => '保养订单', 'len' => '0', 'show' => 1, 'sub' => []],
+                    'review_order' => ['title' => '审车订单', 'len' => '0', 'show' => 1, 'sub' => []],
+                ]],
+                'my_member' => ['title' => '我的会员', 'len' => '2', 'show' => 1, 'sub' => [
+                    'dashboard' =>['title' => '', 'len' => '2', 'show' => 1, 'sub' => [
+                        'total_member' =>['title' => '', 'len' => '0', 'show' => 1, 'sub' => []],
+                        'add_member' =>['title' => '', 'len' => '0', 'show' => 1, 'sub' => []],
+                    ]],
+                    'quick' =>['title' => '', 'len' => '0', 'show' => 1, 'sub' => [
+                        'member_insurance_order' =>['title' => '保险', 'len' => '0', 'show' => 1, 'sub' => []],
+                        'member_rescue_order' =>['title' => '救援', 'len' => '0', 'show' => 1, 'sub' => []],
+                        'member_fix_order' =>['title' => '维修', 'len' => '0', 'show' => 1, 'sub' => []],
+                        'member_upkeep_order' =>['title' => '保养', 'len' => '0', 'show' => 1, 'sub' => []],
+                        'member_review_order' =>['title' => '审车', 'len' => '0', 'show' => 1, 'sub' => []],
+                    ]],
+                ]],
+            ]],
+            'work' =>['title' => '工作', 'len' => '4', 'show' => 1, 'sub' => [
+                'my_member' =>['title' => '我的客户', 'len' => '0', 'show' => 1, 'sub' => []],
+                'member_order' =>['title' => '客户订单', 'len' => '0', 'show' => 1, 'sub' => []],
+                'insurance_order_handle' =>['title' => '保单管理', 'len' => '0', 'show' => 1, 'sub' => []],
+                'order_handle' =>['title' => '订单处理', 'len' => '0', 'show' => 1, 'sub' => []],
+            ]],
+            'my' =>['title' => '我的', 'len' => '2', 'show' => 1, 'sub' => [
+                'my_group' =>['title' => '我的组织', 'len' => '0', 'show' => 1, 'sub' => [
+                    'service_info' =>['title' => '', 'len' => '0', 'show' => 1, 'sub' => []],
+                    'service_operating_status' =>['title' => '', 'len' => '0', 'show' => 1, 'sub' => []],
+                ]],
+                'other' =>['title' => '', 'len' => '4', 'show' => 1, 'sub' => [
+                    'my_share_code' =>['title' => '我的邀请码', 'len' => '0', 'show' => 1, 'sub' => []],
+                    'notice' =>['title' => '消息通知', 'len' => '0', 'show' => 1, 'sub' => []],
+                    'contact_us' =>['title' => '联系我们', 'len' => '0', 'show' => 1, 'sub' => []],
+                    'setting' =>['title' => '设置', 'len' => '0', 'show' => 1, 'sub' => []],
+                ]],
+            ]],
+        ];
+    }
 }

@@ -38,7 +38,8 @@ class InsuranceController extends ApiController
         $model = new InsuranceOrder();
         $form = $this->getForm(Yii::$app->request->post('data'));
         $member = $this->getMemberInfo();
-        $data = $model->getOrder($member['member']['id']);
+
+        $data = $model->getOrder($form, $member);
         if ($data) {
             return $this->jsonReturn(1, 'success', $data);
         }
@@ -149,7 +150,6 @@ class InsuranceController extends ApiController
         $model = new Warranty();
         $form = $this->getForm(Yii::$app->request->post('data'));
         $member = $this->getMemberInfo();
-
         $data = $model->getList($form, $member);
         if ($data) {
             return $this->jsonReturn(1,'success', $data);

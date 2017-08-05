@@ -11,10 +11,10 @@ namespace service\controllers;
  *****************************
   ***************************
     ***********************
-      ********龙龙********
-        *******我*******
-          *****爱*****
-            ***你***
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
               ***
                *
      */
@@ -43,9 +43,11 @@ class SiteController extends ApiController
     public function actionLogin()
     {
         $model = new User();
-
-        if ($model->login(Yii::$app->request->post())) {
-            return $this->jsonReturn(1, 'success');
+        $json_data = Yii::$app->request->post('data');
+        $form = json_decode($json_data,true);
+        $data = $model->login($form);
+        if ($data) {
+            return $this->jsonReturn(1, 'success',$data);
         }
         return $this->jsonReturn(0, $model->getFirstError('message'));
     }
@@ -58,8 +60,9 @@ class SiteController extends ApiController
      */
     public function actionLogout()
     {
-        Yii::$app->user->logout();
-
+        if (Yii::$app->user->logout()) {
+            return $this->jsonReturn(1, 'success');
+        }
         return $this->goHome();
     }
 
@@ -118,9 +121,11 @@ class SiteController extends ApiController
     public function actionSmsCode()
     {
         $model = new MessageCode();
+        $json_data = Yii::$app->request->post('data');
+        $form = json_decode($json_data,true);
+        $phone = $form['phone'];
 
-        //TODO:生成第一个token,第一步存电话号
-        if ($model->sms(Yii::$app->request->post('username'))) {
+        if ($model->sms($phone)) {
             return $this->jsonReturn(1, 'success');
         }
         return $this->jsonReturn(0, $model->getFirstError('message'));

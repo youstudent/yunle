@@ -39,6 +39,8 @@ use Yii;
  * @property integer $close_at
  * @property integer $created_at
  * @property integer $updated_at
+ * @property integer $deleted_at
+ * @property integer $state
  */
 class Service extends \yii\db\ActiveRecord
 {

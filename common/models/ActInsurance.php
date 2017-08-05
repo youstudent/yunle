@@ -41,7 +41,7 @@ class ActInsurance extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'cdc_act_insurance';
+        return '{{%act_insurance}}';
     }
 
     /**

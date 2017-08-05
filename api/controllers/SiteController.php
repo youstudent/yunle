@@ -130,9 +130,11 @@ class SiteController extends ApiController
     public function actionSmsCode()
     {
         $model = new MessageCode();
+        $json_data = Yii::$app->request->post('data');
+        $form = json_decode($json_data,true);
+        $phone = $form['phone'];
 
-        //TODO:生成第一个token,第一步存电话号
-        if ($model->sms(Yii::$app->request->post('username'))) {
+        if ($model->sms($phone)) {
             return $this->jsonReturn(1, 'success');
         }
         return $this->jsonReturn(0, $model->getFirstError('message'));

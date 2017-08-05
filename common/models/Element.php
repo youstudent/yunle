@@ -37,7 +37,7 @@ class Element extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'cdc_element';
+        return '{{%element}}';
     }
 
     /**

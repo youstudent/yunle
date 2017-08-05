@@ -38,7 +38,7 @@ class Tag extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'cdc_tag';
+        return '{{%tag}}';
     }
 
     /**

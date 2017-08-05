@@ -34,7 +34,6 @@ class BannerController extends ApiController
     //轮播图
     public function actionList()
     {
-
         $model = new Banner();
         $form = $this->getForm(Yii::$app->request->post('data'));
         $data = $model->getBanner($form);

@@ -152,18 +152,18 @@ class Member extends \yii\db\ActiveRecord
     /*
      * 个人信息
      */
-    public function info($data, $member)
+    public function info($data, $member=null)
     {
         $member_id = $member['member']['id'];
         $img = MemberImg::findOne(['member_id'=>$member_id]);
         if (!isset($img) || empty($img)) {
             $photo = '';
         } else {
-            $photo = $_SERVER['HTTP_HOST'].$img->img_path;
+            $photo = Yii::$app->params['img_domain'].$img->img_path;
         }
 
         $phone = $member['member']['phone'];
-        $type = $member['member']['type'];
+        $type = Member::findOne(['phone'=>$phone])->type;
         $ident = Identification::findOne(['member_id'=>$member_id, 'status'=>1]);
         if (!isset($ident) || empty($ident)) {
             $status = 0;
@@ -204,9 +204,26 @@ class Member extends \yii\db\ActiveRecord
     }
 
     /*
+     * 头像上传
+     */
+    public function photo($data, $member=null)
+    {
+        $member_id = $member['member']['id'];
+        $img = MemberImg::findOne(['member_id'=>$member_id]);
+        $type = 'photo';
+        $upload = new Upload();
+        $img = $upload->setImageInformation($data['img'], $img->id, $type);
+
+        if ($img) {
+            return true;
+        }
+        return false;
+    }
+
+    /*
      * 开关
      */
-    public function setSwitch($data, $member)
+    public function setSwitch($data, $member=null)
     {
         $member_id = $member['member']['id'];
         $member = Member::findOne(['id'=>$member_id]);
@@ -234,5 +251,37 @@ class Member extends \yii\db\ActiveRecord
         }
 
         return false;
+    }
+
+    /*
+     * 配置信息
+     */
+    public function getDeploy($data,$member)
+    {
+        $member_id = $member['member']['id'];
+        $deploy = Member::find()->select('system_switch, order_switch, check_switch')->asArray()
+            ->where(['id'=>$member_id])
+            ->one();
+
+        if (!isset($deploy) || empty($deploy)) {
+            return null;
+        }
+        if ($deploy['check_switch'] == 1) {
+            $deploy['check_switch'] = true;
+        } else {
+            $deploy['check_switch'] = false;
+        }
+        if ($deploy['order_switch'] == 1) {
+            $deploy['order_switch'] = true;
+        } else {
+            $deploy['order_switch'] = false;
+        }
+        if ($deploy['system_switch'] == 1) {
+            $deploy['system_switch'] = true;
+        } else {
+            $deploy['system_switch'] = false;
+        }
+        return $deploy;
+
     }
 }

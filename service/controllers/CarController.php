@@ -18,10 +18,10 @@ namespace service\controllers;
  *****************************
   ***************************
     ***********************
-      ********龙龙********
-        *******我*******
-          *****爱*****
-            ***你***
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
               ***
                *
      */
@@ -35,7 +35,9 @@ class CarController extends ApiController
     public function actionList()
     {
         $model = new Car();
-        $data = $model->getCar(Yii::$app->request->post());
+        $form = $this->getForm(Yii::$app->request->post('data'));
+
+        $data = $model->getCar($form);
         if ($data) {
             return $this->jsonReturn(1, 'success', $data);
         }
@@ -47,22 +49,25 @@ class CarController extends ApiController
     public function actionDetail()
     {
         $model = new Car();
-        $data = $model->getDetail(Yii::$app->request->post());
+        $form = $this->getForm(Yii::$app->request->post('data'));
+
+        $data = $model->getDetail($form);
         if ($data) {
             return $this->jsonReturn(1, 'success', $data);
         }
 
-        return $this->jsonReturn(0, '要啥自行车');
+        return $this->jsonReturn(0, '无车辆');
     }
 
     //车车添加
     public function actionAdd()
     {
         $model = new Car();
-        if ($model->addCar(Yii::$app->request->post())) {
+        $form = $this->getForm(Yii::$app->request->post('data'));
+
+        if ($model->addCar($form)) {
             return $this->jsonReturn(1, '添加成功');
         }
-
         return $this->jsonReturn(0, '添加失败,请重试');
     }
 
@@ -70,7 +75,8 @@ class CarController extends ApiController
     public function actionDel()
     {
         $model = new Car();
-        if ($model->delCar(Yii::$app->request->post())) {
+        $form = $this->getForm(Yii::$app->request->post('data'));
+        if ($model->delCar($form)) {
             return $this->jsonReturn(1, '删除成功');
         }
 
@@ -81,10 +87,25 @@ class CarController extends ApiController
     public function actionUpdate()
     {
         $model = new Car();
-        if ($model->updateCar(Yii::$app->request->post())) {
-            return $this->jsonReturn(1, 'success');
+        $form = $this->getForm(Yii::$app->request->post('data'));
+        if ($model->updateCar($form)) {
+            return $this->jsonReturn(1, '修改成功');
         }
         //如果返回false 返回错误信息
-        return $this->jsonReturn(0, $model->getFirstError('message'));
+        return $this->jsonReturn(0, '修改失败');
+    }
+
+    //设置为默认车辆
+    public function actionChange()
+    {
+        $model = new Car();
+        $form = $this->getForm(Yii::$app->request->post('data'));
+
+        $data = $model->changeDefault($form);
+        if ($data) {
+            return $this->jsonReturn(1,'设置成功' ,$data);
+        }
+
+        return $this->jsonReturn(0,'设置失败');
     }
 }

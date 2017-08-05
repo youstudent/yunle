@@ -81,6 +81,21 @@ class UserController extends ApiController
     }
 
     /*
+     * 头像上传
+     */
+    public function actionPhoto()
+    {
+        $model = new Member();
+        $form = $this->getForm(Yii::$app->request->post('data'));
+        $member = $this->getMemberInfo();
+
+        if ($model->photo($form,$member)) {
+            return $this->jsonReturn(1, '修改成功');
+        }
+        return $this->jsonReturn(0, '修改失败');
+    }
+
+    /*
      * 设置
      */
     public function actionSwitch()
@@ -92,6 +107,21 @@ class UserController extends ApiController
             return $this->jsonReturn(1, 'success');
         }
         return $this->jsonReturn(0, '设置失败');
+    }
+
+    /*
+     * 配置
+     */
+    public function actionDeploy()
+    {
+        $model = new Member();
+        $form = $this->getForm(Yii::$app->request->post('data'));
+        $member = $this->getMemberInfo();
+        $data = $model->getDeploy($form,$member);
+        if ($data) {
+            return $this->jsonReturn(1, 'success', $data);
+        }
+        return $this->jsonReturn(0, '读取失败');
     }
 
 

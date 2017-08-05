@@ -37,7 +37,7 @@ class Mail extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'cdc_mail';
+        return '{{%mail}}';
     }
 
     /**

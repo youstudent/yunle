@@ -5,22 +5,22 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "{{%member_img}}".
+ * This is the model class for table "cdc_user_img".
  *
- * @property integer $id
- * @property integer $member_id
+ * @property string $id
+ * @property integer $user_id
  * @property string $img_path
  * @property integer $created_at
  * @property integer $updated_at
  */
-class MemberImg extends \yii\db\ActiveRecord
+class UserImg extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return '{{%member_img}}';
+        return '{{%user_img}}';
     }
 
     /**
@@ -29,7 +29,7 @@ class MemberImg extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['member_id', 'created_at', 'updated_at'], 'integer'],
+            [['user_id', 'created_at', 'updated_at'], 'integer'],
             [['img_path'], 'string', 'max' => 255],
         ];
     }
@@ -40,11 +40,11 @@ class MemberImg extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => '图片id',
-            'member_id' => '用户id',
-            'img_path' => '图片地址',
-            'created_at' => '创建时间',
-            'updated_at' => '修改时间',
+            'id' => 'ID',
+            'user_id' => 'User ID',
+            'img_path' => 'Img Path',
+            'created_at' => 'Created At',
+            'updated_at' => 'Updated At',
         ];
     }
 }

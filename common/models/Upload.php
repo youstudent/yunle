@@ -40,7 +40,9 @@ class Upload extends Model
             $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             $img_path = $this->getSavePath($type, $chars, $extension);
 
-            file_put_contents(Yii::getAlias('@webroot').$img_path, $file);
+//            $path_Str = Yii::getAlias('@common');
+//            $str = str_replace('\\','/',$path_Str);
+            file_put_contents(Yii::getAlias('@common').$img_path, $file);
 
             switch ($type) {
                 case 'car':
@@ -70,6 +72,31 @@ class Upload extends Model
                         return false;
                     }
                     break;
+                case 'photo':
+                    $model = MemberImg::findOne(['id'=>$id]);
+                    $model->img_path = $img_path;
+                    $model->updated_at = time();
+                    if (!$model->save(false)) {
+                        return false;
+                    }
+                    break;
+                case 'portrait':
+                    $model = UserImg::findOne(['id'=>$id]);
+                    $model->img_path = $img_path;
+                    $model->updated_at = time();
+                    if (!$model->save(false)) {
+                        return false;
+                    }
+                    break;
+                case  'act':
+                    $model = new ActImg();
+                    $model->act_id = $id;
+                    $model->img_path = $img_path;
+                    $model->created_at = time();
+                    if (!$model->save(false)) {
+                        return false;
+                    }
+                    break;
             }
 
         }
@@ -83,7 +110,7 @@ class Upload extends Model
         $save_path = '/public' . $this->db_save_path;
 
         if (!empty($save_path)) {
-            $save_dir = dirname(Yii::getAlias('@webroot') . $save_path);
+            $save_dir = dirname(Yii::getAlias('@common') . $save_path);
             if (!is_dir($save_dir)) {
 //                mkdir($save_dir, 0755);
                 FileHelper::createDirectory($save_dir, $mode = 0775, $recursive = true);

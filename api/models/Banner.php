@@ -78,7 +78,7 @@ class Banner extends \yii\db\ActiveRecord
             ->where(['status' => 1])
             ->all();
         foreach ($banner as &$v) {
-            $v['img_path'] = $_SERVER['HTTP_HOST'].$v['img_path'];
+            $v['img_path'] = Yii::$app->params['img_domain'].$v['img_path'];
         }
         if(!isset($banner) || empty($banner)){
             return null;

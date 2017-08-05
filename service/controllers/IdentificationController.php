@@ -18,10 +18,10 @@ namespace service\controllers;
  *****************************
   ***************************
     ***********************
-      ********龙龙********
-        *******我*******
-          *****爱*****
-            ***你***
+      ******拒绝扯淡*******
+        ****加强撕逼*****
+          *****加*****
+            ***油***
               ***
                *
      */
@@ -32,14 +32,17 @@ use common\models\Identification;
 class IdentificationController extends ApiController
 {
     /*
-     * 客户认证
+     * 个人认证
      */
-    public function actionIdentification()
+    public function actionApprove()
     {
         $model = new Identification();
-        if ($model->approve(Yii::$app->request->post())) {
+        $form = $this->getForm(Yii::$app->request->post('data'));
+
+        if ($model->approve($form)) {
             return $this->jsonReturn(1, 'success');
         }
         return $this->jsonReturn(0, $model->getFirstError('message'));
     }
+
 }

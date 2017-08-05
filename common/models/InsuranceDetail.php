@@ -39,7 +39,7 @@ class InsuranceDetail extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'cdc_insurance_detail';
+        return '{{%insurance_detail}}';
     }
 
     /**

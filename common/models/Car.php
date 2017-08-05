@@ -88,7 +88,7 @@ class Car extends \yii\db\ActiveRecord
      * 获取首页车牌车
      * @return array
      */
-    public function getList($data, $member)
+    public function getList($data, $member=null)
     {
         //获取个人信息
         if (!isset($data['member_id']) || empty($data['member_id'])) {
@@ -117,7 +117,7 @@ class Car extends \yii\db\ActiveRecord
      * 获取车车车
      * @return array
      */
-    public function getCar($data, $member)
+    public function getCar($data, $member=null)
     {
         if (!isset($data['member_id']) || empty($data['member_id'])) {
             $member_id = $member['member']['id'];
@@ -161,7 +161,7 @@ class Car extends \yii\db\ActiveRecord
         $img = CarImg::find()->select('img_path')->where(['car_id'=> $car['id']])->asArray()->all();
         $carImg = [];
         foreach ($img as &$v) {
-            $carImg[] = $_SERVER['HTTP_HOST'].$v['img_path'];
+            $carImg[] = Yii::$app->params['img_domain'].$v['img_path'];
         }
         $car['img_path'] = $carImg;
         return $car;
@@ -170,7 +170,7 @@ class Car extends \yii\db\ActiveRecord
     /**
      * 添加车车
      */
-    public function addCar($data, $member)
+    public function addCar($data, $member=null)
     {
         if (!isset($data['member_id']) || empty($data['member_id'])) {
             $member_id = $member['member']['id'];
@@ -243,18 +243,21 @@ class Car extends \yii\db\ActiveRecord
     /*
      * 设置默认
      */
-    public function changeDefault($data, $member)
+    public function changeDefault($data, $member=null)
     {
         $old = Car::findOne(['stick'=>1]);
-        $old->stick = 0;
-        if (!$old->save(false)) {
-            return false;
+        if (isset($old) || !empty($old)) {
+            $old->stick = 0;
+            if (!$old->save(false)) {
+                return false;
+            }
         }
+
         $car = Car::findOne(['id'=>$data['car_id']]);
         $car->stick = 1;
 
         if ($car->save(false)) {
-            $newList = $this->getCar($data,$member);
+            $newList = $this->getCar($data);
             return $newList;
         }
         return false;

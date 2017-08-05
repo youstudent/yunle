@@ -37,7 +37,7 @@ class Company extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'cdc_company';
+        return '{{%company}}';
     }
 
     /**

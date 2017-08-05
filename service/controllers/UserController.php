@@ -34,12 +34,31 @@ use yii;
 class UserController extends ApiController
 {
     /*
+     * 个人信息
+     */
+    public function actionInfo()
+    {
+        $model = new User();
+        $user = $this->getUserInfo();
+        $user_id = $user['user']['id'];
+        $data = $model->myInfo($user_id);
+        if ($data) {
+            return $this->jsonReturn(1, 'success', $data);
+        }
+        return $this->jsonReturn(0, $model->getFirstError('message'));
+    }
+
+
+    /*
      * 我的客户
      */
     public function actionMy()
     {
         $model = new User();
-        $data = $model->myUser(Yii::$app->request->post());
+        $form = $this->getForm(Yii::$app->request->post('data'));
+        $user = $this->getUserInfo();
+
+        $data = $model->myUser($form, $user);
         if ($data) {
             return $this->jsonReturn(1, 'success', $data);
         }
@@ -52,7 +71,9 @@ class UserController extends ApiController
     public function actionInvite()
     {
         $model = new User();
-        $data = $model->invite();
+        $user = $this->getUserInfo();
+
+        $data = $model->invite($user);
         if ($data) {
             return $this->jsonReturn(1, 'success', $data);
         }
@@ -60,12 +81,43 @@ class UserController extends ApiController
     }
 
     /*
-     * 手机号更换
+     * 设置
+     */
+    public function actionSwitch()
+    {
+        $model = new User();
+        $form = $this->getForm(Yii::$app->request->post('data'));
+        $user = $this->getUserInfo();
+        if ($model->setSwitch($form,$user)) {
+            return $this->jsonReturn(1, 'success');
+        }
+        return $this->jsonReturn(0, '设置失败');
+    }
+
+    /*
+     * 客户手机号更换
      */
     public function actionPhone()
     {
         $model = new User();
-        if ($model->phone(Yii::$app->request->post())) {
+        $form = $this->getForm(Yii::$app->request->post('data'));
+
+        if ($model->phone($form)) {
+            return $this->jsonReturn(1, 'success');
+        }
+        return $this->jsonReturn(0, $model->getFirstError('message'));
+    }
+
+    /*
+     * 业务员手机号更换
+     */
+    public function actionMobile()
+    {
+        $model = new User();
+        $form = $this->getForm(Yii::$app->request->post('data'));
+        $user = $this->getUserInfo();
+
+        if ($model->userPhone($form, $user)) {
             return $this->jsonReturn(1, 'success');
         }
         return $this->jsonReturn(0, $model->getFirstError('message'));
@@ -77,7 +129,10 @@ class UserController extends ApiController
     public function actionAdd()
     {
         $model = new User();
-        if ($model->addUser(Yii::$app->request->post())) {
+        $form = $this->getForm(Yii::$app->request->post('data'));
+        $user = $this->getUserInfo();
+
+        if ($model->addUser($form, $user)) {
             return $this->jsonReturn(1, 'success');
         }
         return $this->jsonReturn(0, $model->getFirstError('message'));
@@ -89,7 +144,9 @@ class UserController extends ApiController
     public function actionList()
     {
         $model = new User();
-        $data = $model->userList(Yii::$app->request->post('page'));
+        $form = $this->getForm(Yii::$app->request->post('data'));
+        $user = $this->getUserInfo();
+        $data = $model->userList($form, $user);
         if ($data) {
             return $this->jsonReturn(1, 'success', $data);
         }
@@ -102,11 +159,58 @@ class UserController extends ApiController
     public function actionDetail()
     {
         $model = new User();
-        $data = $model->userDetail(Yii::$app->request->post('id'));
+        $form = $this->getForm(Yii::$app->request->post('data'));
+        $user = $this->getUserInfo();
+        $data = $model->userDetail($form, $user);
         if ($data) {
             return $this->jsonReturn(1, 'success', $data);
         }
         return $this->jsonReturn(0, $model->getFirstError('message'));
+    }
+
+    /*
+     * 头像上传
+     */
+    public function actionPhoto()
+    {
+        $model = new User();
+        $form = $this->getForm(Yii::$app->request->post('data'));
+        $user = $this->getUserInfo();
+
+        if ($model->photo($form,$user)) {
+            return $this->jsonReturn(1, '修改成功');
+        }
+        return $this->jsonReturn(0, '修改失败');
+    }
+
+    /*
+     * 修改姓名
+     */
+    public function actionRename()
+    {
+        $model = new User();
+        $form = $this->getForm(Yii::$app->request->post('data'));
+        $user = $this->getUserInfo();
+
+        if ($model->changeName($form,$user)) {
+            return $this->jsonReturn(1, '修改成功');
+        }
+        return $this->jsonReturn(0, '修改失败');
+    }
+
+    /*
+     * 配置
+     */
+    public function actionDeploy()
+    {
+        $model = new User();
+        $form = $this->getForm(Yii::$app->request->post('data'));
+        $user = $this->getUserInfo();
+        $data = $model->getDeploy($form,$user);
+        if ($data) {
+            return $this->jsonReturn(1, 'success', $data);
+        }
+        return $this->jsonReturn(0, '读取失败');
     }
 
 }
