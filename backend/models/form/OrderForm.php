@@ -8,51 +8,113 @@
 namespace backend\models\form;
 
 
+use backend\models\ActDetail;
+use backend\models\Car;
+use backend\models\Member;
 use backend\models\Order;
+use backend\models\OrderDetail;
+use backend\models\Service;
+use Yii;
+use yii\base\Exception;
+use yii\helpers\ArrayHelper;
 
 class OrderForm extends Order
 {
-    public function addOrder($form)
+    public $member_id;
+    public $service_id;
+    public $car_id;
+
+    public function rules()
     {
-        if(!$this->load($form)){
-            return false;
-        }
+        return [
+            [['type', 'user', 'member_id', 'phone', 'car', 'pick', 'distributing', 'service', 'cost'], 'required', 'on' => ['create', 'update']]
+        ];
+    }
+
+
+    public function scenarios()
+    {
+        return [
+            'create' => ['order_sn', 'type', 'user', 'phone', 'car', 'pick', 'pick_at', 'pick_addr', 'distributing', 'service', 'cost'],
+            'update' => ['order_sn', 'type', 'user', 'phone', 'car', 'pick', 'pick_at', 'pick_addr', 'distributing', 'service', 'cost'],
+        ];
+    }
+
+    public function attributeLabels()
+    {
+        return ArrayHelper::merge(parent::attributeLabels(), [
+            'member_id' => '会员id',
+        ]);
+    }
+
+
+
+    public static function getOne($id)
+    {
+
+    }
+
+    public static function createOrder($member_id)
+    {
+        $member_id = 2;
+        $model = new OrderForm();
+        $member = Member::findOne($member_id);
+        $model->member_id = $member_id;
+        $model->user = $member->memberInfo ? $member->memberInfo->name : '';
+        $model->phone = $member->phone;
+        $model->pick = 1;
+        return $model;
+    }
+
+    public function addOrder()
+    {
         if(!$this->validate()){
             return false;
         }
+        //$this->scenario = 'after-post-form';
 
-        $memberForm = $this;
-        return Yii::$app->db->transaction(function() use($memberForm){
-            $memberForm->created_at = time();
-            $memberForm->updated_at = time();
-            $memberForm->password = Yii::$app->security->generatePasswordHash($memberForm->password);
-            if(!$memberForm->save()){
-                throw new Exception("添加会员信息失败");
+        return Yii::$app->db->transaction(function(){
+            $yCode = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L');
+            $orderSn = $yCode[intval(date('Y')) - 2017] . strtoupper(dechex(date('m'))) . date('d') . substr(time(), -5) . substr(microtime(), 2, 5) . sprintf('%02d', rand(0, 99));
+
+            $this->order_sn = $orderSn;
+            $this->created_at = time();
+            $this->updated_at = time();
+            $this->service_id = $this->service;
+            $this->service = Service::findOne($this->service_id)->name;
+            $this->car_id = $this->car;
+            $this->car = Car::findOne($this->car_id)->license_number;
+            if(!$this->save()){
+                throw new Exception("添加快照失败订单失败");
             }
-            return $memberForm;
+            $orderDetailModel = new OrderDetail();
+            if(!$orderDetailModel->addOrderDetail($this)){
+                throw new Exception("添加订单失败");
+            }
+
+            $ActDetailModel = new ActDetail();
+            if(!$ActDetailModel->addActDetail($this)){
+                throw new Exception("添加订单失败");
+            }
+
+            return $this;
         });
     }
 
-    public function updateOrder($form)
+    public function updateOrder()
     {
-        if(!$this->load($form)){
-            return false;
-        }
+
         if(!$this->validate()){
             return false;
         }
 
-        $memberForm = $this;
-        return Yii::$app->db->transaction(function() use($memberForm){
-            $memberForm->updated_at = time();
+        return Yii::$app->db->transaction(function(){
+            $this->updated_at = time();
 
-            if($memberForm->password){
-                $memberForm->password = Yii::$app->security->generatePasswordHash($memberForm->password);
+            if(!$this->save()){
+                throw new Exception("添加订单失败");
             }
-            if(!$memberForm->save()){
-                throw new Exception("更新会员信息失败");
-            }
-            return $memberForm;
+            return $this;
         });
     }
 }

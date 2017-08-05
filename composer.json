@@ -22,7 +22,8 @@
         "flc/alidayu": "^2.0",
         "yiisoft/yii2-imagine": "~2.1.0",
         "jpush/jpush": "^3.5",
-        "monolog/monolog": "^1.23"
+        "monolog/monolog": "^1.23",
+        "yiidoc/yii2-redactor": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

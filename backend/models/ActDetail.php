@@ -60,4 +60,15 @@ class ActDetail extends \yii\db\ActiveRecord
             'updated_at' => '修改时间',
         ];
     }
+
+    public function addActDetail($order)
+    {
+        $this->order_id = $order->id;
+        $this->user = $order->user;
+        $this->user_id  = $order->member_id;
+        $this->status = 1;
+        $this->info = '订单已分派给服务商'.$order->service.'，等待接单';
+        $this->created_at = time();
+        return $this->save();
+    }
 }

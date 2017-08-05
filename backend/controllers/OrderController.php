@@ -35,14 +35,18 @@ class OrderController extends BackendController
         ]);
     }
 
-    public function actionCreate()
+    public function actionCreate($member_id)
     {
-        $model = new OrderForm();
-        if($model->addOrder(Yii::$app->request->post())){
-            return json_encode(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['member/index'])]);
+        $model =   OrderForm::createOrder($member_id);
+        $model->scenario = 'create';
+        if($model->load(Yii::$app->request->post())){
+            if($model->addOrder()){
+                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['order/index'])]);
+            }
+            return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '添加失败']);
         }
 
-        return $this->renderPjax('create', [
+        return $this->renderAjax('create', [
             'model' => $model
         ]);
     }
@@ -51,11 +55,17 @@ class OrderController extends BackendController
     public function actionUpdate($id)
     {
         $model = OrderForm::findOne(['id'=>$id]);
+        $model->scenario = 'update';
 
-        if($model->updateOrder(Yii::$app->request->post())){
-            return json_encode(['data'=> '', 'code'=>1, 'message'=> '更新成功', 'url'=> Url::to(['member/index'])]);
+
+        if($model->load(Yii::$app->request->post())){
+            if($model->updateOrder()){
+                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['order/index'])]);
+            }
+            return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '添加失败']);
         }
-        return $this->renderPjax('update', [
+
+        return $this->renderAjax('create', [
             'model' => $model
         ]);
     }
@@ -69,7 +79,25 @@ class OrderController extends BackendController
         return $this->renderAjax('log', [
             'dataProvider' => $dataProvider,
         ]);
-
     }
 
+    public function actionWall()
+    {
+        return $this->renderContent('这是啥');
+    }
+
+
+    public function actionValidateForm($scenario, $id = null)
+    {
+        Yii::$app->response->format = \Yii\web\Response::FORMAT_JSON;
+        if($id){
+            $model = OrderForm::findOne($id);
+        }else{
+            $model = new OrderForm();
+        }
+
+        $model->scenario = $scenario;
+        $model->load(Yii::$app->request->post());
+        return \yii\bootstrap\ActiveForm::validate($model);
+    }
 }

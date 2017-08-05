@@ -30,7 +30,7 @@ class OrderDetail extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'car_id', 'member_id', 'service_id', 'start_at'], 'integer'],
+            [['order_id', 'car_id', 'member_id', 'service_id'], 'integer'],
         ];
     }
 
@@ -45,7 +45,9 @@ class OrderDetail extends \yii\db\ActiveRecord
             'car_id' => '车辆id',
             'member_id' => '提交人',
             'service_id' => '服务商id',
-            'start_at' => '创建时间',
+            'action' => '订单状态',
+            'created_at' => '创建时间',
+            'updated_at' => '更新时间',
         ];
     }
 
@@ -59,5 +61,15 @@ class OrderDetail extends \yii\db\ActiveRecord
         return $this->hasOne(Order::className(), ['id' => 'order_id'])->alias('o');
     }
 
+    public function addOrderDetail($order)
+    {
+        $this->order_id = $order->id;
+        $this->car_id = $order->car_id;
+        $this->member_id = $order->member_id;
+        $this->service_id = $order->service_id;
+        $this->created_at = time();
+        $this->action = '待接单';
+        return $this->save();
+    }
 
 }

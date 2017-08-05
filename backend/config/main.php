@@ -16,7 +16,13 @@ return [
     'modules' => [
         'admin' => [
             'class' => 'pd\admin\Module',
-        ]
+        ],
+        'redactor' => [
+            'class' => 'yii\redactor\RedactorModule',
+            'uploadDir' => '@webroot/path/to/uploadfolder',
+            'uploadUrl' => '@web/path/to/uploadfolder',
+            'imageAllowExtensions'=>['jpg','png','gif']
+        ],
     ],
     "aliases" => [
         "@pd/admin" => "@vendor/pokerdragon/yii2-admin",

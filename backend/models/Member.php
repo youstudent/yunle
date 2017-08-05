@@ -100,4 +100,9 @@ class Member extends \yii\db\ActiveRecord
         return $this->hasOne(Identification::className(), ['member_id'=> 'id'])->alias('md');
     }
 
+    public function getCar()
+    {
+        return $this->hasMany(Car::className(), ['member_id'=> 'id'])->alias('c');
+    }
+
 }

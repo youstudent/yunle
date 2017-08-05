@@ -6,7 +6,7 @@
  */
 use yii\helpers\Url;
 
-$this->title = '添加文章';
+$this->title = '添加栏目';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
