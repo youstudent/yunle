@@ -77,7 +77,6 @@ class Identification extends \yii\db\ActiveRecord
             'member_id' => '会员id',
             'name' => '姓名',
             'nation' => '民族',
-            'status' => 'Status',
             'licence' => '代码',
             'sex' => '性别',
             'birthday' => '生日',
