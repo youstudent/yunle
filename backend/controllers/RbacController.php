@@ -2,50 +2,72 @@
 /**
  * User: harlen-angkemac
  * Date: 2017/7/20 - 上午10:26
- *
+ * 基于 yii2-admin RBAC二次开发
  */
 
 namespace backend\controllers;
 
 
-use stdClass;
+use backend\models\AuthItem;
 use Yii;
-use yii\web\Controller;
+use yii\data\ActiveDataProvider;
+use yii\helpers\Url;
 
 class RbacController extends BackendController
 {
-    public function actionIndex()
+
+    public function actionRoleIndex()
     {
+        $dataProvider = new ActiveDataProvider([
+            'query' => AuthItem::find()->where(['type'=>1]),
+        ]);
 
-        $menu = Yii::$app->params['menu'];
-
-
-        return $this->renderPjax('index', [
-            'menu' => json_encode($menu, JSON_UNESCAPED_UNICODE)
+        return $this->renderPjax('role-index', [
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+    public function actionRoleCreate()
+    {
+        $model = new AuthItem();
+        $model->scenario = 'create';
+        if($model->load(Yii::$app->request->post())){
+            if($model->addRole()){
+                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['role-index'])]);
+            }
+            return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '添加失败']);
+        }
+        return $this->renderAjax('role-create', [
+            'model' => $model
         ]);
     }
 
-
-    protected function parseMenu($menus, $level= 1)
+    public function actionRoleUpdate($name)
     {
-        foreach($menus as $key => $val){
-            if(is_array($val) && count($val) > 0){
-                $this->parseMenu($menus[$key], $level++);
+        $model = AuthItem::findOne(['name'=>$name]);
+        $model->scenario = 'update';
+        if($model->load(Yii::$app->request->post())){
+            if($model->updateRole()){
+                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['role-index'])]);
             }
-            if($key == 'title'){
-                $td = '<td>' . $val .'</td>';
-            }
+            return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '添加失败']);
         }
+
+        return $this->renderAjax('role-create', [
+            'model' => $model
+        ]);
     }
 
-    protected function renderRow($val, $level)
+    public function actionValidateForm($scenario, $name = null)
     {
+        Yii::$app->response->format = \Yii\web\Response::FORMAT_JSON;
+        if($name){
+            $model = AuthItem::findOne(['name'=> $name]);
+        }else{
+            $model = new AuthItem();
+        }
 
+        $model->scenario = $scenario;
+        $model->load(Yii::$app->request->post());
+        return \yii\bootstrap\ActiveForm::validate($model);
     }
-
-    protected function renderChidlNum($menus)
-    {
-
-    }
-
 }

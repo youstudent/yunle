@@ -16,7 +16,7 @@
                 'options' => ['class' => 'nav'],
                 'items'   => [
                     ['label' => '', 'options' => ['class' => 'nav-header']],
-                    ['label' => '面板', 'url' => '/panel'],
+                    ['label' => '首页', 'url' => '/site'],
                     [
                         'label'   => '组织',
                         'url'     => 'javascript:;',
@@ -84,9 +84,8 @@
                         'url'     => 'javascript:;',
                         'options' => ['class' => 'has-sub'],
                         'items'   => [
-                            ['label' => '角色', 'url' => ['/system/index']],
-                            ['label' => '员工', 'url' => ['/abc/index']],
-                            ['label' => '账号', 'url' => ['/insurance-company/index']],
+                            ['label' => '角色', 'url' => ['/rbac/role-index']],
+                            ['label' => '员工', 'url' => ['/rbac/user']],
                         ],
                     ],
                     [

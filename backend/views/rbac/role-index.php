@@ -11,7 +11,7 @@ use yii\widgets\LinkPager;
 /* @var $searchModel backend\models\searchs\OrderSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = '文章列表';
+$this->title = '角色列表';
 $this->params['breadcrumbs'][] = $this->title;
 
 \pd\coloradmin\web\plugins\DaterangePickerAsset::register($this);
@@ -83,7 +83,7 @@ JS
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="row">
         <div class="col-md-6">
-            <?= Html::a('添加栏目', ['create'], ['class' => 'btn btn-success']) ?>
+            <a href="<?= Url::to(['role-create']) ?>" class="btn btn-success" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static" >添加角色</a>
         </div>
     </div>
     <p></p>
@@ -105,21 +105,20 @@ JS
             <table id="data-table" class="table table-striped table-bordered">
                 <thead>
                 <tr>
-                    <th>#</th>
                     <th>名称</th>
                     <th>描述</th>
+                    <th>操作</th>
                 </tr>
                 </thead>
                 <tbody>
                 <?php foreach($dataProvider->getModels() as $index => $model): ?>
                     <tr class="">
-                        <td><?= \pd\helpers\Yii2Helpers::serialColumn($dataProvider, $index) ?></td>
                         <td><?= $model->name ?></td>
                         <td><?= $model->description ?></td>
                         <td align="center">
                             <div class="btn-group">
-                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">编辑</span></a>
-                                <a href="javascript:;" data-url="<?= Url::to(['delete', 'id'=> $model->id]) ?>" onclick="pokerDragon.modalAjax($(this))"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                                <a href="<?= Url::to(['role-update', 'name'=> $model->name]) ?>" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
+                                <a href="javascript:;" data-confirm="确认删除此角色？" data-url="<?= Url::to(['role-delete','id' => $model->name]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
                             </div>
                         </td>
                     </tr>
