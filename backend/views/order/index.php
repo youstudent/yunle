@@ -118,6 +118,9 @@ JS
                     <input type="text" class="form-control" name="OrderSearch[order_service]" id="service" value="<?= $searchModel->order_service ?>" placeholder="服务商">
                 </div>
                 <div class="form-group m-r-10">
+                    <input type="text" class="form-control" name="OrderSearch[order_salesman]" id="service" value="<?= $searchModel->order_salesman ?>" placeholder="业务员">
+                </div>
+                <div class="form-group m-r-10">
                     <select class="form-control" name="OrderSearch[order_type]" id="OrderSearchType">
                         <option value="" selected>全部</option>
                         <option value="1" <?= $searchModel->order_type == 1 ? 'selected' : '' ?>>救援</option>

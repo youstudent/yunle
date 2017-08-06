@@ -161,7 +161,8 @@ JS
                         <td><?= \pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
                         <td align="center">
                             <div class="btn-group">
-                                <a href="<?= Url::to(['service/update', 'id'=> $model->id]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">修改绑定</span></a>
+                                <a href="<?= Url::to(['order/index', 'OrderSearch[order_service]'=> $model->name]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">订单</span></a>
+                                <a href="<?= Url::to(['insurance-order/index','OrderSearch[order_service]'=> $model->name]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">保险</span></a>
                                 <a href="<?= Url::to(['service/update', 'id'=> $model->id]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
                                 <a href="<?= Url::to(['service/delete', 'id' => $model->id]) ?>" data-confirm="确认删除此数据?" data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
                             </div>

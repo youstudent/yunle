@@ -17,7 +17,7 @@ class InsuranceDetailSearch extends InsuranceDetail
     public function rules()
     {
         return [
-            [['status'], 'integer'],
+            [['status', 'member_id'], 'integer'],
             [['created_at','user', 'car'], 'string'],
             [['phone'], 'number'],
         ];
@@ -38,6 +38,7 @@ class InsuranceDetailSearch extends InsuranceDetail
             'order_cost',
             'order_status',
             'order_created_at',
+            'member_id',
         ]);
     }
 
@@ -73,7 +74,8 @@ class InsuranceDetailSearch extends InsuranceDetail
         }
         $query->andFilterWhere(['type' => $this->status])
             ->andFilterWhere(['LIKE', 'io.user', $this->user])
-            ->andFilterWhere(['LIKE', 'io.phone', $this->phone]);
+            ->andFilterWhere(['LIKE', 'io.phone', $this->phone])
+            ->andFilterWhere(['io.member_id', $this->member_id]);
 
 
         return $dataProvider;

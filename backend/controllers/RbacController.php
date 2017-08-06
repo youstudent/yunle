@@ -9,6 +9,7 @@ namespace backend\controllers;
 
 
 use backend\models\AuthItem;
+use backend\models\Menu;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Url;
@@ -55,6 +56,27 @@ class RbacController extends BackendController
         return $this->renderAjax('role-create', [
             'model' => $model
         ]);
+    }
+
+    public function actionMenuAssign($name)
+    {
+        $role = $name;
+
+        $model = new AuthItem();
+        $model->initMenu();
+        //获取role的权限
+
+        $data = Yii::$app->params['menu'];
+
+        return $this->renderPjax('menu-assign', [
+            'model' => $data,
+            'role' => $role
+        ]);
+    }
+
+    public function actionRoleAssign()
+    {
+
     }
 
     public function actionValidateForm($scenario, $name = null)

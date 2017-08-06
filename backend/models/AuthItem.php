@@ -98,7 +98,36 @@ class AuthItem extends \yii\db\ActiveRecord
             return $this;
         });
     }
+    //初始化Menu到Menu数据库
+    public function initMenu()
+    {
+        //清空原始数据
+        //step 1 关闭外键检查
+//        Yii::$app->db->createCommand('SET FOREIGN_KEY_CHECKS = 0;')->execute();
+//        //step 2 清理数据
+//        Yii::$app->db->createCommand('TRUNCATE TABLE {%menu}')->execute();
+        //step 3 开始导入数据
+        $origin = Yii::$app->params['menu'];
+        return $this->insertMenu($origin);
+    }
+    protected function insertMenu($data, $parent = '')
+    {
+        foreach($data as $val){
 
+            $model = new Menu();
+            $model->name = $val['text'];
+            $model->route = $val['url'];
+            $model->parent = $parent;
+            $model->order = 1;
+            $model->save();
+            if(!empty($parent)){
+            }
+            if(isset($val['children']) && count($val['children'])){
+                $this->insertMenu($val['children'], $model->id);
+            }
+        }
+        return true;
+    }
 //    /**
 //     * @return \yii\db\ActiveQuery
 //     */

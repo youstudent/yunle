@@ -53,7 +53,7 @@ class OrderDetail extends \yii\db\ActiveRecord
 
     public function getMember()
     {
-        return $this->hasOne(Member::className(), ['member_id' => 'id']);
+        return $this->hasOne(Member::className(), ['id' => 'member_id'])->alias('m');
     }
 
     public function getOrder()

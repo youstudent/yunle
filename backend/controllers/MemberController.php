@@ -12,6 +12,7 @@ use backend\models\form\MemberForm;
 use backend\models\form\MemberInfoForm;
 use backend\models\Member;
 use backend\models\searchs\MemberSearch;
+use backend\models\Service;
 use common\models\Identification;
 use common\models\MessageCode;
 use Yii;
@@ -99,6 +100,21 @@ class MemberController extends BackendController
     {
         $menu = Yii::$app->params['app_menu'];
         return json_encode(['data' => $menu, 'code' => 1, 'message' => ''], JSON_UNESCAPED_UNICODE);
+    }
+
+    public function actionModifySalesman($id)
+    {
+        $model = Member::findOne($id);
+        $model->service = Service::findOne(['id'=>$model->pid]) ? Service::findOne(['id'=>$model->pid])->id : '';
+        if($model->load(Yii::$app->request->post())){
+            if($model->modifySalesman()){
+                return $this->asJson(['data'=> [], 'code'=> 1, 'message'=> '变更成功']);
+            }
+            return $this->asJson(['data'=> [], 'code'=>0, 'message'=> '变更失败']);
+        }
+        return $this->renderAjax('modify-salesman',[
+           'model' => $model
+        ]);
     }
 
     public function actionValidateForm($scenario, $id = null)
