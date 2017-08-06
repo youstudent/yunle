@@ -1,0 +1,24 @@
+{
+    "name": "pokerdragon/yii2-color-admin-asset",
+    "description": "Color Admin backend theme asset bundle for Yii 2.0 Framework",
+    "type": "yii2-extension",
+    "keywords": ["yii2","extension","color-admin","admin","theme","backend","asset","color"],
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Poker Dragon",
+            "email": "pokerdragon@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "2.*",
+        "pokerdragon/color-admin": "~0.1",
+        "pokerdragon/yii2-admin": "~0.1",
+        "pokerdragon/yii2-helpers": "~0.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "pd\\coloradmin\\": ""
+        }
+    }
+}
