@@ -1005,6 +1005,15 @@ class Helper
         return $tag;
     }
 
+    public static function getTime($time)
+    {
+        if ($time) {
+            return date('Y年m月d日 H:i', $time);
+        } else {
+            return '暂未设置';
+        }
+
+    }
     //临时接口数据
     public static function getRbac()
     {

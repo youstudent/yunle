@@ -189,11 +189,12 @@ class User extends ActiveRecord
         } else {
             $butlerName = $myButler->name;
             $level = $myButler->level;
-            $img = Yii::$app->params['img_domain'].ServiceImg::findOne(['service_id'=>$pid]);
+            $path =
+            $img = ServiceImg::findOne(['service_id'=>$pid]);
             if (!isset($img) || empty($img)) {
                 $photo = '';
             } else {
-                $photo = $_SERVER['HTTP_HOST'].$img->img_path;
+                $photo = Yii::$app->params['img_domain'].$img->img_path;
             }
 
         }

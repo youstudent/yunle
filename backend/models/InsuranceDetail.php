@@ -2,6 +2,10 @@
 
 namespace backend\models;
 
+use common\models\BusinessDetail;
+use common\models\CompensatoryDetail;
+use common\models\Upload;
+use common\models\Warranty;
 use Yii;
 
 /**
@@ -21,6 +25,9 @@ class InsuranceDetail extends \yii\db\ActiveRecord
     public $car;
     public $person;
     public $element;
+    public $warranty;
+    public $compensatory;
+    public $business;
     /**
      * @inheritdoc
      */
@@ -68,8 +75,88 @@ class InsuranceDetail extends \yii\db\ActiveRecord
         $model->car = Car::findOne(['id'=>$model->car_id]);
         $model->person = Member::findOne(['id'=>$model->member_id]);
         $model->element = InsuranceElement::findAll(['order_id'=>$id]);
+        $model->warranty = Warranty::findOne(['order_id'=>$id]);
+        $model->business = BusinessDetail::findOne(['id'=>$model->warranty->business_id]);
+        $model->compensatory = CompensatoryDetail::findOne(['id'=>$model->warranty->compensatory_id]);
 
         return $model;
 
     }
+
+    public static function cancel($id)
+    {
+        //取消订单
+        $user_id = $_SESSION['__id'];
+        $user = Adminuser::findOne(['id'=>$user_id])->name;
+        $act = ActInsurance::findOne(['order_id'=>$id]);
+        $act->status = 100;
+        $act->info = '订单已取消';
+        $act->port = 3;
+        $act->user_id = $user_id;
+        $act->user = $user;
+        $act->id = null;
+        $act->created_at = time();
+        $act->isNewRecord = 1;
+        $order = InsuranceDetail::findOne(['order_id'=>$id]);
+        $order->action = '已取消';
+        $order->updated_at = time();
+        if ($act->save(false) && $order->save(false)) {
+            return true;
+        }
+        return false;
+    }
+
+    public function checkSuccess($data, $id)
+    {
+        $user_id = $_SESSION['__id'];
+        $user = Adminuser::findOne(['id'=>$user_id])->name;
+        $act = ActInsurance::findOne(['order_id'=>$id]);
+        $act->status = 97;
+        $act->info = '核保成功';
+        $act->port = 3;
+        $act->user_id = $user_id;
+        $act->user = $user;
+        $act->id = null;
+        $act->created_at = time();
+        $act->isNewRecord = 1;
+        if ($act->save(false)) {
+            $imgId = $act->id;
+            $upload = new Upload();
+            //TODO:等龙哥图片
+            $img  = 1;
+            if (!$img) {
+                return false;
+            }
+        }
+        $order = InsuranceDetail::findOne(['order_id'=>$id]);
+        $order->action = '已取消';
+        $order->updated_at = time();
+        if (!$order->save(false)) {
+            return false;
+        }
+        return true;
+    }
+
+    public function checkFailed($data, $id)
+    {
+        $user_id = $_SESSION['__id'];
+        $user = Adminuser::findOne(['id'=>$user_id])->name;
+        $act = ActInsurance::findOne(['order_id'=>$id]);
+        $act->status = 98;
+        $act->info = $data['info'];
+        $act->port = 3;
+        $act->user_id = $user_id;
+        $act->user = $user;
+        $act->id = null;
+        $act->created_at = time();
+        $act->isNewRecord = 1;
+        $order = InsuranceDetail::findOne(['order_id'=>$id]);
+        $order->action = '核保失败';
+        $order->updated_at = time();
+        if ($act->save(false) && $order->save(false)) {
+            return true;
+        }
+        return false;
+    }
+
 }

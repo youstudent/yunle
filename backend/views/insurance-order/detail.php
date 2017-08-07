@@ -6,7 +6,12 @@
  */
 
 /* @var $model backend\models\InsuranceDetail  */
-
+use backend\models\Member;
+use yii\helpers\Html;
+use yii\grid\GridView;
+use yii\helpers\Url;
+use yii\widgets\ActiveForm;
+use yii\widgets\LinkPager;
 ?>
 
 <!-- begin page-header -->
@@ -37,18 +42,28 @@
                         <th>已付款</th>
                         <th>价格</th>
                         <th>完成时间</th>
+                        <th align="center">操作</th>
                     </tr>
                     <tbody>
                     <tr>
                         <td><?= $model->insurance->order_sn ?></td>
                         <td><?= $model->insurance->car ?></td>
                         <td><?= $model->insurance->phone ?></td>
-                        <td><?= $model->insurance->created_at ?></td>
+                        <td><?= \common\models\Helper::getTime($model->insurance->created_at) ?></td>
                         <td><?= $model->insurance->check_at?$model->insurance->check_at:'未审核'; ?></td>
                         <td><?= $model->insurance->check_action?$model->insurance->check_action:'未审核'; ?></td>
                         <td><?= $model->insurance->payment_action?$model->insurance->payment_action:'未付款'; ?></td>
                         <td><?= $model->insurance->cost ?></td>
                         <td><?= $model->insurance->updated_at?$model->insurance->updated_at:'未完成'; ?></td>
+                        <td align="center">
+                            <div class="btn-group">
+                                <a href="<?= Url::to(['check-success', 'id'=> $model->order_id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">核保成功</span></a>
+                                <a href="<?= Url::to(['check-failed', 'id'=> $model->order_id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">核保失败</span></a>
+                                <a href="<?= Url::to(['detail', 'id'=> $model->order_id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">确认付款</span></a>
+                                <a href="javascript:;" data-confirm="确认取消此订单？" data-url="<?= Url::to(['cancel', 'id'=> $model->order_id]) ?>"  data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">取消订单</span></a>
+                                <a href="<?= Url::to(['detail', 'id'=> $model->order_id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">修改</span></a>
+                            </div>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -85,22 +100,8 @@
                 </table>
             </div>
             <div class="tab-pane fade" id="insurance-info">
-<!--                <table id="data-table-title" class="table table-striped table-bordered">-->
-<!--                    <thead>-->
-<!--                    <tr>-->
-<!--                        <th>公司名称</th>-->
-<!--                        <th>组织机构代码</th>-->
-<!--                        <th>承保公司</th>-->
-<!--                    </tr>-->
-<!--                    <tbody>-->
-<!--                    <tr>-->
-<!--                        <td>--><?//= $model->insurance->user ?><!--</td>-->
-<!--                        <td>--><?//= $model->insurance->licence ?><!--</td>-->
-<!--                        <td>--><?//= $model->insurance->company ?><!--</td>-->
-<!--                    </tr>-->
-<!--                    </tbody>-->
-<!--                </table>-->
                 <table id="data-table-title" class="table table-striped table-bordered">
+                    <?php if ($model->insurance->sex) {?>
                     <thead>
                     <tr>
                         <th>投保人</th>
@@ -118,24 +119,39 @@
                         <td><?= $model->insurance->company ?></td>
                     </tr>
                     </tbody>
+                    <?php } else {?>
+                    <thead>
+                    <tr>
+                        <th>公司名称人</th>
+                        <th>组织机构代码</th>
+                        <th>承保公司</th>
+                    </tr>
+                    <tbody>
+                    <tr>
+                        <td><?= $model->insurance->user ?></td>
+                        <td><?= $model->insurance->licence ?></td>
+                        <td><?= $model->insurance->company ?></td>
+                    </tr>
+                    </tbody>
+                    <?php }?>
                 </table>
-<!--                <table id="data-table-title" class="table table-striped table-bordered">-->
-<!--                    <thead>-->
-<!--                    <tr>-->
-<!--                        <th>保险名称</th>-->
-<!--                        <th>要素</th>-->
-<!--                        <th>啊啊</th>-->
-<!--                    </tr>-->
-<!--                    <tbody>-->
-<!--                    --><?// foreach ($model->element as $v) {?>
-<!--                    <tr>-->
-<!--                        <td>--><?//= $v->insurance ?><!--</td>-->
-<!--                        <td>--><?//= $v->element ?><!--</td>-->
-<!--                        <td>--><?//= $v->dedution ?><!--</td>-->
-<!--                    </tr>-->
-<!--                    --><?// } ?>
-<!--                    </tbody>-->
-<!--                </table>-->
+                <table id="data-table-title" class="table table-striped table-bordered">
+                    <thead>
+                    <tr>
+                        <th>保险名称</th>
+                        <th>要素</th>
+                        <th></th>
+                    </tr>
+                    <tbody>
+                    <?php foreach ($model->element as $v) {?>
+                    <tr>
+                        <td><?= $v->insurance ?></td>
+                        <td><?= $v->element ?></td>
+                        <td><?= $v->deduction?'已选择'.$v->deduction:'未选择不计免赔'?></td>
+                    </tr>
+                    <?php } ?>
+                    </tbody>
+                </table>
             </div>
             <div class="tab-pane fade" id="pay-info">
                 <table id="data-table-title" class="table table-striped table-bordered">
@@ -151,22 +167,22 @@
                     </tr>
                     <tbody>
                     <tr>
-                        <td>较强想</td>
-                        <td>123</td>
-                        <td>123</td>
-                        <td>123</td>
-                        <td>123</td>
-                        <td>123</td>
-                        <td>123</td>
+                        <td>交强险</td>
+                        <td><?= $model->compensatory->serial_number ?></td>
+                        <td><?= $model->compensatory->warranty_number ?></td>
+                        <td><?= $model->compensatory->cost ?></td>
+                        <td><?= $model->compensatory->travel_tax ?></td>
+                        <td><?= \common\models\Helper::getTime($model->compensatory->start_at) ?></td>
+                        <td><?= \common\models\Helper::getTime($model->compensatory->end_at) ?></td>
                     </tr>
                     <tr>
-                        <td>较强想</td>
-                        <td>123</td>
-                        <td>123</td>
-                        <td>123</td>
-                        <td>123</td>
-                        <td>123</td>
-                        <td>123</td>
+                        <td>商业险</td>
+                        <td><?= $model->compensatory->serial_number ?></td>
+                        <td><?= $model->compensatory->warranty_number ?></td>
+                        <td><?= $model->compensatory->cost ?></td>
+                        <td><?= $model->compensatory->travel_tax ?></td>
+                        <td><?= \common\models\Helper::getTime($model->compensatory->start_at) ?></td>
+                        <td><?= \common\models\Helper::getTime($model->compensatory->end_at) ?></td>
                     </tr>
                     </tbody>
                 </table>

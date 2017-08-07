@@ -258,7 +258,7 @@ class Warranty extends \yii\db\ActiveRecord
         $phone = $this->getNames($oldWarranty->order_id)->phone;
 
         if ($memberType == 1) {
-            $warranty['person'] = ['user'=>$name, 'sex'=>$sex, 'nation'=>$nation, 'licence'=>$licence, 'phone'=>$phone];
+            $warranty['person'] = ['member_id'=>$oldWarranty->member_id, 'user'=>$name, 'sex'=>$sex, 'nation'=>$nation, 'licence'=>$licence, 'phone'=>$phone];
         } else {
             $warranty['person'] = ['user'=>$name, 'licence'=>$licence];
         }

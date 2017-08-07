@@ -65,7 +65,7 @@
                             ['label' => '驾照', 'url' => ['/driver/index']],
                             ['label' => '身份证', 'url' => ['/identity/index']],
                             ['label' => '行驶证', 'url' => ['/car/index']],
-                            ['label' => '保单', 'url' => ['/insurance-order/index']],
+                            ['label' => '保单', 'url' => ['/warranty/index']],
                         ],
                     ],
                     [

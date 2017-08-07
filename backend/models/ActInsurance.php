@@ -15,6 +15,7 @@ use Yii;
  * @property string $info
  * @property integer $created_at
  * @property integer $updated_at
+ * @property integer $port
  */
 class ActInsurance extends \yii\db\ActiveRecord
 {
