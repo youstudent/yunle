@@ -21,6 +21,10 @@ use yii\helpers\ArrayHelper;
  */
 class Adminuser extends \yii\db\ActiveRecord
 {
+
+    public $old_password;
+    public $new_password;
+    public $re_password;
     /**
      * @inheritdoc
      */
@@ -39,13 +43,19 @@ class Adminuser extends \yii\db\ActiveRecord
             [['status', 'created_at', 'updated_at'], 'integer'],
             [['username', 'auth_key'], 'string', 'max' => 32],
             [['name', 'password_hash', 'password_reset_token', 'email'], 'string', 'max' => 255],
-            [['username', 'password_hash'], 'required', 'on' => 'addServiceUser']
+            [['username', 'password_hash'], 'required', 'on' => 'addServiceUser'],
+            [['password', 'new_password', 're_password'], 'required', 'on' => 'modifyPassword'],
+            [['new_password'], 'string', 'max'=> '16', 'on' => 'modifyPassword'],
+            [['new_password'], 'validateNewPassword', 'on'=> 'modifyPassword'],
+            [['old_password'], 'validatePassword', 'on'=> 'modifyPassword'],
         ];
     }
     public function scenarios()
     {
         return [
             'addServiceUser' => ['username', 'password'],
+            'updateServiceUser' => ['username', 'password'],
+            'modifyPassword' => ['old_password', 'new_password', 're_password'],
         ];
     }
 
@@ -95,6 +105,37 @@ class Adminuser extends \yii\db\ActiveRecord
             $this->password_hash = Yii::$app->security->generatePasswordHash($this->password_hash);
         }
         return true;
+    }
+
+    public function validatePassword($attributes, $params)
+    {
+        if(!$this->hasErrors()){
+            if(!Yii::$app->security->validatePassword($this->old_password, $this->password_hash)){
+                $this->addError('old_password', '旧密码不正确');
+            }
+        }
+    }
+
+    public function validateNewPassword($attributes, $params)
+    {
+        if(!$this->hasErrors()){
+            if($this->new_password != $this->re_password){
+                $this->addError('re_password', '两次密码不正确');
+            }
+        }
+    }
+
+    public function modifyPassword()
+    {
+        if(!$this->validate()){
+            return false;
+        }
+
+        return Yii::$app->db->transaction(function(){
+            $this->password_hash = Yii::$app->security->generatePasswordHash($this->new_password);
+            $this->save();
+            return $this;
+        });
     }
 
 }

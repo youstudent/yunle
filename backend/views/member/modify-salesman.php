@@ -14,7 +14,7 @@ use yii\helpers\Url;
 <!-- #modal-dialog -->
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h4 class="modal-title">添加会员</h4>
+    <h4 class="modal-title">变更业务员</h4>
 </div>
 <div class="modal-body">
     <?php $form = \yii\bootstrap\ActiveForm::begin([

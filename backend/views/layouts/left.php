@@ -17,14 +17,16 @@
                 'items'   => [
                     ['label' => '', 'options' => ['class' => 'nav-header']],
                     ['label' => '首页', 'url' => '/site'],
+                    ['label' => '账号信息', 'url' => '/account/index'],
                     [
-                        'label'   => '组织',
+                        'label'   => '用户管理',
                         'url'     => 'javascript:;',
                         'options' => ['class' => 'has-sub'],
                         'items'   => [
-                            ['label' => '会员', 'url' => ['/member/index']],
-                            ['label' => '业务员', 'url' => ['/salesman/index']],
                             ['label' => '服务商', 'url' => ['/service/index']],
+                            ['label' => '代理商', 'url' => ['/service/index']],
+                            ['label' => '业务员', 'url' => ['/salesman/index']],
+                            ['label' => '会员', 'url' => ['/member/index']],
                         ],
                     ],
                     [
@@ -42,7 +44,6 @@
                         'url'     => 'javascript:;',
                         'options' => ['class' => 'has-sub'],
                         'items'   => [
-                            ['label' => '身份证', 'url' => ['/a/wall']],
                             ['label' => '行驶证', 'url' => ['/b/index']],
                             ['label' => '服务商', 'url' => ['/c-order/index']],
                         ],

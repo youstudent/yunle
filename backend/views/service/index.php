@@ -16,40 +16,23 @@ $this->params['breadcrumbs'][] = $this->title;
 \pd\coloradmin\web\plugins\DaterangePickerAsset::register($this);
 
 $this->registerJs(<<<JS
-$('#demo').daterangepicker({
+$('#daterangepicker').daterangepicker({
     "showDropdowns": true,
     "timePicker": true,
     "ranges": {
-        "今天": [
-            "2017-07-19T02:31:43.705Z",
-            "2017-07-19T02:31:43.705Z"
-        ],
-        "昨天": [
-            "2017-07-18T02:31:43.705Z",
-            "2017-07-18T02:31:43.705Z"
-        ],
-        "本周": [
-            "2017-07-13T02:31:43.705Z",
-            "2017-07-19T02:31:43.705Z"
-        ],
-        "上周": [
-            "2017-06-20T02:31:43.705Z",
-            "2017-07-19T02:31:43.705Z"
-        ],
-        "本月": [
-            "2017-06-30T16:00:00.000Z",
-            "2017-07-31T15:59:59.999Z"
-        ],
-        "上月": [
-            "2017-05-31T16:00:00.000Z",
-            "2017-06-30T15:59:59.999Z"
-        ]
+           '今日': [moment().startOf('day'), moment()],
+            '昨日': [moment().subtract(1, 'days').startOf('day'), moment().subtract(1, 'days').endOf('day')],
+            '最近7日': [moment().subtract(6, 'days'), moment()],
+            '最近30日': [moment().subtract(29, 'days'), moment()],
+            '本月': [moment().startOf("month"),moment().endOf("month")],
+            '上个月': [moment().subtract(1,"month").startOf("month"),moment().subtract(1,"month").endOf("month")]
     },
+    "autoUpdateInput": false,
     "locale": {
         "format": "YYYY-MM-DD HH:mm",
         "separator": " - ",
         "applyLabel": "确定",
-        "cancelLabel": "取消",
+        "cancelLabel": "清空",
         "fromLabel": "从",
         "toLabel": "到",
         "customRangeLabel": "自定义",
@@ -82,10 +65,13 @@ $('#demo').daterangepicker({
     "linkedCalendars": false,
     "alwaysShowCalendars": true,
     "startDate": "2017-07-19",
-}, function(start, end, label) {
-    console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
 });
-
+$("#daterangepicker").on('apply.daterangepicker', function(ev, picker) {
+  $(this).val(picker.startDate.format('YYYY-MM-DD HH:mm') + ' - ' + picker.endDate.format('YYYY-MM-DD HH:mm'));
+});
+$("#daterangepicker").on('cancel.daterangepicker', function(ev, picker) {
+  $(this).val('');
+});
 JS
 );
 ?>
@@ -113,37 +99,55 @@ JS
         </div>
         <?= \pd\coloradmin\widgets\Alert::widget() ?>
         <div class="panel-body">
-            <form class="form-inline"  action="" method="GET">
-                <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="ServiceSearch[created_at]" id="demo" value="<?= $searchModel->created_at ?>" placeholder="创建时间">
-                </div>
-                <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="ServiceSearch[name]" id="exampleInputPassword2" value="<?= $searchModel->name ?>" placeholder="服务商">
-                </div>
-                <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="ServiceSearch[principal]" id="exampleInputPassword2" value="<?= $searchModel->principal ?>" placeholder="负责人">
-                </div>
-                <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="ServiceSearch[principal]" id="exampleInputPassword2" value="<?= $searchModel->principal ?>" placeholder="客户经理">
-                </div>
-                <div class="form-group m-r-10">
-                    <input type="text" class="form-control" id="exampleInputPassword2" placeholder="状态">
-                </div>
-                <button type="submit" class="btn btn-sm btn-primary m-r-5">搜索</button>
-                <button type="button" class="btn btn-sm btn-info m-r-5" onclick="">重置</button>
-            </form>
+            <?php $form = \yii\bootstrap\ActiveForm::begin([
+                'id'                   => $searchModel->formName(),
+                'method' => 'get',
+                'layout'               => 'inline',
+                'fieldConfig'          => [
+                    'template'             => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
+                    'horizontalCssClasses' => [
+                        'label'   => 'control-label col-md-4 col-sm-4',
+                        'offset'  => '',
+                        'wrapper' => 'col-md-6 col-sm-6',
+                        'error'   => '',
+                        'hint'    => '',
+                    ],
+                ],
+            ]) ?>
+
+            <div class="form-group m-r-10">
+                <input type="text" class="form-control" name="ServiceSearch[created_at]" id="daterangepicker" value="<?= $searchModel->created_at ?>" placeholder="创建时间">
+            </div>
+
+
+            <?= $form->field($searchModel, 'name')->textInput(['placeholder'=> '服务商名称']); ?>
+
+            <?= $form->field($searchModel, 'principal')->textInput(['placeholder'=> '负责人姓名']); ?>
+
+            <?= $form->field($searchModel, 'contact_phone')->textInput(['placeholder'=> '联系电话']); ?>
+
+            <?= $form->field($searchModel, 'pid')->dropDownList(
+                \backend\models\Adminuser::find()->where(['mark'=> 1])->select('name,id')->indexBy('id')->asArray()->column(),
+                ['prompt'=> '选择客户经理']
+            ); ?>
+
+                            <button type="submit" class="btn btn-sm btn-primary m-r-5">搜索</button>
+                            <button type="button" class="btn btn-sm btn-info m-r-5" onclick="">重置</button>
+
+            <?php yii\bootstrap\ActiveForm::end() ?>
 
             <p></p>
             <table id="data-table" class="table table-striped table-bordered">
                 <thead>
                 <tr>
                     <th>#</th>
+                    <th>id</th>
                     <th>服务商名称</th>
                     <th>负责人</th>
                     <th>客服电话</th>
                     <th>地址</th>
-                    <th>状态</th>
                     <th>客户经理</th>
+                    <th>状态</th>
                     <th>创建时间</th>
                     <th>操作</th>
                 </tr>
@@ -152,19 +156,22 @@ JS
                 <?php foreach($dataProvider->getModels() as $index => $model): ?>
                     <tr class="">
                         <td><?= \pd\helpers\Yii2Helpers::serialColumn($dataProvider, $index) ?></td>
+                        <td><?= $model->id ?></td>
                         <td><?= $model->name ?></td>
                         <td><?= $model->principal ?></td>
                         <td><?= $model->contact_phone ?></td>
                         <td><?= $model->address ?></td>
+                        <td><?= $model->pid && backend\models\Adminuser::findOne($model->pid) ? backend\models\Adminuser::findOne($model->pid)->name : '未设置'   ?></td>
                         <td><?= $model->status == 1 ? '<span class="badge badge-info">正常</span>' : '<span class="badge badge-danger">冻结</span>' ?></td>
-                        <td><?= $model->pid && backend\models\Adminuser::findOne($model->pid) ? backend\models\Adminuser::findOne($model->pid)->username : '未设置'   ?></td>
                         <td><?= \pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
                         <td align="center">
                             <div class="btn-group">
-                                <a href="<?= Url::to(['order/index', 'OrderSearch[order_service]'=> $model->name]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">订单</span></a>
-                                <a href="<?= Url::to(['insurance-order/index','OrderSearch[order_service]'=> $model->name]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">保险</span></a>
+                                <a href="<?= Url::to(['index']) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">更多</span></a>
+<!--                                <a href="--><?//= Url::to(['order/index', 'OrderSearch[order_service]'=> $model->name]) ?><!--"><span class="btn btn-info m-r-1 m-b-5 btn-xs">订单</span></a>-->
+<!--                                <a href="--><?//= Url::to(['insurance-order/index','OrderSearch[order_service]'=> $model->name]) ?><!--"><span class="btn btn-info m-r-1 m-b-5 btn-xs">保险</span></a>-->
                                 <a href="<?= Url::to(['service/update', 'id'=> $model->id]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
-                                <a href="<?= Url::to(['service/delete', 'id' => $model->id]) ?>" data-confirm="确认删除此数据?" data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                                <a href="<?= Url::to(['salesman/index', 'id'=> $model->id]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">业务员</span></a>
+<!--                                <a href="--><?//= Url::to(['service/delete', 'id' => $model->id]) ?><!--" data-confirm="确认删除此数据?" data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>-->
                             </div>
                         </td>
                     </tr>

@@ -16,6 +16,9 @@ use Yii;
  */
 class OrderDetail extends \yii\db\ActiveRecord
 {
+    public $status_id;
+    public $type;
+
     /**
      * @inheritdoc
      */
@@ -70,6 +73,11 @@ class OrderDetail extends \yii\db\ActiveRecord
         $this->created_at = time();
         $this->action = '待接单';
         return $this->save();
+    }
+
+    public function getOrderAct()
+    {
+        return $this->hasOne(ActDetail::className(), ['id'=> 'order_id'])->alias('act');
     }
 
 }

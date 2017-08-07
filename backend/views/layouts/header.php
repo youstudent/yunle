@@ -76,7 +76,7 @@ JS
             <li>
                 <form class="navbar-form full-width">
                     <div class="form-group">
-                        <input type="checkbox" data-render="switchery" data-theme="blue" data-change="check-switchery-state-text" checked />
+                        <input type="checkbox" data-render="switchery" data-theme="blue"  data-change="check-switchery-state-text" checked />
                         <a href="#" class="btn btn-xs btn-primary disabled m-l-5" data-id="switchery-state-text">营业中</a>
                     </div>
                 </form>
@@ -149,10 +149,7 @@ JS
                 </a>
                 <ul class="dropdown-menu animated fadeInLeft">
                     <li class="arrow"></li>
-                    <li><a href="javascript:;">Edit Profile</a></li>
-                    <li><a href="javascript:;"><span class="badge badge-danger pull-right">2</span> Inbox</a></li>
-                    <li><a href="javascript:;">Calendar</a></li>
-                    <li><a href="javascript:;">Setting</a></li>
+                    <li><a href="<?= Url::to(['account/index']) ?>">我的信息</a></li>
                     <li class="divider"></li>
                     <li><a href="<?= Url::to(['/admin/user/logout']) ?>">注销</a></li>
                 </ul>

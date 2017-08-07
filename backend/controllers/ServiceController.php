@@ -5,6 +5,7 @@ namespace backend\controllers;
 use backend\models\form\ServiceForm;
 use backend\models\searchs\ServiceSearch;
 use backend\models\Service;
+use backend\models\ServiceImg;
 use Yii;
 use backend\models\Adminuser;
 use backend\models\searchs\Adminuser as AdminuserSearch;

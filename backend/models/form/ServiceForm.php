@@ -18,6 +18,7 @@ class ServiceForm  extends Service
 {
     public $username;
     public $password;
+    public $cover;
 
     public $head;
     public $attachment;
@@ -49,8 +50,10 @@ class ServiceForm  extends Service
     public function attributeLabels()
     {
         return ArrayHelper::merge(parent::attributeLabels(), [
-            'username' => '登录名',
-            'password' => '密码',
+            'username' => '登录账号',
+            'password' => '登录密码',
+            'head' => '展示头图',
+            'cover' => '服务商附件',
         ]);
     }
     /**
@@ -72,6 +75,9 @@ class ServiceForm  extends Service
             $this->scenario = 'created_service';
             $this->created_at = time();
             $this->updated_at = time();
+            $this->status = 1;
+            $this->open_at = "9:30";
+            $this->close_at = "18:30";
             if(!$this->save()){
                 throw new Exception("添加会员信息失败");
             }

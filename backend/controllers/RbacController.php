@@ -8,6 +8,7 @@
 namespace backend\controllers;
 
 
+use backend\models\Adminuser;
 use backend\models\AuthItem;
 use backend\models\Menu;
 use Yii;
@@ -77,6 +78,21 @@ class RbacController extends BackendController
     public function actionRoleAssign()
     {
 
+    }
+
+    public function actionModifyPlatformPassword($id)
+    {
+        $model = Adminuser::findOne($id);
+        $model->scenario = 'modifyPassword';
+        if($model->load(Yii::$app->request->post())){
+            if($model->modifyPassword()){
+                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['role-index'])]);
+            }
+
+        }
+        return $this->renderAjax('modify-password', [
+            'model' => $model
+        ]);
     }
 
     public function actionValidateForm($scenario, $name = null)

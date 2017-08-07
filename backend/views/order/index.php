@@ -188,7 +188,7 @@ JS
                         <td><?= pd\helpers\Yii2Helpers::dateFormat($model->order->created_at) ?></td>
                         <td align="center">
                             <div class="btn-group">
-                                <a href="javascript:;" data-url="<?= Url::to(['log-modal', 'id'=> $model->id]) ?>" onclick="pokerDragon.modalAjax($(this))"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">变更状态</span></a>
+                                <a href="<?= Url::to(['modify-status', 'id'=> $model->order_id]) ?>" data-toggle="modal" data-target="#_pd_modal"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">变更状态</span></a>
                                 <a href="<?= Url::to(['log', 'id'=> $model->order_id]) ?>" data-toggle="modal" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">流程日志</span></a>
                             </div>
                         </td>

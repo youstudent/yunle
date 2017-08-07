@@ -34,8 +34,6 @@ return [
             ],],
         ],],
         ['text'=> '内容', 'url' => 'javascript:void(0);', 'state'=> ['opened'=> true, 'selected'=>true], 'children' => [
-            ['text'=> '身份证', 'url' => '/banner/index', 'state'=> ['opened'=> true], 'selected'=>true, 'children' => [
-            ],],
             ['text'=> '行驶证', 'url' => '/column/index', 'state'=> ['opened'=> true], 'selected'=>true, 'children' => [
             ],],
             ['text'=> '服务商', 'url' => '/article/index', 'state'=> ['opened'=> true], 'selected'=>true, 'children' => [

@@ -11,6 +11,7 @@ namespace backend\controllers;
 use backend\models\ActDetail;
 use backend\models\form\OrderForm;
 use backend\models\Order;
+use backend\models\OrderDetail;
 use backend\models\searchs\InsuranceOrderSearch;
 use backend\models\searchs\OrderSearch;
 use common\models\ActInsurance;
@@ -86,6 +87,15 @@ class OrderController extends BackendController
         return $this->renderContent('这是啥');
     }
 
+    public function actionModifyStatus($id)
+    {
+        //要写逻辑展示可以操作的订单状态
+        $model = Order::getOrderDetail($id);
+
+        return $this->renderAjax('modify-status', [
+            'model' => $model
+        ]);
+    }
 
     public function actionValidateForm($scenario, $id = null)
     {

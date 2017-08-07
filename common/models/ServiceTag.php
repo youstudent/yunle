@@ -65,4 +65,22 @@ class ServiceTag extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
         ];
     }
+
+    public function getTagName()
+    {
+        return $this->hasOne(Tag::className(), ['id'=> 'tag_id'])->alias('t');
+    }
+
+
+    public static function getTag($id)
+    {
+        $models = ServiceTag::find()->where(['st.service_id'=>$id])->alias('st')->joinWith('tagName')->select('tag_id,t.name')->all();
+        $tags = [];
+        foreach($models as $model){
+            if($model->tagName){
+                $tags[] = $model->tagName->name;
+            }
+        }
+       return $tags;
+    }
 }
