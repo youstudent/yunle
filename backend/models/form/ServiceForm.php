@@ -116,4 +116,19 @@ class ServiceForm  extends Service
         $model->username = 'sssxxxx';
         return $model;
     }
+
+    public function saveImg($data, $type = 'head')
+    {
+        $model = new ServiceImg();
+        $model->img_path = $data['files'][0]['url'];
+        $model->thumb = $data['files'][0]['thumbnailUrl'];
+        $model->type = $type == 'head' ? 1 : 0;
+        $model->status = 0;
+        $model->size = $data['files'][0]['size'];
+        $model->img = $data['files'][0]['name'];
+        if(!$model->save()){
+            return null;
+        }
+        return $model;
+    }
 }

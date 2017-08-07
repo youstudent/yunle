@@ -8,6 +8,8 @@
 namespace backend\controllers;
 
 
+use backend\models\form\ServiceForm;
+use backend\models\Service;
 use backend\models\ServiceImg;
 use Yii;
 use yii\helpers\FileHelper;
@@ -17,13 +19,17 @@ use yii\web\UploadedFile;
 class MediaController extends BackendController
 {
 
-    public function actionImageUpload()
+    public function actionImageUpload($model, $type)
     {
-        $model = new ServiceImg();
+        switch($model){
+            case 'serviceImg':
+                $model = new ServiceForm();
+                $directory = Yii::getAlias('@common/static/upload/service') . DIRECTORY_SEPARATOR;
+                $attribute = $type == 'head' ? 'head' : 'attachment';
+                break;
+        }
 
-        $imageFile = UploadedFile::getInstance($model, 'image');
-
-        $directory = Yii::getAlias('@common/web/img/temp') . DIRECTORY_SEPARATOR . Yii::$app->session->id . DIRECTORY_SEPARATOR;
+        $imageFile = UploadedFile::getInstance($model, $attribute);
         if (!is_dir($directory)) {
             FileHelper::createDirectory($directory);
         }
@@ -33,8 +39,8 @@ class MediaController extends BackendController
             $fileName = $uid . '.' . $imageFile->extension;
             $filePath = $directory . $fileName;
             if ($imageFile->saveAs($filePath)) {
-                $path = '/img/temp/' . Yii::$app->session->id . DIRECTORY_SEPARATOR . $fileName;
-                return Json::encode([
+                $path = '/upload/service' . DIRECTORY_SEPARATOR . $fileName;
+                $return = [
                     'files' => [
                         [
                             'name' => $fileName,
@@ -45,7 +51,13 @@ class MediaController extends BackendController
                             'deleteType' => 'POST',
                         ],
                     ],
-                ]);
+                ];
+                //保存图片到数据库
+                $imgModel = $model->saveImg($return, $type);
+                if($imgModel->id){
+                    $return['files'][0]['service_img_id'] = $imgModel->id;
+                }
+                return Json::encode($return);
             }
         }
 

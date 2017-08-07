@@ -34,3 +34,6 @@ phpunit.phar
 # vagrant runtime
 /.vagrant
 
+# 图片资源
+/common/static/upload/*
+

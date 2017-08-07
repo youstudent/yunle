@@ -155,10 +155,36 @@ JS
 
                         <?= $form->field($model, 'contact_phone')->textInput() ?>
 
-                        <?= $form->field($model, 'head')->textInput() ?>
+                        <div class="form-group field-serviceform-cover">
+                            <label class="control-label control-label col-md-4 col-sm-4" for="serviceform-cover">展示头像</label>
+                            <div class="col-md-6 col-sm-6">
+                                <?= FileUploadUI::widget([
+                                    'model' => $model,
+                                    'attribute' => 'head',
+                                    'url' => ['media/image-upload', 'model' => 'serviceImg', 'type'=> 'head'],
+                                    'gallery' => true,
+                                    'fieldOptions' => [
+                                        'accept' => 'image/*'
+                                    ],
+                                    'clientOptions' => [
+                                        'maxFileSize' => 2000000
+                                    ],
+                                    // ...
+                                    'clientEvents' => [
+                                        'fileuploaddone' => 'function(e, data) {
+                                console.log(e);
+                                console.log(data);
+                            }',
+                                        'fileuploadfail' => 'function(e, data) {
+                                console.log(e);
+                                console.log(data);
+                            }',
+                                    ],
+                                ]); ?>
 
-                        <?= $form->field($model, 'cover')->textInput() ?>
-
+                                <div class="help-block help-block-error "></div>
+                            </div>
+                        </div>
 
                         <div class="form-group field-serviceform-cover">
                             <label class="control-label control-label col-md-4 col-sm-4" for="serviceform-cover">服务商附件</label>
@@ -166,7 +192,7 @@ JS
                                 <?= FileUploadUI::widget([
                                     'model' => $model,
                                     'attribute' => 'attachment',
-                                    'url' => ['media/image-upload'],
+                                    'url' => ['media/image-upload', 'model'=> 'serviceImg', 'type'=> 'img'],
                                     'gallery' => true,
                                     'fieldOptions' => [
                                         'accept' => 'image/*'
@@ -228,7 +254,7 @@ JS
                         <div class="form-group">
                             <label class="control-label col-md-4 col-sm-4"></label>
                             <div class="col-md-6 col-sm-6">
-                                <button type="button" class="btn btn-primary">添加</button>
+                                <button type="button" class="btn btn-primary btn-submit">添加</button>
                             </div>
                         </div>
 
