@@ -153,7 +153,7 @@ JS
                         <td align="center">
                             <div class="btn-group">
                                 <a href="<?= Url::to(['detail', 'id'=> $model->order_id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">保单详情</span></a>
-                                <a href="<?= Url::to(['info', 'id'=> $model->order_id]) ?>" data-toggle="modal" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">修改</span></a>
+                                <a href="<?= Url::to(['edit', 'id'=> $model->order_id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">修改</span></a>
                             </div>
                         </td>
                     </tr>

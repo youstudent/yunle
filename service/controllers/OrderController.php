@@ -242,7 +242,7 @@ class OrderController extends ApiController
     }
 
 
-    //订单更新
+    //订单更新前数据获取
     public function actionRenewal()
     {
         $model = new Order();
@@ -267,6 +267,21 @@ class OrderController extends ApiController
         $user = $this->getUserInfo();
 
         $data = $model->alter($form, $user);
+        if ($data) {
+            return $this->jsonReturn(1, 'success',$data);
+        }
+
+        return $this->jsonReturn(0, $model->errorMsg);
+    }
+
+    //站内消息
+    public function actionStat()
+    {
+        $model = new Order();
+        $form = $this->getForm(Yii::$app->request->post('data'));
+        $user = $this->getUserInfo();
+
+        $data = $model->stat($form, $user);
         if ($data) {
             return $this->jsonReturn(1, 'success',$data);
         }

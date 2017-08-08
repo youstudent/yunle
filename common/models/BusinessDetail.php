@@ -11,6 +11,8 @@ use Yii;
  * @property string $serial_number
  * @property string $warranty_number
  * @property string $cost
+ * @property integer $start_at
+ * @property integer $end_at
  * @property integer $created_at
  * @property integer $updated_at
  */

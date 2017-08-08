@@ -355,14 +355,21 @@ class Order extends \yii\db\ActiveRecord
      */
     public function getMany($data)
     {
-        $act = ActDetail::find()->select('status, info, user, created_at')
+        $act = ActDetail::find()->select('id, status, info, user, created_at')
             ->where(['order_id'=>$data['order_id']])
             ->asArray()
             ->orderBy(['created_at' => SORT_DESC])
             ->all();
+        $order = Order::findOne(['id'=>$data['order_id']]);
         foreach ($act as &$v) {
             $v['created_at'] = date('Y-m-d H:i', $v['created_at']);
-            $v['status'] = Helper::getStatus($v['status'],1);
+            $v['status'] = Helper::getStatus($v['status'],$order->type);
+            $img = ActImg::find()->select('img_path')->where(['act_id'=> $v['id']])->asArray()->all();
+            $actImg = [];
+            foreach ($img as & $vv) {
+                $actImg[] = Yii::$app->params['img_domain'].$vv['img_path'];
+            }
+            $v['img_path'] = $actImg;
         }
         return $act;
     }
@@ -995,6 +1002,10 @@ class Order extends \yii\db\ActiveRecord
                 if ($v['type'] == $type) {
                     $bbb[] = $v;
                 }
+            } elseif ($status == 10000) {
+                if ($v['type'] == $type && $v['actionName'] != '已完成' && $v['actionName'] != '已取消') {
+                    $bbb[] = $v;
+                }
             } else {
                 if ($v['type'] == $type && $v['action'] == $status) {
                     $bbb[] = $v;
@@ -1242,6 +1253,40 @@ class Order extends \yii\db\ActiveRecord
             return false;
         }
         return true;
+    }
+
+    public function Stat($data, $user) {
+        $user_id = $user['user']['id'];
+        $service_id = User::findOne(['id'=>$user_id])->pid;
+        $rescue_num = OrderDetail::find()->select('type, car_id, order_id, created_at')
+            ->leftJoin(Order::tableName(), '{{%order}}.id = {{%order_detail}}.order_id')
+            ->where(['service_id' => $service_id,'type' => 1])
+            ->andWhere(['!=', 'action', '已完成'])
+            ->andWhere(['!=', 'action', '已取消'])
+            ->count();
+
+        $maintain_num = OrderDetail::find()->select('type, car_id, order_id, created_at')
+            ->leftJoin(Order::tableName(), '{{%order}}.id = {{%order_detail}}.order_id')
+            ->where(['service_id' => $service_id,'type' => 2])
+            ->andWhere(['!=', 'action', '已完成'])
+            ->andWhere(['!=', 'action', '已取消'])
+            ->count();
+        $upkeep_num = OrderDetail::find()->select('type, car_id, order_id, created_at')
+            ->leftJoin(Order::tableName(), '{{%order}}.id = {{%order_detail}}.order_id')
+            ->where(['service_id' => $service_id,'type' => 3])
+            ->andWhere(['!=', 'action', '已完成'])
+            ->andWhere(['!=', 'action', '已取消'])
+            ->count();
+        $check_num = OrderDetail::find()->select('type, car_id, order_id, created_at')
+            ->leftJoin(Order::tableName(), '{{%order}}.id = {{%order_detail}}.order_id')
+            ->where(['service_id' => $service_id,'type' => 4])
+            ->andWhere(['!=', 'action', '已完成'])
+            ->andWhere(['!=', 'action', '已取消'])
+            ->count();
+
+        $num = ['rescue' => $rescue_num, 'maintain' => $maintain_num, 'upkeep' => $upkeep_num, 'check' => $check_num];
+
+        return $num;
     }
 
 }

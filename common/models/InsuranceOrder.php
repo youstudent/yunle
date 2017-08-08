@@ -199,6 +199,12 @@ class InsuranceOrder extends \yii\db\ActiveRecord
         foreach ($act as &$v) {
             $v['created_at'] = date('Y-m-d H:i', $v['created_at']);
             $v['status'] = Helper::getInsuranceStatus($v['status'], $v['info']);
+            $img = InsuranceActimg::find()->select('img_path')->where(['act_id'=> $v['id']])->asArray()->all();
+            $actImg = [];
+            foreach ($img as & $vv) {
+                $actImg[] = Yii::$app->params['img_domain'].$vv['img_path'];
+            }
+            $v['img_path'] = $actImg;
         }
         return $act;
     }

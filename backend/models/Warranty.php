@@ -2,6 +2,8 @@
 
 namespace backend\models;
 
+use common\models\BusinessDetail;
+use common\models\CompensatoryDetail;
 use Yii;
 
 /**
@@ -20,6 +22,14 @@ use Yii;
  */
 class Warranty extends \yii\db\ActiveRecord
 {
+    public $insurance;
+    public $car;
+    public $person;
+    public $element;
+    public $warranty;
+    public $compensatory;
+    public $business;
+
     /**
      * @inheritdoc
      */
@@ -61,4 +71,42 @@ class Warranty extends \yii\db\ActiveRecord
     {
         return $this->hasOne(InsuranceOrder::className(), ['id'=> 'order_id'])->alias('io');
     }
+
+    public static function getDetail($id)
+    {
+        $model = Warranty::findOne(['order_id'=>$id]);
+        $model->insurance = InsuranceOrder::findOne($id);
+        $model->element = InsuranceElement::findAll(['order_id'=>$id]);
+        $model->business = BusinessDetail::findOne(['id'=>$model->business_id]);
+        $model->compensatory = CompensatoryDetail::findOne(['id'=>$model->compensatory_id]);
+
+        return $model;
+    }
+
+    public static function changeInfo($data)
+    {
+        $id = $data['order_id'];
+        $model = Warranty::findOne(['order_id'=>$id]);
+        $business = BusinessDetail::findOne(['id'=>$model->business_id]);
+        $compensatory = CompensatoryDetail::findOne(['id'=>$model->compensatory_id]);
+
+        $compensatory->serial_number = $data['c_sn'];
+        $compensatory->warranty_number = $data['c_wn'];
+        $compensatory->cost = $data['c_cost'];
+        $compensatory->travel_tax = $data['c_tt'];
+        $compensatory->start_at = $data['c_st'];
+        $compensatory->end_at = $data['c_en'];
+
+        $business->serial_number = $data['b_sn'];
+        $business->warranty_number = $data['b_wn'];
+        $business->cost = $data['b_wn'];
+        $business->start_at = $data['b_st'];
+        $business->end_at = $data['b_en'];
+
+        if ($compensatory->save(false) && $business->save(false)) {
+            return true;
+        }
+        return false;
+    }
+
 }
