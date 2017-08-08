@@ -50,6 +50,22 @@ return [
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
             'loginUrl' => ['admin/user/login'],
+            'on afterLogin' => function($event) {
+                $user = $event->identity; //这里的就是User Model的实例了
+                $data = [
+                    'id' => $user->id,
+                    'username' => $user->username,
+                    'name' => $user->name,
+                    'mark' => $user->mark,
+                    'master' => $user->master,
+                    'platform_type' => 1,
+                    'platform_id' => 1
+                ];
+                Yii::$app->session->set("LOGIN_MEMBER", $data);
+            },
+            'on afterLogout' => function($event) {
+                Yii::$app->session->remove("LOGIN_MEMBER");
+            }
         ],
         'session' => [
             // this is the name of the session cookie used for login on the backend

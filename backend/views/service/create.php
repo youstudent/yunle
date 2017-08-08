@@ -169,16 +169,16 @@ JS
                                     'clientOptions' => [
                                         'maxFileSize' => 2000000
                                     ],
-                                    // ...
                                     'clientEvents' => [
-                                        'fileuploaddone' => 'function(e, data) {
-                                console.log(e);
-                                console.log(data);
-                            }',
+                                        'fileuploaddone' => 'function(e, data, options) {
+                                            
+                                            console.log(options);
+                                        }',
                                         'fileuploadfail' => 'function(e, data) {
-                                console.log(e);
-                                console.log(data);
-                            }',
+//                                            console.log(e);
+//                                            console.log(data);
+                                        }',
+
                                     ],
                                 ]); ?>
 

@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use common\components\Helper;
 use Yii;
 use yii\base\Exception;
 
@@ -98,6 +99,21 @@ class AuthItem extends \yii\db\ActiveRecord
             return $this;
         });
     }
+    public static function roleList($type, $service_id)
+    {
+        //拼接查询条件
+        $name_prefix = Helper::getRolePrefix($type, $service_id);
+
+
+        $values = AuthItem::find()->where(['type'=>1])->andWhere(['LIKE', 'name', $name_prefix])->select('name')->asArray()->all();
+        $items = [];
+        foreach($values as $val){
+            $val =  trim($val['name'], $name_prefix);
+            $items[$val] = $val;
+        }
+        return $items;
+    }
+
     //初始化Menu到Menu数据库
     public function initMenu()
     {
@@ -110,6 +126,7 @@ class AuthItem extends \yii\db\ActiveRecord
         $origin = Yii::$app->params['menu'];
         return $this->insertMenu($origin);
     }
+
     protected function insertMenu($data, $parent = '')
     {
         foreach($data as $val){
@@ -120,10 +137,34 @@ class AuthItem extends \yii\db\ActiveRecord
             $model->parent = $parent;
             $model->order = 1;
             $model->save();
-            if(!empty($parent)){
-            }
+
             if(isset($val['children']) && count($val['children'])){
                 $this->insertMenu($val['children'], $model->id);
+            }
+        }
+        return true;
+    }
+
+    public function initAppMenu()
+    {
+        $origin = Yii::$app->params['app_menu'][0]['app'];
+
+
+        return $this->insertAppMenu($origin);
+    }
+
+    public function insertAppMenu($data, $parent = '')
+    {
+        foreach($data as $val){
+
+            $model = new AppMenu();
+            $model->name = $val['title'];
+            $model->key = $val['key'];
+            $model->parent = $parent;
+            $model->save();
+
+            if(isset($val['sub']) && count($val['sub'])){
+                $this->insertAppMenu($val['sub'], $model->id);
             }
         }
         return true;

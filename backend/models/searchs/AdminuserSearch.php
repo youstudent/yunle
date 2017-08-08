@@ -10,7 +10,7 @@ use backend\models\Adminuser as AdminuserModel;
 /**
  * Adminuser represents the model behind the search form about `backend\models\Adminuser`.
  */
-class Adminuser extends AdminuserModel
+class AdminuserSearch extends AdminuserModel
 {
     /**
      * @inheritdoc

@@ -11,11 +11,22 @@ use yii\helpers\ArrayHelper;
  */
 class Helper
 {
+    /**
+     * 获取系统设置
+     * @param bool $reload_cache
+     * @return array|mixed
+     */
     public static function getSystemSetting($reload_cache = false)
     {
         return Helper::getServiceSetting(0, $reload_cache);
     }
 
+    /**
+     * 获取服务商的设置
+     * @param $service_id
+     * @param $reload_cache
+     * @return array|mixed
+     */
     public static function getServiceSetting($service_id, $reload_cache)
     {
         if($reload_cache || !Helper::getCacheServiceSetting($service_id)){
@@ -27,6 +38,11 @@ class Helper
 
     }
 
+    /**
+     * 从缓存获取服务商的设置
+     * @param $service_id
+     * @return mixed
+     */
     public static function getCacheServiceSetting($service_id)
     {
         return Yii::$app->cache->get('service_setting_'. $service_id);
@@ -34,8 +50,8 @@ class Helper
 
     /**
      * 生成一个消息推送构造器
-     * @param $app_id
-     * @return bool|\JPush\PushPayload
+     * @param string $app_id
+     * @return bool|\JPush\Client
      */
     public static function  createjPush($app_id= 'member')
     {
@@ -51,17 +67,22 @@ class Helper
         $client = new \JPush\Client($app_key, $master_secret, $log_path);
 
 
-        return $client->push();
-//        $pusher->setPlatform('all');
-//        $pusher->addAllAudience();
-//        $pusher->setNotificationAlert('Hello, JPush');
-//        try {
-//            $pusher->send();
-//        } catch (\JPush\Exceptions\JPushException $e) {
-//            // try something else here
-//            print $e;
-//        }
+        return $client;
 
     }
 
+    /**
+     * 获取角色前缀
+     * @param $type
+     * @param $pid
+     * @return string
+     */
+    public static function getRolePrefix($type =null, $pid = null)
+    {
+        $session = Yii::$app->session->get('LOGIN_MEMBER');
+        $type = $type ? $type : $session['platform_type'];
+
+        $pid = $pid ? $pid : $session['platform_id'];
+        return $name_prefix = $type == 1 ? $pid . '_platform_' : $pid . '_app_';
+    }
 }

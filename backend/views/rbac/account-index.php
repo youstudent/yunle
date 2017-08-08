@@ -1,6 +1,5 @@
 <?php
 
-use backend\models\Member;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\Url;
@@ -8,16 +7,15 @@ use yii\widgets\ActiveForm;
 use yii\widgets\LinkPager;
 
 /* @var $this yii\web\View */
-/* @var $searchModel backend\models\searchs\OrderSearch */
+/* @var $searchModel backend\models\searchs\AdminuserSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = '角色列表';
+$this->title = '员工管理';
 $this->params['breadcrumbs'][] = $this->title;
 
 \pd\coloradmin\web\plugins\DaterangePickerAsset::register($this);
 
 $this->registerJs(<<<JS
-
 $('#daterangepicker').daterangepicker({
     "showDropdowns": true,
     "timePicker": true,
@@ -69,7 +67,7 @@ $('#daterangepicker').daterangepicker({
     "startDate": "2017-07-19",
 });
 $("#daterangepicker").on('apply.daterangepicker', function(ev, picker) {
-  $(this).val(picker.startDate.format('YYYY-MM-DD HH:mm') + ' + ' + picker.endDate.format('YYYY-MM-DD HH:mm'));
+  $(this).val(picker.startDate.format('YYYY-MM-DD HH:mm') + ' - ' + picker.endDate.format('YYYY-MM-DD HH:mm'));
 });
 $("#daterangepicker").on('cancel.daterangepicker', function(ev, picker) {
   $(this).val('');
@@ -83,7 +81,8 @@ JS
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="row">
         <div class="col-md-6">
-            <a href="<?= Url::to(['role-create']) ?>" class="btn btn-success" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static" >添加角色</a>
+            <a href="<?= Url::to(['account-create']) ?>" class="btn btn-success" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static" >添加会员</a>
+
         </div>
     </div>
     <p></p>
@@ -102,24 +101,34 @@ JS
         <?= \pd\coloradmin\widgets\Alert::widget() ?>
         <div class="panel-body">
 
+
+            <p></p>
             <table id="data-table" class="table table-striped table-bordered">
                 <thead>
                 <tr>
-                    <th>名称</th>
-                    <th>描述</th>
+                    <th>用户名</th>
+                    <th>姓名</th>
+                    <th>角色</th>
+                    <th>账号属性</th>
                     <th>操作</th>
                 </tr>
                 </thead>
                 <tbody>
                 <?php foreach($dataProvider->getModels() as $index => $model): ?>
                     <tr class="">
+                        <td><?= $model->username ?></td>
                         <td><?= $model->name ?></td>
-                        <td><?= $model->description ?></td>
+                        <td><?= $model->getRoleName($model->id) ?></td>
+                        <td><?= $model->master ? '主账号' : '普通账号' ?></td>
                         <td align="center">
                             <div class="btn-group">
-                                <a href="<?= Url::to(['menu-assign', 'name'=> $model->name]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">权限</span></a>
-                                <a href="<?= Url::to(['role-update', 'name'=> $model->name]) ?>" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
-                                <a href="javascript:;" data-confirm="确认删除此角色？" data-url="<?= Url::to(['role-delete','name' => $model->name]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                                <?php if(!$model->master): ?>
+                                <a href="<?= Url::to(['account-modify-role', 'id'=>$model->id]) ?>" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">更改角色</span></a>
+                                <?php endif; ?>
+                                <a href="<?= Url::to(['account-update', 'id'=>$model->id]) ?>" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
+                                <?php if($model->id != 1): ?>
+                                    <a href="javascript:;" data-confirm="确认删除此角色？" data-url="<?= Url::to(['role-delete','name' => $model->name]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                                <?php endif; ?>
                             </div>
                         </td>
                     </tr>
@@ -141,9 +150,3 @@ JS
     </div>
     <!-- end panel -->
 </div>
-
-<?php
-
-
-?>
-

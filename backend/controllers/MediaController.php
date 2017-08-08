@@ -55,7 +55,7 @@ class MediaController extends BackendController
                 //保存图片到数据库
                 $imgModel = $model->saveImg($return, $type);
                 if($imgModel->id){
-                    $return['files'][0]['service_img_id'] = $imgModel->id;
+                    $return['files'][0]['img_id'] = $imgModel->id;
                 }
                 return Json::encode($return);
             }

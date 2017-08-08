@@ -86,7 +86,7 @@
                         'options' => ['class' => 'has-sub'],
                         'items'   => [
                             ['label' => '角色', 'url' => ['/rbac/role-index']],
-                            ['label' => '员工', 'url' => ['/rbac/user']],
+                            ['label' => '员工', 'url' => ['/rbac/account-index']],
                         ],
                     ],
                     [

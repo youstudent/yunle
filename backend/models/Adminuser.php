@@ -67,7 +67,7 @@ class Adminuser extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'username' => '用户名',
-            'name' => '服务商名',
+            'name' => '姓名',
             'auth_key' => 'Auth Key',
             'password_hash' => '密码',
             'password_reset_token' => 'Password Reset Token',
@@ -138,4 +138,9 @@ class Adminuser extends \yii\db\ActiveRecord
         });
     }
 
+    public function getRoleName($user_id)
+    {
+        $model = AuthAssignment::findOne(['user_id'=>$user_id, 'type'=> '1']);
+        return $model ? $model->item_name : '未设置';
+    }
 }

@@ -97,7 +97,7 @@ return [
                         ['title' => '', 'key' => 'total_member', 'len' => '0', 'show' => 1, 'sub' => []],
                         ['title' => '', 'key' => 'add_member', 'len' => '0', 'show' => 1, 'sub' => []],
                     ]],
-                    ['title' => '', 'key' => 'quick', 'len' => '0', 'show' => 1, 'sub' => [
+                    ['title' => '快速入口', 'key' => 'quick', 'len' => '0', 'show' => 1, 'sub' => [
                         ['title' => '保险', 'key' => 'member_insurance_order', 'len' => '0', 'show' => 1, 'sub' => []],
                         ['title' => '救援', 'key' => 'member_rescue_order', 'len' => '0', 'show' => 1, 'sub' => []],
                         ['title' => '维修', 'key' => 'member_fix_order', 'len' => '0', 'show' => 1, 'sub' => []],
@@ -117,7 +117,7 @@ return [
                     ['title' => '', 'key' => 'service_info', 'len' => '0', 'show' => 1, 'sub' => []],
                     ['title' => '', 'key' => 'service_operating_status', 'len' => '0', 'show' => 1, 'sub' => []],
                 ]],
-                ['title' => '', 'key' => 'other', 'len' => '4', 'show' => 1, 'sub' => [
+                ['title' => '个人中心', 'key' => 'other', 'len' => '4', 'show' => 1, 'sub' => [
                     ['title' => '我的邀请码', 'key' => 'my_share_code', 'len' => '0', 'show' => 1, 'sub' => []],
                     ['title' => '消息通知', 'key' => 'notice', 'len' => '0', 'show' => 1, 'sub' => []],
                     ['title' => '联系我们', 'key' => 'contact_us', 'len' => '0', 'show' => 1, 'sub' => []],
