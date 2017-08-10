@@ -73,7 +73,12 @@ class Upload extends Model
                     }
                     break;
                 case 'photo':
-                    $model = MemberImg::findOne(['id'=>$id]);
+                    $model = MemberImg::findOne(['member_id'=>$id]);
+                    if (!isset($model) || empty($model)) {
+                        $model = new MemberImg();
+                        $model->member_id = $id;
+                    }
+
                     $model->img_path = $img_path;
                     $model->updated_at = time();
                     if (!$model->save(false)) {
@@ -81,7 +86,12 @@ class Upload extends Model
                     }
                     break;
                 case 'portrait':
-                    $model = UserImg::findOne(['id'=>$id]);
+                    $model = UserImg::findOne(['user_id'=>$id]);
+                    if (!isset($model) || empty($model)) {
+                        $model = new UserImg();
+                        $model->User_id = $id;
+                    }
+
                     $model->img_path = $img_path;
                     $model->updated_at = time();
                     if (!$model->save(false)) {

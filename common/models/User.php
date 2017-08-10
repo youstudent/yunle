@@ -170,7 +170,7 @@ class User extends ActiveRecord
         if (!isset($img) || empty($img)) {
             $photo = '';
         } else {
-            $photo = $_SERVER['HTTP_HOST'].$img->img_path;
+            $photo = Yii::$app->params['img_domain'].$img->img_path;
         }
         $user = User::findOne(['id'=>$id]);
         $phone = $user->phone;
@@ -189,7 +189,6 @@ class User extends ActiveRecord
         } else {
             $butlerName = $myButler->name;
             $level = $myButler->level;
-            $path =
             $img = ServiceImg::findOne(['service_id'=>$pid]);
             if (!isset($img) || empty($img)) {
                 $photo = '';
@@ -346,10 +345,9 @@ class User extends ActiveRecord
     public function photo($data, $user=null)
     {
         $user_id = $user['user']['id'];
-        $img = UserImg::findOne(['user_id'=>$user_id]);
         $type = 'portrait';
         $upload = new Upload();
-        $img = $upload->setImageInformation($data['img'], $img->id, $type);
+        $img = $upload->setImageInformation($data['img'], $user_id, $type);
 
         if ($img) {
             return true;
@@ -488,7 +486,11 @@ class User extends ActiveRecord
         if (!isset($data['page']) || empty($data['page'])) {
             $data['page'] = 1;
         }
-
+        if (!isset($data['search']) || empty($data['search'])) {
+            $search = '';
+        } else {
+            $search = $data['search'];
+        }
         $count = Member::find()->where(['pid' => $user_id])->count();
         //TODO:修改size
         $size = 3;
@@ -501,7 +503,13 @@ class User extends ActiveRecord
             ->limit($size)
             ->offset($pageSize)
             ->all();
-
+        if (!empty($search)) {
+            $list = Member::find()->select('id, phone, type, created_at')
+                ->where(['pid' => $user_id])
+                ->orderBy(['created_at' => SORT_DESC])
+                ->asArray()
+                ->all();
+        }
 
         if (!isset($list) || empty($list)) {
             $this->addError('message', '暂无用户');
@@ -532,8 +540,19 @@ class User extends ActiveRecord
                 $v['photo'] = Yii::$app->params['img_domain'].$img->img_path;
             }
         }
+        $aaa = [];
+        foreach ($list as &$v) {
+            if (preg_match("/($search)/is", $v['phone']) ||
+                preg_match("/($search)/is", $v['name'])){
+                $aaa[] = $v;
+            }
+        }
+        $size = 3;
+        $pageTotal = ceil(count($aaa) / $size);
+        $a = array_chunk($aaa, $size,false);
+        $b = $a[$data['page']-1];
         $pageInfo = ['page'=>$data['page'], 'pageTotal'=>$pageTotal];
-        $all = ['list'=>$list, 'pageInfo'=>$pageInfo];
+        $all = ['list'=>$b, 'pageInfo'=>$pageInfo];
         return $all;
     }
 

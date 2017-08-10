@@ -82,9 +82,6 @@ JS
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="row">
-        <div class="col-md-6">
-            <?= Html::a('添加订单', ['create'], ['class' => 'btn btn-success']) ?>
-        </div>
     </div>
     <p></p>
 

@@ -647,7 +647,12 @@ class Order extends \yii\db\ActiveRecord
             $v['level'] = intval($v['level']);
             $v['tag'] = Helper::getServiceTag($v['id']);
             //图片
-            $v['img'] = Yii::$app->params['img_domain'].ServiceImg::findOne(['service_id'=>$v['id'],'type'=>1])->img_path;
+            $img = ServiceImg::findOne(['service_id'=>$v['id'],'type'=>1]);
+            if (!isset($img) || empty($img)) {
+                $v['img'] = [];
+            } else {
+                $v['img'] = Yii::$app->params['img_domain'].$img->img_path;
+            }
             //距离
             $v['distance'] = Helper::getDistance($data['lat'], $data['lng'], $v['lat'], $v['lng']);
             //是否营业
@@ -683,7 +688,12 @@ class Order extends \yii\db\ActiveRecord
             $v['level'] = intval($v['level']);
             $v['tag'] = Helper::getServiceTag($v['id']);
             //图片
-            $v['img'] = Yii::$app->params['img_domain'].ServiceImg::findOne(['service_id'=>$v['id'],'type'=>1])->img_path;
+            $img = ServiceImg::findOne(['service_id'=>$v['id'],'type'=>1]);
+            if (!isset($img) || empty($img)) {
+                $v['img'] = [];
+            } else {
+                $v['img'] = Yii::$app->params['img_domain'].$img->img_path;
+            }
             //距离
             $v['distance'] = Helper::getDistance($data['lat'], $data['lng'], $v['lat'], $v['lng']);
             //是否营业
@@ -1175,7 +1185,14 @@ class Order extends \yii\db\ActiveRecord
             ->orderBy(['created_at' => SORT_DESC])
             ->one();
 
-        $act['actId'] = $actEnd['status']+1;
+        if ($data['type'] == 4 && $actEnd['status'] == 6) {
+            $act['actId'] = 99;
+        } elseif ($data['type'] != 4 && $actEnd['status'] == 8) {
+            $act['actId'] = 99;
+        } else {
+            $act['actId'] = $actEnd['status']+1;
+        }
+
         $act['actName'] = Helper::getStatus($act['actId'], $data['type']);
 
         $order['order_id'] = $data['order_id'];

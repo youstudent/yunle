@@ -39,7 +39,7 @@ use yii\widgets\LinkPager;
                         <th>下单时间</th>
                         <th>核保时间</th>
                         <th>核保结果</th>
-                        <th>已付款</th>
+                        <th>付款状态</th>
                         <th>价格</th>
                         <th>完成时间</th>
                         <th align="center">操作</th>
@@ -54,14 +54,14 @@ use yii\widgets\LinkPager;
                         <td><?= $model->insurance->check_action?$model->insurance->check_action:'未审核'; ?></td>
                         <td><?= $model->insurance->payment_action?$model->insurance->payment_action:'未付款'; ?></td>
                         <td><?= $model->insurance->cost ?></td>
-                        <td><?= $model->insurance->updated_at?$model->insurance->updated_at:'未完成'; ?></td>
+                        <td><?= $model->insurance->updated_at?\common\models\Helper::getTime($model->insurance->updated_at):'未完成'; ?></td>
                         <td align="center">
                             <div class="btn-group">
-                                <a href="<?= Url::to(['check-success', 'id'=> $model->order_id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">核保成功</span></a>
-                                <a href="<?= Url::to(['check-failed', 'id'=> $model->order_id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">核保失败</span></a>
-                                <a href="<?= Url::to(['detail', 'id'=> $model->order_id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">确认付款</span></a>
+                                <a href="<?= Url::to(['check-success', 'id'=> $model->order_id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">核保成功</span></a>
+                                <a href="<?= Url::to(['check-failed', 'id'=> $model->order_id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">核保失败</span></a>
+                                <a href="<?= Url::to(['cost', 'id'=> $model->order_id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">确认付款</span></a>
                                 <a href="javascript:;" data-confirm="确认取消此订单？" data-url="<?= Url::to(['cancel', 'id'=> $model->order_id]) ?>"  data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">取消订单</span></a>
-                                <a href="<?= Url::to(['detail', 'id'=> $model->order_id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">修改</span></a>
+                                <a href="<?= Url::to(['insurance', 'id'=> $model->order_id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">修改</span></a>
                             </div>
                         </td>
                     </tr>
@@ -177,12 +177,12 @@ use yii\widgets\LinkPager;
                     </tr>
                     <tr>
                         <td>商业险</td>
-                        <td><?= $model->compensatory->serial_number ?></td>
-                        <td><?= $model->compensatory->warranty_number ?></td>
-                        <td><?= $model->compensatory->cost ?></td>
-                        <td><?= $model->compensatory->travel_tax ?></td>
-                        <td><?= \common\models\Helper::getTime($model->compensatory->start_at) ?></td>
-                        <td><?= \common\models\Helper::getTime($model->compensatory->end_at) ?></td>
+                        <td><?= $model->business->serial_number ?></td>
+                        <td><?= $model->business->warranty_number ?></td>
+                        <td><?= $model->business->cost ?></td>
+                        <td>无</td>
+                        <td><?= \common\models\Helper::getTime($model->business->start_at) ?></td>
+                        <td><?= \common\models\Helper::getTime($model->business->end_at) ?></td>
                     </tr>
                     </tbody>
                 </table>
