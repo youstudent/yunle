@@ -110,8 +110,8 @@ class InsuranceController extends ApiController
     {
         $model = new InsuranceOrder();
         $form = $this->getForm(Yii::$app->request->post('data'));
-
-        if ($model->delOrder($form)) {
+        $member = $this->getMemberInfo();
+        if ($model->delOrder($form, $member)) {
             return $this->jsonReturn(1, '取消成功');
         }
 

@@ -9,10 +9,12 @@ namespace backend\controllers;
 
 
 use backend\models\ActInsurance;
+use backend\models\form\InsuranceOrderForm;
 use backend\models\InsuranceDetail;
 use backend\models\InsuranceElement;
 use backend\models\InsuranceOrder;
 use backend\models\searchs\InsuranceDetailSearch;
+use backend\models\Warranty;
 use Yii;
 use yii\helpers\Url;
 use yii\data\ActiveDataProvider;
@@ -27,6 +29,23 @@ class InsuranceOrderController extends BackendController
         return $this->renderPjax('index', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel
+        ]);
+    }
+
+    public function actionCreate($member_id)
+    {
+        $model =   InsuranceOrderForm::createInsuranceOrder($member_id);
+        $model->scenario = 'create';
+        $insurance = Yii::$app->request->post('InsuranceOrderForm');
+        if($model->load(Yii::$app->request->post())){
+            if($model->addInsuranceOrder($insurance)){
+                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['order/index'])]);
+            }
+            return $this->asJson(['data'=> '', 'code'=>0, 'message'=> $model->errorMsg]);
+        }
+
+        return $this->renderAjax('create', [
+            'model' => $model
         ]);
     }
 
@@ -86,22 +105,64 @@ class InsuranceOrderController extends BackendController
 
     public function actionCheckSuccess($id)
     {
-        $model = new InsuranceDetail();
-
-        if ($model->checkSuccess(Yii::$app->request->post(),$id)) {
-            return json_encode(['data' => '', 'code' => 1, 'message' => '信息添加成功', 'url' => Url::to(['insurance-order/detail?id='. $id])]);
+        $model = InsuranceDetail::findOne(['order_id'=>$id]);
+        $data = Yii::$app->request->post();
+        if(!empty($data)){
+            if($model->checkSuccess($data, $id)){
+                return $this->redirect('detail?id='.$id);
+            }
+            return $this->redirect('detail?id='.$id);
         }
-        return json_encode(['data' => '', 'code' => 1, 'message' => '信息添加失败', 'url' => Url::to(['insurance-order/detail?id='. $id])]);
+
+        return $this->renderAjax('success', [
+            'model' => $model
+        ]);
     }
 
     public function actionCheckFailed($id)
     {
-        $model = new InsuranceDetail();
-
-        if ($model->checkFailed(Yii::$app->request->post(),$id)) {
-            return json_encode(['data' => '', 'code' => 1, 'message' => '信息添加成功', 'url' => Url::to(['insurance-order/detail?id='. $id])]);
+        $model = InsuranceDetail::findOne(['order_id'=>$id]);
+        $data = Yii::$app->request->post();
+        if(!empty($data)){
+            if($model->checkFailed($data, $id)){
+                return $this->redirect('detail?id='.$id);
+            }
+            return $this->redirect('detail?id='.$id);
         }
-        return json_encode(['data' => '', 'code' => 1, 'message' => '信息添加失败', 'url' => Url::to(['insurance-order/detail?id='. $id])]);
+        return $this->renderAjax('failed', [
+            'model' => $model
+        ]);
+    }
+
+    public function actionCost($id)
+    {
+        $model =  Warranty::getDetail($id);
+
+        return $this->renderPjax('cost', [
+            'model' => $model
+        ]);
+    }
+
+    public function actionUpdate()
+    {
+        $data = Yii::$app->request->post();
+        $model =  Warranty::getDetail($data['order_id']);
+        $info = Warranty::changeInfo($data);
+        if($info){
+            Yii::$app->session->setFlash('success', '修改成功!  ');
+            return $this->redirect(['detail', 'id' => $model->order_id]);
+        }
+        Yii::$app->session->setFlash('success', '修改失败!  ');
+        return $this->redirect(['detail', 'id' => $model->order_id]);
+    }
+
+    public function actionInsurance($id)
+    {
+        $model =  InsuranceDetail::getDetail($id);
+
+        return $this->renderAjax('insurance', [
+            'model' => $model
+        ]);
     }
 
 }

@@ -73,19 +73,21 @@ class InsuranceOrder extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'order_sn' => 'Order Sn',
-            'type' => 'Type',
-            'user' => 'User',
-            'sex' => 'Sex',
-            'nation' => 'Nation',
-            'licence' => 'Licence',
-            'phone' => 'Phone',
-            'car' => 'Car',
-            'company' => 'Company',
-            'cost' => 'Cost',
-            'status' => 'Status',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'order_sn' => '订单号',
+            'type' => '订单类型',
+            'user' => '下单用户',
+            'sex' => '性别',
+            'nation' => '民族',
+            'licence' => '身份证号',
+            'phone' => '联系电话',
+            'car' => '投保车辆',
+            'company' => '承保公司',
+            'insurance' => '险种',
+            'element' => '要素',
+            'cost' => '价格',
+            'status' => '订单状态',
+            'created_at' => '创建时间',
+            'updated_at' => '修改时间',
         ];
     }
 
@@ -191,7 +193,7 @@ class InsuranceOrder extends \yii\db\ActiveRecord
      */
     public function getMany($data)
     {
-        $act = ActInsurance::find()->select('status, info, user, created_at')
+        $act = ActInsurance::find()->select('id, status, info, user, created_at')
             ->where(['order_id'=>$data['order_id']])
             ->asArray()
             ->orderBy(['created_at' => SORT_DESC])
@@ -279,7 +281,7 @@ class InsuranceOrder extends \yii\db\ActiveRecord
             //生成订单快照
             $order_id = $this->createOrderSnapshoot($data, $member_id);
             if ($order_id == false) {
-                $this->errorMsg = '订单创建失败';
+                $this->errorMsg = '订单快照创建失败';
                 $this->transaction->rollBack();
                 return false;
             }
@@ -330,7 +332,7 @@ class InsuranceOrder extends \yii\db\ActiveRecord
     /*
      * 取消订单
      */
-    public function delOrder($data)
+    public function delOrder($data, $member)
     {
         if (!isset($member['user']['id']) || empty($member['user']['id'])) {
             $id = $member['member']['id'];
@@ -442,7 +444,12 @@ class InsuranceOrder extends \yii\db\ActiveRecord
     public function createOrder($data, $order_id, $member_id)
     {
         $order = new InsuranceDetail();
-        $order->car_id = $data['car_id'];
+        if (!isset($data['car_id']) || empty($data['car_id'])) {
+            $car_id = $data->car_id;
+        } else {
+            $car_id = $data['car_id'];
+        }
+        $order->car_id = $car_id;
         $order->member_id = $member_id;
         $order->order_id = $order_id;
         $order->action = '待核保';
@@ -460,21 +467,20 @@ class InsuranceOrder extends \yii\db\ActiveRecord
     public function createInsurance($data, $order_id)
     {
 
-
-//        print_r($data['insurance']);die;
         foreach ($data['insurance'] as &$v) {
 
             $order = new InsuranceElement();
             $order->order_id = $order_id;
-
-            $order->insurance = Helper::getInsuranceName($v['id']);
-            $order->element = Helper::getElement($v['element']);
-            if (!isset($v['deduction']) || empty($v['deduction'])) {
-                $v['deduction'] = 0;
+            if (isset($v['id']) || !empty($v['id'])) {
+                $order->insurance = Helper::getInsuranceName($v['id']);
+                $order->element = Helper::getElement($v['element']);
+                if (!isset($v['deduction']) || empty($v['deduction'])) {
+                    $v['deduction'] = 0;
+                }
+                $order->deduction = Helper::getDeduction($v['deduction']);
+                $order->created_at = time();
+                $order->save(false);
             }
-            $order->deduction = Helper::getDeduction($v['deduction']);
-            $order->created_at = time();
-            $order->save(false);
         }
         return true;
     }

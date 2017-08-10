@@ -85,6 +85,7 @@ class InsuranceDetail extends \yii\db\ActiveRecord
 
     public static function cancel($id)
     {
+        echo 111;die;
         //取消订单
         $user_id = $_SESSION['__id'];
         $user = Adminuser::findOne(['id'=>$user_id])->name;
@@ -100,13 +101,15 @@ class InsuranceDetail extends \yii\db\ActiveRecord
         $order = InsuranceDetail::findOne(['order_id'=>$id]);
         $order->action = '已取消';
         $order->updated_at = time();
-        if ($act->save(false) && $order->save(false)) {
+        $orderOrder = InsuranceOrder::findOne(['id'=>$id]);
+        $orderOrder->updated_at = time();
+        if ($act->save(false) && $order->save(false) && $orderOrder->save(false)) {
             return true;
         }
         return false;
     }
 
-    public function checkSuccess($data, $id)
+    public function checkSuccess($data = null, $id)
     {
         $user_id = $_SESSION['__id'];
         $user = Adminuser::findOne(['id'=>$user_id])->name;
@@ -129,9 +132,12 @@ class InsuranceDetail extends \yii\db\ActiveRecord
             }
         }
         $order = InsuranceDetail::findOne(['order_id'=>$id]);
-        $order->action = '已取消';
+        $order->action = '核保成功';
         $order->updated_at = time();
-        if (!$order->save(false)) {
+        $orderOrder = InsuranceOrder::findOne(['id'=>$id]);
+        $orderOrder->check_action = '核保成功';
+        $orderOrder->check_at = time();
+        if (!$order->save(false) || !$orderOrder->save(false)) {
             return false;
         }
         return true;
@@ -143,7 +149,7 @@ class InsuranceDetail extends \yii\db\ActiveRecord
         $user = Adminuser::findOne(['id'=>$user_id])->name;
         $act = ActInsurance::findOne(['order_id'=>$id]);
         $act->status = 98;
-        $act->info = $data['info'];
+        $act->info = trim($data['info']);
         $act->port = 3;
         $act->user_id = $user_id;
         $act->user = $user;
@@ -153,7 +159,11 @@ class InsuranceDetail extends \yii\db\ActiveRecord
         $order = InsuranceDetail::findOne(['order_id'=>$id]);
         $order->action = '核保失败';
         $order->updated_at = time();
-        if ($act->save(false) && $order->save(false)) {
+        $orderOrder = InsuranceOrder::findOne(['id'=>$id]);
+        $orderOrder->check_action = '核保失败';
+        $orderOrder->check_at = time();
+
+        if ($act->save(false) && $order->save(false) && $orderOrder->save(false)) {
             return true;
         }
         return false;

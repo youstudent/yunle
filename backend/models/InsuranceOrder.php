@@ -3,6 +3,7 @@
 namespace backend\models;
 
 use Yii;
+use yii\db\Exception;
 
 /**
  * This is the model class for table "{{%insurance_order}}".
@@ -18,10 +19,13 @@ use Yii;
  * @property string $car
  * @property string $company
  * @property string $check_action
+ * @property string $payment_action
  * @property integer $cost
  * @property integer $status
  * @property integer $created_at
  * @property integer $updated_at
+ * @property integer $start_at
+ * @property integer $end_at
  * @property integer $check_at
  */
 class InsuranceOrder extends \yii\db\ActiveRecord
@@ -69,4 +73,5 @@ class InsuranceOrder extends \yii\db\ActiveRecord
             'updated_at' => '修改时间',
         ];
     }
+
 }

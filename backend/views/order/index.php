@@ -82,9 +82,6 @@ JS
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="row">
-        <div class="col-md-6">
-            <a href="<?= Url::to(['create']) ?>" class="btn btn-success" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static" >添加</a>
-        </div>
     </div>
     <p></p>
 

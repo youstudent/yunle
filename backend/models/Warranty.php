@@ -89,7 +89,9 @@ class Warranty extends \yii\db\ActiveRecord
         $model = Warranty::findOne(['order_id'=>$id]);
         $business = BusinessDetail::findOne(['id'=>$model->business_id]);
         $compensatory = CompensatoryDetail::findOne(['id'=>$model->compensatory_id]);
-
+        $model->start_at = $data['c_st'];
+        $model->end_at = $data['c_en'];
+        $model->save(false);
         $compensatory->serial_number = $data['c_sn'];
         $compensatory->warranty_number = $data['c_wn'];
         $compensatory->cost = $data['c_cost'];
@@ -99,9 +101,17 @@ class Warranty extends \yii\db\ActiveRecord
 
         $business->serial_number = $data['b_sn'];
         $business->warranty_number = $data['b_wn'];
-        $business->cost = $data['b_wn'];
+        $business->cost = $data['b_cost'];
         $business->start_at = $data['b_st'];
         $business->end_at = $data['b_en'];
+
+        $cost = InsuranceOrder::findOne(['id'=>$id]);
+        $cost->cost = $data['c_tt'] + $data['c_cost'] + $data['b_cost'];
+        if ($cost->cost > 0) {
+            $cost->payment_action = '已付款';
+            $cost->updated_at = time();
+        }
+        $cost->save(false);
 
         if ($compensatory->save(false) && $business->save(false)) {
             return true;

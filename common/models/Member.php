@@ -196,8 +196,14 @@ class Member extends \yii\db\ActiveRecord
             $butlerName = $myButler->name;
             $level = $myButler->level;
             $phone = $myButler->phone;
+            $img = UserImg::findOne(['user_id'=>$pid]);
+            if (!isset($img) || empty($img)) {
+                $photo = '';
+            } else {
+                $photo = Yii::$app->params['img_domain'].$img->img_path;
+            }
         }
-        $butler = ['butlerName'=>$butlerName, 'level'=>$level, 'phone'=>$phone];
+        $butler = ['butlerName'=>$butlerName, 'level'=>$level, 'phone'=>$phone, 'photo'=>$photo];
 
         $info = ['person'=>$person, 'topStatus'=>$topStatus, 'butler'=>$butler];
         return $info;
@@ -209,11 +215,9 @@ class Member extends \yii\db\ActiveRecord
     public function photo($data, $member=null)
     {
         $member_id = $member['member']['id'];
-        $img = MemberImg::findOne(['member_id'=>$member_id]);
         $type = 'photo';
         $upload = new Upload();
-        $img = $upload->setImageInformation($data['img'], $img->id, $type);
-
+        $img = $upload->setImageInformation($data['img'], $member_id, $type);
         if ($img) {
             return true;
         }
