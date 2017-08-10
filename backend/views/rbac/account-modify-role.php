@@ -29,8 +29,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'hint'    => '',
             ],
         ],
-        'enableAjaxValidation' => false,
-        'validationUrl'        => $model->isNewRecord ? Url::toRoute(['account-validate-form', 'scenario' => 'create']) : Url::toRoute(['account-validate-form', 'scenario' => 'update', 'id'=> $model->id]),
     ]) ?>
 
     <?= $form->field($model, 'username')->textInput() ?>

@@ -63,12 +63,46 @@ class AuthItemChild extends \yii\db\ActiveRecord
         return $this->hasOne(AuthItem::className(), ['name' => 'child']);
     }
 
+    public static function getAuthMenu($name)
+    {
+        $role = $name;
+        list($id, $platform, $role) = explode('_', $role);
+        switch ($platform){
+            case 'app':
+                return AuthItemChild::getAppAuthMenu($name);
+                break;
+            case 'platform':
+                return AuthItemChild::getPlatformAuthMenu($name);
+                break;
+            case 'service':
+                return AuthItemChild::getServiceAuthMenu($name);
+                break;
+        }
+    }
+    public  function updatMenuAssign()
+    {
+        $post = Yii::$app->request->post();
+        $role = $post['name'];
+        list($id, $platform, $role) = explode('_', $role);
+
+        switch ($platform){
+            case 'app':
+                return $this->updateAppMenuAssign();
+                break;
+            case 'platform':
+                return $this->updatePlatformMenuAssign();
+                break;
+            case 'service':
+               // return AuthItemChild::getServiceAuthMenu($name);
+                break;
+        }
+    }
     /**
      * 获取app端菜单
      * @param $name
      * @return array
      */
-    public static function getAuthMenu($name)
+    public static function getAppAuthMenu($name)
     {
         $menus = AppMenu::find()->asArray()->select('name as text,id,parent as pid,key')->indexBy('id')->all();
 
@@ -94,21 +128,66 @@ class AuthItemChild extends \yii\db\ActiveRecord
         return $tree;
     }
 
-    public function updatMenuAssign()
+    public function updateAppMenuAssign()
     {
         return Yii::$app->db->transaction(function(){
             $post = Yii::$app->request->post();
             $name = $post['name'];
             $keys = AppMenu::find()->where(['id' => $post['id']])->select('key as child')->asArray()->all();
             //清理所有的数据
-            Yii::$app->db->createCommand("DELETE * FROM {{%auth_item_child}} WHERE name = :name", ['name'=>$name])->execute();
+           Yii::$app->db->createCommand("DELETE FROM {{%auth_item_child}} WHERE parent = :parent", ['parent'=>$name])->execute();
             //插入数据
 
             foreach($keys as &$key){
-                $key['name'] = $name;
+                $key['parent'] = $name;
             }
 
-            Yii::$app->db->batchInsert("{{%auth_item_child}}", ['name', 'child'], $keys);
+            Yii::$app->db->createCommand()->batchInsert("{{%auth_item_child}}", ['child', 'parent'], $keys)->execute();
+
+            return true;
+        });
+
+    }
+
+    public static function getPlatformAuthMenu($name)
+    {
+        $menus = Menu::find()->asArray()->select('name as text,id,parent as pid,route as key')->indexBy('id')->all();
+        $own = AuthItemChild::find()->where(['parent'=>$name])->select('child')->column();
+        foreach($menus as &$menu){
+            $menu['state']['opened'] = true;
+            if(in_array($menu['key'], $own)){
+                $menu['state']['selected'] = true;
+            }
+        }
+
+        $tree = [];
+        foreach ($menus as $menu){
+            if(isset($menus[$menu['pid']])){
+                $menus[$menu['pid']]['children'][] = &$menus[$menu['id']];
+            }else{
+                //null会报错，这里就去掉了Null的
+                // unset($menus[$menu['id']]['pid']);
+                $tree[] = &$menus[$menu['id']];
+            }
+        }
+        return $tree;
+    }
+
+    public function updatePlatformMenuAssign()
+    {
+        return Yii::$app->db->transaction(function(){
+            $post = Yii::$app->request->post();
+            $name = $post['name'];
+            $keys = Menu::find()->where(['id' => $post['id']])->select('route as child')->asArray()->all();
+            //清理所有的数据
+            Yii::$app->db->createCommand("DELETE FROM {{%auth_item_child}} WHERE parent = :parent", ['parent'=>$name])->execute();
+            //插入数据
+
+            foreach($keys as &$key){
+                $key['parent'] = $name;
+            }
+
+            Yii::$app->db->createCommand()->batchInsert("{{%auth_item_child}}", ['child', 'parent'], $keys)->execute();
 
             return true;
         });

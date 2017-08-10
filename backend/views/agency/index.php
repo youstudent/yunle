@@ -1,6 +1,5 @@
 <?php
 
-use backend\models\Member;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\Url;
@@ -8,10 +7,10 @@ use yii\widgets\ActiveForm;
 use yii\widgets\LinkPager;
 
 /* @var $this yii\web\View */
-/* @var $searchModel backend\models\searchs\OrderSearch */
+/* @var $searchModel backend\models\searchs\Adminuser */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = '车辆列表';
+$this->title = '代理商管理';
 $this->params['breadcrumbs'][] = $this->title;
 
 \pd\coloradmin\web\plugins\DaterangePickerAsset::register($this);
@@ -68,7 +67,7 @@ $('#daterangepicker').daterangepicker({
     "startDate": "2017-07-19",
 });
 $("#daterangepicker").on('apply.daterangepicker', function(ev, picker) {
-  $(this).val(picker.startDate.format('YYYY-MM-DD HH:mm') + ' + ' + picker.endDate.format('YYYY-MM-DD HH:mm'));
+  $(this).val(picker.startDate.format('YYYY-MM-DD HH:mm') + ' - ' + picker.endDate.format('YYYY-MM-DD HH:mm'));
 });
 $("#daterangepicker").on('cancel.daterangepicker', function(ev, picker) {
   $(this).val('');
@@ -82,9 +81,7 @@ JS
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="row">
         <div class="col-md-6">
-            <?php if($searchModel->member_id) : ?>
-                <a href="<?= Url::to(['create', 'member_id'=>$searchModel->member_id]) ?>" class="btn btn-success" >添加车辆</a>
-            <?php endif; ?>
+            <a href="<?= Url::to(['create']) ?>" class="btn btn-success">添加代理商</a>
         </div>
     </div>
     <p></p>
@@ -102,23 +99,55 @@ JS
         </div>
         <?= \pd\coloradmin\widgets\Alert::widget() ?>
         <div class="panel-body">
+            <?php $form = \yii\bootstrap\ActiveForm::begin([
+                'id'                   => $searchModel->formName(),
+                'method' => 'get',
+                'layout'               => 'inline',
+                'fieldConfig'          => [
+                    'template'             => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
+                    'horizontalCssClasses' => [
+                        'label'   => 'control-label col-md-4 col-sm-4',
+                        'offset'  => '',
+                        'wrapper' => 'col-md-6 col-sm-6',
+                        'error'   => '',
+                        'hint'    => '',
+                    ],
+                ],
+            ]) ?>
+
+            <div class="form-group m-r-10">
+                <input type="text" class="form-control" name="ServiceSearch[created_at]" id="daterangepicker" value="<?= $searchModel->created_at ?>" placeholder="创建时间">
+            </div>
+
+
+            <?= $form->field($searchModel, 'name')->textInput(['placeholder'=> '代理商名称']); ?>
+
+            <?= $form->field($searchModel, 'principal')->textInput(['placeholder'=> '负责人姓名']); ?>
+
+            <?= $form->field($searchModel, 'contact_phone')->textInput(['placeholder'=> '联系电话']); ?>
+
+            <?= $form->field($searchModel, 'pid')->dropDownList(
+                \backend\models\Adminuser::find()->where(['mark'=> 1])->select('name,id')->indexBy('id')->asArray()->column(),
+                ['prompt'=> '选择客户经理']
+            ); ?>
+
+                            <button type="submit" class="btn btn-sm btn-primary m-r-5">搜索</button>
+                            <button type="button" class="btn btn-sm btn-info m-r-5" onclick="">重置</button>
+
+            <?php yii\bootstrap\ActiveForm::end() ?>
+
+            <p></p>
             <table id="data-table" class="table table-striped table-bordered">
                 <thead>
                 <tr>
                     <th>#</th>
-                    <th>车牌号</th>
-                    <th>类型</th>
-                    <th>所有人</th>
-                    <th>使用性质</th>
-                    <th>品牌型号</th>
-                    <th>识别代号</th>
-                    <th>发动机编号</th>
-                    <th>荷载人数</th>
-                    <th>注册日期</th>
-                    <th>发证日期</th>
-                    <th>发动机编号</th>
-                    <th>默认</th>
+                    <th>id</th>
+                    <th>代理商名称</th>
+                    <th>负责人</th>
+                    <th>负责人电话</th>
+                    <th>客户经理</th>
                     <th>状态</th>
+                    <th>创建时间</th>
                     <th>操作</th>
                 </tr>
                 </thead>
@@ -126,31 +155,24 @@ JS
                 <?php foreach($dataProvider->getModels() as $index => $model): ?>
                     <tr class="">
                         <td><?= \pd\helpers\Yii2Helpers::serialColumn($dataProvider, $index) ?></td>
-                        <td><?= $model->license_number ?></td>
-                        <td><?= $model->type ?></td>
-
-                        <td><?= $model->owner ?></td>
-                        <td><?= $model->brand_num ?></td>
-                        <td><?= $model->discern_num ?></td>
-                        <td><?= $model->motor_num ?></td>
-                        <td><?= $model->load_num ?></td>
-                        <td><?= $model->sign_at ?></td>
-                        <td><?= $model->certificate_at ?></td>
-                        <td><?= $model->stick ?></td>
-                        <td><?= $model->status ?></td>
-                        <td><?= $model->created_at ?></td>
-
+                        <td><?= $model->id ?></td>
+                        <td><?= $model->name ?></td>
+                        <td><?= $model->principal ?></td>
+                        <td><?= $model->principal_phone ?></td>
+                        <td><?= $model->pid && backend\models\Adminuser::findOne($model->sid) ? backend\models\Adminuser::findOne($model->sid)->name : '未设置'   ?></td>
+                        <td><?= $model->status == 1 ? '<span class="badge badge-info">正常</span>' : '<span class="badge badge-danger">冻结</span>' ?></td>
+                        <td><?= \pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
                         <td align="center">
                             <div class="btn-group">
-                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">编辑</span></a>
-                                <a href="javascript:;" data-url="<?= Url::to(['delete', 'id'=> $model->id]) ?>" onclick="pokerDragon.modalAjax($(this))"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                                <a href="<?= Url::to(['index']) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">更多</span></a>
+<!--                                <a href="--><?//= Url::to(['order/index', 'OrderSearch[order_service]'=> $model->name]) ?><!--"><span class="btn btn-info m-r-1 m-b-5 btn-xs">订单</span></a>-->
+<!--                                <a href="--><?//= Url::to(['insurance-order/index','OrderSearch[order_service]'=> $model->name]) ?><!--"><span class="btn btn-info m-r-1 m-b-5 btn-xs">保险</span></a>-->
+                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
+                                <a href="<?= Url::to(['salesman/index', 'id'=> $model->id]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">业务员</span></a>
+<!--                                <a href="--><?//= Url::to(['service/delete', 'id' => $model->id]) ?><!--" data-confirm="确认删除此数据?" data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>-->
                             </div>
                         </td>
                     </tr>
-                    <!-- #modal-dialog -->
-                    <div class="modal fade member-edit-modal" id="member-edit-modal-<?= $model->id ?>">
-
-                    </div>
                 <?php endforeach; ?>
                 </tbody>
             </table>
@@ -169,9 +191,3 @@ JS
     </div>
     <!-- end panel -->
 </div>
-
-<?php
-
-
-?>
-

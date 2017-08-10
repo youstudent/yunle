@@ -1,29 +1,21 @@
 <?php
 /**
  * User: harlen-angkemac
- * Date: 2017/7/17 - 下午8:00
+ * Date: 2017/8/10 - 下午3:58
  *
  */
 
 namespace backend\models\searchs;
 
 
-use backend\models\Service;
+use backend\models\Notice;
 use yii\data\ActiveDataProvider;
 
-class ServiceSearch extends Service
+class NoticeSearch extends Notice
 {
-    public function rules()
-    {
-        return [
-            [['created_at', 'name', 'principal', 'contact_phone', 'pid'] ,'string'],
-        ];
-    }
-
-
     public function search($params)
     {
-        $query = Service::find()->alias('s')->where(['s.type'=> 1]);;
+        $query = Notice::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query
@@ -47,12 +39,6 @@ class ServiceSearch extends Service
                 $query->andFilterWhere(['<=','created_at',$end]);
             }
         }
-
-
-        $query->andFilterWhere(['LIKE', 'name' , $this->name]);
-        $query->andFilterWhere(['LIKE', 'principal' , $this->principal]);
-        $query->andFilterWhere(['LIKE', 'contact_phone' , $this->contact_phone]);
-        $query->andFilterWhere(['pid'=> $this->pid]);
 
         return $dataProvider;
     }

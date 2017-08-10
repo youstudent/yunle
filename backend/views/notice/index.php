@@ -8,15 +8,16 @@ use yii\widgets\ActiveForm;
 use yii\widgets\LinkPager;
 
 /* @var $this yii\web\View */
-/* @var $searchModel backend\models\searchs\OrderSearch */
+/* @var $searchModel backend\models\searchs\MemberSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = '车辆列表';
+$this->title = '通知列表';
 $this->params['breadcrumbs'][] = $this->title;
 
 \pd\coloradmin\web\plugins\DaterangePickerAsset::register($this);
 
 $this->registerJs(<<<JS
+
 $('#daterangepicker').daterangepicker({
     "showDropdowns": true,
     "timePicker": true,
@@ -82,9 +83,7 @@ JS
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="row">
         <div class="col-md-6">
-            <?php if($searchModel->member_id) : ?>
-                <a href="<?= Url::to(['create', 'member_id'=>$searchModel->member_id]) ?>" class="btn btn-success" >添加车辆</a>
-            <?php endif; ?>
+            <a href="<?= Url::to(['create']) ?>" class="btn btn-success" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static" >新通知</a>
         </div>
     </div>
     <p></p>
@@ -102,23 +101,18 @@ JS
         </div>
         <?= \pd\coloradmin\widgets\Alert::widget() ?>
         <div class="panel-body">
+
+            <p></p>
             <table id="data-table" class="table table-striped table-bordered">
                 <thead>
                 <tr>
                     <th>#</th>
-                    <th>车牌号</th>
-                    <th>类型</th>
-                    <th>所有人</th>
-                    <th>使用性质</th>
-                    <th>品牌型号</th>
-                    <th>识别代号</th>
-                    <th>发动机编号</th>
-                    <th>荷载人数</th>
-                    <th>注册日期</th>
-                    <th>发证日期</th>
-                    <th>发动机编号</th>
-                    <th>默认</th>
-                    <th>状态</th>
+                    <th>ID</th>
+                    <th>通知内容</th>
+                    <th>通知人群</th>
+                    <th>发送人</th>
+                    <th>通知时间</th>
+
                     <th>操作</th>
                 </tr>
                 </thead>
@@ -126,31 +120,20 @@ JS
                 <?php foreach($dataProvider->getModels() as $index => $model): ?>
                     <tr class="">
                         <td><?= \pd\helpers\Yii2Helpers::serialColumn($dataProvider, $index) ?></td>
-                        <td><?= $model->license_number ?></td>
-                        <td><?= $model->type ?></td>
-
-                        <td><?= $model->owner ?></td>
-                        <td><?= $model->brand_num ?></td>
-                        <td><?= $model->discern_num ?></td>
-                        <td><?= $model->motor_num ?></td>
-                        <td><?= $model->load_num ?></td>
-                        <td><?= $model->sign_at ?></td>
-                        <td><?= $model->certificate_at ?></td>
-                        <td><?= $model->stick ?></td>
-                        <td><?= $model->status ?></td>
-                        <td><?= $model->created_at ?></td>
-
+                        <td><?= $model->id ?></td>
+                        <td><?= $model->content ?></td>
+                        <td><?= $model->user_id ?></td>
+                        <td><?= $model->sender  ?></td>
+                        <td><?= \pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
                         <td align="center">
                             <div class="btn-group">
-                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">编辑</span></a>
-                                <a href="javascript:;" data-url="<?= Url::to(['delete', 'id'=> $model->id]) ?>" onclick="pokerDragon.modalAjax($(this))"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+
+                                <!--                                <a href="javascript:;" data-confirm="确认冻结此会员？" data-url="--><?//= Url::to(['set-status','id' => $model->id, 'status'=> Member::STATUS_INACTIVE]) ?><!--"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">冻结</span></a>-->
+                                <!--                                <a href="javascript:;" data-confirm="确认激活此会员？" data-url="--><?//= Url::to(['set-status','id' => $model->id, 'status'=> Member::STATUS_ACTIVE]) ?><!--"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">激活</span></a>-->
+                                <!--                                <a href="javascript:;" data-confirm="确认删除此会员？" data-url="--><?//= Url::to(['soft-delete', 'id' => $model->id]) ?><!--"  data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>-->
                             </div>
                         </td>
                     </tr>
-                    <!-- #modal-dialog -->
-                    <div class="modal fade member-edit-modal" id="member-edit-modal-<?= $model->id ?>">
-
-                    </div>
                 <?php endforeach; ?>
                 </tbody>
             </table>
@@ -170,8 +153,4 @@ JS
     <!-- end panel -->
 </div>
 
-<?php
-
-
-?>
 

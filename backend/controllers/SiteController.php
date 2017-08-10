@@ -1,6 +1,7 @@
 <?php
 namespace backend\controllers;
 
+use backend\models\AuthItem;
 use common\components\Helper;
 use Yii;
 use yii\web\Controller;
@@ -23,7 +24,7 @@ class SiteController extends BackendController
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['login', 'error', 'test'],
+                        'actions' => ['login', 'error', 'test', 'init-menu'],
                         'allow' => true,
                     ],
                     [
@@ -49,7 +50,7 @@ class SiteController extends BackendController
     {
         return [
             'error' => [
-                'class' => 'yii\web\ErrorAction',
+                'class' => 'backend\action\BackendErrorAction',
             ],
         ];
     }
@@ -123,4 +124,13 @@ class SiteController extends BackendController
         $device->updateAlias('100d855909733ac3789', 'zhangxiaohua');
 
     }
+
+    public function actionInitMenu()
+    {
+        //初始化菜单用的，一般用不到
+        $model = new AuthItem();
+        $model->initMenu();
+        $model->initAppMenu();
+    }
+
 }

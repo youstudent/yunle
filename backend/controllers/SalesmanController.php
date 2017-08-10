@@ -92,7 +92,7 @@ class SalesmanController extends BackendController
      */
     public function actionDropDownList($pid, $sid)
     {
-        Yii::$app->response->format = Yii\web\Response::FORMAT_JSON;
+        //Yii::$app->response->format = Yii\web\Response::FORMAT_JSON;
         return UserForm::dropDownListHtml($pid, $sid);
     }
 

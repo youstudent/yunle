@@ -32,7 +32,7 @@ class Car extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'cdc_car';
+        return '{{%car}}';
     }
 
     /**
@@ -60,7 +60,7 @@ class Car extends \yii\db\ActiveRecord
             'owner' => '车辆所有人',
             'nature' => '使用性质',
             'brand_num' => '品牌型号',
-            'discern_num' => '识别代号',
+            'discern_num' => '车辆识别代号',
             'motor_num' => '发动机编号',
             'load_num' => '荷载人数',
             'sign_at' => '注册日期',
@@ -71,6 +71,7 @@ class Car extends \yii\db\ActiveRecord
             'updated_at' => '修改时间',
         ];
     }
+
 
     public function addCar()
     {

@@ -127,7 +127,7 @@ JS
                                 <?php endif; ?>
                                 <a href="<?= Url::to(['account-update', 'id'=>$model->id]) ?>" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
                                 <?php if($model->id != 1): ?>
-                                    <a href="javascript:;" data-confirm="确认删除此角色？" data-url="<?= Url::to(['role-delete','name' => $model->name]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                                    <a href="javascript:;" data-confirm="确认删除此账户？" data-url="<?= Url::to(['account-delete','id' => $model->id]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
                                 <?php endif; ?>
                             </div>
                         </td>

@@ -6,15 +6,17 @@ return [
 
     'menu' => [
         ['text'=> '首页', 'url' => '/site/index', 'state'=> ['opened'=> true, 'selected'=>true ], 'x'=> true ,'children' => [
-            ['text'=> '首页', 'url' => '/site/index', 'state'=> ['opened'=> true, 'selected'=>true], 'children' => [
-            ],],
         ],],
-        ['text'=> '组织', 'url' => 'javascript:void(0);', 'state'=> ['opened'=> true, 'selected'=>true], 'children' => [
-            ['text'=> '会员', 'url' => '/member/index', 'state'=> ['opened'=> true], 'selected'=>true, 'children' => [
+        ['text'=> '账号信息', 'url' => '/account/index', 'state'=> ['opened'=> true, 'selected'=>true ], 'x'=> true ,'children' => [
+        ],],
+        ['text'=> '用户管理', 'url' => 'javascript:void(0);', 'state'=> ['opened'=> true, 'selected'=>true], 'children' => [
+            ['text'=> '服务商', 'url' => '/service/index', 'state'=> ['opened'=> true], 'selected'=>true, 'children' => [
+            ],],
+            ['text'=> '代理商', 'url' => '/agency/index', 'state'=> ['opened'=> true], 'selected'=>true, 'children' => [
             ],],
             ['text'=> '业务员', 'url' => '/salesman/index', 'state'=> ['opened'=> true], 'selected'=>true, 'children' => [
             ],],
-            ['text'=> '服务商', 'url' => '/service/index', 'state'=> ['opened'=> true], 'selected'=>true, 'children' => [
+            ['text'=> '会员', 'url' => '/member/index', 'state'=> ['opened'=> true], 'selected'=>true, 'children' => [
             ],],
         ],],
         ['text'=> '业务', 'url' => 'javascript:void(0);', 'state'=> ['opened'=> true, 'selected'=>true], 'children' => [
@@ -26,17 +28,17 @@ return [
             ],],
         ],],
         ['text'=> '审核', 'url' => 'javascript:void(0);', 'state'=> ['opened'=> true, 'selected'=>true], 'children' => [
-            ['text'=> '身份证', 'url' => '/a/a', 'state'=> ['opened'=> true], 'selected'=>true, 'children' => [
+            ['text'=> '行驶证', 'url' => '/a/a', 'state'=> ['opened'=> true], 'selected'=>true, 'children' => [
             ],],
-            ['text'=> '行驶证', 'url' => '/b/b', 'state'=> ['opened'=> true], 'selected'=>true, 'children' => [
-            ],],
-            ['text'=> '服务商', 'url' => '/c-order/c', 'state'=> ['opened'=> true], 'selected'=>true, 'children' => [
+            ['text'=> '服务商', 'url' => '/b/b', 'state'=> ['opened'=> true], 'selected'=>true, 'children' => [
             ],],
         ],],
         ['text'=> '内容', 'url' => 'javascript:void(0);', 'state'=> ['opened'=> true, 'selected'=>true], 'children' => [
-            ['text'=> '行驶证', 'url' => '/column/index', 'state'=> ['opened'=> true], 'selected'=>true, 'children' => [
+            ['text'=> '广告', 'url' => '/banner/index', 'state'=> ['opened'=> true], 'selected'=>true, 'children' => [
             ],],
-            ['text'=> '服务商', 'url' => '/article/index', 'state'=> ['opened'=> true], 'selected'=>true, 'children' => [
+            ['text'=> '栏目', 'url' => '/column/index', 'state'=> ['opened'=> true], 'selected'=>true, 'children' => [
+            ],],
+            ['text'=> '文章', 'url' => '/article/index', 'state'=> ['opened'=> true], 'selected'=>true, 'children' => [
             ],],
         ],],
         ['text'=> '档案', 'url' => 'javascript:void(0);', 'state'=> ['opened'=> true, 'selected'=>true], 'children' => [
@@ -46,7 +48,7 @@ return [
             ],],
             ['text'=> '行驶证', 'url' => '/car/index', 'state'=> ['opened'=> true], 'selected'=>true, 'children' => [
             ],],
-            ['text'=> '保单', 'url' => '/insurance-order/index', 'state'=> ['opened'=> true], 'selected'=>true, 'children' => [
+            ['text'=> '保单', 'url' => '/insurance-order/bao-index', 'state'=> ['opened'=> true], 'selected'=>true, 'children' => [
             ],],
         ],],
         ['text'=> '设置', 'url' => 'javascript:void(0);', 'state'=> ['opened'=> true, 'selected'=>true], 'children' => [
@@ -56,15 +58,13 @@ return [
             ],],
             ['text'=> '险种', 'url' => '/insurance/index', 'state'=> ['opened'=> true], 'selected'=>true, 'children' => [
             ],],
-            ['text'=> '我的信息', 'url' => '/service/profile', 'state'=> ['opened'=> true], 'selected'=>true, 'children' => [
+            ['text'=> '我的信息', 'url' => '/account/profile', 'state'=> ['opened'=> true], 'selected'=>true, 'children' => [
             ],],
         ],],
         ['text'=> '权限', 'url' => 'javascript:void(0);', 'state'=> ['opened'=> true, 'selected'=>true], 'children' => [
             ['text'=> '角色', 'url' => '/rbac/role-index', 'state'=> ['opened'=> true], 'selected'=>true, 'children' => [
             ],],
-            ['text'=> '员工', 'url' => '/rbac/user', 'state'=> ['opened'=> true], 'selected'=>true, 'children' => [
-            ],],
-            ['text'=> '分配', 'url' => '/rbac/menu-assign', 'state'=> ['opened'=> true], 'selected'=>true, 'children' => [
+            ['text'=> '员工', 'url' => '/rbac/account-index', 'state'=> ['opened'=> true], 'selected'=>true, 'children' => [
             ],],
         ],],
         ['text'=> '权限管理', 'url' => 'javascript:void(0);', 'state'=> ['opened'=> true, 'selected'=>true], 'children' => [
@@ -106,8 +106,8 @@ return [
                     ]],
                 ]],
             ]],
-            ['title' => '工作', 'key' => 'home', 'len' => '4', 'show' => 1, 'sub' => [
-                ['title' => '我的客户', 'key' => 'my_member', 'len' => '0', 'show' => 1, 'sub' => []],
+            ['title' => '工作', 'key' => 'work', 'len' => '4', 'show' => 1, 'sub' => [
+                ['title' => '我的客户', 'key' => 'work_my_member', 'len' => '0', 'show' => 1, 'sub' => []],
                 ['title' => '客户订单', 'key' => 'member_order', 'len' => '0', 'show' => 1, 'sub' => []],
                 ['title' => '保单管理', 'key' => 'insurance_order_handle', 'len' => '0', 'show' => 1, 'sub' => []],
                 ['title' => '订单处理', 'key' => 'order_handle', 'len' => '0', 'show' => 1, 'sub' => []],

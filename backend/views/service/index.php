@@ -161,7 +161,7 @@ JS
                         <td><?= $model->principal ?></td>
                         <td><?= $model->contact_phone ?></td>
                         <td><?= $model->address ?></td>
-                        <td><?= $model->pid && backend\models\Adminuser::findOne($model->pid) ? backend\models\Adminuser::findOne($model->pid)->name : '未设置'   ?></td>
+                        <td><?= $model->pid && backend\models\Adminuser::findOne($model->sid) ? backend\models\Adminuser::findOne($model->sid)->name : '未设置'   ?></td>
                         <td><?= $model->status == 1 ? '<span class="badge badge-info">正常</span>' : '<span class="badge badge-danger">冻结</span>' ?></td>
                         <td><?= \pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
                         <td align="center">
@@ -169,7 +169,7 @@ JS
                                 <a href="<?= Url::to(['index']) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">更多</span></a>
 <!--                                <a href="--><?//= Url::to(['order/index', 'OrderSearch[order_service]'=> $model->name]) ?><!--"><span class="btn btn-info m-r-1 m-b-5 btn-xs">订单</span></a>-->
 <!--                                <a href="--><?//= Url::to(['insurance-order/index','OrderSearch[order_service]'=> $model->name]) ?><!--"><span class="btn btn-info m-r-1 m-b-5 btn-xs">保险</span></a>-->
-                                <a href="<?= Url::to(['service/update', 'id'=> $model->id]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
+                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
                                 <a href="<?= Url::to(['salesman/index', 'id'=> $model->id]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">业务员</span></a>
 <!--                                <a href="--><?//= Url::to(['service/delete', 'id' => $model->id]) ?><!--" data-confirm="确认删除此数据?" data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>-->
                             </div>

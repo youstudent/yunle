@@ -9,27 +9,34 @@ namespace backend\controllers;
 
 
 use backend\models\Car;
+use backend\models\form\CarForm;
+use backend\models\searchs\CarSearch;
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\helpers\Url;
+use yii\web\Response;
 
 class CarController extends BackendController
 {
     public function actionIndex()
     {
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => Car::find(),
-        ]);
+        $searchModel = new CarSearch();
+
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
 
         return $this->renderPjax('index', [
             'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel
         ]);
     }
 
-    public function actionCreate()
+    public function actionCreate($member_id)
     {
-        $model = new Car();
+        $model = new CarForm();
         $model->scenario = 'create';
+        $model->member_id = $member_id;
 
         if($model->load(Yii::$app->request->post())){
             if($model->addCar()){
@@ -45,8 +52,9 @@ class CarController extends BackendController
 
     public function actionUpdate($id)
     {
-        $model =  Car::findOne($id);
+        $model =  CarForm::findOne($id);
         $model->scenario = 'update';
+
 
         if($model->load(Yii::$app->request->post())){
             if($model->updateCar()){
@@ -69,11 +77,11 @@ class CarController extends BackendController
 
     public function actionValidateForm($scenario, $id = null)
     {
-        Yii::$app->response->format = \Yii\web\Response::FORMAT_JSON;
+        Yii::$app->response->format = Response::FORMAT_JSON;
         if($id){
-            $model = Car::findOne($id);
+            $model = CarForm::findOne($id);
         }else{
-            $model = new Car();
+            $model = new CarForm();
         }
 
         $model->scenario = $scenario;

@@ -1,23 +1,22 @@
 <?php
+/**
+ * User: harlen-angkemac
+ * Date: 2017/8/9 - 下午4:37
+ *
+ */
 
 namespace backend\controllers;
 
-use backend\models\form\ServiceForm;
-use backend\models\searchs\ServiceSearch;
-use backend\models\Service;
-use backend\models\ServiceImg;
-use Yii;
-use backend\models\Adminuser;
-use backend\models\searchs\Adminuser as AdminuserSearch;
-use yii\helpers\Url;
-use yii\web\Controller;
-use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
-/**
- * ServiceController implements the CRUD actions for Adminuser model.
- */
-class ServiceController extends BackendController
+use backend\models\Agency;
+use backend\models\form\AgencyForm;
+use backend\models\searchs\AgencySearch;
+use Yii;
+use yii\filters\VerbFilter;
+use yii\helpers\Url;
+use yii\web\NotFoundHttpException;
+
+class AgencyController extends BackendController
 {
     /**
      * @inheritdoc
@@ -40,7 +39,7 @@ class ServiceController extends BackendController
      */
     public function actionIndex()
     {
-        $searchModel = new ServiceSearch();
+        $searchModel = new AgencySearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->renderPjax('index', [
@@ -67,14 +66,14 @@ class ServiceController extends BackendController
      */
     public function actionCreate()
     {
-        $model = new ServiceForm();
+        $model = new AgencyForm();
         $model->scenario = 'create';
 
         if($model->load(Yii::$app->request->post())){
-            if($model->addService()){
+            if($model->addAgency()){
                 return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['index'])]);
             }
-            return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作失败', 'url'=> Url::to(['index'])]);
+            return json_encode(['data'=> '', 'code'=>0, 'message'=> '操作失败']);
         }
         return $this->renderPjax('create', [
             'model' => $model
@@ -84,14 +83,14 @@ class ServiceController extends BackendController
 
     public function actionUpdate($id)
     {
-        $model =  ServiceForm::getOne($id);
+        $model =  AgencyForm::getOne($id);
         $model->scenario = 'update';
 
         if($model->load(Yii::$app->request->post())){
-            if($model->updateService()){
+            if($model->updateAgency()){
                 return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['index'])]);
             }
-            return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作失败', 'url'=> Url::to(['index'])]);
+            return json_encode(['data'=> '', 'code'=>0, 'message'=> '操作失败']);
         }
         return $this->renderPjax('update', [
             'model' => $model
@@ -120,7 +119,7 @@ class ServiceController extends BackendController
      */
     protected function findModel($id)
     {
-        if (($model = Service::findOne($id)) !== null) {
+        if (($model = Agency::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -130,7 +129,7 @@ class ServiceController extends BackendController
     public function actionProfile()
     {
         return $this->renderPjax('profile', [
-           'model' => new Service(),
+            'model' => new Agency(),
         ]);
     }
 
@@ -138,9 +137,9 @@ class ServiceController extends BackendController
     {
         Yii::$app->response->format = \Yii\web\Response::FORMAT_JSON;
         if($id){
-            $model = ServiceForm::findOne($id);
+            $model = AgencyForm::findOne($id);
         }else{
-            $model = new ServiceForm();
+            $model = new AgencyForm();
         }
 
         $model->scenario = $scenario;

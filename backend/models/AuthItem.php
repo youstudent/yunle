@@ -117,12 +117,7 @@ class AuthItem extends \yii\db\ActiveRecord
     //初始化Menu到Menu数据库
     public function initMenu()
     {
-        //清空原始数据
-        //step 1 关闭外键检查
-//        Yii::$app->db->createCommand('SET FOREIGN_KEY_CHECKS = 0;')->execute();
-//        //step 2 清理数据
-//        Yii::$app->db->createCommand('TRUNCATE TABLE {%menu}')->execute();
-        //step 3 开始导入数据
+
         $origin = Yii::$app->params['menu'];
         return $this->insertMenu($origin);
     }
@@ -137,6 +132,16 @@ class AuthItem extends \yii\db\ActiveRecord
             $model->parent = $parent;
             $model->order = 1;
             $model->save();
+
+            if($val['url'] != 'javascript:void(0);'){
+            //添加对应的路由
+                $item = new AuthItem();
+                $item->name = $val['url'];
+                $item->type = 2;
+                $item->created_at = time();
+                $item->updated_at = time();
+                $item->save(false);
+            }
 
             if(isset($val['children']) && count($val['children'])){
                 $this->insertMenu($val['children'], $model->id);
@@ -163,12 +168,21 @@ class AuthItem extends \yii\db\ActiveRecord
             $model->parent = $parent;
             $model->save();
 
+            //添加对应的路由
+            $item = new AuthItem();
+            $item->name = $val['key'];
+            $item->type = 2;
+            $item->created_at = time();
+            $item->updated_at = time();
+            $item->save(false);
+
             if(isset($val['sub']) && count($val['sub'])){
                 $this->insertAppMenu($val['sub'], $model->id);
             }
         }
         return true;
     }
+
 //    /**
 //     * @return \yii\db\ActiveQuery
 //     */

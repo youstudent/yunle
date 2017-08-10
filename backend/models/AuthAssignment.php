@@ -57,17 +57,17 @@ class AuthAssignment extends \yii\db\ActiveRecord
      */
     public function getItemName()
     {
-        return $this->hasOne(AuthItem::className(), ['name' => 'item_name']);
+        return $this->hasOne(AuthItem::className(), ['name' => 'item_name'])->alias('i');
     }
 
     public function getAdminUser()
     {
-        return $this->hasOne(Adminuser::className(), ['id'=> 'user_id']);
+        return $this->hasOne(Adminuser::className(), ['id'=> 'user_id'])->alias('u');
     }
 
     public function getServiceUser()
     {
-        return $this->hasOne(User::className(), ['id'=> 'user_id']);
+        return $this->hasOne(User::className(), ['id'=> 'user_id'])->alias('u');
     }
 
     public static function assignRole($user_id, $type)

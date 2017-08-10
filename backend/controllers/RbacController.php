@@ -22,7 +22,10 @@ use yii\helpers\Url;
 
 class RbacController extends BackendController
 {
-
+    /**
+     * 角色列表
+     * @return string
+     */
     public function actionRoleIndex()
     {
         $dataProvider = new ActiveDataProvider([
@@ -33,6 +36,11 @@ class RbacController extends BackendController
             'dataProvider' => $dataProvider,
         ]);
     }
+
+    /**
+     * 创建角色
+     * @return string|\yii\web\Response
+     */
     public function actionRoleCreate()
     {
         $model = new AuthItem();
@@ -48,6 +56,11 @@ class RbacController extends BackendController
         ]);
     }
 
+    /**
+     * 更新角色
+     * @param $name
+     * @return string|\yii\web\Response
+     */
     public function actionRoleUpdate($name)
     {
         $model = AuthItem::findOne(['name'=>$name]);
@@ -64,31 +77,36 @@ class RbacController extends BackendController
         ]);
     }
 
+    /**
+     * 菜单授权页
+     * @param $name
+     * @return string
+     */
     public function actionMenuAssign($name)
     {
-        $role = $name;
-
-        $model = new AuthItem();
-        //$model->initAppMenu();
-        //获取role的权限
-
-        $menu = AuthItemChild::getAuthMenu($name);
-
         return $this->renderPjax('menu-assign', [
-            'menu' => $menu,
-            'role' => $role
+            'role' => $name
         ]);
     }
 
+    /**
+     * 设置菜单
+     * @return \yii\web\Response
+     */
     public function actionSetMenu()
     {
         $model = new AuthItemChild();
-        if($model->updatMenuAssign(Yii::$app->request->post())){
+        if($model->updatMenuAssign()){
             return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['index'])]);
         }
         return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '操作失败']);
     }
 
+    /**
+     * 获取菜单
+     * @param $name
+     * @return \yii\web\Response
+     */
     public function actionGetMenu($name)
     {
         $menu = AuthItemChild::getAuthMenu($name);
@@ -96,7 +114,10 @@ class RbacController extends BackendController
         return $this->asJson($menu);
     }
 
-    //员工管理 begin
+    /**
+     * 账号列表
+     * @return string
+     */
     public function actionAccountIndex()
     {
         $searchModel = new AdminuserSearch();
@@ -110,6 +131,10 @@ class RbacController extends BackendController
         ]);
     }
 
+    /**
+     * 创建账号
+     * @return string|\yii\web\Response
+     */
     public function actionAccountCreate()
     {
         $model = new AdminuserForm();
@@ -126,6 +151,11 @@ class RbacController extends BackendController
         ]);
     }
 
+    /**
+     * 更细账号信息
+     * @param $id
+     * @return string|\yii\web\Response
+     */
     public function actionAccountUpdate($id)
     {
         $model =  AdminuserForm::findOne($id);
@@ -142,6 +172,11 @@ class RbacController extends BackendController
         ]);
     }
 
+    /**
+     * 变更角色
+     * @param $id
+     * @return string|\yii\web\Response
+     */
     public function actionAccountModifyRole($id)
     {
         $type = 1;
@@ -159,6 +194,12 @@ class RbacController extends BackendController
         ]);
     }
 
+    /**
+     * 添加账号的ajax验证
+     * @param $scenario
+     * @param null $id
+     * @return array
+     */
     public function actionAccountValidateForm($scenario, $id = null)
     {
         Yii::$app->response->format = \Yii\web\Response::FORMAT_JSON;
@@ -175,12 +216,16 @@ class RbacController extends BackendController
 
     //员工管理 end
 
-
     public function actionRoleAssign()
     {
 
     }
 
+    /**
+     * 更改密码
+     * @param $id
+     * @return string|\yii\web\Response
+     */
     public function actionModifyPlatformPassword($id)
     {
         $model = Adminuser::findOne($id);
@@ -196,12 +241,24 @@ class RbacController extends BackendController
         ]);
     }
 
+    /**
+     * 删除role
+     * @param $name
+     * @return \yii\web\Response
+     */
     public function actionRoleDelete($name)
     {
         $model = AuthItem::findOne(['name'=>$name]);
         $model->delete();
         return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['role-index'])]);
     }
+
+    /**
+     * 添加角色表单验证
+     * @param $scenario
+     * @param null $name
+     * @return array
+     */
     public function actionValidateForm($scenario, $name = null)
     {
         Yii::$app->response->format = \Yii\web\Response::FORMAT_JSON;

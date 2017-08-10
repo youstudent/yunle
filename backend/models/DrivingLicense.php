@@ -25,6 +25,8 @@ use yii\base\Exception;
  */
 class DrivingLicense extends \yii\db\ActiveRecord
 {
+    public $img;
+    public $imgs;
     /**
      * @inheritdoc
      */
@@ -41,6 +43,14 @@ class DrivingLicense extends \yii\db\ActiveRecord
         return [
             [['member_id', 'status', 'created_at', 'updated_at'], 'integer'],
             [['name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at'], 'string', 'max' => 50],
+        ];
+    }
+
+    public function scenarios()
+    {
+        return [
+            'create' => ['name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at'],
+            'update' => ['name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at'],
         ];
     }
 

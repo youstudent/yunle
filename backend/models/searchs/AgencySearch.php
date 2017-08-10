@@ -11,7 +11,7 @@ namespace backend\models\searchs;
 use backend\models\Service;
 use yii\data\ActiveDataProvider;
 
-class ServiceSearch extends Service
+class AgencySearch extends Service
 {
     public function rules()
     {
@@ -23,7 +23,7 @@ class ServiceSearch extends Service
 
     public function search($params)
     {
-        $query = Service::find()->alias('s')->where(['s.type'=> 1]);;
+        $query = Service::find()->alias('s')->where(['s.type'=> 2]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query
