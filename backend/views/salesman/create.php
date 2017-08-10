@@ -4,6 +4,7 @@
  * Date: 2017/7/24 - 下午4:15
  *
  */
+use common\components\Helper;
 use yii\helpers\Url;
 
 /* @var $this yii\web\view */
@@ -38,7 +39,15 @@ use yii\helpers\Url;
 
         <?= $form->field($model, 'name')->textInput() ?>
 
-        <?= $form->field($model, 'pid')->dropDownList( \backend\models\Service::find()->indexBy('id')->select('name,id')->column(), ['prompt'=> '请选择服务商'])->label('服务商商') ?>
+        <?php if(Helper::isAdmin()) : ?>
+            <?php $colunm = \backend\models\Service::find()->indexBy('id')->select('name,id')->column() ?>
+        <?php else: ?>
+            <?php $colunm = Helper::userService(); ?>
+            <?php $colunm = \backend\models\Service::find()->indexBy('id')->select('name,id')->column() ?>
+        <?php endif; ?>
+
+
+        <?= $form->field($model, 'pid')->dropDownList( $colunm )->label('商家') ?>
 
         <?= $form->field($model, 'phone')->textInput() ?>
 

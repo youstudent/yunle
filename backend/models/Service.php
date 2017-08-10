@@ -54,13 +54,13 @@ class Service extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'name' => '服务商名称',
-            'principal' => '负责人',
+            'principal' => '负责人姓名',
             'contact_phone' => '客服电话',
             'introduction' => '简介',
-            'address' => '地址',
+            'address' => '位置',
             'lat' => '纬度',
             'lng' => '经度',
-            'level' => '星级',
+            'level' => '评分星级',
             'status' => '状态',
             'open_at' => '营业开始时间',
             'close_at' => '营业结束时间',
@@ -77,10 +77,26 @@ class Service extends \yii\db\ActiveRecord
 
     }
 
+    public function getPlatform()
+    {
+        return $this->hasOne(Adminuser::className(), ['id'=>'pid']);
+    }
+
+
+    public function getAccount()
+    {
+        return $this->hasOne(Adminuser::className(), ['sid'=> 'id'])->alias('a');
+    }
+
     public static function dropDownList($json = false)
     {
         $list = Service::find()->where(['deleted_at'=> null])->select('name')->asArray()->column();
         if($json) $list = json_encode($list, JSON_UNESCAPED_UNICODE);
         return $list;
     }
+
+
+
+
+
 }

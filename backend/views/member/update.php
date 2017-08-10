@@ -45,34 +45,6 @@
         1 => '正常'
     ]) ?>
 
-    <?= $form->field($member, 'type')->dropDownList([
-        '1' => '个人用户',
-        '2' => '组织用户'
-    ], ['prompt'=>'请选择']) ?>
-
-    <?= $form->field($identification, 'status')->dropDownList([
-            0 => '未认证',
-            1 => '已认证'
-    ]) ?>
-
-    <?= $form->field($identification, 'birthday')->textInput() ?>
-
-    <?= $form->field($identification, 'name')->textInput() ?>
-
-    <?= $form->field($identification, 'birthday')->textInput() ?>
-
-    <?= $form->field($identification, 'id_start_end_time')->textInput() ?>
-
-    <?= $form->field($identification, 'start_at',['options'=> ['style'=> ['display'=> 'none']]])->textInput(['options'=> 'readonly']) ?>
-
-    <?= $form->field($identification, 'end_at',['options'=> ['style'=> ['display'=> 'none']]])->textInput() ?>
-
-    <?= $form->field($identification, 'nation')->textInput() ?>
-
-    <?= $form->field($identification, 'sex')->dropDownList(['男', '女']) ?>
-
-
-    <?= $form->field($identification, 'licence')->textInput() ?>
 
 
     <?php \yii\bootstrap\ActiveForm::end() ?>

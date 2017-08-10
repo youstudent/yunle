@@ -9,6 +9,7 @@ namespace backend\models\form;
 
 
 use backend\models\User;
+use common\models\InvitationCode;
 use Yii;
 use yii\base\Exception;
 
@@ -53,6 +54,13 @@ class UserForm extends User
             if(!$this->save()){
                 throw new Exception("添加会员信息失败");
             }
+            //生成会员的邀请吗
+            if(!InvitationCode::genCode($this->id)){
+                throw new Exception("生成邀请信息失败");
+            }
+            //绑定添加的业务员到业务员的角色
+
+
             return $this;
         });
     }

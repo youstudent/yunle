@@ -22,8 +22,8 @@ class OrderSearch extends OrderDetail
     public function rules()
     {
         return [
-            [['order_type'], 'integer'],
-            [['created_at', 'salesman_name',], 'string'],
+            [['order_type', 'member_id'], 'integer'],
+            [['created_at', 'order_salesman'], 'string'],
             [['order_created_at', 'order_user', 'order_phone', 'order_car', 'order_service'], 'string'],
         ];
     }
@@ -36,7 +36,9 @@ class OrderSearch extends OrderDetail
             'order_phone',
             'order_car',
             'order_service',
-            'order_type'
+            'order_type',
+            'member_id',
+            'order_salesman',
         ]);
     }
 
@@ -44,6 +46,7 @@ class OrderSearch extends OrderDetail
     {
         $query = OrderDetail::find();
         $query->alias('od')->joinWith('order');
+        $query->joinWith('member');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -71,7 +74,8 @@ class OrderSearch extends OrderDetail
             ->andFilterWhere(['LIKE', 'o.service', $this->order_service])
             ->andFilterWhere(['LIKE', 'o.user', $this->order_user])
             ->andFilterWhere(['LIKE', 'o.phone', $this->order_phone])
-            ->andFilterWhere(['LIKE', 'o.car', $this->order_car]);
+            ->andFilterWhere(['LIKE', 'o.car', $this->order_car])
+            ->andFilterWhere(['od.member_id'=> $this->member_id]);
 
         return $dataProvider;
     }

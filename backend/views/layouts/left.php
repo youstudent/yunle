@@ -10,21 +10,23 @@
 
         <!-- begin sidebar nav -->
         <?php
-        //$menu = \mdm\admin\components\MenuHelper::getAssignedMenu(0);
-        $menu =
-            [
-                'options' => ['class' => 'nav'],
-                'items'   => [
+        if(Yii::$app->user->getIdentity() && Yii::$app->user->getIdentity()->id > 1){
+            $menu = \mdm\admin\components\MenuHelper::getAssignedMenu(Yii::$app->user->getIdentity()->id);
+        }else{
+            $menu =
+                [
                     ['label' => '', 'options' => ['class' => 'nav-header']],
-                    ['label' => '面板', 'url' => '/panel'],
+                    ['label' => '首页', 'url' => '/site'],
+                    ['label' => '账号信息', 'url' => '/account/index'],
                     [
-                        'label'   => '组织',
+                        'label'   => '用户管理',
                         'url'     => 'javascript:;',
                         'options' => ['class' => 'has-sub'],
                         'items'   => [
-                            ['label' => '会员', 'url' => ['/member/index']],
-                            ['label' => '业务员', 'url' => ['/salesman/index']],
                             ['label' => '服务商', 'url' => ['/service/index']],
+                            ['label' => '代理商', 'url' => ['/agency/index']],
+                            ['label' => '业务员', 'url' => ['/salesman/index']],
+                            ['label' => '会员', 'url' => ['/member/index']],
                         ],
                     ],
                     [
@@ -42,7 +44,6 @@
                         'url'     => 'javascript:;',
                         'options' => ['class' => 'has-sub'],
                         'items'   => [
-                            ['label' => '身份证', 'url' => ['/a/wall']],
                             ['label' => '行驶证', 'url' => ['/b/index']],
                             ['label' => '服务商', 'url' => ['/c-order/index']],
                         ],
@@ -66,6 +67,7 @@
                             ['label' => '身份证', 'url' => ['/identity/index']],
                             ['label' => '行驶证', 'url' => ['/car/index']],
                             ['label' => '保单', 'url' => ['/warranty/index']],
+
                         ],
                     ],
                     [
@@ -74,9 +76,10 @@
                         'options' => ['class' => 'has-sub'],
                         'items'   => [
                             ['label' => '系统', 'url' => ['/system/index']],
+                            ['label' => '通知列表', 'url' => ['/notice/index']],
                             ['label' => '保险商', 'url' => ['/insurance-company/index']],
                             ['label' => '险种', 'url' => ['/insurance/index']],
-                            ['label' => '我的信息', 'url' => ['/service/profile']],
+                            ['label' => '我的信息', 'url' => ['/account/profile']],
                         ],
                     ],
                     [
@@ -84,9 +87,8 @@
                         'url'     => 'javascript:;',
                         'options' => ['class' => 'has-sub'],
                         'items'   => [
-                            ['label' => '角色', 'url' => ['/system/index']],
-                            ['label' => '员工', 'url' => ['/abc/index']],
-                            ['label' => '账号', 'url' => ['/insurance-company/index']],
+                            ['label' => '角色', 'url' => ['/rbac/role-index']],
+                            ['label' => '员工', 'url' => ['/rbac/account-index']],
                         ],
                     ],
                     [
@@ -102,10 +104,13 @@
                             ['label' => '用户管理', 'url' => ['/admin/user']],
                         ],
                     ],
-                ],
-            ];
+                ];
+        }
         ?>
-        <?= pd\coloradmin\widgets\Menu::widget($menu) ?>
+        <?= pd\coloradmin\widgets\Menu::widget([
+                'options'=> ['class' => 'nav',],
+                'items'=>$menu,
+        ]) ?>
 
         <!-- begin sidebar minify button -->
         <li><a href="javascript:;" class="sidebar-minify-btn" data-click="sidebar-minify"><i

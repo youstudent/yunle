@@ -1,0 +1,2 @@
+Color-Admin Asset Bundle
+=====================

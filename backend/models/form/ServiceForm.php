@@ -10,6 +10,7 @@ namespace backend\models\form;
 use backend\models\Adminuser;
 use backend\models\Service;
 use backend\models\ServiceImg;
+use common\components\Helper;
 use Yii;
 use yii\db\Exception;
 use yii\helpers\ArrayHelper;
@@ -18,6 +19,7 @@ class ServiceForm  extends Service
 {
     public $username;
     public $password;
+    public $cover;
 
     public $head;
     public $attachment;
@@ -49,8 +51,10 @@ class ServiceForm  extends Service
     public function attributeLabels()
     {
         return ArrayHelper::merge(parent::attributeLabels(), [
-            'username' => '登录名',
-            'password' => '密码',
+            'username' => '登录账号',
+            'password' => '登录密码',
+            'head' => '展示头图',
+            'cover' => '服务商附件',
         ]);
     }
     /**
@@ -60,23 +64,52 @@ class ServiceForm  extends Service
      */
     public function addService()
     {
+        if(!$this->validate()){
+            return false;
+        }
 
+        $ids = explode(',', trim($this->imgs,','));
+        if(count($ids) == 0){
+            $this->addError('attachment', '请上传附件');
+            return false;
+        }
         //添加一个管理员用户
         return Yii::$app->db->transaction(function()
         {
             $adminuserModel = new Adminuser();
-            if(!$adminuserModel->addServiceUser($this)){
+            if(!$adminuserModel->addServiceUser($this, 2)){
                 $this->addErrors($adminuserModel->getFirstErrors());
                 throw new Exception("添加会员信息失败");
             }
+            $this->owner_username = $this->username;
+            $this->owner_id = $adminuserModel->id;
+            $this->type=1;
             $this->scenario = 'created_service';
             $this->created_at = time();
             $this->updated_at = time();
+            $this->status = 1;
+            $this->open_at = "9:30";
+            $this->close_at = "18:30";
             if(!$this->save()){
                 throw new Exception("添加会员信息失败");
             }
 
+            //设置图片绑定
+            $models =  ServiceImg::find()->where(['id'=>$ids])->all();
+            foreach ($models as $model){
+                $model->service_id = $this->id;
+                $model->status = 1;
+                $model->save();
+            }
             //TODO::添加一个服务商的角色并绑定账号
+
+
+            $role_name = "1_platform_服务商";
+            //关联角色和账户
+            Helper::bindRole($adminuserModel->id, $role_name);
+            //初始化服务商的权限
+            //Helper::initAgencyAssign($role_name);
+
             return $this;
         });
     }
@@ -108,6 +141,21 @@ class ServiceForm  extends Service
     {
         $model = ServiceForm::findOne($id);
         $model->username = 'sssxxxx';
+        return $model;
+    }
+
+    public function saveImg($data, $type = 'head')
+    {
+        $model = new ServiceImg();
+        $model->img_path = $data['files'][0]['url'];
+        $model->thumb = $data['files'][0]['thumbnailUrl'];
+        $model->type = $type == 'head' ? 1 : 0;
+        $model->status = 0;
+        $model->size = $data['files'][0]['size'];
+        $model->img = $data['files'][0]['name'];
+        if(!$model->save()){
+            return null;
+        }
         return $model;
     }
 }

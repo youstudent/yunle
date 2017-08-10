@@ -9,27 +9,31 @@ namespace backend\controllers;
 
 
 use backend\models\DrivingLicense;
+use backend\models\searchs\DrivingLicenseSearch;
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\helpers\Url;
 
 class DriverController extends BackendController
 {
     public function actionIndex()
     {
+        $searchModel = new DrivingLicenseSearch();
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => DrivingLicense::find(),
-        ]);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
 
         return $this->renderPjax('index', [
             'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel
         ]);
     }
 
-    public function actionCreate()
+    public function actionCreate($member_id)
     {
         $model = new DrivingLicense();
         $model->scenario = 'create';
+        $model->member_id = $member_id;
 
         if($model->load(Yii::$app->request->post())){
             if($model->addDrivingLicense()){

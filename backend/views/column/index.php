@@ -83,7 +83,7 @@ JS
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="row">
         <div class="col-md-6">
-            <?= Html::a('添加文章', ['create'], ['class' => 'btn btn-success']) ?>
+            <?= Html::a('添加栏目', ['create'], ['class' => 'btn btn-success']) ?>
         </div>
     </div>
     <p></p>
@@ -123,10 +123,6 @@ JS
                             </div>
                         </td>
                     </tr>
-                    <!-- #modal-dialog -->
-                    <div class="modal fade member-edit-modal" id="member-edit-modal-<?= $model->id ?>">
-
-                    </div>
                 <?php endforeach; ?>
                 </tbody>
             </table>

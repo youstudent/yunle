@@ -139,12 +139,14 @@ JS
                 <thead>
                 <tr>
                     <th>#</th>
-                    <th>会员类型</th>
-                    <th>头像</th>
+                    <th>ID</th>
                     <th>会员名称</th>
-                    <th>联系电话</th>
-                    <th>状态</th>
+                    <th>会员手机号</th>
+                    <th>代理商/服务商</th>
                     <th>业务员</th>
+<!--                    <th>会员类型</th>-->
+                    <th>状态</th>
+
                     <th>创建时间</th>
                     <th>操作</th>
                 </tr>
@@ -153,28 +155,34 @@ JS
                 <?php foreach($dataProvider->getModels() as $index => $model): ?>
                     <tr class="">
                         <td><?= \pd\helpers\Yii2Helpers::serialColumn($dataProvider, $index) ?></td>
-                        <td><?= $model->type == 1 ? '<span class="badge badge-info">个人</span>' : '<span class="badge badge-warning">组织</span>' ?></td>
-                        <td><?= $model->memberImg ? '<div class="thumbnail"><img src=" '.$model->memberImg->img_path .' " style="width:40px;height:50px;"></div>': ''?></td>
-                        <td><?= $model->memberInfo ? $model->memberInfo->name : '' ?></td>
+                        <td><?= $model->id ?></td>
+                        <td><?= $model->memberInfo && $model->memberInfo->status ? $model->memberInfo->name : '未认证' ?></td>
                         <td><?= $model->phone ?></td>
+                        <td>不知道</td>
+                        <td>
+                            <a href="<?= Url::to(['modify-salesman', 'id'=> $model->id]) ?>"  data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><?= $model->salesmanName ? $model->salesmanName->username : '<span class="text-danger">未设置</span>' ?></a>
+                        </td>
+<!--                        <td>--><?//= $model->type == 1 ? '<span class="badge badge-info">个人</span>' : '<span class="badge badge-warning">组织</span>' ?><!--</td>-->
                         <td><?= $model->status == 1 ? '<span class="badge badge-info">正常</span>' : '<span class="badge badge-danger">冻结</span>' ?></td>
-                        <td><?= $model->salesmanName ? $model->salesmanName->username : '<span class="text-danger">未设置</span>' ?></td>
+
                         <td><?= \pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
 
                         <td align="center">
                             <div class="btn-group">
-                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">详细资料</span></a>
+                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">更多</span></a>
                                 <?php if($model->memberInfo) : ?>
                                     <?php if($model->memberInfo->name) : ?>
                                         <a href="<?= Url::to(['order/create', 'member_id'=> $model->id, 'member_name' => $model->memberInfo->name]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">下单</span></a>
                                     <?php endif; ?>
                                 <?php endif; ?>
-                                <a href="<?= Url::to(['view', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">变更业务员</span></a>
-                                <a href="<?= Url::to(['index', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">订单</span></a>
-                                <a href="<?= Url::to(['insurance/index', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">保险</span></a>
-                                <a href="javascript:;" data-confirm="确认冻结此会员？" data-url="<?= Url::to(['set-status','id' => $model->id, 'status'=> Member::STATUS_INACTIVE]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">冻结</span></a>
-                                <a href="javascript:;" data-confirm="确认激活此会员？" data-url="<?= Url::to(['set-status','id' => $model->id, 'status'=> Member::STATUS_ACTIVE]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">激活</span></a>
-                                <a href="javascript:;" data-confirm="确认删除此会员？" data-url="<?= Url::to(['soft-delete', 'id' => $model->id]) ?>"  data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                                <a href="<?= Url::to(['order/index', 'OrderSearch[member_id]'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">订单</span></a>
+                                <a href="<?= Url::to(['insurance-order/index','OrderSearch[member_id]'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">保险</span></a>
+                                <a href="<?= Url::to(['car/index','CarSearch[member_id]'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">车辆</span></a>
+                                <a href="<?= Url::to(['driver/index','DriverSearch[member_id]'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">驾照</span></a>
+                                <a href="<?= Url::to(['real']) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">实名认证</span></a>
+<!--                                <a href="javascript:;" data-confirm="确认冻结此会员？" data-url="--><?//= Url::to(['set-status','id' => $model->id, 'status'=> Member::STATUS_INACTIVE]) ?><!--"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">冻结</span></a>-->
+<!--                                <a href="javascript:;" data-confirm="确认激活此会员？" data-url="--><?//= Url::to(['set-status','id' => $model->id, 'status'=> Member::STATUS_ACTIVE]) ?><!--"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">激活</span></a>-->
+<!--                                <a href="javascript:;" data-confirm="确认删除此会员？" data-url="--><?//= Url::to(['soft-delete', 'id' => $model->id]) ?><!--"  data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>-->
                             </div>
                         </td>
                     </tr>

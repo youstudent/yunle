@@ -1,6 +1,8 @@
 <?php
 namespace backend\controllers;
 
+use backend\models\AuthItem;
+use common\components\Helper;
 use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
@@ -22,7 +24,7 @@ class SiteController extends BackendController
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['login', 'error', 'test'],
+                        'actions' => ['login', 'error', 'test', 'init-menu'],
                         'allow' => true,
                     ],
                     [
@@ -48,7 +50,7 @@ class SiteController extends BackendController
     {
         return [
             'error' => [
-                'class' => 'yii\web\ErrorAction',
+                'class' => 'backend\action\BackendErrorAction',
             ],
         ];
     }
@@ -96,9 +98,39 @@ class SiteController extends BackendController
         return Yii::$app->getResponse()->redirect(['/site/login']);
     }
 
-    public function actionTest()
+    public function actionTest($c)
     {
-        $menu = Yii::$app->params['app_menu'];
-        return json_encode(['data' => $menu, 'code' => 1, 'message' => ''], JSON_UNESCAPED_UNICODE);
+        $registrationId = '100d855909733a7c407';
+        $client = Helper::createjPush('service');
+        $pusher = $client->push();
+        $pusher->setPlatform('android');
+        $pusher->addAllAudience() ;
+        //$pusher->addRegistrationId($registrationId);
+        $pusher->setNotificationAlert($c);
+        $res = $pusher->send();
+        echo '<pre>';
+        print_r($res);
+        echo '发送成功: rid:'. $registrationId;die;
+
+//        try {
+//            $pusher->send();
+//        } catch (\JPush\Exceptions\JPushException $e) {
+//            // try something else here
+//            print $e;
+//        }
+//        $pusher->getCid($count = 1, $type = 'push');
+
+        $device = $client->device();
+        $device->updateAlias('100d855909733ac3789', 'zhangxiaohua');
+
     }
+
+    public function actionInitMenu()
+    {
+        //初始化菜单用的，一般用不到
+        $model = new AuthItem();
+        $model->initMenu();
+        $model->initAppMenu();
+    }
+
 }

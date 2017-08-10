@@ -4,6 +4,7 @@ return [
     'pd.admin.configs' => [
         'defaultUserStatus' => 0, // 0 = inactive, 10 = active
         'userTable' => '{{%adminuser}}',
-    ]
+    ],
+    'img_domain' => 'http://img.car.ypxl',
 
 ];

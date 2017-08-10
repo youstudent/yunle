@@ -5,6 +5,7 @@ namespace backend\controllers;
 use backend\models\form\ServiceForm;
 use backend\models\searchs\ServiceSearch;
 use backend\models\Service;
+use backend\models\ServiceImg;
 use Yii;
 use backend\models\Adminuser;
 use backend\models\searchs\Adminuser as AdminuserSearch;
@@ -71,9 +72,9 @@ class ServiceController extends BackendController
 
         if($model->load(Yii::$app->request->post())){
             if($model->addService()){
-                return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['salesman/index'])]);
+                return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['index'])]);
             }
-            return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作失败', 'url'=> Url::to(['salesman/index'])]);
+            return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作失败', 'url'=> Url::to(['index'])]);
         }
         return $this->renderPjax('create', [
             'model' => $model
@@ -88,9 +89,9 @@ class ServiceController extends BackendController
 
         if($model->load(Yii::$app->request->post())){
             if($model->updateService()){
-                return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['salesman/index'])]);
+                return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['index'])]);
             }
-            return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作失败', 'url'=> Url::to(['salesman/index'])]);
+            return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作失败', 'url'=> Url::to(['index'])]);
         }
         return $this->renderPjax('update', [
             'model' => $model

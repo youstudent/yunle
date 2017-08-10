@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use common\models\Helper;
 use Yii;
 
 /**
@@ -24,6 +25,9 @@ use Yii;
  */
 class Order extends \yii\db\ActiveRecord
 {
+    public $status_id;
+    public $type_label;
+
     /**
      * @inheritdoc
      */
@@ -84,5 +88,18 @@ class Order extends \yii\db\ActiveRecord
     protected function getService()
     {
         return $this->hasOne(Service::className(), ['id'=> 'pid'])->alias('s');
+    }
+
+    protected function getOrderAct()
+    {
+        return $this->hasOne(ActDetail::className(), ['order_id'=> 'id'])->alias('act');
+    }
+
+    public static function getOrderDetail($id)
+    {
+        $model = Order::findOne($id);
+        $model->status_id = $model->getOrderAct()->orderBy(['id'=> SORT_DESC])->one()->status;
+        $model->type_label = Helper::getType($model->type);
+        return $model;
     }
 }

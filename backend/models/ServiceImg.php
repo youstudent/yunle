@@ -31,10 +31,9 @@ class ServiceImg extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['service_id', 'type'], 'integer'],
+            [['service_id', 'type', 'status'], 'integer'],
             [['size'], 'number'],
-            [['img', 'thumb'], 'string', 'max' => 256],
-            [['status'], 'string', 'max' => 255],
+            [['img', 'thumb', 'img_path'], 'string', 'max' => 256],
         ];
     }
 
@@ -51,6 +50,7 @@ class ServiceImg extends \yii\db\ActiveRecord
             'size' => '文件大小',
             'status' => '是否被绑定了',
             'type' => '1.封面图',
+            'img_path' => '图片路径',
         ];
     }
 }

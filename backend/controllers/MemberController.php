@@ -12,6 +12,7 @@ use backend\models\form\MemberForm;
 use backend\models\form\MemberInfoForm;
 use backend\models\Member;
 use backend\models\searchs\MemberSearch;
+use backend\models\Service;
 use common\models\Identification;
 use common\models\MessageCode;
 use Yii;
@@ -101,6 +102,21 @@ class MemberController extends BackendController
         return json_encode(['data' => $menu, 'code' => 1, 'message' => ''], JSON_UNESCAPED_UNICODE);
     }
 
+    public function actionModifySalesman($id)
+    {
+        $model = Member::findOne($id);
+        $model->service = Service::findOne(['id'=>$model->pid]) ? Service::findOne(['id'=>$model->pid])->id : '';
+        if($model->load(Yii::$app->request->post())){
+            if($model->modifySalesman()){
+                return $this->asJson(['data'=> [], 'code'=> 1, 'message'=> '变更成功']);
+            }
+            return $this->asJson(['data'=> [], 'code'=>0, 'message'=> '变更失败']);
+        }
+        return $this->renderAjax('modify-salesman',[
+           'model' => $model
+        ]);
+    }
+
     public function actionValidateForm($scenario, $id = null)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -113,5 +129,24 @@ class MemberController extends BackendController
         $model->scenario = $scenario;
         $model->load(Yii::$app->request->post());
         return ActiveForm::validate($model);
+    }
+    //用户实名认证信息
+    public function actionReal($id)
+    {
+        $member = MemberForm::getOne($id);
+        $identification = Identification::findOne(['member_id'=>$member->id]);
+
+        $member->scenario = 'update';
+        if ($member->load(Yii::$app->request->post()) && $identification->load(Yii::$app->request->post())) {
+            if( $member->updateMember() && $identification->updateInfo() ){
+                return $this->asJson(['data' => '', 'code' => 1, 'message' => '更新成功', 'url' => Url::to(['member/index'])]);
+            }
+            return $this->asJson(['data' => '', 'code' => 0, 'message' => '更新失败']);
+        }
+        return $this->renderPjax('real', [
+            'member' => $member,
+            'identification' => $identification,
+        ]);
+
     }
 }

@@ -16,14 +16,14 @@ class ServiceSearch extends Service
     public function rules()
     {
         return [
-            [['created_at', 'name', 'name'] ,'string'],
+            [['created_at', 'name', 'principal', 'contact_phone', 'pid'] ,'string'],
         ];
     }
 
 
     public function search($params)
     {
-        $query = Service::find();
+        $query = Service::find()->alias('s')->where(['s.type'=> 1]);;
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query
@@ -50,6 +50,9 @@ class ServiceSearch extends Service
 
 
         $query->andFilterWhere(['LIKE', 'name' , $this->name]);
+        $query->andFilterWhere(['LIKE', 'principal' , $this->principal]);
+        $query->andFilterWhere(['LIKE', 'contact_phone' , $this->contact_phone]);
+        $query->andFilterWhere(['pid'=> $this->pid]);
 
         return $dataProvider;
     }

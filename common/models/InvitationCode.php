@@ -65,4 +65,19 @@ class InvitationCode extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
         ];
     }
+
+    /**
+     * 生成销售员的邀请码
+     * @param $user_id
+     * @return bool
+     */
+    public static function genCode($user_id)
+    {
+        $model = new InvitationCode();
+        $model->user_id = $user_id;
+        $model->status =1;
+        $model->code = $user_id;
+        $ret = $model->save();
+        return $ret ? true : false;
+    }
 }

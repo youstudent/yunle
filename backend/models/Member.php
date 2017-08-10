@@ -29,6 +29,7 @@ class Member extends \yii\db\ActiveRecord
     //正常
     const STATUS_ACTIVE = 1;
 
+    public $service;
     /**
      * @inheritdoc
      */
@@ -66,6 +67,7 @@ class Member extends \yii\db\ActiveRecord
             'access_token' => 'Access Token',
             'created_at' => '创建时间',
             'updated_at' => '更新时间',
+            'service' => '服务商',
         ];
     }
 
@@ -105,4 +107,11 @@ class Member extends \yii\db\ActiveRecord
         return $this->hasMany(Car::className(), ['member_id'=> 'id'])->alias('c');
     }
 
+    public function modifySalesman()
+    {
+        if(!$this->validate()){
+            return false;
+        }
+        return $this->save();
+    }
 }
