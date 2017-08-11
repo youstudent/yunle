@@ -330,17 +330,25 @@ class InsuranceOrder extends \yii\db\ActiveRecord
                 } else {
                     $realName = $real->name;
                 }
-                $news = '您的会员【'. $realName .'】创建了一个【 保险 】订单，订单号：【'. $orderSn .'】';
-                $user_id = $user->pid;
-                Notice::userNews('user', $user_id, $news);
-                \common\components\Helper::pushServiceMessage($user_id,$news);
+                $newsA = '您的会员【'. $realName .'】创建了一个【 保险 】订单，订单号：【'. $orderSn .'】';
+                $user_idA = $user->pid;
+                $switch = User::findOne($user_idA);
+                if ($switch->system_switch == 1) {
+                    \common\components\Helper::pushServiceMessage($user_idA,$newsA,'message');
+                    \common\components\Helper::pushServiceMessage($user_idA,$newsA);
+                    Notice::userNews('user', $user_idA, $newsA);
+                }
             } else {
                 $user = User::findOne(['id'=>$userId]);
                 $newsB = '您的管家【'. $user->name .'】创建了一个【 保险 】订单，订单号：【'. $orderSn .'】';
                 $modelB = 'member';
                 $user_idB = $member_id;
-                Notice::userNews($modelB, $user_idB, $newsB);
-                \common\components\Helper::pushMemberMessage($user_idB,$newsB);
+                $switch = Member::findOne($user_idB);
+                if ($switch->system_switch == 1) {
+                    Notice::userNews($modelB, $user_idB, $newsB);
+                    \common\components\Helper::pushMemberMessage($user_idB,$newsB,'message');
+                    \common\components\Helper::pushMemberMessage($user_idB,$newsB);
+                }
             }
 
             return $order;

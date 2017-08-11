@@ -14,6 +14,7 @@ use backend\models\Member;
 use backend\models\Order;
 use backend\models\OrderDetail;
 use backend\models\Service;
+use backend\models\User;
 use common\models\Helper;
 use common\models\Notice;
 use Yii;
@@ -101,14 +102,21 @@ class OrderForm extends Order
 
             $newsA = '系统为您创建了一个【'. Helper::getType($this->type) .'】订单，订单号： 【'. $orderSn .'】';
             $user_idA = $this->member_id;
-            Notice::userNews('member',$user_idA,$newsA);
-            \common\components\Helper::pushMemberMessage($user_idA,$newsA);
+            $switch = \common\models\Member::findOne($user_idA);
+            if ($switch->system_switch == 1) {
+                Notice::userNews('member', $user_idA, $newsA);
+                \common\components\Helper::pushMemberMessage($user_idA,$newsA,'message');
+                \common\components\Helper::pushMemberMessage($user_idA,$newsA);
+            }
             $newsB = '系统为您的会员【'. $this->user .'】创建了一个【'. Helper::getType($this->type) .'】订单，订单号： 【'. $orderSn .'】';
             $member = Member::findOne($this->member_id);
             $user_idB = $member->pid;
-            Notice::userNews('user',$user_idB,$newsB);
-            \common\components\Helper::pushServiceMessage($user_idB,$newsB);
-
+            $switch = \common\models\User::findOne($user_idB);
+            if ($switch->system_switch == 1) {
+                Notice::userNews('user', $user_idB, $newsB);
+                \common\components\Helper::pushServiceMessage($user_idB,$newsB,'message');
+                \common\components\Helper::pushServiceMessage($user_idB,$newsB);
+            }
 
             return $this;
         });

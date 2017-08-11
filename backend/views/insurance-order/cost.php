@@ -108,6 +108,10 @@ use yii\widgets\LinkPager;
                     <input name= "b_en" class="form-control input-lg" type="text" value="<?= \common\models\Helper::getTime($model->business->end_at) ?>" />
                 <td>
             </tr>
+            <tr>
+                <td>保单图片</td>
+                <td>欠两张图片</td>
+            </tr>
         </table>
         <a href="<?= Url::to(['detail?id='.$model->order_id]) ?>" class="btn btn-sm btn-white" data-dismiss="modal">取消</a>
         <button type="submit" class="btn btn-sm btn-success">修改</button>

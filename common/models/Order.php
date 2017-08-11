@@ -484,15 +484,23 @@ class Order extends \yii\db\ActiveRecord
                 $newsA = '您的会员【'. $realName .'】创建了一个【'. Helper::getType($order['type']) .'】订单，订单号：【'. $order['order_sn'] .'】';
                 $modelA = 'user';
                 $user_idA = $user->pid;
-                \common\components\Helper::pushServiceMessage($user_idA,$newsA);
-                Notice::userNews($modelA, $user_idA, $newsA);
+                $switch = User::findOne($user_idA);
+                if ($switch->system_switch == 1) {
+                    \common\components\Helper::pushServiceMessage($user_idA,$newsA,'message');
+                    \common\components\Helper::pushServiceMessage($user_idA,$newsA);
+                    Notice::userNews($modelA, $user_idA, $newsA);
+                }
             } else {
                 $user = User::findOne(['id'=>$userId]);
                 $newsB = '您的管家【'. $user->name .'】为您创建了一个【'. Helper::getType($order['type']) .'】订单，订单号：【'. $order['order_sn'] .'】';
                 $modelB = 'member';
                 $user_idB = $member_id;
-                Notice::userNews($modelB, $user_idB, $newsB);
-                \common\components\Helper::pushMemberMessage($user_idB,$newsB);
+                $switch = Member::findOne($user_idB);
+                if ($switch->system_switch == 1) {
+                    Notice::userNews($modelB, $user_idB, $newsB);
+                    \common\components\Helper::pushMemberMessage($user_idB,$newsB,'message');
+                    \common\components\Helper::pushMemberMessage($user_idB,$newsB);
+                }
             }
             if ($order['distributing'] == 1) {
                 $service = $data['service'];
@@ -546,6 +554,32 @@ class Order extends \yii\db\ActiveRecord
         $a->isNewRecord = 1;
         $order = OrderDetail::findOne(['order_id'=>$data['order_id']]);
         $order->action = '已取消';
+
+        $mem = Member::findOne(['id'=>$order->member_id]);
+        $orderSn = Order::findOne(['id'=>$data['order_id']]);
+        $real = Identification::findOne(['member_id'=>$order->member_id]);
+        if (!isset($real) || empty($real)) {
+            $realName = $mem->phone;
+        } else {
+            $realName = $real->name;
+        }
+
+        $newsA = '您的【'. Helper::getType($orderSn->type) .'】订单： 【'. $orderSn->order_sn .'】，已取消';
+        $user_idA = $mem->id;
+        $switch = \common\models\Member::findOne($user_idA);
+        if ($switch->system_switch == 1) {
+            Notice::userNews('member', $user_idA, $newsA);
+            \common\components\Helper::pushMemberMessage($user_idA,$newsA,'message');
+            \common\components\Helper::pushMemberMessage($user_idA,$newsA);
+        }
+        $newsB = '您的会员【'. $realName .'】的【'. Helper::getType($orderSn->type) .'】订单： 【'. $orderSn->order_sn .'】，已取消';
+        $user_idB = $mem->pid;
+        $switch = \common\models\User::findOne($user_idB);
+        if ($switch->system_switch == 1) {
+            Notice::userNews('user', $user_idB, $newsB);
+            \common\components\Helper::pushServiceMessage($user_idB,$newsB,'message');
+            \common\components\Helper::pushServiceMessage($user_idB,$newsB);
+        }
         if ($a->save(false) && $order->save(false)) {
             return true;
         }
@@ -1182,10 +1216,20 @@ class Order extends \yii\db\ActiveRecord
 
         $newsA = '您的订单： 【'. $orderSn->order_sn .'】，商家已确认接单';
         $user_idA = $member->id;
-        \common\components\Helper::pushMemberMessage($user_idA,$newsA);
+        $switch = \common\models\Member::findOne($user_idA);
+        if ($switch->system_switch == 1) {
+            Notice::userNews('member', $user_idA, $newsA);
+            \common\components\Helper::pushMemberMessage($user_idA,$newsA,'message');
+            \common\components\Helper::pushMemberMessage($user_idA,$newsA);
+        }
         $newsB = '您的会员【'. $realName .'】的订单【'. $orderSn->order_sn .'】，商家已确认接单';
         $user_idB = $id;
-        \common\components\Helper::pushServiceMessage($user_idB,$newsB);
+        $switch = \common\models\User::findOne($user_idB);
+        if ($switch->system_switch == 1) {
+            Notice::userNews('user', $user_idB, $newsB);
+            \common\components\Helper::pushServiceMessage($user_idB,$newsB,'message');
+            \common\components\Helper::pushServiceMessage($user_idB,$newsB);
+        }
         if ($a->save(false) && $order->save(false)) {
             return true;
         }
@@ -1302,10 +1346,20 @@ class Order extends \yii\db\ActiveRecord
 
             $newsA = '您的【'. Helper::getType($data['type']) .'】订单： 【'. $orderSn->order_sn .'】，服务商已完成处理，等待交车';
             $user_idA = $member->id;
-            \common\components\Helper::pushMemberMessage($user_idA,$newsA);
+            $switch = \common\models\Member::findOne($user_idA);
+            if ($switch->system_switch == 1) {
+                Notice::userNews('member', $user_idA, $newsA);
+                \common\components\Helper::pushMemberMessage($user_idA,$newsA,'message');
+                \common\components\Helper::pushMemberMessage($user_idA,$newsA);
+            }
             $newsB = '您的会员【'. $realName .'】的【'. Helper::getType($data['type']) .'】订单： 【'. $orderSn->order_sn .'】，服务商已完成处理，等待交车';
             $user_idB = $member->pid;
-            \common\components\Helper::pushServiceMessage($user_idB,$newsB);
+            $switch = \common\models\User::findOne($user_idB);
+            if ($switch->system_switch == 1) {
+                Notice::userNews('user', $user_idB, $newsB);
+                \common\components\Helper::pushServiceMessage($user_idB,$newsB,'message');
+                \common\components\Helper::pushServiceMessage($user_idB,$newsB);
+            }
         }
 
         return true;

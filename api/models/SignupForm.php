@@ -27,6 +27,7 @@ use Yii;
 use common\models\InvitationCode;
 use yii\base\Model;
 use yii\db\Exception;
+use yii\web\User;
 
 /**
  * Signup form
@@ -113,12 +114,11 @@ class SignupForm extends Model
             $news = '您成功邀请一位新会员，手机号：【'. $data['phone'] .'】';
             $model = 'user';
             $user_id = $code->user_id;
-            Helper::pushServiceMessage($user_id,$news);
-            $new = \common\models\Notice::userNews($model, $user_id, $news);
-            if (!$new) {
-                $this->errorMsg = '通知消息发送失败';
-                $this->transaction->rollBack();
-                return false;
+            $switch = \common\models\User::findOne($user_id);
+            if ($switch->system_switch == 1) {
+                Helper::pushServiceMessage($user_id,$news);
+                Helper::pushServiceMessage($user_id,$news,'message');
+                \common\models\Notice::userNews($model, $user_id, $news);
             }
 
             $mem = [

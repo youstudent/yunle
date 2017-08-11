@@ -148,14 +148,21 @@ class InsuranceDetail extends \yii\db\ActiveRecord
         }
         $newsA = '您的保险订单：【'. $orderOrder->order_sn .'】，已核保成功，请及时确认购买';
         $user_idA = $order->member_id;
-        \common\models\Notice::userNews('member',$user_idA,$newsA);
-        \common\components\Helper::pushMemberMessage($user_idA,$newsA);
+        $switch = \common\models\Member::findOne($user_idA);
+        if ($switch->system_switch == 1) {
+            \common\models\Notice::userNews('member', $user_idA, $newsA);
+            \common\components\Helper::pushMemberMessage($user_idA,$newsA,'message');
+            \common\components\Helper::pushMemberMessage($user_idA,$newsA);
+        }
         $newsB = '您的会员【'. $orderOrder->user .'】的保险订单【'. $orderOrder->order_sn .'】，已核保成功，请及时确认购买';
         $member = Member::findOne($this->member_id);
         $user_idB = $member->pid;
-        \common\models\Notice::userNews('user',$user_idB,$newsB);
-        \common\components\Helper::pushServiceMessage($user_idB,$newsB);
-        \common\components\Helper::pushServiceMessage($user_idB,$newsB);
+        $switch = \common\models\User::findOne($user_idB);
+        if ($switch->system_switch == 1) {
+            \common\models\Notice::userNews('user', $user_idB, $newsB);
+            \common\components\Helper::pushServiceMessage($user_idB,$newsB,'message');
+            \common\components\Helper::pushServiceMessage($user_idB,$newsB);
+        }
 
         return true;
     }
@@ -183,13 +190,20 @@ class InsuranceDetail extends \yii\db\ActiveRecord
         if ($act->save(false) && $order->save(false) && $orderOrder->save(false)) {
             $newsA = '您的保险订单：【'. $orderOrder->order_sn .'】，核保失败，失败原因为【'. $act->info .'】';
             $user_idA = $order->member_id;
-            \common\models\Notice::userNews('member',$user_idA,$newsA);
-            \common\components\Helper::pushMemberMessage($user_idA,$newsA);
+            $switch = \common\models\Member::findOne($user_idA);
+            if ($switch->system_switch == 1) {
+                \common\models\Notice::userNews('member', $user_idA, $newsA);
+                \common\components\Helper::pushMemberMessage($user_idA,$newsA,'message');
+                \common\components\Helper::pushMemberMessage($user_idA,$newsA);
+            }
             $newsB = '您的会员【'. $orderOrder->user .'】的保险订单【'. $orderOrder->order_sn .'】，核保失败，失败原因为【'. $act->info .'】';
             $member = Member::findOne($this->member_id);
             $user_idB = $member->pid;
-            \common\models\Notice::userNews('user',$user_idB,$newsB);
-            \common\components\Helper::pushServiceMessage($user_idB,$newsB);
+            if ($switch->system_switch == 1) {
+                \common\models\Notice::userNews('user', $user_idB, $newsB);
+                \common\components\Helper::pushServiceMessage($user_idB,$newsB,'message');
+                \common\components\Helper::pushServiceMessage($user_idB,$newsB);
+            }
             return true;
         }
         return false;
