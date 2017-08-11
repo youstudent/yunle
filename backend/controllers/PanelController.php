@@ -16,4 +16,26 @@ class PanelController extends BackendController
     {
         return $this->renderPjax('index', []);
     }
+
+
+    public function actionWaitCheckOrder()
+    {
+        return $this->asJson(['data'=> ['num'=> 100], 'code'=>1, 'message'=> '']);
+    }
+
+    public function actionWaitCheckInsuranceOrder()
+    {
+        return $this->asJson(['data'=> ['num'=> 100], 'code'=>1, 'message'=> '']);
+    }
+
+
+    public function actionWaitCheckInsuranceOrderSuccess()
+    {
+        return $this->asJson(['data'=> ['num'=> 100], 'code'=>1, 'message'=> '']);
+    }
+
+    public function actionWaitCheckState()
+    {
+        return $this->asJson(['data'=> ['num'=> 100], 'code'=>1, 'message'=> '']);
+    }
 }

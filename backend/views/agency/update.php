@@ -117,7 +117,7 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
 
                         <?= $form->field($model, 'imgs', ['template'=> "{input}"])->hiddenInput() ?>
 
-                        <?= $form->field($model, 'pid')->dropDownList(
+                        <?= $form->field($model, 'sid')->dropDownList(
                             Helper::getRoleUser('1_platform_代理商')
                         ) ?>
 
@@ -127,7 +127,7 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
                         <div class="form-group">
                             <label class="control-label col-md-4 col-sm-4"></label>
                             <div class="col-md-6 col-sm-6">
-                                <button type="button" class="btn btn-primary btn-submit">添加</button>
+                                <button type="button" class="btn btn-primary btn-submit">更新</button>
                             </div>
                         </div>
 

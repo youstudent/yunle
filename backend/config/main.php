@@ -19,8 +19,8 @@ return [
         ],
         'redactor' => [
             'class' => 'yii\redactor\RedactorModule',
-            'uploadDir' => '@webroot/path/to/uploadfolder',
-            'uploadUrl' => '@web/path/to/uploadfolder',
+            'uploadDir' => '@common/static/upload/redactor',
+            'uploadUrl' => 'http://img.car.ypxl/upload/redactor',
             'imageAllowExtensions'=>['jpg','png','gif']
         ],
     ],

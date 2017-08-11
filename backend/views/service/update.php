@@ -1,5 +1,7 @@
 <?php
 
+use common\components\Helper;
+use dosamigos\fileupload\FileUploadUI;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
@@ -9,7 +11,7 @@ use yii\widgets\ActiveForm;
 /* @var $model backend\models\form\ServiceForm */
 /* @var $form yii\widgets\ActiveForm */
 
-$this->title = '编辑服务商';
+$this->title = '添加服务商';
 $this->params['breadcrumbs'][] = $this->title;
 
 pd\coloradmin\web\plugins\ParsleyAsset::register($this);
@@ -101,7 +103,7 @@ JS
 
 <div class="service-create">
 
-    <h1>添加服务商</h1>
+    <h1>更新服务商</h1>
 
     <div class="adminuser-form">
         <!-- begin row -->
@@ -125,7 +127,7 @@ JS
                     </div>
                     <div class="panel-body">
                         <?php $form = \yii\bootstrap\ActiveForm::begin([
-                            'id'                   => 'ServiceForm',
+                            'id'                   => $model->formName(),
                             'layout'               => 'horizontal',
                             'fieldConfig'          => [
                                 'template'             => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
@@ -137,14 +139,13 @@ JS
                                     'hint'    => '',
                                 ],
                             ],
+                            'options' => ['class' => 'form-horizontal form-bordered'],
                             'enableAjaxValidation' => true,
                             'validationUrl'        => $model->isNewRecord ? Url::toRoute(['validate-form', 'scenario' => 'create']) : Url::toRoute(['validate-form', 'scenario' => 'update']),
                         ]) ?>
 
 
-                        <?= $form->field($model, 'username')->textInput() ?>
-
-                        <?= $form->field($model, 'password')->textInput() ?>
+                        <?= $form->field($model, 'owner_username')->textInput() ?>
 
                         <?= $form->field($model, 'name')->textInput() ?>
 
@@ -152,13 +153,136 @@ JS
 
                         <?= $form->field($model, 'contact_phone')->textInput() ?>
 
-                        <?= $form->field($model, 'introduction')->textInput() ?>
+                        <div class="form-group field-serviceform-heads">
+                            <label class="control-label control-label col-md-4 col-sm-4" for="serviceform-heads">展示头像</label>
+                            <div class="col-md-6 col-sm-6">
+                                <?php if($model->serviceImg) : ?>
+                                    <?php foreach($model->serviceImg as $img) : ?>
+                                        <?php if($img->type == 1): ?>
 
-                        <?php $model->open_at= '8:30' ?>
-                        <?= $form->field($model, 'open_at')->textInput() ?>
+                                        <img src="<?php echo Yii::$app->params['img_domain']. $img->thumb; ?>" alt="">
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </div>
+                        </div>
 
-                        <?php $model->close_at= '23:30' ?>
-                        <?= $form->field($model, 'close_at')->textInput() ?>
+
+                        <div class="form-group field-serviceform-head">
+                            <label class="control-label control-label col-md-4 col-sm-4" for="serviceform-head"></label>
+                            <div class="col-md-6 col-sm-6">
+                                <?= FileUploadUI::widget([
+                                    'model' => $model,
+                                    'attribute' => 'head',
+                                    'url' => ['media/image-upload', 'model' => 'service', 'type'=> 'head'],
+                                    'gallery' => true,
+                                    'fieldOptions' => [
+                                        'accept' => 'image/*'
+                                    ],
+                                    'clientOptions' => [
+                                        'maxFileSize' => 2000000
+                                    ],
+                                    'clientEvents' => [
+                                        'fileuploaddone' => 'function(e, data, options) {
+                                            var img_input = $(\'input[name="ServiceForm[heads]"]\');
+                                             var img_id = data.result.files[0].img_id;
+                                            //将上传完成的数据添加到表单中
+                                             var ids =  img_input.val();
+                                             var ids = ids + "," + img_id;
+                                             img_input.val(ids);
+                                        }',
+                                        'fileuploadfail' => 'function(e, data) {
+                                          
+                                        }',
+
+                                    ],
+                                ]); ?>
+
+                                <div class="help-block help-block-error "></div>
+                            </div>
+                        </div>
+
+                        <?= $form->field($model, 'heads', ['template'=> "{input}"])->hiddenInput() ?>
+
+                        <div class="form-group field-serviceform-attachments">
+                            <label class="control-label control-label col-md-4 col-sm-4" for="serviceform-attachments">服务商附件</label>
+                            <div class="col-md-6 col-sm-6">
+                                <?php if($model->serviceImg) : ?>
+                                    <?php foreach($model->serviceImg as $img) : ?>
+                                        <?php if($img->type == 0): ?>
+                                            <img src="<?php echo Yii::$app->params['img_domain']. $img->thumb; ?>" alt="">
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+
+                        <div class="form-group field-serviceform-attachment">
+                            <label class="control-label control-label col-md-4 col-sm-4" for="serviceform-attachment"></label>
+                            <div class="col-md-6 col-sm-6">
+                                <?= FileUploadUI::widget([
+                                    'model' => $model,
+                                    'attribute' => 'attachment',
+                                    'url' => ['media/image-upload', 'model'=> 'service', 'type'=> 'img'],
+                                    'gallery' => true,
+                                    'fieldOptions' => [
+                                        'accept' => 'image/*'
+                                    ],
+                                    'clientOptions' => [
+                                        'maxFileSize' => 2000000
+                                    ],
+                                    // ...
+                                    'clientEvents' => [
+                                        'fileuploaddone' => 'function(e, data) {
+                                         var img_input = $(\'input[name="ServiceForm[attachments]"]\');
+                                             var img_id = data.result.files[0].img_id;
+                                            //将上传完成的数据添加到表单中
+                                             var ids =  img_input.val();
+                                             var ids = ids + "," + img_id;
+                                             img_input.val(ids);
+                      
+                            }',
+                                        'fileuploadfail' => 'function(e, data) {
+                              
+                            }',
+                                    ],
+                                ]); ?>
+
+                                <div class="help-block help-block-error "></div>
+                            </div>
+                        </div>
+
+                        <?= $form->field($model, 'attachments', ['template'=> "{input}"])->hiddenInput() ?>
+
+                        <?= $form->field($model, 'introduction')->widget(\yii\redactor\widgets\Redactor::className(), [
+                            'clientOptions' => [
+                                'imageManagerJson' => ['/redactor/upload/image-json'],
+                                'imageUpload' => ['/redactor/upload/image'],
+                                'fileUpload' => ['/redactor/upload/file'],
+                                'lang' => 'zh_cn',
+                                'minHeight' => 300,
+                                'plugins' => ['clips', 'fontcolor','imagemanager']
+                            ]
+                        ]) ?>
+
+                        <?= $form->field($model, 'address')->textInput( ['placeholder'=>$model->address]) ?>
+
+                        <div class="form-group field-serviceform-map">
+                            <label class="control-label control-label col-md-4 col-sm-4" for="serviceform-map"></label>
+                            <div class="col-md-6 col-sm-6">
+                                <div id="Bmap" style="width:700px;height: 700px;"></div>
+                            </div>
+                        </div>
+
+                        <?= $form->field($model, 'lat')->textInput() ?>
+
+                        <?= $form->field($model, 'lng')->textInput() ?>
+
+                        <!--                        --><?php //$model->open_at= '8:30' ?>
+                        <!--                        --><?//= $form->field($model, 'open_at')->textInput() ?>
+                        <!---->
+                        <!--                        --><?php //$model->close_at= '23:30' ?>
+                        <!--                        --><?//= $form->field($model, 'close_at')->textInput() ?>
 
                         <?php $model->level=1 ?>
                         <?= $form->field($model, 'level')->dropDownList([
@@ -169,20 +293,25 @@ JS
                             5=> '五星',
                         ]) ?>
 
-                        <?= $form->field($model, 'pid')->textInput() ?>
+                        <?php if(Helper::loginIsRole('管理员')): ?>
+                            <?= $form->field($model, 'sid')->dropDownList(
+                                Helper::getRoleUser('1_platform_代理商')
+                            ) ?>
+                        <?php else: ?>
+                            <?php $model->pid = Yii::$app->user->getIdentity()->id; ?>
+                            <?= $form->field($model, 'sid', ['template'=> '{input}'])->hiddenInput(); ?>
 
-                        <?php $model->status=1; ?>
-                        <?= $form->field($model, 'status')->dropDownList(['禁用', '启用']) ?>
+                        <?php endif; ?>
 
-                        <?= $form->field($model, 'address')->textInput() ?>
+                        <!--                        --><?php //$model->status=1; ?>
+                        <!--                        --><?//= $form->field($model, 'status')->dropDownList(['禁用', '启用']) ?>
 
-                        <?= $form->field($model, 'lat')->textInput() ?>
-
-                        <?= $form->field($model, 'lng')->textInput() ?>
-
-                        <div id="Bmap" style="width:700px;height: 700px;"></div>
-
-                        <button type="submit">保存</button>
+                        <div class="form-group">
+                            <label class="control-label col-md-4 col-sm-4"></label>
+                            <div class="col-md-6 col-sm-6">
+                                <button type="button" class="btn btn-primary btn-submit">更新</button>
+                            </div>
+                        </div>
 
                         <?php \yii\bootstrap\ActiveForm::end() ?>
                     </div>
@@ -194,3 +323,61 @@ JS
         <!-- end row -->
     </div>
 </div>
+<?php
+
+$formId = $model->formName();
+$this->registerJs(<<<JS
+$(function () {
+    $('.btn-submit').on('click', function () {
+       if($('input[name="ServiceForm[heads]"]').val() == ''){
+                swal("请上传头像");
+                return false;
+        }
+       if($('input[name="ServiceForm[attachments]"]').val() == ''){
+                swal("请至少上传一张附件");
+                return false;
+        }
+        var f = $('#{$formId}');
+        f.on('beforeSubmit', function (e) {
+            swal({
+                    title: "确认更新",
+                    text: "",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "确定",
+                    closeOnConfirm: false,
+                    cancelButtonText: "取消"
+                },
+                function () {
+                    $.ajax({
+                        url: f.attr('action'),
+                        type: 'post',
+                        dataType: 'json',
+                        data: f.serialize(),
+                        success: function (res) {
+                             if (res.code == 1) {
+                                swal({title: res.message, text: "3秒之后将自动跳转，点击确定立即跳转。", timer: 3000}, function () {
+                                   window.location.href = res.url;
+                                });
+                                setTimeout(function () {
+                                   window.location.href = res.url;
+                                }, 3000)
+                            } else {
+                                swal(res.message, "", "error");
+                            }
+                        },
+                        error: function (xhr) {
+                            swal("网络错误", "", "error");
+                        }
+                    });
+                });
+            return false;
+
+        });
+        f.submit();
+    });
+})
+JS
+);
+?>

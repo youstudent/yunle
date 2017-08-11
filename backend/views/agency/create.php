@@ -92,14 +92,10 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
                                     // ...
                                     'clientEvents' => [
                                         'fileuploaddone' => 'function(e, data) {
-                                        console.log(1);
-                                        console.log(data);
-//                                console.log(e);
-//                                console.log(data);
+
                             }',
                                         'fileuploadfail' => 'function(e, data) {
-//                                console.log(e);
-//                                console.log(data);
+
                             }',
                                     ],
                                 ]); ?>
