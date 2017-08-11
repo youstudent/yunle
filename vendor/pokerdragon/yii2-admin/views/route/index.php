@@ -11,6 +11,8 @@ use yii\web\YiiAsset;
 $this->title = Yii::t('rbac-admin', 'Routes');
 $this->params['breadcrumbs'][] = $this->title;
 
+AnimateAsset::register($this);
+YiiAsset::register($this);
 $opts = Json::htmlEncode([
     'routes' => $routes
 ]);

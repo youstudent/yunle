@@ -20,11 +20,12 @@ $this->params['breadcrumbs'][] = $this->title;
         Html::a(Yii::t('rbac-admin', 'Delete'), ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
-                'confirm' => '确认删除这条数据?',
+                'confirm' => 'Are you sure you want to delete this item?',
                 'method' => 'post',
             ],
         ])
         ?>
+        <?= Html::a(Yii::t('rbac-admin', 'Create Menu'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?=

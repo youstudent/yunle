@@ -29,7 +29,7 @@ $('#parent_name').autocomplete({
     search: function () {
         $('#parent_id').val('');
     }
-}).autocomplete().data("uiAutocomplete")._renderItem = function (ul, item) {
+}).autocomplete("instance")._renderItem = function (ul, item) {
     return $("<li>")
         .append($('<a>').append($('<b>').text(item.name)).append('<br>')
             .append($('<i>').text(item.parent_name + ' | ' + item.route)))

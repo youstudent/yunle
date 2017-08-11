@@ -67,6 +67,15 @@ class MemberController extends BackendController
         ]);
     }
 
+    public function actionView($id)
+    {
+        $model = UserForm::findOne(['id'=>$id]);
+
+        return $this->renderAjax('view', [
+            'model' => $model
+        ]);
+    }
+
     //设置用户状态
     public function actionSetStatus($id, $status)
     {

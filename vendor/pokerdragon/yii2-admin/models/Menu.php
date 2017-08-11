@@ -112,17 +112,6 @@ class Menu extends \yii\db\ActiveRecord
     }
 
     /**
-     * 获取父级菜单名称
-     * @return mixed|null
-     */
-    public function getMenuParentName()
-    {
-        if(isset($this->getMenuParent()->name)){
-          return $this->getMenuParent()->name;
-        }
-        return null;
-    }
-    /**
      * Get menu children
      * @return \yii\db\ActiveQuery
      */

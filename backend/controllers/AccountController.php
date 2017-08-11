@@ -10,27 +10,23 @@ namespace backend\controllers;
 
 use backend\models\Adminuser;
 use backend\models\Service;
+use Yii;
 
 class AccountController extends BackendController
 {
+    //账号信息
     public function actionIndex()
     {
-        //判断当前用户是什么角色
-        $role = 'platform';
-        switch($role){
-            case 'service':
-                return $this->serviceAccount();
-                break;
-            case 'agent':
-                return $this->agentAccount();
-                break;
-            case 'platform':
-                return $this->platformAccount();
-                break;
-            case 'default':
-                return $this->serviceAccount();
-                break;
-        }
+
+        return $this->renderPjax('platform_account', [
+            'model' => Yii::$app->getAuthManager()->getRolesByUser(1)
+        ]);
+    }
+
+    //平台信息
+    public function actionPlatform()
+    {
+
     }
 
     protected function serviceAccount()

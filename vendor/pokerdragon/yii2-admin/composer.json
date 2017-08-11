@@ -1,17 +1,17 @@
 {
-    "name": "pokerdragon/yii2-admin",
+    "name": "pdsoft/yii2-admin",
     "description": "RBAC Auth manager for Yii2 ",
     "keywords": ["yii", "admin", "auth", "rbac"],
     "type": "yii2-extension",
     "license": "BSD-3-Clause",
     "support": {
-        "issues": "https://github.com/pokerdragon/yii2-admin/issues",
-        "source": "https://github.com/pokerdragon/yii2-admin"
+        "issues": "https://github.com/pdsoft/yii2-admin/issues",
+        "source": "https://github.com/pdsoft/yii2-admin"
     },
     "authors": [
         {
-            "name": "pokerdragon",
-            "email": "pokerdragon@gmail.com"
+            "name": "Misbahul Munir",
+            "email": "misbahuldmunir@gmail.com"
         }
     ],
     "minimum-stability": "dev",

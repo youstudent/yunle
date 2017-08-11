@@ -274,7 +274,7 @@ JS
                                 Helper::getRoleUser('1_platform_代理商')
                             ) ?>
                         <?php else: ?>
-                            <?php $model->pid = Yii::$app->user->getIdentity()->id; ?>
+<!--                            --><?php //$model->pid = Yii::$app->user->getIdentity()->id; ?>
                             <?= $form->field($model, 'sid', ['template'=> '{input}'])->hiddenInput(); ?>
 
                         <?php endif; ?>

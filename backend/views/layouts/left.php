@@ -10,6 +10,9 @@
 
         <!-- begin sidebar nav -->
         <?php
+//        $menu = \mdm\admin\components\MenuHelper::getAssignedMenu(Yii::$app->user->getIdentity()->id);
+//        echo '<pre>';
+//        print_r($menu);die;
         if(Yii::$app->user->getIdentity() && Yii::$app->user->getIdentity()->id > 1){
             $menu = \mdm\admin\components\MenuHelper::getAssignedMenu(Yii::$app->user->getIdentity()->id);
         }else{
