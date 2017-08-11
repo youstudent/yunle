@@ -140,9 +140,10 @@ class Adminuser extends \yii\db\ActiveRecord
         });
     }
 
-    public function getRoleName($user_id)
+    public static function getCustomerManager()
     {
-        $model = AuthAssignment::findOne(['user_id'=>$user_id, 'type'=> '1']);
-        return $model ? $model->item_name : '未设置';
+        $ids = Yii::$app->getAuthManager()->getUserIdsByRole("客户经理");
+        $data = Adminuser::find()->where(['id'=>$ids])->select('username,id')->column();
+        return $data;
     }
 }

@@ -62,7 +62,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->renderPjax('index');
+        return $this->render('index');
     }
 
     /**
@@ -80,7 +80,7 @@ class SiteController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
         } else {
-            return $this->renderPjax('login', [
+            return $this->render('login', [
                 'model' => $model,
             ]);
         }

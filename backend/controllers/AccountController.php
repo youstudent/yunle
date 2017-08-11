@@ -18,22 +18,30 @@ class AccountController extends BackendController
     public function actionIndex()
     {
         $id = Yii::$app->user->getId();
+        $roles = Yii::$app->getAuthManager()->getRolesByUser($id);
+        $role = !empty($roles) && is_array($roles) ? current($roles)->name : '默认';
 
-        $model = Adminuser::findOne($id);
-        return $this->renderPjax('platform_account', [
-            'model' => $model
-        ]);
+        switch($role){
+            case '服务商':
+                return $this->serviceProfile($id);
+                break;
+            case '代理商':
+                return $this->agentProfile($id);
+                break;
+        }
+        return $this->defaultProfile($id, $role);
+
     }
 
     //平台信息
-    public function actionPlatform()
+    public function serviceProfile($user_id)
     {
         $id = Yii::$app->user->getId();
         $role = Yii::$app->getAuthManager()->getRolesByUser($id);
     }
 
     //代理商平台信息
-    protected function serviceAccount()
+    protected function serviceAccount($user_id)
     {
         $id = 1;
         $model = Service::findOne($id);
@@ -41,7 +49,7 @@ class AccountController extends BackendController
             'model' => $model
         ]);
     }
-    protected function agentAccount()
+    protected function agentProfile($user_id)
     {
         $id = 1;
         $model = Service::findOne($id);
@@ -49,18 +57,21 @@ class AccountController extends BackendController
             'model' => $model
         ]);
     }
-    protected function platformAccount()
+    protected function defaultProfile($user_id, $role)
     {
-        $id = 1;
-        $model = Adminuser::findOne($id);
-        return $this->renderPjax('platform_account', [
-            'model' => $model
+        $model = Adminuser::findOne($user_id);
+        return $this->renderPjax('default_account', [
+            'model' => $model,
+            'role' => $role
         ]);
     }
-    protected function defaultAccont()
+
+    /**
+     * 选择客户经理的空方法,只用来展示路由
+     */
+    public function actionGetCustomerManager()
     {
 
     }
-
 
 }
