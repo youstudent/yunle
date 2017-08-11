@@ -26,7 +26,10 @@ use yii\widgets\LinkPager;
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#orderr-info" data-toggle="tab">订单信息</a></li>
                     <li class=""><a href="#insurancer-info" data-toggle="tab">保险信息</a></li>
+                    <?php if ($model->insurance->payment_action=='已付款') {?>
                     <li class=""><a href="#payr-info" data-toggle="tab">付款信息</a></li>
+                    <?php }?>
+
                 </ul>
             </div>
             <div class="tab-content">
@@ -58,9 +61,10 @@ use yii\widgets\LinkPager;
                                 </select>
                             </td>
                         </tr>
+                        <?php if ($model->insurance->check_action=='核保成功') {?>
                         <tr>
                             <td><b>报价单</b></td>
-                            <td>这儿是图片</td>
+                            <td>欠两张图片</td>
                         </tr>
                         <tr>
                             <td><b>付款状态</b></td>
@@ -71,6 +75,7 @@ use yii\widgets\LinkPager;
                                 </select>
                             </td>
                         </tr>
+                        <?php }?>
                     </table>
                 </div>
                 <div class="tab-pane fade" id="insurancer-info">
@@ -156,9 +161,10 @@ use yii\widgets\LinkPager;
                         </tr>
                     </table>
                 </div>
+                <?php if ($model->insurance->payment_action=='已付款') {?>
                 <div class="tab-pane fade" id="payr-info">
                     <table id="data-table-title" class="table">
-                        <caption><h3>保单付款</h3></caption>
+                        <caption><h3>付款信息</h3></caption>
                         <tr>
                             <td><b>交强险</b></td>
                         </tr>
@@ -242,8 +248,13 @@ use yii\widgets\LinkPager;
                                 <input name= "b_en" class="form-control input-lg" type="text" value="<?= \common\models\Helper::getTime($model->business->end_at) ?>" />
                             <td>
                         </tr>
+                        <tr>
+                            <td>保单图片</td>
+                            <td>欠两张图片</td>
+                        </tr>
                     </table>
                 </div>
+                <?php }?>
 
             </div>
             <!-- end col-6 -->

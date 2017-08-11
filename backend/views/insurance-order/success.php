@@ -16,31 +16,7 @@ use dosamigos\fileupload\FileUploadUI;
         <div class="form-group field-insurancedetail-cover">
             <label class="control-label control-label col-md-4 col-sm-4" for="insurancedetail-cover">报价单</label>
             <div class="col-md-6 col-sm-6">
-                <?= FileUploadUI::widget([
-                    'model' => $model,
-                    'attribute' => 'attachment',
-                    'url' => ['media/image-upload', 'model'=> 'actImg', 'type'=> 'img'],
-                    'gallery' => true,
-                    'fieldOptions' => [
-                        'accept' => 'image/*'
-                    ],
-                    'clientOptions' => [
-                        'maxFileSize' => 2000000
-                    ],
-                    // ...
-                    'clientEvents' => [
-                        'fileuploaddone' => 'function(e, data) {
-                                console.log(e);
-                                console.log(data);
-                            }',
-                        'fileuploadfail' => 'function(e, data) {
-                                console.log(e);
-                                console.log(data);
-                            }',
-                    ],
-                ]); ?>
-
-                <div class="help-block help-block-error "></div>
+                <span>此处还差两张图片么么么么么么么</span>
             </div>
         </div>
         <a href="<?= Url::to(['index']) ?>" class="btn btn-sm btn-white" data-dismiss="modal">取消</a>

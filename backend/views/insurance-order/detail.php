@@ -51,17 +51,26 @@ use yii\widgets\LinkPager;
                         <td><?= $model->insurance->phone ?></td>
                         <td><?= \common\models\Helper::getTime($model->insurance->created_at) ?></td>
                         <td><?= $model->insurance->check_at?$model->insurance->check_at:'未审核'; ?></td>
-                        <td><?= $model->insurance->check_action?$model->insurance->check_action:'未审核'; ?></td>
-                        <td><?= $model->insurance->payment_action?$model->insurance->payment_action:'未付款'; ?></td>
+                        <td><?= $model->insurance->check_action ?></td>
+                        <td><?= $model->insurance->payment_action ?></td>
                         <td><?= $model->insurance->cost ?></td>
                         <td><?= $model->insurance->updated_at?\common\models\Helper::getTime($model->insurance->updated_at):'未完成'; ?></td>
                         <td align="center">
                             <div class="btn-group">
+                                <?php if ($model->action != '已取消' && $model->insurance->check_action == '未审核') { ?>
                                 <a href="<?= Url::to(['check-success', 'id'=> $model->order_id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">核保成功</span></a>
                                 <a href="<?= Url::to(['check-failed', 'id'=> $model->order_id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">核保失败</span></a>
+                                <?php }?>
+                                <?php if ($model->action != '已取消' && $model->insurance->check_action != '未审核' && $model->insurance->payment_action == '未付款') { ?>
                                 <a href="<?= Url::to(['cost', 'id'=> $model->order_id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">确认付款</span></a>
+                                <?php }?>
+                                <?php if ($model->action != '已取消') { ?>
                                 <a href="javascript:;" data-confirm="确认取消此订单？" data-url="<?= Url::to(['cancel', 'id'=> $model->order_id]) ?>"  data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">取消订单</span></a>
                                 <a href="<?= Url::to(['insurance', 'id'=> $model->order_id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">修改</span></a>
+                                <?php }?>
+                                <?php if ($model->action == '已取消') { ?>
+                                <span>订单已经取消,请重新下单</span>
+                                <?php }?>
                             </div>
                         </td>
                     </tr>
@@ -183,6 +192,10 @@ use yii\widgets\LinkPager;
                         <td>无</td>
                         <td><?= \common\models\Helper::getTime($model->business->start_at) ?></td>
                         <td><?= \common\models\Helper::getTime($model->business->end_at) ?></td>
+                    </tr>
+                    <tr>
+                        <td>保单图片</td>
+                        <td>欠两张图片</td>
                     </tr>
                     </tbody>
                 </table>
