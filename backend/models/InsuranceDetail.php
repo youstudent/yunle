@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use common\components\Helper;
 use common\models\BusinessDetail;
 use common\models\CompensatoryDetail;
 use common\models\Upload;
@@ -28,6 +29,12 @@ class InsuranceDetail extends \yii\db\ActiveRecord
     public $warranty;
     public $compensatory;
     public $business;
+    public $total;
+
+    public $cover;
+    public $head;
+    public $attachment;
+    public $saleman_id;
     /**
      * @inheritdoc
      */
@@ -85,7 +92,6 @@ class InsuranceDetail extends \yii\db\ActiveRecord
 
     public static function cancel($id)
     {
-        echo 111;die;
         //取消订单
         $user_id = $_SESSION['__id'];
         $user = Adminuser::findOne(['id'=>$user_id])->name;
@@ -140,6 +146,17 @@ class InsuranceDetail extends \yii\db\ActiveRecord
         if (!$order->save(false) || !$orderOrder->save(false)) {
             return false;
         }
+        $newsA = '您的保险订单：【'. $orderOrder->order_sn .'】，已核保成功，请及时确认购买';
+        $user_idA = $order->member_id;
+        \common\models\Notice::userNews('member',$user_idA,$newsA);
+        \common\components\Helper::pushMemberMessage($user_idA,$newsA);
+        $newsB = '您的会员【'. $orderOrder->user .'】的保险订单【'. $orderOrder->order_sn .'】，已核保成功，请及时确认购买';
+        $member = Member::findOne($this->member_id);
+        $user_idB = $member->pid;
+        \common\models\Notice::userNews('user',$user_idB,$newsB);
+        \common\components\Helper::pushServiceMessage($user_idB,$newsB);
+        \common\components\Helper::pushServiceMessage($user_idB,$newsB);
+
         return true;
     }
 
@@ -164,9 +181,33 @@ class InsuranceDetail extends \yii\db\ActiveRecord
         $orderOrder->check_at = time();
 
         if ($act->save(false) && $order->save(false) && $orderOrder->save(false)) {
+            $newsA = '您的保险订单：【'. $orderOrder->order_sn .'】，核保失败，失败原因为【'. $act->info .'】';
+            $user_idA = $order->member_id;
+            \common\models\Notice::userNews('member',$user_idA,$newsA);
+            \common\components\Helper::pushMemberMessage($user_idA,$newsA);
+            $newsB = '您的会员【'. $orderOrder->user .'】的保险订单【'. $orderOrder->order_sn .'】，核保失败，失败原因为【'. $act->info .'】';
+            $member = Member::findOne($this->member_id);
+            $user_idB = $member->pid;
+            \common\models\Notice::userNews('user',$user_idB,$newsB);
+            \common\components\Helper::pushServiceMessage($user_idB,$newsB);
             return true;
         }
         return false;
+    }
+
+    public function saveImg($data, $type = 'head')
+    {
+        $model = new ServiceImg();
+        $model->img_path = $data['files'][0]['url'];
+        $model->thumb = $data['files'][0]['thumbnailUrl'];
+        $model->type = $type == 'head' ? 1 : 0;
+        $model->status = 0;
+        $model->size = $data['files'][0]['size'];
+        $model->img = $data['files'][0]['name'];
+        if(!$model->save()){
+            return null;
+        }
+        return $model;
     }
 
 }

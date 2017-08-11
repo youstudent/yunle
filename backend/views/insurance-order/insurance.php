@@ -18,7 +18,7 @@ use yii\widgets\LinkPager;
 </div>
 <div class="modal-body">
     <div class="row">
-        <form class="form-horizontal" action="<?= Url::to(['update']) ?>" method="POST">
+        <form class="form-horizontal" action="<?= Url::to(['change']) ?>" method="POST">
             <!-- begin col-12 -->
             <input type="hidden" name="order_id" value="<?=$model->order_id?>" />
             <!-- begin col-12 -->
@@ -37,7 +37,7 @@ use yii\widgets\LinkPager;
                             <td>
                                 <select name="car" class="form-control">
                                     <?php foreach (\backend\models\Car::find()->where(['member_id'=>$model->member_id])->select('license_number,id')->all() as $v) {?>
-                                        <option id="car_id" value="<?= $v->id ?>"><?= $v->license_number ?></option>
+                                        <option id="car_id" value="<?= $v->id ?>" <?php if ($v->id == $model->car_id) {?> selected <?php }?>><?= $v->license_number ?></option>
                                     <?php }?>
                                 </select>
                             </td>
@@ -49,12 +49,12 @@ use yii\widgets\LinkPager;
                             </td>
                         </tr>
                         <tr>
-                            <td><b>审核结果</b></td>
+                            <td><b>核保结果</b></td>
                             <td>
                                 <select name="check" class="form-control">
-                                    <option value="未审核">未审核</option>
-                                    <option value="审核成功">审核成功</option>
-                                    <option value="审核失败">审核失败</option>
+                                    <option value="未核保" <?php if ($model->insurance->check_action=='未核保') {?> selected <?php }?>>未核保</option>
+                                    <option value="核保成功" <?php if ($model->insurance->check_action=='核保成功') {?> selected <?php }?>>核保成功</option>
+                                    <option value="核保失败" <?php if ($model->insurance->check_action=='核保失败') {?> selected <?php }?>>核保失败</option>
                                 </select>
                             </td>
                         </tr>
@@ -65,9 +65,9 @@ use yii\widgets\LinkPager;
                         <tr>
                             <td><b>付款状态</b></td>
                             <td>
-                                <select name="payment" class="form-control">
-                                    <option value="已付款">已付款</option>
-                                    <option value="未付款">未付款</option>
+                                <select name="payMent" class="form-control">
+                                    <option value="未付款" <?php if ($model->insurance->payment_action=='未付款') {?> selected <?php }?>>未付款</option>
+                                    <option value="已付款" <?php if ($model->insurance->payment_action=='已付款') {?> selected <?php }?>>已付款</option>
                                 </select>
                             </td>
                         </tr>
@@ -95,9 +95,9 @@ use yii\widgets\LinkPager;
                         <tr>
                             <td>承保公司</td>
                             <td>
-                                <select name="payment" class="form-control">
+                                <select name="company" class="form-control">
                                 <?php foreach (\backend\models\InsuranceCompany::find()->select('name,id')->all() as $v) {?>
-                                    <option id="company_id" value="<?= $v->id ?>"><?= $v->name ?></option>
+                                    <option id="company_id" value="<?= $v->id ?>" <?php if ($v->name == $model->insurance->company) {?> selected <?php }?>><?= $v->name ?></option>
                                 <?php }?>
                                 </select>
                             </td>
@@ -117,7 +117,7 @@ use yii\widgets\LinkPager;
                             <td>
                                 <select name="payment" class="form-control">
                                     <?php foreach (\backend\models\InsuranceCompany::find()->select('name,id')->all() as $v) {?>
-                                        <option value="<?= $v->id ?>"><?= $v->name ?></option>
+                                        <option id="company_id" value="<?= $v->id ?>" <?php if ($v->name == $model->insurance->company) {?> selected <?php }?>><?= $v->name ?></option>
                                     <?php }?>
                                 </select>
                             </td>
@@ -125,24 +125,27 @@ use yii\widgets\LinkPager;
                         <?php }?>
                         <tr>
                             <td>保单保险</td>
-                            <td><div style=" width: 80%; margin: 0 auto;">
+                            <td width="500"><div style=" width: 80%; margin: 0 auto;">
                                     <h3 style="border-bottom: solid 1px #ccc; text-align: center;padding: 5px 0;">险种</h3>
-                                    <?php foreach (\backend\models\Insurance::find()->select('id,title,deduction')->all() as $v) {?>
+                                    <?php foreach ($model->element as $v) {?>
                                         <div style="display: flex; justify-content: space-between;padding: 5px 60px;">
-                                            <h4><?= $v->title ?></h4>
-                                            <input id="insuranceorderform-insurance" name="InsuranceOrderForm[insurance][<?= $v->id ?>][id]" type="checkbox" class="funCheckBox" data-InsuranceId="<?= $v->id ?>" value="<?= $v->id ?>">
+                                            <h4><?= $v->insurance ?></h4>
+                                            <input id="insuranceorderform-insurance" name="insurance[<?= $v->id ?>][id]" type="checkbox" class="funCheckBox" data-InsuranceId="<?= $v->id ?>"
+                                                   value="<?= \common\models\Insurance::findOne(['title'=>$v->insurance])->id  ?>" checked>
                                         </div>
-                                        <div id="<?= $v->id ?>" class="hidden" style="display: flex; justify-content: space-around;padding:0 60px;border-bottom: solid 1px #cccccc;">
-                                            <?php if ($v->deduction ==1 ) {?>
+                                        <div id="<?= $v->id ?>" style="display: flex; justify-content: space-around;padding:0 60px;border-bottom: solid 1px #cccccc;padding-bottom: 10px;">
                                                 <div style="flex:1">
-                                                    不计免赔<input name="InsuranceOrderForm[insurance][<?= $v->id ?>][deduction]" type="checkbox" class="funCheckBox" data-ele="<?= $v->deduction ?>" value="<?= $v->deduction ?>">
+                                                    不计免赔<input name="insurance[<?= $v->id ?>][deduction]" type="checkbox" class="deduction deductionFunCheck" data-ele="<?= $v->deduction ?>"
+                                                               value="<?= $v->deduction ?>"
+                                                        <?php if ($v->deduction) {?> checked <?php }?>>
                                                 </div>
-                                            <?php }?>
                                             <div style="flex:2">
-                                                <select name="InsuranceOrderForm[insurance][<?= $v->id ?>][element]" class="form-control" id="insuranceorderform-element">
+                                                <select name="insurance[<?= $v->id ?>][element]" class="form-control" id="insuranceorderform-element">
                                                     <option value=""></option>
-                                                    <?php foreach (\common\models\element::find()->where(['insurance_id'=>$v->id])->select('name,id')->all() as $vv) {?>
-                                                        <option value="<?= $vv->id ?>"><?= $vv->name ?></option>
+                                                    <?php foreach (\common\models\element::find()->select('name,id')
+                                                                       ->where(['insurance_id'=>\common\models\Insurance::findOne(['title'=>$v->insurance])->id])
+                                                                       ->all() as $vv) {?>
+                                                        <option value="<?= $vv->id ?>" <?php if ($vv->name == $v->element) {?> selected <?php }?>><?= $vv->name ?></option>
                                                     <?php }?>
                                                 </select>
                                             </div>
@@ -261,9 +264,17 @@ use yii\widgets\LinkPager;
             var theId = $(this).attr('data-InsuranceId');
             if($('#'+theId).hasClass('hidden')){
                 $('#'+theId).removeClass('hidden');
+                $('#'+theId).find('.deduction').attr("checked",false)
             }else{
                 $('#'+theId).addClass('hidden');
             }
         });
+        $('.deductionFunCheck').on('click', function(){
+            if($(this).is(':checked')){
+                $(this).val('不计免赔')
+            }else{
+                $(this).val(0)
+            }
+        })
     </script>
 </div>

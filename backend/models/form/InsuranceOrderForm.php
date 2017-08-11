@@ -15,6 +15,8 @@ use backend\models\InsuranceCompany;
 use backend\models\Member;
 use backend\models\InsuranceDetail;
 use common\models\Company;
+use common\models\Helper;
+use common\models\Notice;
 use common\models\Warranty;
 use Yii;
 use yii\base\Exception;
@@ -124,8 +126,18 @@ class InsuranceOrderForm extends \common\models\InsuranceOrder
                 $this->transaction->rollBack();
                 return false;
             }
-
             $this->transaction->commit();
+
+            $newsA = '系统为您创建了一个【 保险 】订单，订单号： 【'. $orderSn .'】';
+            $user_idA = $this->member_id;
+            Notice::userNews('member',$user_idA,$newsA);
+            \common\components\Helper::pushMemberMessage($user_idA,$newsA);
+            $newsB = '系统为您的您的会员【'. $this->user .'】创建了一个【 保险 】订单，订单号： 【'. $orderSn .'】';
+            $member = Member::findOne($this->member_id);
+            $user_idB = $member->pid;
+            Notice::userNews('user',$user_idB,$newsB);
+            \common\components\Helper::pushServiceMessage($user_idB,$newsB);
+
             return $this;
 
         } catch (Exception $exception){

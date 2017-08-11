@@ -44,4 +44,5 @@ class NewsController extends ApiController
 
         return $this->jsonReturn(0, '暂无消息');
     }
+
 }

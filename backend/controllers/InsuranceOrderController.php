@@ -165,4 +165,17 @@ class InsuranceOrderController extends BackendController
         ]);
     }
 
+    public function actionChange()
+    {
+        $data = Yii::$app->request->post();
+        $info = Warranty::changeDetail($data);
+
+        if($info){
+            Yii::$app->session->setFlash('success', '修改成功!  ');
+            return $this->redirect(['detail', 'id' => $data['order_id']]);
+        }
+        Yii::$app->session->setFlash('success', '修改失败!  ');
+        return $this->redirect(['detail', 'id' => $data['order_id']]);
+    }
+
 }

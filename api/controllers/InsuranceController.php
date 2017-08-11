@@ -96,8 +96,8 @@ class InsuranceController extends ApiController
         $model = new InsuranceOrder();
         $form = $this->getForm(Yii::$app->request->post('data'));
         $member = $this->getMemberInfo();
-
-        $data = $model->addOrder($form, $member);
+        $port = 'member';
+        $data = $model->addOrder($form, $member, $port);
         if ($data) {
             return $this->jsonReturn(1, '下单成功', $data);
         }

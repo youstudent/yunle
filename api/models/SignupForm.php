@@ -19,6 +19,7 @@ namespace api\models;
                *
      */
 
+use common\components\Helper;
 use common\models\Identification;
 use common\models\Member;
 use common\models\MemberCode;
@@ -112,6 +113,7 @@ class SignupForm extends Model
             $news = '您成功邀请一位新会员，手机号：【'. $data['phone'] .'】';
             $model = 'user';
             $user_id = $code->user_id;
+            Helper::pushServiceMessage($user_id,$news);
             $new = \common\models\Notice::userNews($model, $user_id, $news);
             if (!$new) {
                 $this->errorMsg = '通知消息发送失败';

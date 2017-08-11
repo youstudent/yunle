@@ -91,14 +91,15 @@ class Helper
         try{
             $res = $pusher->send();
         }catch (\JPush\Exceptions\JPushException $e) {
+
             //TODO 记录个日志
         }
-        return $res;
+        return true;
     }
 
     public static function pushServiceMessage($member_id, $message)
     {
-        $member = Adminuser::findOne($member_id);
+        $member = User::findOne($member_id);
 
 
         $client = Helper::createjPush('member');
@@ -111,7 +112,7 @@ class Helper
         }catch (\JPush\Exceptions\JPushException $e) {
             //TODO 记录个日志
         }
-        return $res;
+        return true;
     }
     /**
      * 获取角色前缀

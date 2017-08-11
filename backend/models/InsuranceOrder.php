@@ -9,7 +9,7 @@ use yii\db\Exception;
  * This is the model class for table "{{%insurance_order}}".
  *
  * @property integer $id
- * @property string $order
+ * @property string $order_sn
  * @property integer $type
  * @property string $user
  * @property string $sex

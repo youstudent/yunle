@@ -14,6 +14,8 @@ use backend\models\Member;
 use backend\models\Order;
 use backend\models\OrderDetail;
 use backend\models\Service;
+use common\models\Helper;
+use common\models\Notice;
 use Yii;
 use yii\base\Exception;
 use yii\helpers\ArrayHelper;
@@ -60,7 +62,7 @@ class OrderForm extends Order
         $model = new OrderForm();
         $member = Member::findOne($member_id);
         $model->member_id = $member_id;
-        $model->user = $member->memberInfo ? $member->memberInfo->name : '';
+        $model->user = $member->memberInfo ? $member->memberInfo->name : $member->phone;
         $model->phone = $member->phone;
         $model->pick = 1;
         return $model;
@@ -96,6 +98,17 @@ class OrderForm extends Order
             if(!$ActDetailModel->addActDetail($this)){
                 throw new Exception("添加订单失败");
             }
+
+            $newsA = '系统为您创建了一个【'. Helper::getType($this->type) .'】订单，订单号： 【'. $orderSn .'】';
+            $user_idA = $this->member_id;
+            Notice::userNews('member',$user_idA,$newsA);
+            \common\components\Helper::pushMemberMessage($user_idA,$newsA);
+            $newsB = '系统为您的会员【'. $this->user .'】创建了一个【'. Helper::getType($this->type) .'】订单，订单号： 【'. $orderSn .'】';
+            $member = Member::findOne($this->member_id);
+            $user_idB = $member->pid;
+            Notice::userNews('user',$user_idB,$newsB);
+            \common\components\Helper::pushServiceMessage($user_idB,$newsB);
+
 
             return $this;
         });

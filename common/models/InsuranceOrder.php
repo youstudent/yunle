@@ -268,11 +268,13 @@ class InsuranceOrder extends \yii\db\ActiveRecord
     /*
      * 添加订单
      */
-    public function addOrder($data, $member=null)
+    public function addOrder($data, $member=null, $port)
     {
         if (!isset($data['member_id']) || empty($data['member_id'])) {
             $member_id = $member['member']['id'];
+            $userId = '';
         } else {
+            $userId = $member['user']['id'];
             $member_id = $data['member_id'];
         }
 
@@ -318,9 +320,29 @@ class InsuranceOrder extends \yii\db\ActiveRecord
             }
 
             $this->transaction->commit();
-
             $orderSn = Helper::getOrder($order_id);
             $order = ['order_id'=>$order_id, 'orderSn'=>$orderSn];
+            if ($port == 'member') {
+                $user = Member::findOne(['id'=>$member_id]);
+                $real = Identification::findOne(['member_id'=>$member_id]);
+                if (!isset($real) || empty($real)) {
+                    $realName = $user->phone;
+                } else {
+                    $realName = $real->name;
+                }
+                $news = '您的会员【'. $realName .'】创建了一个【 保险 】订单，订单号：【'. $orderSn .'】';
+                $user_id = $user->pid;
+                Notice::userNews('user', $user_id, $news);
+                \common\components\Helper::pushServiceMessage($user_id,$news);
+            } else {
+                $user = User::findOne(['id'=>$userId]);
+                $newsB = '您的管家【'. $user->name .'】创建了一个【 保险 】订单，订单号：【'. $orderSn .'】';
+                $modelB = 'member';
+                $user_idB = $member_id;
+                Notice::userNews($modelB, $user_idB, $newsB);
+                \common\components\Helper::pushMemberMessage($user_idB,$newsB);
+            }
+
             return $order;
         } catch (Exception $exception){
             $this->transaction->rollBack();

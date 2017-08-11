@@ -127,39 +127,22 @@ class DrivingLicense extends \yii\db\ActiveRecord
             $this->addError('message', '必填项信息不能为空');
             return false;
         }
-//        $member = Member::findOne(['id'=>$member_id]);
-//        if ($member->type == 0) {
-//            $member->type = $data['type'];
-//            $member->save(false);
-//        }
 
         $this->load(['formName'=>$data],'formName');
         $user = Member::findOne(['id'=>$member_id]);
+        $old = DrivingLicense::findOne(['member_id'=>$member_id]);
+
+        if ($user->type == 1 && (isset($old) || !empty($old))) {
+            $this->addError('message', '个人用户只能有一个驾驶证');
+            return false;
+        }
         if (!isset($user) || empty($user)) {
             $this->addError('message', '用户不存在');
             return false;
         }
         $this->member_id = $member_id;
         $this->created_at = time();
-        //生成消息提示给业务员
-//        $real = Identification::findOne(['member_id'=>$member_id]);
-//        if (!isset($real) || empty($real)) {
-//            $realName = $user->phone;
-//        } else {
-//            $realName = $real->name;
-//        }
-//        $newsA = '您的会员【'. $realName .'】的驾驶证【'. $data['name'] .'】信息更改请求通过';
-//        $modelA = 'user';
-//        $user_idA = $user->pid;
-//        $newA = \common\models\Notice::userNews($modelA, $user_idA, $newsA);
-//        //生成消息提示给客户
-//        $newsB = '您【'. $data['name'] .'】的驾驶证信息更改请求通过';
-//        $modelB = 'member';
-//        $user_idB = $member_id;
-//        $newB = \common\models\Notice::userNews($modelB, $user_idB, $newsB);
-//        if (!$newA || !$newB) {
-//            return false;
-//        }
+
         $this->transaction = Yii::$app->db->beginTransaction();
         try{
             if(!$this->save(false)){
