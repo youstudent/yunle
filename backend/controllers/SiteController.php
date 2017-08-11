@@ -109,10 +109,19 @@ class SiteController extends BackendController
     {
         echo '发送成功:' . json_encode($msg, JSON_UNESCAPED_UNICODE);
         echo '<hr>';
-        Helper::pushAllServiceMessage($msg, 'message');
+        Helper::pushAllMemberMessage($msg, 'message');
         echo 'success';die;
 
     }
+    public function actionPushAllMessage1($msg)
+    {
+        echo '发送成功:' . json_encode($msg, JSON_UNESCAPED_UNICODE);
+        echo '<hr>';
+        Helper::pushServiceMessage($msg, 'message');
+        echo 'success';die;
+
+    }
+
     public function actionInitMenu()
     {
         //初始化菜单用的，一般用不到
