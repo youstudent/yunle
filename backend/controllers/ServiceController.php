@@ -74,7 +74,7 @@ class ServiceController extends BackendController
             if($model->addService()){
                 return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['index'])]);
             }
-            return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作失败', 'url'=> Url::to(['index'])]);
+            return json_encode(['data'=> '', 'code'=>0, 'message'=> current($model->getFirstErrors())]);
         }
         return $this->renderPjax('create', [
             'model' => $model
@@ -91,7 +91,7 @@ class ServiceController extends BackendController
             if($model->updateService()){
                 return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['index'])]);
             }
-            return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作失败', 'url'=> Url::to(['index'])]);
+            return json_encode(['data'=> '', 'code'=>0, 'message'=> '操作失败']);
         }
         return $this->renderPjax('update', [
             'model' => $model

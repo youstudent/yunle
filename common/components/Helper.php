@@ -1,12 +1,15 @@
 <?php
 namespace common\components;
 use backend\models\Adminuser;
+use backend\models\AppMenu;
 use backend\models\AuthAssignment;
 use backend\models\AuthItem;
+use backend\models\AuthItemChild;
 use backend\models\Member;
 use backend\models\User;
 use common\models\Service;
 use common\models\Setting;
+use Flc\Alidayu\App;
 use Yii;
 use yii\base\Exception;
 use yii\helpers\ArrayHelper;
@@ -78,41 +81,149 @@ class Helper
 
     }
 
-    public static function pushMemberMessage($member_id, $message)
+
+    /**
+     * 给会员端指定用户发送消息或通知
+     * @param $member_id
+     * @param $message
+     * @param string $type
+     * @param null $title
+     * @param null $content_type
+     * @param null $extras
+     * @return bool
+     */
+    public static function pushMemberMessage($member_id, $message, $type = 'alert',  $title=null, $content_type=null, $extras = null)
     {
-        $member = Member::findOne($member_id);
-
-
-        $client = Helper::createjPush('member');
-        $pusher = $client->push();
-        $pusher->setPlatform('all');
-        $pusher->addAlias($member->phone);
-        $pusher->setNotificationAlert($message);
         try{
+            $member = Member::findOne($member_id);
+            $client = Helper::createjPush('member');
+            $pusher = $client->push();
+            $pusher->setPlatform('all');
+            $pusher->addAlias(strval($member->phone));
+            if($type == 'alert'){
+                $pusher->setNotificationAlert($message);
+            }else{
+                $pusher->setMessage($message, $title, $content_type, $extras);
+            }
             $res = $pusher->send();
-        }catch (\JPush\Exceptions\JPushException $e) {
-            //TODO 记录个日志
+        } catch (\JPush\Exceptions\APIConnectionException $e) {
+            // try something here
+
+            return false;
+        } catch (\JPush\Exceptions\APIRequestException $e) {
+            // try something here
+
+            return false;
         }
-        return $res;
+        return true;
     }
 
-    public static function pushServiceMessage($member_id, $message)
+    /**
+     * 给会员端所有用户发送消息或通知
+     * @param $message
+     * @param string $type
+     * @param null $title
+     * @param null $content_type
+     * @param null $extras
+     * @return bool
+     */
+    public static function pushAllMemberMessage($message, $type = 'alert',  $title=null, $content_type=null, $extras = null)
     {
-        $member = Adminuser::findOne($member_id);
-
-
-        $client = Helper::createjPush('member');
-        $pusher = $client->push();
-        $pusher->setPlatform('all');
-        $pusher->addAlias($member->username);
-        $pusher->setNotificationAlert($message);
         try{
+            $client = Helper::createjPush('member');
+            $pusher = $client->push();
+            $pusher->setPlatform('all');
+            $pusher->addAllAudience();
+            if($type == 'alert'){
+                $pusher->setNotificationAlert($message);
+            }else{
+                $pusher->setMessage($message, $title, $content_type, $extras);
+            }
             $res = $pusher->send();
-        }catch (\JPush\Exceptions\JPushException $e) {
-            //TODO 记录个日志
+        } catch (\JPush\Exceptions\APIConnectionException $e) {
+            // try something here
+
+            return false;
+        } catch (\JPush\Exceptions\APIRequestException $e) {
+            // try something here
+
+            return false;
         }
-        return $res;
+        return true;
     }
+
+
+    /**
+     * 给指定服务端用户发送消息或通知
+     * @param $member_id
+     * @param $message
+     * @param string $type
+     * @param null $title
+     * @param null $content_type
+     * @param null $extras
+     * @return bool
+     */
+    public static function pushServiceMessage($member_id, $message, $type = 'alert',  $title=null, $content_type=null, $extras = null)
+    {
+        try{
+            $member = User::findOne($member_id);
+            $client = Helper::createjPush('service');
+            $pusher = $client->push();
+            $pusher->setPlatform('all');
+            $pusher->addAlias(strval($member->username));
+            if($type == 'alert'){
+                $pusher->setNotificationAlert($message);
+            }else{
+                $pusher->setMessage($message, $title, $content_type, $extras);
+            }
+            $res = $pusher->send();
+        } catch (\JPush\Exceptions\APIConnectionException $e) {
+            // try something here
+
+            return false;
+        } catch (\JPush\Exceptions\APIRequestException $e) {
+            // try something here
+
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 给所有服务端发啊消息
+     * @param $message
+     * @param string $type
+     * @param null $title
+     * @param null $content_type
+     * @param null $extras
+     * @return bool
+     */
+    public static function pushAllServiceMessage($message, $type = 'alert', $title=null, $content_type=null, $extras = null)
+    {
+        try{
+            $client = Helper::createjPush('service');
+            $pusher = $client->push();
+            $pusher->setPlatform('all');
+            $pusher->addAllAudience();
+            if($type == 'alert'){
+                $pusher->setNotificationAlert($message);
+            }else{
+                $pusher->setMessage($message, $title, $content_type, $extras);
+            }
+            $res = $pusher->send();
+        } catch (\JPush\Exceptions\APIConnectionException $e) {
+            // try something here
+            echo '错误信息:' .print_r($e);
+            return false;
+        } catch (\JPush\Exceptions\APIRequestException $e) {
+            // try something here
+            echo '错误信息:' .print_r($e);
+            return false;
+        }
+        return true;
+    }
+
+
     /**
      * 获取角色前缀
      * @param $type
@@ -245,4 +356,57 @@ class Helper
 
         return [$model->id => $model->name];
     }
+
+
+    public static function getAppRoleMenu($role_name)
+    {
+        //获取当前角色所有菜单的
+        $items = AuthItemChild::find()->where(['parent'=> $role_name])->select('child')->column();
+        $assigned = AppMenu::find()->where(['key'=>$items])->select('id')->column();
+
+        //根据菜单，去查询所授权的上级菜单是否已授权
+        $all_menu = AppMenu::find()->select('name,id,parent,key')->indexBy('id')->asArray()->all();
+        $assigned = static::requiredParent($assigned, $all_menu);
+
+        //构造一个更合适的结构体
+        $menus = AppMenu::find()->alias('A')->select("A.*,B.id as bid,B.key as parent_key,0 as `show`")->leftJoin(AppMenu::tableName(). "B", "A.parent = B.id")->asArray()->indexby('key')->all();
+
+        foreach($menus as &$menu){
+            if(in_array($menu['id'], $assigned)){
+                $menu['show'] = 1;
+            }
+            
+        }
+
+        echo '<Pre>';
+        print_r(static::encodeExcute($menus));die;
+
+
+    }
+    public static function encode(&$var)
+    {
+        return '{'.implode(',',self::encodeExcute($var)).'}';
+    }
+
+
+    /**
+     * Ensure all item menu has parent.
+     * @param  array $assigned
+     * @param  array $menus
+     * @return array
+     */
+    private static function requiredParent($assigned, &$menus)
+    {
+        $l = count($assigned);
+        for ($i = 0; $i < $l; $i++) {
+            $id = $assigned[$i];
+            $parent_id = $menus[$id]['parent'];
+            if ($parent_id !== null && !in_array($parent_id, $assigned)) {
+                $assigned[$l++] = $parent_id;
+            }
+        }
+
+        return $assigned;
+    }
+
 }

@@ -19,32 +19,35 @@ class ServiceForm  extends Service
 {
     public $username;
     public $password;
-    public $cover;
 
     public $head;
     public $attachment;
+
+    public $heads;
+    public $attachments;
+
     public $saleman_id;
 
     public function rules()
     {
         return [
             [['name', 'principal', 'contact_phone', 'open_at', 'close_at'], 'required'],
-            [['level', 'status', 'created_at', 'updated_at', 'deleted_at', 'level', 'pid'], 'integer'],
+            [['level', 'status', 'created_at', 'updated_at', 'deleted_at', 'level', 'sid'], 'integer'],
             [['name', 'principal', 'contact_phone', 'introduction', 'address', 'lat', 'lng', 'open_at', 'close_at'], 'string', 'max' => 256],
-            [['pid', 'username', 'password', 'name', 'status', 'address', 'lat', 'lng', 'open_at', 'close_at'], 'required', 'on' => 'create'],
-            [['open_at', 'close_at', 'introduction'], 'string'],
+            [['sid', 'username', 'password', 'name', 'status', 'address', 'lat', 'lng', 'open_at', 'close_at'], 'required', 'on' => 'create'],
+            [['open_at', 'close_at', 'introduction', 'heads', 'attachments'], 'string'],
             [['username', 'password'], 'string', 'min'=> 6, 'max' => 16],
             [['username'], 'unique', 'targetClass' => '\backend\models\Adminuser', 'message' => '用户名已存在', 'on' => ['create']],
-            [['pid', 'name', 'status', 'address', 'lat', 'lng', 'open_at', 'close_at'], 'required', 'on' => 'created_service'],
+            [['sid', 'name', 'status', 'address', 'lat', 'lng', 'open_at', 'close_at'], 'required', 'on' => 'created_service'],
         ];
     }
 
     public function scenarios()
     {
         return [
-            'create' => ['name', 'principal', 'contact_phone', 'level', 'status', 'introduction', 'address', 'lat', 'lng', 'username', 'password', 'open_at', 'close_at', 'level'],
-            'created_service' => ['name', 'principal', 'contact_phone', 'level', 'status', 'introduction', 'address', 'lat', 'lng', 'username', 'password', 'open_at', 'close_at', 'level'],
-            'update' => ['name', 'principal', 'contact_phone', 'level', 'status', 'introduction', 'address', 'lat', 'lng'],
+            'create' => ['name', 'principal', 'contact_phone', 'level',  'introduction', 'address', 'lat', 'lng', 'username', 'password',  'level', 'sid', 'heads', 'attachments'],
+            'created_service' => ['name', 'principal', 'contact_phone', 'level', 'status', 'introduction', 'address', 'lat', 'lng', 'username', 'password', 'open_at', 'close_at', 'level', 'sid'],
+            'update' => ['name', 'principal', 'contact_phone', 'level', 'status', 'introduction', 'address', 'lat', 'lng', 'sid', 'heads', 'attachments'],
         ];
     }
 
@@ -68,13 +71,19 @@ class ServiceForm  extends Service
             return false;
         }
 
-        $ids = explode(',', trim($this->imgs,','));
-        if(count($ids) == 0){
+        $attachment_ids = explode(',', trim($this->attachments,','));
+        if(count($attachment_ids) == 0){
             $this->addError('attachment', '请上传附件');
             return false;
         }
+        $head_ids = explode(',', trim($this->heads,','));
+        if(count($head_ids) == 0){
+            $this->addError('head', '请上传头像');
+            return false;
+        }
+
         //添加一个管理员用户
-        return Yii::$app->db->transaction(function()
+        return Yii::$app->db->transaction(function() use($attachment_ids, $head_ids)
         {
             $adminuserModel = new Adminuser();
             if(!$adminuserModel->addServiceUser($this, 2)){
@@ -95,14 +104,24 @@ class ServiceForm  extends Service
             }
 
             //设置图片绑定
-            $models =  ServiceImg::find()->where(['id'=>$ids])->all();
+            $models =  ServiceImg::find()->where(['id'=>$attachment_ids])->all();
             foreach ($models as $model){
                 $model->service_id = $this->id;
                 $model->status = 1;
-                $model->save();
+                $model->type =0;
+                if(!$model->save()){
+                    throw new Exception("绑定图片信息失败");
+                }
             }
-            //TODO::添加一个服务商的角色并绑定账号
-
+            $models =  ServiceImg::find()->where(['id'=>$head_ids])->all();
+            foreach ($models as $model){
+                $model->service_id = $this->id;
+                $model->status = 1;
+                $model->type =1;
+                if(!$model->save()){
+                    throw new Exception("绑定附件信息失败");
+                }
+            }
 
             $role_name = "1_platform_服务商";
             //关联角色和账户
@@ -124,12 +143,8 @@ class ServiceForm  extends Service
         //编辑用户的信息
         return Yii::$app->db->transaction(function()
         {
-            $adminuser = new Adminuser();
-            if(!$adminuser->updateServiceUser($this)){
-                throw new Exception("更新服务商信息失败");
-            }
-            //处理图片变更, 对比新旧，删除旧的部分
 
+            //处理图片变更, 对比新旧，删除旧的部分
             if(!$this->save()){
                 throw new Exception("更新服务商信息失败");
             }
@@ -140,10 +155,22 @@ class ServiceForm  extends Service
     public static function getOne($id)
     {
         $model = ServiceForm::findOne($id);
-        $model->username = 'sssxxxx';
+
+        $imgs = ServiceImg::find()->where(['service_id'=>$id, 'type'=> 1])->select('id')->column();
+        $model->heads = implode(",",$imgs);
+
+        $imgs = ServiceImg::find()->where(['service_id'=>$id, 'type'=> 0])->select('id')->column();
+        $model->attachments = implode(",",$imgs);
+
         return $model;
     }
 
+    /**
+     * 上传土图片要用到的
+     * @param $data
+     * @param string $type
+     * @return ServiceImg|null
+     */
     public function saveImg($data, $type = 'head')
     {
         $model = new ServiceImg();

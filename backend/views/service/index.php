@@ -141,7 +141,6 @@ JS
                 <thead>
                 <tr>
                     <th>#</th>
-                    <th>id</th>
                     <th>服务商名称</th>
                     <th>负责人</th>
                     <th>客服电话</th>
@@ -156,12 +155,11 @@ JS
                 <?php foreach($dataProvider->getModels() as $index => $model): ?>
                     <tr class="">
                         <td><?= \pd\helpers\Yii2Helpers::serialColumn($dataProvider, $index) ?></td>
-                        <td><?= $model->id ?></td>
                         <td><?= $model->name ?></td>
                         <td><?= $model->principal ?></td>
                         <td><?= $model->contact_phone ?></td>
                         <td><?= $model->address ?></td>
-                        <td><?= $model->pid && backend\models\Adminuser::findOne($model->sid) ? backend\models\Adminuser::findOne($model->sid)->name : '未设置'   ?></td>
+                        <td><?= $model->sid && backend\models\Adminuser::findOne($model->sid) ? backend\models\Adminuser::findOne($model->sid)->name : '未设置'   ?></td>
                         <td><?= $model->status == 1 ? '<span class="badge badge-info">正常</span>' : '<span class="badge badge-danger">冻结</span>' ?></td>
                         <td><?= \pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
                         <td align="center">

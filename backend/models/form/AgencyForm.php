@@ -33,6 +33,7 @@ class AgencyForm  extends Agency
             [['pid', 'username', 'password', 'name',  'principal', 'principal_phone'], 'required', 'on' => 'create'],
             [['pid', 'username', 'password', 'name',  'principal', 'principal_phone'], 'required', 'on' => 'update'],
             ['imgs', 'validateEmptyImg', 'on'=> ['create', 'update']],
+            [['imgs'], 'string'],
             [['username', 'password'], 'string', 'min'=> 6, 'max' => 16],
             [['username'], 'match', 'pattern' => PregRule::USERNAME],
             [['username'], 'unique', 'targetClass' => '\backend\models\Adminuser', 'message' => '用户名已存在', 'on' => ['create']],
@@ -43,9 +44,9 @@ class AgencyForm  extends Agency
     public function scenarios()
     {
         return [
-            'create' => ['pid', 'username', 'password', 'name', 'status', 'principal', 'principal_phone', 'imgs'],
+            'create' => ['sid', 'username', 'password', 'name', 'status', 'principal', 'principal_phone', 'imgs'],
             'created_service' => ['pid', 'username', 'password', 'name', 'status', 'principal', 'principal_phone'],
-            'update' => ['pid', 'username', 'password', 'name', 'status', 'principal', 'principal_phone', 'imgs'],
+            'update' => ['sid', 'name', 'status', 'principal', 'principal_phone', 'imgs'],
         ];
     }
 
@@ -124,12 +125,6 @@ class AgencyForm  extends Agency
         //编辑用户的信息
         return Yii::$app->db->transaction(function()
         {
-            $adminuser = new Adminuser();
-            if(!$adminuser->updateServiceUser($this)){
-                throw new Exception("更新会员信息失败");
-            }
-            //处理图片变更, 对比新旧，删除旧的部分
-
             if(!$this->save()){
                 throw new Exception("更新代理商信息失败");
             }
@@ -141,7 +136,7 @@ class AgencyForm  extends Agency
     {
         $model = AgencyForm::findOne($id);
 
-        $imgs = ServiceImg::find()->where(['service_id'=>$id, 'type'=> 1])->select('id')->column();
+        $imgs = ServiceImg::find()->where(['service_id'=>$id, 'type'=> 0])->select('id')->column();
         $model->imgs = implode(",",$imgs);
 
 
@@ -149,6 +144,23 @@ class AgencyForm  extends Agency
 
     }
 
+    public function validateEmptyImg($attribute, $params)
+    {
+        //TODO::不知道为啥没生效
+        if(!$this->hasErrors()){
+            if($this->imgs == ''){
+                $this->addError('attachment', '请上传附件');
+            }
+        }
+    }
+
+
+    /**
+     * 上传土图片要用到的
+     * @param $data
+     * @param string $type
+     * @return ServiceImg|null
+     */
     public function saveImg($data, $type = 'head')
     {
         $model = new ServiceImg();
@@ -162,16 +174,6 @@ class AgencyForm  extends Agency
             return null;
         }
         return $model;
-    }
-
-    public function validateEmptyImg($attribute, $params)
-    {
-        //TODO::不知道为啥没生效
-        if(!$this->hasErrors()){
-            if($this->imgs == ''){
-                $this->addError('attachment', '请上传附件');
-            }
-        }
     }
 
 }

@@ -67,7 +67,9 @@ class Service extends \yii\db\ActiveRecord
             'created_at' => '创建时间',
             'updated_at' => '更新时间',
             'deleted_at' => '删除时间',
-            'pid' => '客户经理',
+            'sid' => '客户经理',
+            'pid' => '上级账户',
+            'owner_username' => '注册账户',
         ];
     }
 
@@ -96,7 +98,10 @@ class Service extends \yii\db\ActiveRecord
     }
 
 
-
+    public function getServiceImg()
+    {
+        return $this->hasMany(ServiceImg::className(), ['service_id'=>'id']);
+    }
 
 
 }

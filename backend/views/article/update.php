@@ -51,7 +51,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <?= $form->field($model, 'author')->textInput() ?>
 
-                <?= $form->field($model, 'column_id')->textInput() ?>
+                <?= $form->field($model, 'column_id')->dropDownList(\backend\models\Column::find()->select('name,id')->indexBy('id')->column()) ?>
+
 
                 <?= $form->field($model, 'views')->textInput() ?>
 

@@ -20,20 +20,20 @@ class SiteController extends BackendController
     public function behaviors()
     {
         return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'rules' => [
-                    [
-                        'actions' => ['login', 'error', 'test', 'init-menu'],
-                        'allow' => true,
-                    ],
-                    [
-                        'actions' => ['logout', 'index'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
+//            'access' => [
+//                'class' => AccessControl::className(),
+//                'rules' => [
+//                    [
+//                        'actions' => ['login', 'error', 'test', 'init-menu', 'test1'],
+//                        'allow' => true,
+//                    ],
+//                    [
+//                        'actions' => ['logout', 'index'],
+//                        'allow' => true,
+//                        'roles' => ['@'],
+//                    ],
+//                ],
+//            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -98,33 +98,21 @@ class SiteController extends BackendController
         return Yii::$app->getResponse()->redirect(['/site/login']);
     }
 
-    public function actionTest($c)
+    public function actionTest()
     {
-        $registrationId = '100d855909733a7c407';
-        $client = Helper::createjPush('service');
-        $pusher = $client->push();
-        $pusher->setPlatform('android');
-        $pusher->addAllAudience() ;
-        //$pusher->addRegistrationId($registrationId);
-        $pusher->setNotificationAlert($c);
-        $res = $pusher->send();
-        echo '<pre>';
-        print_r($res);
-        echo '发送成功: rid:'. $registrationId;die;
 
-//        try {
-//            $pusher->send();
-//        } catch (\JPush\Exceptions\JPushException $e) {
-//            // try something else here
-//            print $e;
-//        }
-//        $pusher->getCid($count = 1, $type = 'push');
-
-        $device = $client->device();
-        $device->updateAlias('100d855909733ac3789', 'zhangxiaohua');
+       Helper::getAppRoleMenu("1_app_操作员");
 
     }
 
+    public function actionPushAllMessage($msg)
+    {
+        echo '发送成功:' . json_encode($msg, JSON_UNESCAPED_UNICODE);
+        echo '<hr>';
+        Helper::pushAllServiceMessage($msg, 'message');
+        echo 'success';die;
+
+    }
     public function actionInitMenu()
     {
         //初始化菜单用的，一般用不到

@@ -27,6 +27,8 @@
 namespace common\models;
 
 
+use Yii;
+
 class Helper
 {
     /**
@@ -1017,6 +1019,7 @@ class Helper
     //临时接口数据
     public static function getRbac()
     {
+
         return [
             'home' => ['title' => '首页', 'len' => '2', 'show' => 1, 'sub' => [
                 'wait_order' => ['title' => '待处理订单', 'len' => '4', 'show' => 1, 'sub' => [

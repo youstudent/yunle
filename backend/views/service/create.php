@@ -1,5 +1,6 @@
 <?php
 
+use common\components\Helper;
 use dosamigos\fileupload\FileUploadUI;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -161,7 +162,7 @@ JS
                                 <?= FileUploadUI::widget([
                                     'model' => $model,
                                     'attribute' => 'head',
-                                    'url' => ['media/image-upload', 'model' => 'serviceImg', 'type'=> 'head'],
+                                    'url' => ['media/image-upload', 'model' => 'service', 'type'=> 'head'],
                                     'gallery' => true,
                                     'fieldOptions' => [
                                         'accept' => 'image/*'
@@ -171,12 +172,15 @@ JS
                                     ],
                                     'clientEvents' => [
                                         'fileuploaddone' => 'function(e, data, options) {
-                                            
-                                            console.log(options);
+                                            var img_input = $(\'input[name="ServiceForm[heads]"]\');
+                                             var img_id = data.result.files[0].img_id;
+                                            //将上传完成的数据添加到表单中
+                                             var ids =  img_input.val();
+                                             var ids = ids + "," + img_id;
+                                             img_input.val(ids);
                                         }',
                                         'fileuploadfail' => 'function(e, data) {
-//                                            console.log(e);
-//                                            console.log(data);
+                                          
                                         }',
 
                                     ],
@@ -186,13 +190,15 @@ JS
                             </div>
                         </div>
 
+                        <?= $form->field($model, 'heads', ['template'=> "{input}"])->hiddenInput() ?>
+
                         <div class="form-group field-serviceform-cover">
                             <label class="control-label control-label col-md-4 col-sm-4" for="serviceform-cover">服务商附件</label>
                             <div class="col-md-6 col-sm-6">
                                 <?= FileUploadUI::widget([
                                     'model' => $model,
                                     'attribute' => 'attachment',
-                                    'url' => ['media/image-upload', 'model'=> 'serviceImg', 'type'=> 'img'],
+                                    'url' => ['media/image-upload', 'model'=> 'service', 'type'=> 'img'],
                                     'gallery' => true,
                                     'fieldOptions' => [
                                         'accept' => 'image/*'
@@ -203,12 +209,16 @@ JS
                                     // ...
                                     'clientEvents' => [
                                         'fileuploaddone' => 'function(e, data) {
-                                console.log(e);
-                                console.log(data);
+                                         var img_input = $(\'input[name="ServiceForm[attachments]"]\');
+                                             var img_id = data.result.files[0].img_id;
+                                            //将上传完成的数据添加到表单中
+                                             var ids =  img_input.val();
+                                             var ids = ids + "," + img_id;
+                                             img_input.val(ids);
+                      
                             }',
                                         'fileuploadfail' => 'function(e, data) {
-                                console.log(e);
-                                console.log(data);
+                              
                             }',
                                     ],
                                 ]); ?>
@@ -217,6 +227,19 @@ JS
                             </div>
                         </div>
 
+                        <?= $form->field($model, 'attachments', ['template'=> "{input}"])->hiddenInput() ?>
+
+
+                        <?= $form->field($model, 'introduction')->widget(\yii\redactor\widgets\Redactor::className(), [
+                            'clientOptions' => [
+                                'imageManagerJson' => ['/redactor/upload/image-json'],
+                                'imageUpload' => ['/redactor/upload/image'],
+                                'fileUpload' => ['/redactor/upload/file'],
+                                'lang' => 'zh_cn',
+                                'minHeight' => 300,
+                                'plugins' => ['clips', 'fontcolor','imagemanager']
+                            ]
+                        ]) ?>
 
                         <?= $form->field($model, 'address')->textInput() ?>
 
@@ -246,7 +269,15 @@ JS
                             5=> '五星',
                         ]) ?>
 
-                        <?= $form->field($model, 'pid')->textInput() ?>
+                        <?php if(Helper::loginIsRole('管理员')): ?>
+                            <?= $form->field($model, 'sid')->dropDownList(
+                                Helper::getRoleUser('1_platform_代理商')
+                            ) ?>
+                        <?php else: ?>
+                            <?php $model->pid = Yii::$app->user->getIdentity()->id; ?>
+                            <?= $form->field($model, 'sid', ['template'=> '{input}'])->hiddenInput(); ?>
+
+                        <?php endif; ?>
 
 <!--                        --><?php //$model->status=1; ?>
 <!--                        --><?//= $form->field($model, 'status')->dropDownList(['禁用', '启用']) ?>
@@ -274,6 +305,14 @@ $formId = $model->formName();
 $this->registerJs(<<<JS
 $(function () {
     $('.btn-submit').on('click', function () {
+       if($('input[name="ServiceForm[heads]"]').val() == ''){
+                swal("请先上传附件");
+                return false;
+        }
+       if($('input[name="ServiceForm[attachments]"]').val() == ''){
+                swal("请先上传附件");
+                return false;
+        }
         var f = $('#{$formId}');
         f.on('beforeSubmit', function (e) {
             swal({

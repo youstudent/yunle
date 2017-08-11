@@ -51,7 +51,7 @@ class Article extends \yii\db\ActiveRecord
             'author' => '文章作者',
             'content' => '文章内容',
             'status' => '文章状态 1 正常  0 禁用',
-            'column_id' => '所属栏目id',
+            'column_id' => '栏目',
             'views' => '浏览量',
             'created_at' => '创建时间',
             'updated_at' => '更新时间',

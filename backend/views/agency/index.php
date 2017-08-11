@@ -126,7 +126,7 @@ JS
 
             <?= $form->field($searchModel, 'contact_phone')->textInput(['placeholder'=> '联系电话']); ?>
 
-            <?= $form->field($searchModel, 'pid')->dropDownList(
+            <?= $form->field($searchModel, 'sid')->dropDownList(
                 \backend\models\Adminuser::find()->where(['mark'=> 1])->select('name,id')->indexBy('id')->asArray()->column(),
                 ['prompt'=> '选择客户经理']
             ); ?>
@@ -141,7 +141,6 @@ JS
                 <thead>
                 <tr>
                     <th>#</th>
-                    <th>id</th>
                     <th>代理商名称</th>
                     <th>负责人</th>
                     <th>负责人电话</th>
@@ -155,7 +154,6 @@ JS
                 <?php foreach($dataProvider->getModels() as $index => $model): ?>
                     <tr class="">
                         <td><?= \pd\helpers\Yii2Helpers::serialColumn($dataProvider, $index) ?></td>
-                        <td><?= $model->id ?></td>
                         <td><?= $model->name ?></td>
                         <td><?= $model->principal ?></td>
                         <td><?= $model->principal_phone ?></td>
