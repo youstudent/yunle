@@ -17,18 +17,22 @@ class AccountController extends BackendController
     //账号信息
     public function actionIndex()
     {
+        $id = Yii::$app->user->getId();
 
+        $model = Adminuser::findOne($id);
         return $this->renderPjax('platform_account', [
-            'model' => Yii::$app->getAuthManager()->getRolesByUser(1)
+            'model' => $model
         ]);
     }
 
     //平台信息
     public function actionPlatform()
     {
-
+        $id = Yii::$app->user->getId();
+        $role = Yii::$app->getAuthManager()->getRolesByUser($id);
     }
 
+    //代理商平台信息
     protected function serviceAccount()
     {
         $id = 1;
