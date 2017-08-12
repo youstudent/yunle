@@ -62,7 +62,10 @@ class SiteController extends BackendController
      */
     public function actionIndex()
     {
-        return $this->renderPjax('index');
+        $model = \common\models\Helper::getStat();
+        return $this->renderPjax('index', [
+            'model' => $model,
+        ]);
     }
 
     /**

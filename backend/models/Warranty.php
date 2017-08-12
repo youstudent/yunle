@@ -5,7 +5,9 @@ namespace backend\models;
 use common\models\BusinessDetail;
 use common\models\CompensatoryDetail;
 use common\models\Element;
+use common\models\Upload;
 use Yii;
+use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "cdc_warranty".
@@ -30,13 +32,14 @@ class Warranty extends \yii\db\ActiveRecord
     public $warranty;
     public $compensatory;
     public $business;
+    public $img;
 
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'cdc_warranty';
+        return '{{%warranty}}';
     }
 
     /**
@@ -84,8 +87,10 @@ class Warranty extends \yii\db\ActiveRecord
         return $model;
     }
 
-    public static function changeInfo($data)
+    public static function changeInfo($modelImgs,$data)
     {
+        $user_id = $_SESSION['LOGIN_MEMBER']['id'];
+        $user = Adminuser::findOne(['id'=>$user_id])->name;
         $id = $data['order_id'];
         $model = Warranty::findOne(['order_id'=>$id]);
         $business = BusinessDetail::findOne(['id'=>$model->business_id]);
@@ -114,6 +119,39 @@ class Warranty extends \yii\db\ActiveRecord
         }
         $cost->save(false);
 
+        $order = InsuranceDetail::findOne(['order_id'=>$id]);
+        $order->action = '已付款';
+        $order->updated_at = time();
+        $order->save(false);
+
+        $act = ActInsurance::findOne(['order_id'=>$id]);
+        $act->status = 4;
+        $act->info = '已付款';
+        $act->port = 3;
+        $act->user_id = $user_id;
+        $act->user = $user;
+        $act->id = null;
+        $act->created_at = time();
+        $act->isNewRecord = 1;
+        if ($act->save(false)) {
+            //图片处理
+            $images = UploadedFile::getInstances($modelImgs, 'img');
+            foreach ($images as $v) {
+                $extension = $v->extension;
+                $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                $upload = new Upload();
+                $img_path = $upload->getSavePath('insuranceAct', $chars, $extension);
+                $v->saveAs(Yii::getAlias('@common').$img_path);
+                $modelImg = new InsuranceActimg();
+                $modelImg->act_id = $act->id;
+                $modelImg->img_path = $img_path;;
+                $modelImg->created_at = time();
+
+                if (!$modelImg->save(false)) {
+                    return false;
+                }
+            }
+        }
         if ($compensatory->save(false) && $business->save(false)) {
             return true;
         }

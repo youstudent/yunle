@@ -33,16 +33,18 @@ class Upload extends Model
     public function setImageInformation($image, $id, $type){
         foreach($image as $v){
             Header( "Content-type: image/jpeg");
+
             preg_match('/^(data:\s*image\/(\w+);base64,)/', $v, $result);
             $extension = $result[2];
-            $file = base64_decode(str_replace($result[1], '', $v));
 
+            $file = base64_decode(str_replace($result[1], '', $v));
             $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
             $img_path = $this->getSavePath($type, $chars, $extension);
+            file_put_contents(Yii::getAlias('@common').$img_path, $file);
 
 //            $path_Str = Yii::getAlias('@common');
 //            $str = str_replace('\\','/',$path_Str);
-            file_put_contents(Yii::getAlias('@common').$img_path, $file);
 
             switch ($type) {
                 case 'car':

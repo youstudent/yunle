@@ -2,12 +2,11 @@
 
 namespace backend\models;
 
-use common\components\Helper;
 use common\models\BusinessDetail;
 use common\models\CompensatoryDetail;
 use common\models\Upload;
-use common\models\Warranty;
 use Yii;
+use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "{{%insurance_detail}}".
@@ -32,6 +31,9 @@ class InsuranceDetail extends \yii\db\ActiveRecord
     public $total;
 
     public $cover;
+    public $img;
+    public $warrantyImg;
+    public $costImg;
     public $head;
     public $attachment;
     public $saleman_id;
@@ -86,6 +88,26 @@ class InsuranceDetail extends \yii\db\ActiveRecord
         $model->business = BusinessDetail::findOne(['id'=>$model->warranty->business_id]);
         $model->compensatory = CompensatoryDetail::findOne(['id'=>$model->warranty->compensatory_id]);
 
+        $actId = ActInsurance::findOne(['order_id'=>$id, 'status'=>4]);
+        $images = InsuranceActimg::find()->select('id, img_path')->where(['act_id'=> $actId])->all();
+        $warrantyImg = [];
+        if ($images) {
+            foreach ($images as &$v) {
+                $warrantyImg[] = Yii::$app->params['img_domain'].$v['img_path'];
+            }
+        }
+        $model->warrantyImg =$warrantyImg;
+
+        $costId = ActInsurance::findOne(['order_id'=>$id, 'status'=>97]);
+        $imagess = InsuranceActimg::find()->select('id, img_path')->where(['act_id'=> $costId])->all();
+        $costImg = [];
+        if ($imagess) {
+            foreach ($imagess as &$v) {
+                $costImg[] = Yii::$app->params['img_domain'].$v['img_path'];
+            }
+        }
+        $model->costImg =$costImg;
+
         return $model;
 
     }
@@ -93,7 +115,7 @@ class InsuranceDetail extends \yii\db\ActiveRecord
     public static function cancel($id)
     {
         //取消订单
-        $user_id = $_SESSION['__id'];
+        $user_id = $_SESSION['LOGIN_MEMBER']['id'];
         $user = Adminuser::findOne(['id'=>$user_id])->name;
         $act = ActInsurance::findOne(['order_id'=>$id]);
         $act->status = 100;
@@ -115,9 +137,9 @@ class InsuranceDetail extends \yii\db\ActiveRecord
         return false;
     }
 
-    public function checkSuccess($data = null, $id)
+    public function checkSuccess($model, $data = null, $id)
     {
-        $user_id = $_SESSION['__id'];
+        $user_id = $_SESSION['LOGIN_MEMBER']['id'];
         $user = Adminuser::findOne(['id'=>$user_id])->name;
         $act = ActInsurance::findOne(['order_id'=>$id]);
         $act->status = 97;
@@ -129,12 +151,22 @@ class InsuranceDetail extends \yii\db\ActiveRecord
         $act->created_at = time();
         $act->isNewRecord = 1;
         if ($act->save(false)) {
-            $imgId = $act->id;
-            $upload = new Upload();
-            //TODO:等龙哥图片
-            $img  = 1;
-            if (!$img) {
-                return false;
+            //图片处理
+            $images = UploadedFile::getInstances($model, 'img');
+            foreach ($images as $v) {
+                $extension = $v->extension;
+                $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                $upload = new Upload();
+                $img_path = $upload->getSavePath('insuranceAct', $chars, $extension);
+                $v->saveAs(Yii::getAlias('@common').$img_path);
+                $modelImg = new InsuranceActimg();
+                $modelImg->act_id = $act->id;
+                $modelImg->img_path = $img_path;;
+                $modelImg->created_at = time();
+
+                if (!$modelImg->save(false)) {
+                    return false;
+                }
             }
         }
         $order = InsuranceDetail::findOne(['order_id'=>$id]);
@@ -169,7 +201,7 @@ class InsuranceDetail extends \yii\db\ActiveRecord
 
     public function checkFailed($data, $id)
     {
-        $user_id = $_SESSION['__id'];
+        $user_id = $_SESSION['LOGIN_MEMBER']['id'];
         $user = Adminuser::findOne(['id'=>$user_id])->name;
         $act = ActInsurance::findOne(['order_id'=>$id]);
         $act->status = 98;

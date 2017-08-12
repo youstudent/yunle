@@ -19,12 +19,14 @@ namespace common\models;
                *
      */
 
+use backend\models\AppMenu;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
+use yii\web\Response;
 
 /**
  * This is the model class for table "cdc_user".
@@ -154,7 +156,173 @@ class User extends ActiveRecord
 
         //TODO:更改权限
         if ($user->save(false)) {
-            return Helper::getRbac();
+            $assigned = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25];
+            $menus =AppMenu::find()->alias('A')->select("id,name,key,0 as `show`")->asArray()->indexby('key')->all();
+
+            foreach($menus as &$menu){
+                if(in_array($menu['id'], $assigned)){
+                    $menu['show'] = 1;
+                }
+
+            }
+            return $menus;
+            //            Yii::$app->response->format = Response::FORMAT_JSON;
+//            echo <<<JSON
+//
+//{
+//    "home": {
+//        "id": "1",
+//        "name": "首页",
+//        "key": "home",
+//        "show": "0"
+//    },
+//    "wait_order": {
+//        "id": "2",
+//        "name": "待处理订单",
+//        "key": "wait_order",
+//        "show": "0"
+//    },
+//    "rescue_order": {
+//        "id": "3",
+//        "name": "救援订单",
+//        "key": "rescue_order",
+//        "show": "0"
+//    },
+//    "fix_order": {
+//        "id": "4",
+//        "name": "维修订单",
+//        "key": "fix_order",
+//        "show": "0"
+//    },
+//    "upkeep_order": {
+//        "id": "5",
+//        "name": "保养订单",
+//        "key": "upkeep_order",
+//        "show": "0"
+//    },
+//    "review_order": {
+//        "id": "6",
+//        "name": "审车订单",
+//        "key": "review_order",
+//        "show": "0"
+//    },
+//    "my_member": {
+//        "id": "7",
+//        "name": "我的会员",
+//        "key": "my_member",
+//        "show": "0"
+//    },
+//    "quick": {
+//        "id": "8",
+//        "name": "快速入口",
+//        "key": "quick",
+//        "show": "0"
+//    },
+//    "member_insurance_order": {
+//        "id": "9",
+//        "name": "保险",
+//        "key": "member_insurance_order",
+//        "show": "0"
+//    },
+//    "member_rescue_order": {
+//        "id": "10",
+//        "name": "救援",
+//        "key": "member_rescue_order",
+//        "show": "0"
+//    },
+//    "member_fix_order": {
+//        "id": "11",
+//        "name": "维修",
+//        "key": "member_fix_order",
+//        "show": "0"
+//    },
+//    "member_upkeep_order": {
+//        "id": "12",
+//        "name": "保养",
+//        "key": "member_upkeep_order",
+//        "show": "0"
+//    },
+//    "member_review_order": {
+//        "id": "13",
+//        "name": "审车",
+//        "key": "member_review_order",
+//        "show": "0"
+//    },
+//    "work": {
+//        "id": "14",
+//        "name": "工作",
+//        "key": "work",
+//        "show": "0"
+//    },
+//    "work_my_member": {
+//        "id": "15",
+//        "name": "我的客户",
+//        "key": "work_my_member",
+//        "show": "0"
+//    },
+//    "member_order": {
+//        "id": "16",
+//        "name": "客户订单",
+//        "key": "member_order",
+//        "show": "0"
+//    },
+//    "insurance_order_handle": {
+//        "id": "17",
+//        "name": "保单管理",
+//        "key": "insurance_order_handle",
+//        "show": "0"
+//    },
+//    "order_handle": {
+//        "id": "18",
+//        "name": "订单处理",
+//        "key": "order_handle",
+//        "show": "0"
+//    },
+//    "my": {
+//        "id": "19",
+//        "name": "我的",
+//        "key": "my",
+//        "show": "0"
+//    },
+//    "my_group": {
+//        "id": "20",
+//        "name": "我的组织",
+//        "key": "my_group",
+//        "show": "0"
+//    },
+//    "other": {
+//        "id": "21",
+//        "name": "个人中心",
+//        "key": "other",
+//        "show": "0"
+//    },
+//    "my_share_code": {
+//        "id": "22",
+//        "name": "我的邀请码",
+//        "key": "my_share_code",
+//        "show": "0"
+//    },
+//    "notice": {
+//        "id": "23",
+//        "name": "消息通知",
+//        "key": "notice",
+//        "show": "0"
+//    },
+//    "contact_us": {
+//        "id": "24",
+//        "name": "联系我们",
+//        "key": "contact_us",
+//        "show": "0"
+//    },
+//    "setting": {
+//        "id": "25",
+//        "name": "设置",
+//        "key": "setting",
+//        "show": "0"
+//    }
+//}
+//JSON;
+//            die;
         }
 
         return false;

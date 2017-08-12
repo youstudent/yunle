@@ -6,12 +6,9 @@
  */
 
 /* @var $model backend\models\InsuranceDetail  */
-use backend\models\Member;
-use yii\helpers\Html;
-use yii\grid\GridView;
+
 use yii\helpers\Url;
-use yii\widgets\ActiveForm;
-use yii\widgets\LinkPager;
+use kartik\file\FileInput;
 ?>
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -64,7 +61,11 @@ use yii\widgets\LinkPager;
                         <?php if ($model->insurance->check_action=='核保成功') {?>
                         <tr>
                             <td><b>报价单</b></td>
-                            <td>欠两张图片</td>
+                            <td>
+                                <?php foreach ($model->costImg as $v) {?>
+                                    <img src="<?= $v ?>" alt="" width="100px" />
+                                <?php } ?>
+                            </td>
                         </tr>
                         <tr>
                             <td><b>付款状态</b></td>
@@ -249,8 +250,12 @@ use yii\widgets\LinkPager;
                             <td>
                         </tr>
                         <tr>
-                            <td>保单图片</td>
-                            <td>欠两张图片</td>
+                            <td><b>保单图片</b></td>
+                            <td>
+                                <?php foreach ($model->warrantyImg as $v) {?>
+                                    <img src="<?= $v ?>" alt="" width="100px" />
+                                <?php } ?>
+                            </td>
                         </tr>
                     </table>
                 </div>

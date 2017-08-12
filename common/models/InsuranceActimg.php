@@ -21,7 +21,7 @@ class InsuranceActimg extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'cdc_insurance_actimg';
+        return '{{%insurance_actimg}}';
     }
 
     /**

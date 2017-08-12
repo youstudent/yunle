@@ -16,7 +16,7 @@
                 <div class="stats-icon"><i class="fa fa-desktop"></i></div>
                 <div class="stats-info">
                     <h4>待审车订单</h4>
-                    <p>129+</p>
+                    <p><?= $model['orderCount']['afterCheckCar']?></p>
                 </div>
                 <div class="stats-link">
                     <a href="javascript:;">查看详情 <i class="fa fa-arrow-circle-o-right"></i></a>
@@ -30,7 +30,7 @@
                 <div class="stats-icon"><i class="fa fa-chain-broken"></i></div>
                 <div class="stats-info">
                     <h4>待核保订单</h4>
-                    <p>29+</p>
+                    <p><?= $model['orderCount']['afterSuccess']?></p>
                 </div>
                 <div class="stats-link">
                     <a href="javascript:;">查看详情 <i class="fa fa-arrow-circle-o-right"></i></a>
@@ -44,7 +44,7 @@
                 <div class="stats-icon"><i class="fa fa-users"></i></div>
                 <div class="stats-info">
                     <h4>核保成功订单</h4>
-                    <p>21</p>
+                    <p><?= $model['orderCount']['success']?></p>
                 </div>
                 <div class="stats-link">
                     <a href="javascript:;">查看详情 <i class="fa fa-arrow-circle-o-right"></i></a>
@@ -58,7 +58,7 @@
                 <div class="stats-icon"><i class="fa fa-users"></i></div>
                 <div class="stats-info">
                     <h4>待审核订单</h4>
-                    <p>21</p>
+                    <p><?= $model['orderCount']['afterStatusChange']?></p>
                 </div>
                 <div class="stats-link">
                     <a href="javascript:;">查看详情 <i class="fa fa-arrow-circle-o-right"></i></a>
@@ -116,6 +116,9 @@
     </div>
 <?php
 \pd\coloradmin\web\plugins\MorrisAsset::register($this);
+$opts =0;
+$this->registerJs("var aaa = {$opts};");
+
 $this->registerJs(<<<JS
 var memberAdd = Morris.Line({
   // ID of the element in which to draw the chart.
@@ -123,19 +126,21 @@ var memberAdd = Morris.Line({
   // Chart data records -- each entry in this array corresponds to a point on
   // the chart.
   data: [
-    { year: '2008', value: 20 },
-    { year: '2009', value: 10 },
-    { year: '2010', value: 5 },
-    { year: '2011', value: 5 },
-    { year: '2012', value: 20 }
+    { days: '6天前', a: 20 , b:10, c:15 },
+    { days: '5天前', a: 10 , b:20, c:5 },
+    { days: '4天前', a: 5 , b:10, c:25 },
+    { days: '3天前', a: 10 , b:20, c:5 },
+    { days: '2天前', a: 20 , b:10, c:15 },
+    { days: '1天前', a: 20 , b:10, c:15 },
+    { days: '今天', a: 20 , b:10, c:15 }
   ],
   // The name of the data record attribute that contains x-values.
-  xkey: 'year',
+  xkey: 'days',
   // A list of names of data record attributes that contain y-values.
-  ykeys: ['value'],
+  ykeys: ['a', 'b', 'c'],
   // Labels for the ykeys -- will be displayed when you hover over the
   // chart.
-  labels: ['Value']
+  labels: ['会员', '服务商', '代理商']
 });
 var orderrAdd = new Morris.Line({
   // ID of the element in which to draw the chart.
@@ -143,19 +148,19 @@ var orderrAdd = new Morris.Line({
   // Chart data records -- each entry in this array corresponds to a point on
   // the chart.
   data: [
-    { year: '2008', a: 20 , b:10, c:10},
-    { year: '2009', a: 10 , b:10, c:10},
-    { year: '2010', a: 5 , b:10, c:15},
-    { year: '2011', a: 5 , b:10, c:10},
-    { year: '2012', a: 20 , b:10, c:10}
+    { year: '2017', a: 20 , b:10, c:15, d:18, e:30},
+    { year: '2018', a: 10 , b:20, c:5, d:25, e:18},
+    { year: '2019', a: 5 , b:10, c:25, d:18, e:15},
+    { year: '2020', a: 10 , b:20, c:5, d:25, e:18},
+    { year: '2021', a: 20 , b:10, c:15, d:18, e:5}
   ],
   // The name of the data record attribute that contains x-values.
   xkey: 'year',
   // A list of names of data record attributes that contain y-values.
-  ykeys: ['a', 'b', 'c'],
+  ykeys: ['a', 'b', 'c', 'd', 'e'],
   // Labels for the ykeys -- will be displayed when you hover over the
   // chart.
-  labels: ['数量', '爱情', '友情']
+  labels: ['救援', '维修', '保养', '审车', '保险']
 });
 JS
 );

@@ -12,6 +12,7 @@ use yii\grid\GridView;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yii\widgets\LinkPager;
+use kartik\file\FileInput;
 ?>
 
 <!-- begin page-header -->
@@ -20,7 +21,7 @@ use yii\widgets\LinkPager;
 
 <!-- begin row -->
 <div class="row">
-    <form class="form-horizontal" action="<?= Url::to(['update']) ?>" method="POST">
+    <form class="form-horizontal" action="<?= Url::to(['update']) ?>" method="POST" enctype="multipart/form-data">
         <!-- begin col-12 -->
         <input type="hidden" name="order_id" value="<?=$model->order_id?>" />
         <table id="data-table-title" class="table">
@@ -109,8 +110,20 @@ use yii\widgets\LinkPager;
                 <td>
             </tr>
             <tr>
-                <td>保单图片</td>
-                <td>欠两张图片</td>
+                <td><b>保单图片</b></td>
+                <td>
+                    <?php
+                    echo FileInput::widget([
+                        'model' => $model,
+                        'attribute' => 'img[]',
+                        'options' => ['multiple' => true],
+                        'pluginOptions' => [
+                            // 是否显示上传按钮，指input上面的上传按钮，非具体图片上的上传按钮
+                            'showUpload' => false,
+                        ],
+                    ]);
+                    ?>
+                </td>
             </tr>
         </table>
         <a href="<?= Url::to(['detail?id='.$model->order_id]) ?>" class="btn btn-sm btn-white" data-dismiss="modal">取消</a>

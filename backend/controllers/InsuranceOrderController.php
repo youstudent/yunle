@@ -15,9 +15,11 @@ use backend\models\InsuranceElement;
 use backend\models\InsuranceOrder;
 use backend\models\searchs\InsuranceDetailSearch;
 use backend\models\Warranty;
+use common\models\Upload;
 use Yii;
 use yii\helpers\Url;
 use yii\data\ActiveDataProvider;
+use yii\web\UploadedFile;
 
 class InsuranceOrderController extends BackendController
 {
@@ -108,7 +110,8 @@ class InsuranceOrderController extends BackendController
         $model = InsuranceDetail::findOne(['order_id'=>$id]);
         $data = Yii::$app->request->post();
         if(!empty($data)){
-            if($model->checkSuccess($data, $id)){
+
+            if($model->checkSuccess($model,$data, $id)){
                 return $this->redirect('detail?id='.$id);
             }
             return $this->redirect('detail?id='.$id);
@@ -147,7 +150,7 @@ class InsuranceOrderController extends BackendController
     {
         $data = Yii::$app->request->post();
         $model =  Warranty::getDetail($data['order_id']);
-        $info = Warranty::changeInfo($data);
+        $info = Warranty::changeInfo($model,$data);
         if($info){
             Yii::$app->session->setFlash('success', '修改成功!  ');
             return $this->redirect(['detail', 'id' => $model->order_id]);
@@ -158,6 +161,7 @@ class InsuranceOrderController extends BackendController
 
     public function actionInsurance($id)
     {
+//        echo 11111;die;
         $model =  InsuranceDetail::getDetail($id);
 
         return $this->renderAjax('insurance', [
