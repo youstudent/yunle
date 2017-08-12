@@ -32,4 +32,16 @@ class PermissionController extends ItemController
     {
         return Item::TYPE_PERMISSION;
     }
+
+    /**
+     * Displays a single AuthItem model.
+     * @param  string $id
+     * @return mixed
+     */
+    public function actionView($id)
+    {
+        $model = $this->findModel($id);
+
+        return $this->render('view', ['model' => $model]);
+    }
 }

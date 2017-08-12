@@ -17,6 +17,9 @@ return [
         'admin' => [
             'class' => 'pd\admin\Module',
         ],
+        's' => [
+            'class' => 'backend\modules\s\module',
+        ],
         'redactor' => [
             'class' => 'yii\redactor\RedactorModule',
             'uploadDir' => '@common/static/upload/redactor',

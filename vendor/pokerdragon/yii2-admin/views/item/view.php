@@ -18,9 +18,17 @@ $this->params['breadcrumbs'][] = $this->title;
 
 AnimateAsset::register($this);
 YiiAsset::register($this);
-$opts = Json::htmlEncode([
-    'items' => $model->getItems()
-]);
+
+if($context->getType() == 2){
+    $opts = Json::htmlEncode([
+        'items' => $model->getRouteItems()
+    ]);
+}else{
+    $opts = Json::htmlEncode([
+        'items' => $model->getPermissionItems()
+    ]);
+}
+
 $this->registerJs("var _opts = {$opts};");
 $this->registerJs($this->render('_script.js'));
 $animateIcon = ' <i class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></i>';

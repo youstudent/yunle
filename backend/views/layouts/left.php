@@ -14,7 +14,7 @@
 //        echo '<pre>';
 //        print_r($menu);die;
         if(Yii::$app->user->getIdentity() && Yii::$app->user->getIdentity()->id > 1){
-            $menu = \mdm\admin\components\MenuHelper::getAssignedMenu(Yii::$app->user->getIdentity()->id);
+            $menu = \mdm\admin\components\MenuHelper::getAssignedMenu(Yii::$app->user->getIdentity()->id, null, null, true);
         }else{
             $menu =
                 [
@@ -86,12 +86,22 @@
                         ],
                     ],
                     [
+                        'label'   => '我的组织',
+                        'url'     => 'javascript:;',
+                        'options' => ['class' => 'has-sub'],
+                        'items'   => [
+                            ['label' => '权限列表', 'url' => ['/organization/account-index']],
+                            ['label' => '角色列表', 'url' => ['/organization/role-index']],
+                        ],
+                    ],
+                    [
                         'label'   => '权限',
                         'url'     => 'javascript:;',
                         'options' => ['class' => 'has-sub'],
                         'items'   => [
                             ['label' => '角色', 'url' => ['/rbac/role-index']],
                             ['label' => '员工', 'url' => ['/rbac/account-index']],
+                            ['label' => '权限', 'url' => ['/rbac/permission']],
                         ],
                     ],
                     [

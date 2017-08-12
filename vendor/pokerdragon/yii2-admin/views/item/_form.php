@@ -34,6 +34,7 @@ $this->registerJs($js);
 
             <?= $form->field($model, 'description')->textarea(['rows' => 2]) ?>
         </div>
+
         <div class="col-sm-6">
             <?= $form->field($model, 'ruleName')->textInput(['id' => 'rule_name']) ?>
 

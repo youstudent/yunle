@@ -1,17 +1,11 @@
 <?php
 namespace common\components;
-use backend\models\Adminuser;
-use backend\models\AppMenu;
-use backend\models\AuthAssignment;
-use backend\models\AuthItem;
-use backend\models\AuthItemChild;
 use backend\models\Member;
+use backend\models\ServiceUser;
 use backend\models\User;
 use common\models\Service;
 use common\models\Setting;
-use Flc\Alidayu\App;
 use Yii;
-use yii\base\Exception;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -225,118 +219,105 @@ class Helper
 
 
     /**
-     * 获取角色前缀
-     * @param $type
-     * @param $pid
+     * 获取服务商的角色前缀
+     * @param $service_id
+     * @param $service_name
      * @return string
      */
-    public static function getRolePrefix($type =null, $pid = null)
+    public static function getRolePrefix($service_id, $service_name = null)
     {
-        $session = Yii::$app->session->get('LOGIN_MEMBER');
-        $type = $type ? $type : $session['platform_type'];
-
-        $pid = $pid ? $pid : $session['platform_id'];
-        return $name_prefix = $type == 1 ? $pid . '_platform_' : $pid . '_app_';
+        return '_'.$service_id . '_';
     }
 
-
-    /**
-     * 根据平台id创建角色
-     * @param $platform_id
-     * @param $name
-     * @param string $platform
-     * @return bool|string
-     * @throws Exception
-     */
-    public static function createRole($platform_id, $name , $platform = 'platform')
+    public static function byCustomerManagerIdGetServiceIds($id)
     {
-        if(!in_array($platform, ['platform', 'app'])){
-            return false;
-        }
-        $role_name = $platform_id . '_' . $platform . '_' . $name;
-        if(AuthItem::findOne(['name'=>$role_name, 'type'=>1])){
-            throw new Exception('角色重复，创建失败');
-        }
-        $model = new AuthItem();
-        $model->scenario = 'create';
-        $model->description = '添加代理商自动生成的角色';
-        $model->name = $role_name;
-        $model->type = 1;
-        $model->save();
-        return $role_name;
+        $ids = Service::find()->where(['sid'=>$id])->select('id')->column();
+        return $ids;
     }
 
-    public static function bindRole($user_id, $role_name)
+    public static function byCustomerManagerIdGetServiceMemberIds($id)
     {
-        $model = new AuthAssignment();
-        $model->user_id = $user_id;
-        $model->item_name = $role_name;
-        $model->created_at = time();
-        $model->save();
-        return true;
+        $service_ids = Service::find()->where(['sid'=>$id])->select('id')->column();
+        $salesman_ids = User::find()->where(['pid'=>$service_ids])->select('id')->column();
+        $member_ids = Member::find()->where(['pid'=>$salesman_ids])->select('id')->column();
+        return $member_ids;
     }
 
-    /**
-     * 获取指定角色的所有账户数据
-     * @param $role_name
-     * @return array|\yii\db\ActiveRecord[]
-     */
-    public static function getRoleUser($role_name)
+    public static function byAdminIdGetServiceId($id)
     {
-        list($platform_id, $platform, $name) = explode('_', $role_name);
-
-        $query = AuthAssignment::find()->alias('a')->where(['item_name'=> $role_name])->select('u.username,u.id');
-
-
-
-        //$query->joinWith('adminUser')->
-
-        if($platform == 'platform'){
-            $query->innerJoin(Adminuser::tableName() . ' u', 'u.id = a.user_id');
-        }else{
-            $query->innerJoin(User::tableName() . ' u', 'u.id = a.user_id');
-        }
-
-        $data = $query->indexBy('id')->column();
-
-       return $data ? $data : [];
+        return ServiceUser::find()->where(['admin_id'=>$id])->select('service_id')->scalar();
     }
 
-    /**
-     * 判断用户是不是指定角色
+        /**
+     * 用service的登录账号Id获取他的服务商id
      * @param $id
-     * @param $role_name
-     * @param int $platform
-     * @param int $is_app
-     * @return bool
+     * @param $is_login_id
+     * @return array
      */
-    public static function isRole($id, $role_name, $platform = 1, $is_app = 0)
+    public static function byServiceLoginIdGetMemberIds($id, $is_login_id = true)
     {
-        //$full_role_name = $platform ? $platform : $id . $is_app ? '_app_' : '_platform_' . $role_name;
-        //我也不知道为什么要这么写。但是上面那么些就是要出错
-        $full_role_name = $platform ? $platform : $id;
-        $full_role_name .= $is_app ? '_app_' : '_platform_' . $role_name;
-
-        $one = AuthAssignment::findOne(['item_name'=>$full_role_name, 'user_id'=>$id]);
-
-        return $one ? true : false;
+        if($is_login_id){
+            $id = Service::find()->where(['owner_id'=> $id])->select('id')->scalar();
+        }
+        $member_ids = Member::find()->where(['pid'=>$id])->select('id')->column();
+        return $member_ids;
     }
 
-
-    public static function loginIsRole($role_name, $platform = 1, $is_app = 0)
+    public static function getLoginMemberRoleGroup()
     {
-       if(!Yii::$app->user->identity){
-           return null;
-       }
-       $id = Yii::$app->user->identity->id;
-
-       return Helper::isRole($id, $role_name, $platform, $is_app);
-
+        $id = Yii::$app->user->identity->id;
+        $manager = Yii::$app->authManager;
+        $roles = $manager->getRolesByUser($id);
+        foreach($roles as $k => $role){
+            if(in_array($k, ['管理员'])){
+                return 1;
+            }
+            if(in_array($k, ['服务商', '代理商'])){
+                return 2;
+            }
+        }
+        return 2;
     }
 
-    public static function isAdmin()
+    public static function byIdGetRoleAllRoleName($id, $reserved = false, $divided = "|")
     {
-        return Helper::loginIsRole('管理员') or Helper::loginIsRole('超级管理员');
+        $manager = Yii::$app->authManager;
+        $roles = $manager->getRolesByUser($id);
+        $outRole = '';
+        foreach($roles as $k => $role){
+            $outRole = $k . $divided . $outRole;
+        }
+        return rtrim($outRole, '|');
+    }
+
+    /**
+     * 获取所有角色
+     * @param null $service_id
+     * @return \yii\rbac\Role[]
+     */
+    public static function getAllRoleName($service_id = null)
+    {
+        $manager = Yii::$app->authManager;
+        $roles = $manager->getRoles();
+        $out_role = [];
+        //开始过滤
+        if($service_id){
+            $role_prefix = static::getRolePrefix($service_id);
+            foreach($roles as $k => $name){
+                if(strpos($k, $role_prefix) === 0){
+                    $out_role[$k] = $k;
+                }
+            }
+        }else{
+            foreach($roles as $k => $name){
+                if(strpos($k, '_') === false && !in_array($k, ['代理商', '服务商'])){
+                    $out_role[$k] = $k;
+                }
+            }
+        }
+
+        return $out_role;
+
     }
 
     /**
@@ -358,55 +339,5 @@ class Helper
     }
 
 
-    public static function getAppRoleMenu($role_name)
-    {
-        //获取当前角色所有菜单的
-        $items = AuthItemChild::find()->where(['parent'=> $role_name])->select('child')->column();
-        $assigned = AppMenu::find()->where(['key'=>$items])->select('id')->column();
-
-        //根据菜单，去查询所授权的上级菜单是否已授权
-        $all_menu = AppMenu::find()->select('name,id,parent,key')->indexBy('id')->asArray()->all();
-        $assigned = static::requiredParent($assigned, $all_menu);
-
-        //构造一个更合适的结构体
-        $menus = AppMenu::find()->alias('A')->select("A.*,B.id as bid,B.key as parent_key,0 as `show`")->leftJoin(AppMenu::tableName(). "B", "A.parent = B.id")->asArray()->indexby('key')->all();
-
-        foreach($menus as &$menu){
-            if(in_array($menu['id'], $assigned)){
-                $menu['show'] = 1;
-            }
-            
-        }
-
-        echo '<Pre>';
-        print_r(static::encodeExcute($menus));die;
-
-
-    }
-    public static function encode(&$var)
-    {
-        return '{'.implode(',',self::encodeExcute($var)).'}';
-    }
-
-
-    /**
-     * Ensure all item menu has parent.
-     * @param  array $assigned
-     * @param  array $menus
-     * @return array
-     */
-    private static function requiredParent($assigned, &$menus)
-    {
-        $l = count($assigned);
-        for ($i = 0; $i < $l; $i++) {
-            $id = $assigned[$i];
-            $parent_id = $menus[$id]['parent'];
-            if ($parent_id !== null && !in_array($parent_id, $assigned)) {
-                $assigned[$l++] = $parent_id;
-            }
-        }
-
-        return $assigned;
-    }
 
 }

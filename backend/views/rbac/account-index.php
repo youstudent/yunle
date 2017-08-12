@@ -118,7 +118,7 @@ JS
                     <tr class="">
                         <td><?= $model->username ?></td>
                         <td><?= $model->name ?></td>
-                        <td><?= $model->getRoleName($model->id) ?></td>
+                        <td><?= \common\components\Helper::byIdGetRoleAllRoleName($model->id, false, "|") ?></td>
                         <td><?= $model->master ? '主账号' : '普通账号' ?></td>
                         <td align="center">
                             <div class="btn-group">

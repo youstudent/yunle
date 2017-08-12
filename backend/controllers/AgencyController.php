@@ -72,6 +72,7 @@ class AgencyController extends BackendController
         if($model->load(Yii::$app->request->post())){
             if($model->addAgency()){
                 return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['index'])]);
+
             }
             return json_encode(['data'=> '', 'code'=>0, 'message'=> '操作失败']);
         }

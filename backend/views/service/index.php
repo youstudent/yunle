@@ -126,8 +126,8 @@ JS
 
             <?= $form->field($searchModel, 'contact_phone')->textInput(['placeholder'=> '联系电话']); ?>
 
-            <?php if(\mdm\admin\components\Helper::checkRoute('/account/get-customer-manager')) : ?>
-                <?= $form->field($searchModel, 'pid')->dropDownList(
+            <?php if(\mdm\admin\components\Helper::checkRoute('/abs-route/get-customer-manager')) : ?>
+                <?= $form->field($searchModel, 'sid')->dropDownList(
                     \backend\models\Adminuser::getCustomerManager(),
                     ['prompt'=> '选择客户经理']
                 ); ?>

@@ -83,7 +83,7 @@ JS
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="row">
         <div class="col-md-6">
-            <a href="<?= Url::to(['role-create']) ?>" class="btn btn-success" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static" >添加角色</a>
+            <a href="<?= Url::to(['role-create', '_opt'=> 's']) ?>" class="btn btn-success" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static" >添加角色</a>
         </div>
     </div>
     <p></p>
@@ -117,8 +117,8 @@ JS
                         <td><?= $model->description ?></td>
                         <td align="center">
                             <div class="btn-group">
-                                <a href="<?= Url::to(['menu-assign', 'name'=> $model->name]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">权限</span></a>
-                                <a href="<?= Url::to(['role-update', 'name'=> $model->name]) ?>" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
+                                <a href="<?= Url::to(['role-assign', 'id'=> $model->name]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">权限</span></a>
+                                <a href="<?= Url::to(['role-update', 'id'=> $model->name]) ?>" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
                                 <a href="javascript:;" data-confirm="确认删除此角色？" data-url="<?= Url::to(['role-delete','name' => $model->name]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
                             </div>
                         </td>

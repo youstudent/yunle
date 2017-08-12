@@ -273,8 +273,10 @@ JS
                             <?= $form->field($model, 'sid')->dropDownList(
                                 \backend\models\Adminuser::getCustomerManager()
                             ) ?>
-                        <?php elseif(true): ?>
-
+                        <?php else: ?>
+                            <?= $form->field($model, 'sid')->dropDownList(
+                                [Yii::$app->user->identity->id => Yii::$app->user->identity->username]
+                            ) ?>
                         <?php endif; ?>
 
 

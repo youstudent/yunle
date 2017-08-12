@@ -11,6 +11,7 @@ namespace backend\models\searchs;
 use backend\models\Service;
 use yii\data\ActiveDataProvider;
 
+
 class ServiceSearch extends Service
 {
     public function rules()
@@ -24,6 +25,9 @@ class ServiceSearch extends Service
     public function search($params)
     {
         $query = Service::find()->alias('s')->where(['s.type'=> 1]);;
+
+
+        $query = $this->authFilter($query);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query
@@ -55,5 +59,16 @@ class ServiceSearch extends Service
         $query->andFilterWhere(['pid'=> $this->pid]);
 
         return $dataProvider;
+    }
+
+    public function authFilter(\yii\db\ActiveQuery $query)
+    {
+        //如果没有获取所有管理服务商的权限。就筛选自己的的服务商
+        if(\pd\admin\components\Helper::checkRoute('/abs-route/get-all-service')){
+            return $query;
+        }
+        $id = \Yii::$app->user->identity->id;
+        $query->andWhere(['sid'=>$id]);
+        return $query;
     }
 }

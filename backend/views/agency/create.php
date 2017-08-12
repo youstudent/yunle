@@ -106,14 +106,14 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
 
                         <?= $form->field($model, 'imgs', ['template'=> "{input}"])->hiddenInput() ?>
 
-                        <?php if(Helper::loginIsRole('管理员')): ?>
-                            <?= $form->field($model, 'pid')->dropDownList(
-                                Helper::getRoleUser('1_platform_代理商')
+                        <?php if(\mdm\admin\components\Helper::checkRoute('/account/get-customer-manager')) : ?>
+                            <?= $form->field($model, 'sid')->dropDownList(
+                                \backend\models\Adminuser::getCustomerManager()
                             ) ?>
                         <?php else: ?>
-                            <?php $model->pid = Yii::$app->user->getIdentity()->id; ?>
-                            <?= $form->field($model, 'pid', ['template'=> '{input}'])->hiddenInput(); ?>
-
+                            <?= $form->field($model, 'sid')->dropDownList(
+                                [Yii::$app->user->identity->id => Yii::$app->user->identity->username]
+                            ) ?>
                         <?php endif; ?>
 
 

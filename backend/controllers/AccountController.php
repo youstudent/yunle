@@ -66,12 +66,5 @@ class AccountController extends BackendController
         ]);
     }
 
-    /**
-     * 选择客户经理的空方法,只用来展示路由
-     */
-    public function actionGetCustomerManager()
-    {
-
-    }
 
 }

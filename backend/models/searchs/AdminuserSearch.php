@@ -41,7 +41,7 @@ class AdminuserSearch extends AdminuserModel
      */
     public function search($params)
     {
-        $query = AdminuserModel::find();
+        $query = AdminuserModel::find()->andWhere(['mark'=>1]);
 
         // add conditions that should always apply here
 

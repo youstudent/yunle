@@ -13,6 +13,27 @@ use yii\web\Controller;
 
 class BackendController extends Controller
 {
+    //1是平台组。2 第三方
+    public $role_type = 2;
+
+
+    public function init()
+    {
+        parent::init();
+
+        //获取当前角色
+        $manager = Yii::$app->getAuthManager();
+        $roles = $manager->getRolesByUser(Yii::$app->user->identity->id);
+        foreach($roles as $role){
+            if(in_array($role, ['管理员'])){
+                $this->role_type = 1;
+            }
+            if(in_array($role, ['服务商', '代理商'])){
+                $this->role_type = 2;
+            }
+        }
+
+    }
     /**
      * pjax方式渲染模板
      * @param string $view
@@ -27,4 +48,5 @@ class BackendController extends Controller
             return $this->render($view, $params);
         }
     }
+
 }

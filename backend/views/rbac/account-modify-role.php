@@ -33,8 +33,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= $form->field($model, 'username')->textInput() ?>
 
+    <?= $form->field($model, 'name')->textInput() ?>
+
     <?= $form->field($model, 'item_name')->dropDownList(
-        \backend\models\AuthItem::roleList(1,1)
+        \common\components\Helper::getAllRoleName()
     ) ?>
 
 
@@ -50,7 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <script>
     $(function (){
         $('.btn-submit').on('click', function () {
-            var f = $('#AuthAssignment');
+            var f = $('#<?= $model->formName() ?>');
             f.on('beforeSubmit', function (e) {
                 swal({
                         title: "确认操作",

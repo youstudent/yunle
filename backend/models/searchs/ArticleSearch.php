@@ -26,6 +26,8 @@ class ArticleSearch extends Article
     {
         $query = Article::find();
 
+        //$query = $this->authFilter($query);
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
@@ -55,5 +57,15 @@ class ArticleSearch extends Article
 
 
         return $dataProvider;
+    }
+
+    public function authFilter(\yii\db\ActiveQuery $query)
+    {
+        //如果没有获取所有管理服务商的权限。就筛选自己的服务商下级的服务商
+        if(!\pd\admin\components\Helper::checkRoute('/abs-route/get-all-service')){
+            $id = \Yii::$app->user->identity->id;
+            $query->andWhere(['sid'=>$id]);
+        }
+        return $query;
     }
 }
