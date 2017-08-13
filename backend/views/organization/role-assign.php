@@ -5,14 +5,16 @@
  * Date: 2017/8/6
  * Time: 17:02
  */
+use yii\helpers\Json;
 use yii\helpers\Url;
 
 $this->title = '权限分配';
 pd\coloradmin\web\plugins\JstreeAsset::register($this);
 
 
-$url = Url::to(['get-menu', 'name'=> $role]);
-$submit_url = Url::to(['set-menu']);
+$url = Url::to(['get-permission', 'name'=> $role]);
+$assign_url = Url::to(['assign-permission', 'name'=>$role]);
+$remove_url = Url::to(['remove-permission', 'name'=>$role]);
 $this->registerJs(<<<JS
 var r = [];
 $("#jstree-checkable").jstree({
@@ -30,54 +32,73 @@ $("#jstree-checkable").jstree({
     types: {"default": {icon: "fa fa-folder text-primary fa-lg"}, file: {icon: "fa fa-file text-success fa-lg"}}
 })
         // listen for event  
-$('#jstree-checkable').on('changed.jstree', function(e, data) {  
-    r = [];  
-    var i, j;  
-    for (i = 0, j = data.selected.length; i < j; i++) {  
-        var node = data.instance.get_node(data.selected[i]);  
-        if (data.instance.is_leaf(node)) {  
-            r.push(node.id);  
-        }  
-    }  
+// $('#jstree-checkable').on('changed.jstree', function(e, data) {  
+//     r = [];  
+//     var i, j;  
+//     for (i = 0, j = data.selected.length; i < j; i++) {  
+//         var node = data.instance.get_node(data.selected[i]);  
+//         if (data.instance.is_leaf(node)) {  
+//             r.push(node.text);
+//         }  
+//     }
+// })
+$('#jstree-checkable').on('changed.jstree', function(e, data) {
+   if(data.action == 'select_node'){
+        var item = data.node.text;
+        console.log('选中:'+ item);
+        assign([item]);
+        
+   }
+   if(data.action == 'deselect_node'){
+        var item = data.node.text;
+        console.log('取消选中:'+ item);
+        remove([item]);
+   }
 })
-$('.btn-submit').on('click', function () {
- swal({
-        title: "确认更新权限",
-        text: "",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#DD6B55",
-        confirmButtonText: "确定",
-        closeOnConfirm: false,
-        cancelButtonText: "取消"
-    },
-    function () {
-        $.ajax({
-            url: "{$submit_url}",
+
+function assign(item){
+ var url = "{$assign_url}";
+ $.ajax({
+            url: url,
             type: 'post',
             dataType: 'json',
             data: {
-                id:r,
-                name: "{$role}"
+                item:item
             },
             success: function (res) {
-                if (res.code == 1) {
-                    swal({title: res.message, text: "3秒之后将自动跳转，点击确定立即跳转。", timer: 3000}, function () {
-                        location.reload();
-                    });
-                    setTimeout(function () {
-                        location.reload();
-                    }, 3000)
-                } else {
-                    swal(res.message, "", "error");
+                if(res.code == 1){
+                    
+                }else{
+                    swal("授权失败", "error");
                 }
             },
             error: function (xhr) {
                 swal("网络错误", "", "error");
             }
-        });
-    });
-       });    
+        });   
+}
+function remove(item){
+ var url = "{$remove_url}";
+ $.ajax({
+            url: url,
+            type: 'post',
+            dataType: 'json',
+            data: {
+                item:item
+            },
+            success: function (res) {
+                 if(res.code == 1){
+                    
+                }else{
+                    swal("取消授权失败", "error");
+                }
+            },
+            error: function (xhr) {
+                swal("网络错误", "", "error");
+            }
+        });   
+}
+   
 JS
 );
 

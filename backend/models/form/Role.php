@@ -9,6 +9,7 @@ namespace backend\models\form;
 
 
 use backend\models\Adminuser;
+use common\components\Helper;
 use pd\admin\models\Assignment;
 use Yii;
 use yii\base\Model;
@@ -64,4 +65,15 @@ class Role extends Model
         $model->assign([$this->item_name]);
         return true;
     }
+    public function modifyServiceRole()
+    {
+        $model = new Assignment($this->user_id);
+        if($this->old_item_name){
+            $model->revoke([$this->old_item_name]);
+        }
+        $this->item_name = Helper::getRolePrefix() . $this->item_name;
+        $model->assign([$this->item_name]);
+        return true;
+    }
+
 }

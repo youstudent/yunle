@@ -124,6 +124,7 @@ class ItemController extends Controller
         $items = Yii::$app->getRequest()->post('items', []);
         $model = $this->findModel($id);
         $success = $model->addChildren($items);
+
         Yii::$app->getResponse()->format = 'json';
 
         return array_merge($model->getItems(), ['success' => $success]);

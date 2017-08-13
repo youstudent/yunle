@@ -45,11 +45,12 @@ class ServiceUser extends \yii\db\ActiveRecord
         ];
     }
 
-    public static function add($service_id, $admin_id)
+    public static function add($service_id, $admin_id, $type = 0)
     {
         $model = new ServiceUser();
         $model->admin_id =$admin_id;
         $model->service_id = $service_id;
+        $model->type = $type;
         return $model->save() ? true : false;
     }
 }

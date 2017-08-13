@@ -224,8 +224,11 @@ class Helper
      * @param $service_name
      * @return string
      */
-    public static function getRolePrefix($service_id, $service_name = null)
+    public static function getRolePrefix($service_id = null)
     {
+        if(!$service_id){
+            $service_id = static::byAdminIdGetServiceId(Yii::$app->user->identity->id);
+        }
         return '_'.$service_id . '_';
     }
 
@@ -247,7 +250,11 @@ class Helper
     {
         return ServiceUser::find()->where(['admin_id'=>$id])->select('service_id')->scalar();
     }
-
+    public static function byAdminIdGetAllServiceAdminId($id)
+    {
+        $service_id = static::byAdminIdGetServiceId($id);
+        return ServiceUser::find()->where(['service_id'=>$service_id])->select('admin_id')->column();
+    }
         /**
      * 用service的登录账号Id获取他的服务商id
      * @param $id
@@ -272,20 +279,37 @@ class Helper
             if(in_array($k, ['管理员'])){
                 return 1;
             }
-            if(in_array($k, ['服务商', '代理商'])){
+            if(in_array($k, ['服务商'])){
                 return 2;
             }
+            if(in_array($k, ['代理商'])){
+                return 3;
+            }
         }
-        return 2;
+        return 3;
     }
-
+    public static function bindService($admin_id, $service_id = null, $type = 0)
+    {
+        if(!$service_id){
+            //获取当前登录用户的service_id
+            $service_id = static::byAdminIdGetServiceId(Yii::$app->user->identity->id);
+        }
+        ServiceUser::add($service_id, $admin_id, $type);
+    }
     public static function byIdGetRoleAllRoleName($id, $reserved = false, $divided = "|")
     {
         $manager = Yii::$app->authManager;
         $roles = $manager->getRolesByUser($id);
         $outRole = '';
         foreach($roles as $k => $role){
-            $outRole = $k . $divided . $outRole;
+            if($reserved){
+                $role_prefix = static::getRolePrefix();
+                if(strpos($role->name, $role_prefix) === 0){
+                    $role->name = ltrim($role->name, $role_prefix);
+                }
+            }
+            $outRole = $role->name . $divided . $outRole;
+
         }
         return rtrim($outRole, '|');
     }
@@ -305,6 +329,7 @@ class Helper
             $role_prefix = static::getRolePrefix($service_id);
             foreach($roles as $k => $name){
                 if(strpos($k, $role_prefix) === 0){
+                    $k = ltrim($k, Helper::getRolePrefix($service_id));
                     $out_role[$k] = $k;
                 }
             }
@@ -330,8 +355,6 @@ class Helper
             return null;
         }
         $id = Yii::$app->user->identity->id;
-
-
 
         $model = Service::findOne($id);
 

@@ -76,12 +76,12 @@ JS
 );
 ?>
 <div class="adminuser-index">
-
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="row">
         <div class="col-md-6">
             <a href="<?= Url::to(['account-create']) ?>" class="btn btn-success" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static" >添加员工</a>
+
         </div>
     </div>
     <p></p>
@@ -117,12 +117,12 @@ JS
                     <tr class="">
                         <td><?= $model->username ?></td>
                         <td><?= $model->name ?></td>
-                        <td><?= \common\components\Helper::byIdGetRoleAllRoleName($model->id, false, "|") ?></td>
+                        <td><?= \common\components\Helper::byIdGetRoleAllRoleName($model->id, true, "|") ?></td>
                         <td><?= $model->master ? '主账号' : '普通账号' ?></td>
                         <td align="center">
                             <div class="btn-group">
                                 <?php if(!$model->master): ?>
-                                <a href="<?= Url::to(['account-modify-role', 'id'=>$model->id]) ?>" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">更改角色</span></a>
+                                    <a href="<?= Url::to(['account-modify-role', 'id'=>$model->id]) ?>" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">更改角色</span></a>
                                 <?php endif; ?>
                                 <a href="<?= Url::to(['account-update', 'id'=>$model->id]) ?>" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
                                 <?php if($model->id != 1): ?>

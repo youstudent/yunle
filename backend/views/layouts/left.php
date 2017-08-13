@@ -13,7 +13,7 @@
 //        $menu = \mdm\admin\components\MenuHelper::getAssignedMenu(Yii::$app->user->getIdentity()->id);
 //        echo '<pre>';
 //        print_r($menu);die;
-        if(Yii::$app->user->getIdentity() && Yii::$app->user->getIdentity()->id > 1){
+        if(false &&Yii::$app->user->getIdentity() && Yii::$app->user->getIdentity()->id > 1){
             $menu = \mdm\admin\components\MenuHelper::getAssignedMenu(Yii::$app->user->getIdentity()->id, null, null, true);
         }else{
             $menu =
@@ -90,7 +90,7 @@
                         'url'     => 'javascript:;',
                         'options' => ['class' => 'has-sub'],
                         'items'   => [
-                            ['label' => '权限列表', 'url' => ['/organization/account-index']],
+                            ['label' => '员工列表', 'url' => ['/organization/account-index']],
                             ['label' => '角色列表', 'url' => ['/organization/role-index']],
                         ],
                     ],
@@ -101,7 +101,6 @@
                         'items'   => [
                             ['label' => '角色', 'url' => ['/rbac/role-index']],
                             ['label' => '员工', 'url' => ['/rbac/account-index']],
-                            ['label' => '权限', 'url' => ['/rbac/permission']],
                         ],
                     ],
                     [

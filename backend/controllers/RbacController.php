@@ -9,6 +9,7 @@ namespace backend\controllers;
 
 use backend\models\AuthItem;
 use backend\models\form\Role;
+use backend\models\searchs\BackendAuthItemSearch;
 use pd\admin\models\Assignment;
 use pd\admin\models\searchs\AuthItem as AuthItemSearch;
 use backend\models\Adminuser;
@@ -48,7 +49,7 @@ class RbacController extends BackendController
      */
     public function actionRoleIndex()
     {
-        $searchModel = new AuthItemSearch(['type' => 1]);
+        $searchModel = new BackendAuthItemSearch(['type' => 1]);
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 
         return $this->render('role-index', [
@@ -251,10 +252,68 @@ class RbacController extends BackendController
 
     public function actionRoleAssign($id)
     {
+        return $this->renderPjax('role-assign', [
+            'role' => $id
+        ]);
+    }
+
+    public function actionGetPermission($name)
+    {
         $auth = Yii::$app->getAuthManager();
-        $item = $auth->getPermission($id);
+        $item = $auth->getRole($name);
+
         $model = new AuthItem($item);
-        print_r($model->getPermissionItems());die;
+        $item = $model->getPermissionItems();
+        $permission = array_merge($item['avaliable'], $item['assigned']);
+
+        $tree = [
+            'text' => '全部',
+            'state' => [
+                'selected' => count($item['avaliable']) === 0 ? true : false
+            ],
+            'children' => []
+        ];
+        foreach($permission as $k => $val)
+        {
+            $tree['children'][] = [
+                'text' =>$k,
+                'state' => [
+                    'selected' => isset($item['assigned'][$k]) ? true : false
+                ],
+                'children' => []
+            ];
+        }
+        return $this->asJson($tree);
+    }
+
+    public function actionAssignPermission($name)
+    {
+        $items = Yii::$app->request->post('item', []);
+        $auth = Yii::$app->getAuthManager();
+        $item = $auth->getRole($name);
+
+        $model = new AuthItem($item);
+        $model->type =1;
+        $success = $model->addChildren($items);
+        if($success == 1){
+            return $this->asJson(['data'=>[], 'message'=>'success', 'code'=> 1, 'url'=> '']);
+        }
+        return $this->asJson(['data'=>[], 'message'=> '授权失败', 'code'=>0]);
+    }
+
+    public function actionRemovePermission($name)
+    {
+        $items = Yii::$app->request->post('item', []);
+        $auth = Yii::$app->getAuthManager();
+        $item = $auth->getRole($name);
+
+        $model = new AuthItem($item);
+        $model->type =1;
+        $success = $model->removeChildren($items);
+        if($success == 1){
+            return $this->asJson(['data'=>[], 'message'=>'success', 'code'=> 1, 'url'=> '']);
+        }
+        return $this->asJson(['data'=>[], 'message'=> '取消授权失败', 'code'=>0]);
     }
 
     /**

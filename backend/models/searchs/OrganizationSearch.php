@@ -2,6 +2,8 @@
 
 namespace backend\models\searchs;
 
+use Codeception\Lib\Interfaces\ActiveRecord;
+use common\components\Helper;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -10,7 +12,7 @@ use backend\models\Adminuser as AdminuserModel;
 /**
  * Adminuser represents the model behind the search form about `backend\models\Adminuser`.
  */
-class AdminuserSearch extends AdminuserModel
+class OrganizationSearch extends AdminuserModel
 {
     /**
      * @inheritdoc
@@ -39,9 +41,13 @@ class AdminuserSearch extends AdminuserModel
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $platform = true)
+    public function search($params)
     {
-        $query = AdminuserModel::find()->andwhere(['mark'=>1]);
+        $query = AdminuserModel::find();
+
+        $query->andWhere(['mark'=>[2,3]]);
+
+        $query = $this->authFilter($query);
 
         // add conditions that should always apply here
 
@@ -73,5 +79,16 @@ class AdminuserSearch extends AdminuserModel
             ->andFilterWhere(['like', 'email', $this->email]);
 
         return $dataProvider;
+    }
+
+    protected function authFilter($query)
+    {
+        //获取登录用户的代理商组
+        $id = Yii::$app->user->identity->id;
+        //获取对应的服务商id
+        $all_ids = Helper::byAdminIdGetAllServiceAdminId($id);
+
+        return $query->andWhere(['id'=>$all_ids]);
+
     }
 }
