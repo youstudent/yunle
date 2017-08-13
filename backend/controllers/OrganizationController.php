@@ -7,8 +7,13 @@
 
 namespace backend\controllers;
 
+use backend\models\AppMenu;
+use backend\models\AppMenuWithout;
+use backend\models\AppRole;
+use backend\models\AppRoleAssign;
 use backend\models\AuthItem;
 use backend\models\form\Role;
+use backend\models\searchs\AppRoleSearch;
 use backend\models\searchs\BackendAuthItemSearch;
 use backend\models\searchs\OrganizationSearch;
 use backend\models\searchs\ServiceAuthItemSearch;
@@ -334,17 +339,125 @@ class OrganizationController extends BackendController
             if($model->modifyPassword()){
                 return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['role-index'])]);
             }
-
+            return $this->asJson(['data'=>[], 'message'=> '操作失败', 'code'=>0]);
         }
         return $this->renderAjax('modify-password', [
             'model' => $model
         ]);
     }
 
-    //权限列表
-    public function actionAssign($id)
+    public function actionAppRoleIndex()
     {
+        $searchModel = new AppRoleSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 
+        return $this->render('app-role-index', [
+            'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
+        ]);
+    }
 
+    public function actionAppRoleCreate()
+    {
+        $model = new AppRole();
+        $model->service_id = Helper::byAdminIdGetServiceId(Yii::$app->user->identity->id);
+        if( $model->load(Yii::$app->request->post()) ){
+            if($model->save()){
+                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['role-index'])]);
+            }
+            return $this->asJson(['data'=>[], 'message'=> '操作失败', 'code'=>0]);
+        }
+        return $this->renderAjax('app-role-create', [
+            'model' => $model
+        ]);
+    }
+    public function actionAppRoleUpdate($id)
+    {
+        $model = AppRole::findOne($id);
+        if( $model->load(Yii::$app->request->post())){
+            if($model->save()){
+                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['role-index'])]);
+            }
+            return $this->asJson(['data'=>[], 'message'=> '操作失败', 'code'=>0]);
+        }
+        return $this->renderAjax('app-role-update', [
+            'model' => $model
+        ]);
+    }
+    public function actionAppRoleAssign($id)
+    {
+        return $this->renderPjax('app-role-assign', [
+           'id' => $id
+        ]);
+
+    }
+    public function actionGetAppPermission($name)
+    {
+        $model = new AppMenu();
+        $items = AppMenu::find()->select('name,parent,id')->select('id,name as text,parent as pid')->indexBy('id')->asArray()->all();
+        $service_id =  Helper::byAdminIdGetServiceId(Yii::$app->user->identity->id);
+        $out = AppMenuWithout::find()->select('menu_id')->where(['service_id'=>$service_id, 'role_id'=>$name])->column();
+
+        //格式化成树形菜单
+        $tree = [];
+        foreach($items as $key => $item){
+            $items[$key]['state']['selected'] = true;
+            if(in_array($item['id'], $out)){
+                $items[$key]['state']['selected'] = false;
+            }
+            if(isset($items[$item['pid']])){
+                $items[$item['pid']]['children'][] = &$items[$item['id']];
+            }else{
+                $tree[] = &$items[$item['id']];
+            }
+        }
+        return $this->asJson($tree);
+    }
+    public function actionAssignAppPermission($name)
+    {
+        $items = Yii::$app->request->post('item', []);
+        $service_id =  Helper::byAdminIdGetServiceId(Yii::$app->user->identity->id);
+        $model = AppMenuWithout::findOne(['service_id'=>$service_id, 'role_id'=>$name, 'menu_id'=>$items]);
+
+        if(isset($model) && $model->delete()){
+            return $this->asJson(['data'=>[], 'message'=>'success', 'code'=> 1, 'url'=> '']);
+        }
+        return $this->asJson(['data'=>[], 'message'=> '取消授权失败', 'code'=>0]);
+    }
+
+    public function actionRemoveAppPermission($name)
+    {
+        $items = Yii::$app->request->post('item', []);
+        $service_id =  Helper::byAdminIdGetServiceId(Yii::$app->user->identity->id);
+        $model = new AppMenuWithout();
+        $model->service_id = $service_id;
+        $model->role_id = $name;
+        $model->menu_id = $items;
+
+        if($model->save()){
+            return $this->asJson(['data'=>[], 'message'=>'success', 'code'=> 1, 'url'=> '']);
+        }
+        return $this->asJson(['data'=>[], 'message'=> '授权失败', 'code'=>0]);
+    }
+
+    /**
+     * 变更app 角色
+     * @param $id
+     * @return string|\yii\web\Response
+     */
+    public function actionAccountAppModifyRole($id)
+    {
+        $model = AppRoleAssign::getOne($id);
+        if($model->load(Yii::$app->request->post())){
+            if($model->save()){
+                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '保存成功', 'url'=> Url::to(['index'])]);
+            }
+            return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '保存失败']);
+
+        }
+
+        return $this->renderAjax('account-app-modify-role', [
+            'model' => $model
+        ]);
     }
 }

@@ -1,5 +1,9 @@
 <?php
 namespace common\components;
+use backend\models\AppMenu;
+use backend\models\AppMenuWithout;
+use backend\models\AppRole;
+use backend\models\AppRoleAssign;
 use backend\models\Member;
 use backend\models\ServiceUser;
 use backend\models\User;
@@ -288,6 +292,25 @@ class Helper
         }
         return 3;
     }
+
+    public static function getAdminRoleGroup($admin_id)
+    {
+        $manager = Yii::$app->authManager;
+        $roles = $manager->getRolesByUser($admin_id);
+        foreach($roles as $k => $role){
+            if(in_array($k, ['管理员'])){
+                return 1;
+            }
+            if(in_array($k, ['服务商'])){
+                return 2;
+            }
+            if(in_array($k, ['代理商'])){
+                return 3;
+            }
+        }
+        return 3;
+    }
+
     public static function bindService($admin_id, $service_id = null, $type = 0)
     {
         if(!$service_id){
@@ -360,7 +383,39 @@ class Helper
 
         return [$model->id => $model->name];
     }
+    public static function createDefaultRole($service_id)
+    {
+        $model = new AppRole();
+        $model->name = '默认角色组';
+        $model->description = '添加时系统生成的，将作为默认的角色组';
+        $model->service_id = $service_id;
+        return $model->save();
 
+    }
+    public static function bindAppUserRole($user_id, $service_id)
+    {
+        //获取服务商默认的角色组
+        $role_id = AppRole::findOne(['service_id'=>$service_id])->id;
+        $model = new AppRoleAssign();
+        $model->user_id = $user_id;
+        $model->role_id = $role_id;
+        return $model->save();
+    }
 
-
+    /**
+     * 获取用户所有的菜单
+     */
+    public static function getAppUserMenu($user_Id)
+    {
+        $user = User::findOne($user_Id);
+        $menus = AppMenu::find()->select('id,name,key,"1" as `show`')->indexBy('id')->asArray()->all();
+        $role_id = AppRoleAssign::findOne(['user_id'=>$user_Id])->role_id;
+        $out_menu = AppMenuWithout::find()->where(['service_id'=>$user->pid, 'role_id'=>$role_id])->select('id')->column();
+        foreach($menus as $key => $menu){
+            if(in_array($menu['id'], $out_menu)){
+                unset($menus[$key]);
+            }
+        }
+        return array_merge($menus);
+    }
 }

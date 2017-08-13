@@ -90,8 +90,24 @@
                         'url'     => 'javascript:;',
                         'options' => ['class' => 'has-sub'],
                         'items'   => [
-                            ['label' => '员工列表', 'url' => ['/organization/account-index']],
-                            ['label' => '角色列表', 'url' => ['/organization/role-index']],
+                            [
+                                'label'   => '平台设置',
+                                'url'     => 'javascript:;',
+                                'options' => ['class' => 'has-sub'],
+                                'items'   => [
+                                    ['label' => '员工列表', 'url' => ['/organization/account-index']],
+                                    ['label' => '角色列表', 'url' => ['/organization/role-index']],
+                                ],
+                                ],
+                                [
+                                    'label'   => 'APP设置',
+                                    'url'     => 'javascript:;',
+                                    'options' => ['class' => 'has-sub'],
+                                    'items'   => [
+                                        ['label' => '角色列表', 'url' => ['/organization/app-role-index']],
+                                    ],
+                                ]
+
                         ],
                     ],
                     [

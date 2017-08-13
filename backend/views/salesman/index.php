@@ -1,6 +1,7 @@
 <?php
 
 use backend\models\Member;
+use pd\admin\components\Helper;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\Url;
@@ -154,6 +155,10 @@ JS
                                 <a href="javasrcitp:;" data-confirm="确认冻结此会员？" data-url="<?= Url::to(['salesman/set-status','id' => $model->id, 'status'=> Member::STATUS_INACTIVE]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">冻结</span></a>
                                 <a href="javasrcitp:;" data-confirm="确认激活此会员？" data-url="<?= Url::to(['salesman/set-status','id' => $model->id, 'status'=> Member::STATUS_ACTIVE]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">激活</span></a>
                                 <a href="javasrcitp:;" data-confirm="确认删除此会员？" data-url="<?= Url::to(['salesman/soft-delete', 'id' => $model->id]) ?>"  data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                                <?php if(!Helper::checkRoute("organization/account-app-modify-role")): ?>
+                                    <a href="<?= Url::to(['organization/account-app-modify-role', 'id'=>$model->id]) ?>" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">更改角色</span></a>
+                                <?php endif; ?>
+
                             </div>
                         </td>
                     </tr>

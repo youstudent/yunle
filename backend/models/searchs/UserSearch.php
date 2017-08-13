@@ -31,7 +31,6 @@ class UserSearch extends User
         $query->alias('u')->joinWith('service');
 
         $this->authFilter($query);
-
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
@@ -71,12 +70,12 @@ class UserSearch extends User
         if($group == 1){
             //用客户经理的身份查询
             $ids = \common\components\Helper::byCustomerManagerIdGetServiceIds($id);
-            $query->andWhere(['u.pid'=>$id]);
+            $query->andWhere(['s.pid'=>$id]);
             return $query;
         }else{
             //以服务商代理商的身份查询 - 1. 如果有查看代理商或者服务商所有销售的权限
             $service_id = \common\components\Helper::byAdminIdGetServiceId($id);
-            $query->andWHere(['u.id' => $id]);
+            $query->andWHere(['u.pid' => $service_id]);
             return $query;
         }
     }
