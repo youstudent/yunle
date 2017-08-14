@@ -1024,7 +1024,7 @@ class Helper
     public static function getStatCount()
     {
         //登录信息
-        $id = $_SESSION['LOGIN_MEMBER']['id'];
+        $id = Yii::$app->user->identity->id;
         $admin = Adminuser::findOne($id);
         //总计数
         if ($admin->mark == 1) {

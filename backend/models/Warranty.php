@@ -89,7 +89,7 @@ class Warranty extends \yii\db\ActiveRecord
 
     public static function changeInfo($modelImgs,$data)
     {
-        $user_id = $_SESSION['LOGIN_MEMBER']['id'];
+        $user_id = Yii::$app->user->identity->id;
         $user = Adminuser::findOne(['id'=>$user_id])->name;
         $id = $data['order_id'];
         $model = Warranty::findOne(['order_id'=>$id]);

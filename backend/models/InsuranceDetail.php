@@ -115,7 +115,7 @@ class InsuranceDetail extends \yii\db\ActiveRecord
     public static function cancel($id)
     {
         //取消订单
-        $user_id = $_SESSION['LOGIN_MEMBER']['id'];
+        $user_id = Yii::$app->user->identity->id;
         $user = Adminuser::findOne(['id'=>$user_id])->name;
         $act = ActInsurance::findOne(['order_id'=>$id]);
         $act->status = 100;
@@ -139,7 +139,7 @@ class InsuranceDetail extends \yii\db\ActiveRecord
 
     public function checkSuccess($model, $data = null, $id)
     {
-        $user_id = $_SESSION['LOGIN_MEMBER']['id'];
+        $user_id = Yii::$app->user->identity->id;
         $user = Adminuser::findOne(['id'=>$user_id])->name;
         $act = ActInsurance::findOne(['order_id'=>$id]);
         $act->status = 97;
@@ -201,7 +201,7 @@ class InsuranceDetail extends \yii\db\ActiveRecord
 
     public function checkFailed($data, $id)
     {
-        $user_id = $_SESSION['LOGIN_MEMBER']['id'];
+        $user_id = Yii::$app->user->identity->id;
         $user = Adminuser::findOne(['id'=>$user_id])->name;
         $act = ActInsurance::findOne(['order_id'=>$id]);
         $act->status = 98;
