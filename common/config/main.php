@@ -10,8 +10,8 @@ return [
         'db' => [
             'class' => 'yii\db\Connection',
             'dsn' => 'mysql:host=192.168.2.116;dbname=cloud_car',
-            'username' => 'root',
-            'password' => '123456',
+            'username' => 'cloud_car',
+            'password' => '7gwSjEN9bjjs9mm',
             'charset' => 'utf8',
             'tablePrefix' => 'cdc_',
         ],
