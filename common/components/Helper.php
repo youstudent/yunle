@@ -368,21 +368,7 @@ class Helper
 
     }
 
-    /**
-     * 获取登录用户自己的或者自己所属的营业信息
-     * @return null
-     */
-    public static function userService()
-    {
-        if(!Yii::$app->user->identity){
-            return null;
-        }
-        $id = Yii::$app->user->identity->id;
 
-        $model = Service::findOne($id);
-
-        return [$model->id => $model->name];
-    }
     public static function createDefaultRole($service_id)
     {
         $model = new AppRole();
@@ -417,5 +403,11 @@ class Helper
             }
         }
         return array_merge($menus);
+    }
+
+    public static function getLoginMemberServiceId()
+    {
+        $user_id = Yii::$app->user->identity->id;
+        return static::byAdminIdGetServiceId($user_id);
     }
 }

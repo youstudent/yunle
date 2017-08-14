@@ -39,11 +39,11 @@ use yii\helpers\Url;
 
         <?= $form->field($model, 'name')->textInput() ?>
 
-        <?php if(Helper::isAdmin()) : ?>
+        <?php if(Helper::getLoginMemberRoleGroup() == 1) : ?>
             <?php $colunm = \backend\models\Service::find()->indexBy('id')->select('name,id')->column() ?>
         <?php else: ?>
-            <?php $colunm = Helper::userService(); ?>
-            <?php $colunm = \backend\models\Service::find()->indexBy('id')->select('name,id')->column() ?>
+            <?php $service_id = Helper::getLoginMemberServiceId(); ?>
+            <?php $colunm = \backend\models\Service::find()->indexBy('id')->where(['id'=>$service_id])->select('name,id')->column() ?>
         <?php endif; ?>
 
 
