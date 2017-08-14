@@ -10,6 +10,7 @@ namespace backend\controllers;
 
 use backend\models\Adminuser;
 use backend\models\Service;
+use common\components\Helper;
 use Yii;
 
 class AccountController extends BackendController
@@ -17,7 +18,7 @@ class AccountController extends BackendController
     //账号信息
     public function actionIndex()
     {
-        $id = Yii::$app->user->getId();
+        $id = Yii::$app->user->identity->id;
         $roles = Yii::$app->getAuthManager()->getRolesByUser($id);
         $role = !empty($roles) && is_array($roles) ? current($roles)->name : '默认';
 
@@ -43,16 +44,17 @@ class AccountController extends BackendController
     //代理商平台信息
     protected function serviceAccount($user_id)
     {
-        $id = 1;
-        $model = Service::findOne($id);
+        $service_id = Helper::byAdminIdGetServiceId($user_id);
+        $model = Service::findOne($service_id);
         return $this->renderPjax('service_account', [
             'model' => $model
         ]);
     }
     protected function agentProfile($user_id)
     {
-        $id = 1;
-        $model = Service::findOne($id);
+        $service_id = Helper::byAdminIdGetServiceId($user_id);
+
+        $model = Service::findOne($service_id);
         return $this->renderPjax('agent_account', [
             'model' => $model
         ]);

@@ -87,7 +87,7 @@ class Service extends \yii\db\ActiveRecord
 
     public function getAccount()
     {
-        return $this->hasOne(Adminuser::className(), ['sid'=> 'id'])->alias('a');
+        return $this->hasOne(Adminuser::className(), ['id'=> 'owner_id'])->alias('a');
     }
 
     public static function dropDownList($json = false)

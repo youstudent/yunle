@@ -8,7 +8,7 @@ $params = array_merge(
 
 return [
     'id' => '云乐享车',
-    'homeUrl' => '/admin/route',
+    'homeUrl' => '/site/index',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
@@ -99,8 +99,10 @@ return [
     'as access' => [
         'class' => 'pd\admin\components\AccessControl',
         'allowActions' => [
-            'admin/site/login',
-            'admin/site/logout',
+            '/admin/user/login',
+            '/admin/user/logout',
+//            '/site/logout',
+//            '/site/login',
             '*',
         ]
     ],
