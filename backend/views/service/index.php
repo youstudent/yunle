@@ -126,10 +126,14 @@ JS
 
             <?= $form->field($searchModel, 'contact_phone')->textInput(['placeholder'=> '联系电话']); ?>
 
-            <?= $form->field($searchModel, 'pid')->dropDownList(
-                \backend\models\Adminuser::find()->where(['mark'=> 1])->select('name,id')->indexBy('id')->asArray()->column(),
-                ['prompt'=> '选择客户经理']
-            ); ?>
+            <?php if(\mdm\admin\components\Helper::checkRoute('/abs-route/get-customer-manager')) : ?>
+                <?= $form->field($searchModel, 'sid')->dropDownList(
+                    \backend\models\Adminuser::getCustomerManager(),
+                    ['prompt'=> '选择客户经理']
+                ); ?>
+            <?php endif; ?>
+
+
 
                             <button type="submit" class="btn btn-sm btn-primary m-r-5">搜索</button>
                             <button type="button" class="btn btn-sm btn-info m-r-5" onclick="">重置</button>

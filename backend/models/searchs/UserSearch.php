@@ -29,6 +29,8 @@ class UserSearch extends User
         $query = User::find();
         $query->where(['u.deleted_at' => null]);
         $query->alias('u')->joinWith('service');
+
+        $this->authFilter($query);
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
@@ -56,5 +58,25 @@ class UserSearch extends User
         $query->andFilterWhere(['LIKE', 's.name', $this->service_name]);
 
         return $dataProvider;
+    }
+
+    public function authFilter(\yii\db\ActiveQuery $query)
+    {
+        if(\pd\admin\components\Helper::checkRoute('/abs-route/get-all-salesman')) {
+            return $query;
+        }
+        $group = \common\components\Helper::getLoginMemberRoleGroup();
+        $id = \Yii::$app->user->identity->id;
+        if($group == 1){
+            //用客户经理的身份查询
+            $ids = \common\components\Helper::byCustomerManagerIdGetServiceIds($id);
+            $query->andWhere(['s.pid'=>$id]);
+            return $query;
+        }else{
+            //以服务商代理商的身份查询 - 1. 如果有查看代理商或者服务商所有销售的权限
+            $service_id = \common\components\Helper::byAdminIdGetServiceId($id);
+            $query->andWHere(['u.pid' => $service_id]);
+            return $query;
+        }
     }
 }

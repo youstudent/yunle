@@ -10,8 +10,11 @@
 
         <!-- begin sidebar nav -->
         <?php
-        if(Yii::$app->user->getIdentity() && Yii::$app->user->getIdentity()->id > 1){
-            $menu = \mdm\admin\components\MenuHelper::getAssignedMenu(Yii::$app->user->getIdentity()->id);
+//        $menu = \mdm\admin\components\MenuHelper::getAssignedMenu(Yii::$app->user->getIdentity()->id);
+//        echo '<pre>';
+//        print_r($menu);die;
+        if(false &&Yii::$app->user->getIdentity() && Yii::$app->user->getIdentity()->id > 1){
+            $menu = \mdm\admin\components\MenuHelper::getAssignedMenu(Yii::$app->user->getIdentity()->id, null, null, true);
         }else{
             $menu =
                 [
@@ -80,6 +83,31 @@
                             ['label' => '保险商', 'url' => ['/insurance-company/index']],
                             ['label' => '险种', 'url' => ['/insurance/index']],
                             ['label' => '我的信息', 'url' => ['/account/profile']],
+                        ],
+                    ],
+                    [
+                        'label'   => '我的组织',
+                        'url'     => 'javascript:;',
+                        'options' => ['class' => 'has-sub'],
+                        'items'   => [
+                            [
+                                'label'   => '平台设置',
+                                'url'     => 'javascript:;',
+                                'options' => ['class' => 'has-sub'],
+                                'items'   => [
+                                    ['label' => '员工列表', 'url' => ['/organization/account-index']],
+                                    ['label' => '角色列表', 'url' => ['/organization/role-index']],
+                                ],
+                                ],
+                                [
+                                    'label'   => 'APP设置',
+                                    'url'     => 'javascript:;',
+                                    'options' => ['class' => 'has-sub'],
+                                    'items'   => [
+                                        ['label' => '角色列表', 'url' => ['/organization/app-role-index']],
+                                    ],
+                                ]
+
                         ],
                     ],
                     [

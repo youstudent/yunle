@@ -269,18 +269,16 @@ JS
                             5=> '五星',
                         ]) ?>
 
-                        <?php if(Helper::loginIsRole('管理员')): ?>
+                        <?php if(\mdm\admin\components\Helper::checkRoute('/account/get-customer-manager')) : ?>
                             <?= $form->field($model, 'sid')->dropDownList(
-                                Helper::getRoleUser('1_platform_代理商')
+                                \backend\models\Adminuser::getCustomerManager()
                             ) ?>
                         <?php else: ?>
-                            <?php $model->pid = Yii::$app->user->getIdentity()->id; ?>
-                            <?= $form->field($model, 'sid', ['template'=> '{input}'])->hiddenInput(); ?>
-
+                            <?= $form->field($model, 'sid')->dropDownList(
+                                [Yii::$app->user->identity->id => Yii::$app->user->identity->username]
+                            ) ?>
                         <?php endif; ?>
 
-<!--                        --><?php //$model->status=1; ?>
-<!--                        --><?//= $form->field($model, 'status')->dropDownList(['禁用', '启用']) ?>
 
                         <div class="form-group">
                             <label class="control-label col-md-4 col-sm-4"></label>

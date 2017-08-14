@@ -34,6 +34,7 @@ class MemberSearch extends Member
         $query->alias('m')->joinWith("salesmanName");
         $query->joinWith("memberInfo");
 
+        $this->authFilter($query);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query
@@ -73,5 +74,29 @@ class MemberSearch extends Member
         $query->andFilterWhere(['LIKE', 'md.name' , $this->member_name]);
 
         return $dataProvider;
+    }
+
+    public function authFilter(\yii\db\ActiveQuery $query)
+    {
+        if(\pd\admin\components\Helper::checkRoute('/abs-route/get-all-member')) {
+            return $query;
+        }
+
+        $group = \common\components\Helper::getLoginMemberRoleGroup();
+        $id = \Yii::$app->user->identity->id;
+        if($group == 1){
+            //用客户经理的身份查询
+            $ids = \common\components\Helper::byCustomerManagerIdGetServiceMemberIds($id);
+            $query->andWhere(['m.pid'=>$ids]);
+            return $query;
+        }
+        if($group == 2){
+            //由服务商查询
+            $service_id = \common\components\Helper::byAdminIdGetServiceId($id);
+            $query->andWHere(['u.id' => $id]);
+            return $query;
+        }
+
+
     }
 }

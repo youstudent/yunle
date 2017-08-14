@@ -26,7 +26,7 @@ class AppAsset extends BaseColorAdminAsset
     ];
 
     public $depends = [
-        'pd\coloradmin\web\plugins\paceAsset',
+        'pd\coloradmin\web\plugins\PaceAsset',
         'pd\coloradmin\web\plugins\BootStrapAsset',
         'pd\coloradmin\web\plugins\FontAwesomeAsset',
         'pd\coloradmin\web\plugins\PokerYiiAsset',

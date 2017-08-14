@@ -39,9 +39,9 @@ class AdminuserSearch extends AdminuserModel
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params, $platform = true)
     {
-        $query = AdminuserModel::find();
+        $query = AdminuserModel::find()->andwhere(['mark'=>1]);
 
         // add conditions that should always apply here
 

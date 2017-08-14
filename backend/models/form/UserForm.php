@@ -8,7 +8,11 @@
 namespace backend\models\form;
 
 
+use backend\models\AppMenu;
+use backend\models\AppMenuWithout;
+use backend\models\AppRoleAssign;
 use backend\models\User;
+use common\components\Helper;
 use common\models\InvitationCode;
 use Yii;
 use yii\base\Exception;
@@ -59,7 +63,7 @@ class UserForm extends User
                 throw new Exception("生成邀请信息失败");
             }
             //绑定添加的业务员到业务员的角色
-
+            Helper::bindAppUserRole($this->pid, $this->id);
 
             return $this;
         });
@@ -84,7 +88,7 @@ class UserForm extends User
         });
     }
 
-    public function checkUsername($attribute, $params)
+    public  function checkUsername($attribute, $params)
     {
         if(!$this->hasErrors()){
             if($this->username != $this->getOldAttribute('username')){
@@ -95,4 +99,6 @@ class UserForm extends User
             }
         }
     }
+
+
 }

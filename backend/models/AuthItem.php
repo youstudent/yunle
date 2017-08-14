@@ -1,233 +1,87 @@
 <?php
-
 namespace backend\models;
 
 use common\components\Helper;
+use pd\admin\models\AuthItem as BaseAuthItem;
 use Yii;
-use yii\base\Exception;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Json;
 
-/**
- * This is the model class for table "{{%auth_item}}".
- *
- * @property string $name
- * @property integer $type
- * @property string $description
- * @property string $rule_name
- * @property resource $data
- * @property integer $created_at
- * @property integer $updated_at
- *
- * @property AuthAssignment[] $authAssignments
- * @property AuthRule $ruleName
- * @property AuthItemChild[] $authItemChildren
- * @property AuthItemChild[] $authItemChildren0
- * @property AuthItem[] $children
- * @property AuthItem[] $parents
- */
-class AuthItem extends \yii\db\ActiveRecord
+class AuthItem extends BaseAuthItem
 {
     /**
      * @inheritdoc
      */
-    public static function tableName()
-    {
-        return '{{%auth_item}}';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
-        return [
-            [['name'], 'required'],
-            [['type', 'created_at', 'updated_at'], 'integer'],
-            [['description', 'data'], 'string'],
-            [['name', 'rule_name'], 'string', 'max' => 64],
-            [['name'], 'unique', 'on'=> ['create', 'update']]
-        ];
-    }
-
     public function attributeLabels()
     {
         return [
-            'name' => '角色名',
+            'name'        => '名称',
+            'type'        => '类型',
             'description' => '描述',
-            'created_at' => '创建时间',
-            'updated_at' => '更新时间',
+            'ruleName'    => '路由',
+            'data'        => '数据',
         ];
     }
 
-    public function scenarios()
+    public function rules()
     {
-        return [
-            'create' => ['name',  'description'],
-            'update' => ['name',  'description'],
-        ];
+        return ArrayHelper::merge(parent::rules(),[
+            [['name'], 'reserved', 'when'=> function(){
+                return $this->isNewRecord || ($this->_item->name != $this->name);
+            }]
+        ]);
     }
 
-    public function addRole()
+    public function reserved()
     {
-        if(!$this->validate()){
+        if(strpos($this->name, '_') !== false){
+            $this->addError('name', '不能在角色名字中使用系统保留字: "_"');
+        }
+    }
+
+
+    /**
+     * 添加一个角色
+     * @param bool $validate
+     * @return bool
+     */
+    public function save()
+    {
+        if ($this->validate()) {
+            $manager = Yii::$app->authManager;
+            if ($this->_item === null) {
+                if ($this->type == 1) {
+                    $group = Helper::getLoginMemberRoleGroup();
+                    if(in_array($group, [2,3])){
+                        $this->name = Helper::getRolePrefix() . $this->name;
+                    }
+                    $this->_item = $manager->createRole($this->name);
+                } else {
+                    $this->_item = $manager->createPermission($this->name);
+                }
+                $isNew = true;
+            } else {
+                $isNew = false;
+                $oldName = $this->_item->name;
+            }
+            $this->_item->name = $this->name;
+            $this->_item->description = $this->description;
+            $this->_item->ruleName = $this->ruleName;
+            $this->_item->data = $this->data === null || $this->data === '' ? null : Json::decode($this->data);
+            if ($isNew) {
+                $manager->add($this->_item);
+            } else {
+                $group = Helper::getLoginMemberRoleGroup();
+                if(in_array($group, [2,3])){
+                    $this->_item->name = Helper::getRolePrefix() . $this->name;
+                }
+                $manager->update($oldName, $this->_item);
+            }
+            \pd\admin\components\Helper::invalidate();
+            return true;
+        } else {
             return false;
         }
-
-        return Yii::$app->db->transaction(function(){
-            $this->type =1;
-            $this->created_at = time();
-            $this->updated_at = time();
-            if(!$this->save()){
-                throw new Exception('error');
-            }
-            return $this;
-        });
     }
 
-    public function updateRole()
-    {
-        if(!$this->validate()){
-            return false;
-        }
-
-        return Yii::$app->db->transaction(function(){
-            $this->type =1;
-            $this->created_at = time();
-            $this->updated_at = time();
-            if(!$this->save()){
-                throw new Exception('error');
-            }
-            return $this;
-        });
-    }
-    public static function roleList($type, $service_id)
-    {
-        //拼接查询条件
-        $name_prefix = Helper::getRolePrefix($type, $service_id);
-
-
-        $values = AuthItem::find()->where(['type'=>1])->andWhere(['LIKE', 'name', $name_prefix])->select('name')->asArray()->all();
-        $items = [];
-        foreach($values as $val){
-            $val =  trim($val['name'], $name_prefix);
-            $items[$val] = $val;
-        }
-        return $items;
-    }
-
-    //初始化Menu到Menu数据库
-    public function initMenu()
-    {
-
-        $origin = Yii::$app->params['menu'];
-        return $this->insertMenu($origin);
-    }
-
-    protected function insertMenu($data, $parent = '')
-    {
-        foreach($data as $val){
-
-            $model = new Menu();
-            $model->name = $val['text'];
-            $model->route = $val['url'];
-            $model->parent = $parent;
-            $model->order = 1;
-            $model->save();
-
-            if($val['url'] != 'javascript:void(0);'){
-            //添加对应的路由
-                $item = new AuthItem();
-                $item->name = $val['url'];
-                $item->type = 2;
-                $item->created_at = time();
-                $item->updated_at = time();
-                $item->save(false);
-            }
-
-            if(isset($val['children']) && count($val['children'])){
-                $this->insertMenu($val['children'], $model->id);
-            }
-        }
-        return true;
-    }
-
-    public function initAppMenu()
-    {
-        $origin = Yii::$app->params['app_menu'][0]['app'];
-
-
-        return $this->insertAppMenu($origin);
-    }
-
-    public function insertAppMenu($data, $parent = '')
-    {
-        foreach($data as $val){
-
-            $model = new AppMenu();
-            $model->name = $val['title'];
-            $model->key = $val['key'];
-            $model->parent = $parent;
-            $model->save();
-
-            //添加对应的路由
-            $item = new AuthItem();
-            $item->name = $val['key'];
-            $item->type = 2;
-            $item->created_at = time();
-            $item->updated_at = time();
-            $item->save(false);
-
-            if(isset($val['sub']) && count($val['sub'])){
-                $this->insertAppMenu($val['sub'], $model->id);
-            }
-        }
-        return true;
-    }
-
-//    /**
-//     * @return \yii\db\ActiveQuery
-//     */
-//    public function getAuthAssignments()
-//    {
-//        return $this->hasMany(AuthAssignment::className(), ['item_name' => 'name']);
-//    }
-//
-//    /**
-//     * @return \yii\db\ActiveQuery
-//     */
-//    public function getRuleName()
-//    {
-//        return $this->hasOne(AuthRule::className(), ['name' => 'rule_name']);
-//    }
-//
-//    /**
-//     * @return \yii\db\ActiveQuery
-//     */
-//    public function getAuthItemChildren()
-//    {
-//        return $this->hasMany(AuthItemChild::className(), ['parent' => 'name']);
-//    }
-//
-//    /**
-//     * @return \yii\db\ActiveQuery
-//     */
-//    public function getAuthItemChildren0()
-//    {
-//        return $this->hasMany(AuthItemChild::className(), ['child' => 'name']);
-//    }
-//
-//    /**
-//     * @return \yii\db\ActiveQuery
-//     */
-//    public function getChildren()
-//    {
-//        return $this->hasMany(AuthItem::className(), ['name' => 'child'])->viaTable('{{%auth_item_child}}', ['parent' => 'name']);
-//    }
-//
-//    /**
-//     * @return \yii\db\ActiveQuery
-//     */
-//    public function getParents()
-//    {
-//        return $this->hasMany(AuthItem::className(), ['name' => 'parent'])->viaTable('{{%auth_item_child}}', ['child' => 'name']);
-//    }
 }

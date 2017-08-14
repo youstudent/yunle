@@ -81,8 +81,7 @@ JS
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="row">
         <div class="col-md-6">
-            <a href="<?= Url::to(['account-create']) ?>" class="btn btn-success" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static" >添加会员</a>
-
+            <a href="<?= Url::to(['account-create']) ?>" class="btn btn-success" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static" >添加员工</a>
         </div>
     </div>
     <p></p>
@@ -118,7 +117,7 @@ JS
                     <tr class="">
                         <td><?= $model->username ?></td>
                         <td><?= $model->name ?></td>
-                        <td><?= $model->getRoleName($model->id) ?></td>
+                        <td><?= \common\components\Helper::byIdGetRoleAllRoleName($model->id, false, "|") ?></td>
                         <td><?= $model->master ? '主账号' : '普通账号' ?></td>
                         <td align="center">
                             <div class="btn-group">

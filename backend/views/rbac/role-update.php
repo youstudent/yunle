@@ -1,12 +1,19 @@
 <?php
-/* @var $model backend\models\AuthItem */
+/**
+ * User: harlen-angkemac
+ * Date: 2017/7/24 - 下午4:15
+ *
+ */
+use yii\bootstrap\Html;
+use yii\helpers\Url;
+
+/* @var $model backend\models\form\MemberForm */
+
 ?>
-
 <!-- #modal-dialog -->
-
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h4 class="modal-title">更新角色</h4>
+    <h4 class="modal-title">添加角色</h4>
 </div>
 <div class="modal-body">
     <?php $form = \yii\bootstrap\ActiveForm::begin([
@@ -23,31 +30,28 @@
             ],
         ],
         'enableAjaxValidation' => true,
-        'validationUrl'        => $model->isNewRecord ? \yii\helpers\Url::toRoute(['validate-form', 'scenario' => 'create']) : \yii\helpers\Url::toRoute(['validate-form','scenario' => 'update', 'name'=> $member->name]),
+        'validationUrl'        => $model->isNewRecord ? Url::toRoute(['validate-form', 'scenario' => 'create']) : Url::toRoute(['validate-form', 'scenario' => 'update' , 'name'=>$model->name]),
     ]) ?>
+
     <?= $form->field($model, 'name')->textInput() ?>
-
-
 
     <?= $form->field($model, 'description')->textInput() ?>
 
-
     <?php \yii\bootstrap\ActiveForm::end() ?>
+
 </div>
 <div class="modal-footer">
     <a href="javascript:;" class="btn btn-sm btn-white" data-dismiss="modal">取消</a>
     <a href="#" class="btn btn-sm btn-success  btn-submit">更新</a>
 </div>
-<?php
-\pd\coloradmin\web\plugins\DaterangePickerAsset::register($this);
-?>
+
 <script>
     $(function (){
         $('.btn-submit').on('click', function () {
             var f = $('#RoleForm');
             f.on('beforeSubmit', function (e) {
                 swal({
-                        title: "确认更新信息",
+                        title: "确认更新角色",
                         text: "",
                         type: "warning",
                         showCancelButton: true,
@@ -82,7 +86,7 @@
                 return false;
 
             });
-            $('#MemberForm').submit();
+            f.submit();
         });
         function getSalesman(that) {
             var sid = that.val();
@@ -94,3 +98,4 @@
         }
     })
 </script>
+

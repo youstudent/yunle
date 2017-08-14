@@ -10,7 +10,9 @@ namespace backend\models\form;
 use backend\models\Adminuser;
 use backend\models\Service;
 use backend\models\ServiceImg;
+use backend\models\ServiceUser;
 use common\components\Helper;
+use pd\admin\models\Assignment;
 use Yii;
 use yii\db\Exception;
 use yii\helpers\ArrayHelper;
@@ -123,11 +125,22 @@ class ServiceForm  extends Service
                 }
             }
 
-            $role_name = "1_platform_服务商";
             //关联角色和账户
-            Helper::bindRole($adminuserModel->id, $role_name);
-            //初始化服务商的权限
-            //Helper::initAgencyAssign($role_name);
+            $items[] = Yii::$app->params['service_role_name'];
+            $id = $this->owner_id;
+            $assign = new Assignment($id);
+            if(!$assign->assign($items)){
+                throw new Exception("分配角色失败");
+            }
+            \pd\admin\components\Helper::invalidate();
+
+            if(!ServiceUser::add($id, $this->id)){
+                throw new Exception("记录分配关系失败");
+            }
+
+            if(!Helper::createDefaultRole($this->id)){
+                throw new Exception("分配默认角色组失败");
+            }
 
             return $this;
         });

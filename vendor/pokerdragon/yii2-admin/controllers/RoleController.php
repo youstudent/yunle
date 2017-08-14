@@ -31,4 +31,16 @@ class RoleController extends ItemController
     {
         return Item::TYPE_ROLE;
     }
+
+    /**
+     * Displays a single AuthItem model.
+     * @param  string $id
+     * @return mixed
+     */
+    public function actionView($id)
+    {
+        $model = $this->findModel($id);
+
+        return $this->render('view', ['model' => $model]);
+    }
 }

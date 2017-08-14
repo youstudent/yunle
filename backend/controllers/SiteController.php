@@ -12,7 +12,7 @@ use common\models\LoginForm;
 /**
  * Site controller
  */
-class SiteController extends BackendController
+class SiteController extends Controller
 {
     /**
      * @inheritdoc
@@ -74,6 +74,7 @@ class SiteController extends BackendController
             return $this->asJson(['data'=> $model, 'code'=>1, 'message'=> 'success']);
         }
         return $this->asJson(['data'=> '', 'code'=>0, 'message'=> 'error']);
+
     }
 
     /**
@@ -91,7 +92,7 @@ class SiteController extends BackendController
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
         } else {
-            return $this->renderPjax('login', [
+            return $this->render('login', [
                 'model' => $model,
             ]);
         }

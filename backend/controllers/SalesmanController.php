@@ -7,9 +7,9 @@
 
 namespace backend\controllers;
 
-
 use backend\models\form\UserForm;
 use backend\models\searchs\UserSearch;
+use common\components\Helper;
 use Yii;
 use yii\helpers\Url;
 use yii\web\Controller;
@@ -61,6 +61,15 @@ class SalesmanController extends BackendController
         }
 
         return $this->renderAjax('update', [
+            'model' => $model
+        ]);
+    }
+
+    public function actionView($id)
+    {
+        $model = UserForm::findOne(['id'=>$id]);
+
+        return $this->renderAjax('view', [
             'model' => $model
         ]);
     }

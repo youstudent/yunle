@@ -46,7 +46,7 @@ $this->title = '账号信息';
                 </tr>
                 <tr>
                     <td>角色</td>
-                    <td>客户经理</td>
+                    <td><?= $role ?></td>
                 </tr>
                 </tbody>
             </table>

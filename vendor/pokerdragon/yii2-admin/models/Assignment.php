@@ -102,7 +102,73 @@ class Assignment extends Object
             $assigned[$item->roleName] = $avaliable[$item->roleName];
             unset($avaliable[$item->roleName]);
         }
+        return[
+            'avaliable' => $avaliable,
+            'assigned' => $assigned
+        ];
+    }
+    /**
+     * Get all avaliable and assigned roles/permission
+     * @return array
+     */
+    public function getPermissionItems()
+    {
+        $manager = Yii::$app->getAuthManager();
+        $avaliable = [];
+        foreach (array_keys($manager->getRoles()) as $name) {
+            $avaliable[$name] = 'role';
+        }
 
+        foreach (array_keys($manager->getPermissions()) as $name) {
+            if ($name[0] != '/') {
+                $avaliable[$name] = 'permission';
+            }
+        }
+
+        $assigned = [];
+        foreach ($manager->getAssignments($this->id) as $item) {
+            $assigned[$item->roleName] = $avaliable[$item->roleName];
+            unset($avaliable[$item->roleName]);
+        }
+        //处理一下，不让返回Permission以为的项
+        foreach($avaliable as $k => $name){
+            if($name == 'role' || $name == 'route'){
+                unset($avaliable[$k]);
+            }
+        }
+        return[
+            'avaliable' => $avaliable,
+            'assigned' => $assigned
+        ];
+    }
+    /**
+     * Get all avaliable and assigned roles/permission
+     * @return array
+     */
+    public function getRoleItems()
+    {
+        $manager = Yii::$app->getAuthManager();
+        $avaliable = [];
+        foreach (array_keys($manager->getRoles()) as $name) {
+             $avaliable[$name] = 'role';
+        }
+
+        foreach (array_keys($manager->getPermissions()) as $name) {
+            if ($name[0] != '/') {
+                $avaliable[$name] = 'permission';
+            }
+        }
+        $assigned = [];
+        foreach ($manager->getAssignments($this->id) as $item) {
+            $assigned[$item->roleName] = $avaliable[$item->roleName];
+            unset($avaliable[$item->roleName]);
+        }
+        //处理一下，不让返回角色以为的xiang6
+        foreach($avaliable as $k => $name){
+            if($name == 'permission' || $name == 'route'){
+                unset($avaliable[$k]);
+            }
+        }
         return[
             'avaliable' => $avaliable,
             'assigned' => $assigned

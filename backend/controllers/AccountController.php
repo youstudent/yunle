@@ -10,56 +10,62 @@ namespace backend\controllers;
 
 use backend\models\Adminuser;
 use backend\models\Service;
+use common\components\Helper;
+use Yii;
 
 class AccountController extends BackendController
 {
+    //账号信息
     public function actionIndex()
     {
-        //判断当前用户是什么角色
-        $role = 'platform';
+        $id = Yii::$app->user->identity->id;
+        $roles = Yii::$app->getAuthManager()->getRolesByUser($id);
+        $role = !empty($roles) && is_array($roles) ? current($roles)->name : '默认';
+
         switch($role){
-            case 'service':
-                return $this->serviceAccount();
+            case '服务商':
+                return $this->serviceProfile($id);
                 break;
-            case 'agent':
-                return $this->agentAccount();
-                break;
-            case 'platform':
-                return $this->platformAccount();
-                break;
-            case 'default':
-                return $this->serviceAccount();
+            case '代理商':
+                return $this->agentProfile($id);
                 break;
         }
+        return $this->defaultProfile($id, $role);
+
     }
 
-    protected function serviceAccount()
+    //平台信息
+    public function serviceProfile($user_id)
     {
-        $id = 1;
-        $model = Service::findOne($id);
+        $id = Yii::$app->user->getId();
+        $role = Yii::$app->getAuthManager()->getRolesByUser($id);
+    }
+
+    //代理商平台信息
+    protected function serviceAccount($user_id)
+    {
+        $service_id = Helper::byAdminIdGetServiceId($user_id);
+        $model = Service::findOne($service_id);
         return $this->renderPjax('service_account', [
             'model' => $model
         ]);
     }
-    protected function agentAccount()
+    protected function agentProfile($user_id)
     {
-        $id = 1;
-        $model = Service::findOne($id);
+        $service_id = Helper::byAdminIdGetServiceId($user_id);
+
+        $model = Service::findOne($service_id);
         return $this->renderPjax('agent_account', [
             'model' => $model
         ]);
     }
-    protected function platformAccount()
+    protected function defaultProfile($user_id, $role)
     {
-        $id = 1;
-        $model = Adminuser::findOne($id);
-        return $this->renderPjax('platform_account', [
-            'model' => $model
+        $model = Adminuser::findOne($user_id);
+        return $this->renderPjax('default_account', [
+            'model' => $model,
+            'role' => $role
         ]);
-    }
-    protected function defaultAccont()
-    {
-
     }
 
 

@@ -32,7 +32,8 @@ class AuthItem extends Model
     /**
      * @var Item
      */
-    private $_item;
+    protected $_item;
+    //private $_item;
 
     /**
      * Initialize object
@@ -266,7 +267,79 @@ class AuthItem extends Model
             'assigned' => $assigned
         ];
     }
+    /**
+     * Get items
+     * @return array
+     */
+    public function getPermissionItems()
+    {
+        $manager = Yii::$app->getAuthManager();
+        $avaliable = [];
+        if ($this->type == Item::TYPE_ROLE) {
+            foreach (array_keys($manager->getRoles()) as $name) {
+                $avaliable[$name] = 'role';
+            }
+        }
+        foreach (array_keys($manager->getPermissions()) as $name) {
+            $avaliable[$name] = $name[0] == '/' ? 'route' : 'permission';
+        }
 
+        $assigned = [];
+        foreach ($manager->getChildren($this->_item->name) as $item) {
+            $assigned[$item->name] = $item->type == 1 ? 'role' : ($item->name[0] == '/' ? 'route' : 'permission');
+            unset($avaliable[$item->name]);
+        }
+        unset($avaliable[$this->name]);
+
+        //处理一下，不让返回权限以为的菜单
+        foreach($avaliable as $k => $name){
+            if($name == 'role' || $name == 'route'){
+                unset($avaliable[$k]);
+            }
+        }
+
+        return[
+            'avaliable' => $avaliable,
+            'assigned' => $assigned
+        ];
+    }
+
+    /**
+     * Get items
+     * @return array
+     */
+    public function getRouteItems()
+    {
+        $manager = Yii::$app->getAuthManager();
+        $avaliable = [];
+        if ($this->type == Item::TYPE_ROLE) {
+            foreach (array_keys($manager->getRoles()) as $name) {
+                $avaliable[$name] = 'role';
+            }
+        }
+        foreach (array_keys($manager->getPermissions()) as $name) {
+            $avaliable[$name] = $name[0] == '/' ? 'route' : 'permission';
+        }
+
+        $assigned = [];
+        foreach ($manager->getChildren($this->_item->name) as $item) {
+            $assigned[$item->name] = $item->type == 1 ? 'role' : ($item->name[0] == '/' ? 'route' : 'permission');
+            unset($avaliable[$item->name]);
+        }
+        unset($avaliable[$this->name]);
+
+        //处理一下，不让返回权限以为的菜单
+        foreach($avaliable as $k => $name){
+            if($name == 'role' || $name == 'permission'){
+                unset($avaliable[$k]);
+            }
+        }
+
+        return[
+            'avaliable' => $avaliable,
+            'assigned' => $assigned
+        ];
+    }
     /**
      * Get item
      * @return Item

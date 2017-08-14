@@ -48,6 +48,7 @@ class ItemController extends Controller
     {
         $searchModel = new AuthItemSearch(['type' => $this->type]);
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
+
         return $this->render('index', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
@@ -123,6 +124,7 @@ class ItemController extends Controller
         $items = Yii::$app->getRequest()->post('items', []);
         $model = $this->findModel($id);
         $success = $model->addChildren($items);
+
         Yii::$app->getResponse()->format = 'json';
 
         return array_merge($model->getItems(), ['success' => $success]);

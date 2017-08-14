@@ -81,13 +81,4 @@ class Menu extends MenuModel
 
         return $dataProvider;
     }
-
-    protected function getParentName()
-    {
-        $relation = $this->hasOne(Menu::className(), ['parent'=>'id']);
-        if(isset($relation)){
-            return $relation->name;
-        }
-        return null;
-    }
 }

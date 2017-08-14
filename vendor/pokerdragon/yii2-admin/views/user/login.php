@@ -1,10 +1,10 @@
 <?php
-
-
 use yii\widgets\ActiveForm;
 
-/* @var $model common\models\LoginForm */
-$this->title = Yii::$app->name . ' - 登陆';
+/* @var $this yii\web\View */
+/* @var $form yii\bootstrap\ActiveForm */
+/* @var $model \pd\admin\models\form\Login */
+
 $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/pokerdragon/color-admin/assets');
 
 
@@ -43,7 +43,7 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/pokerdragon/
             <!-- begin login-content -->
             <div class="login-content">
                 <?php $form = ActiveForm::begin([
-                    'id' => 'item-form',
+                    'id' => 'login-form',
                     'options' => ['class'=> 'margin-bottom-0'],
                     'fieldConfig' => [
                         'template' =>  "\n<div class='form-group m-b-15'>{input}</div>\n{hint}\n{error}",
