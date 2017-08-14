@@ -116,51 +116,75 @@
     </div>
 <?php
 \pd\coloradmin\web\plugins\MorrisAsset::register($this);
-$opts =0;
-$this->registerJs("var aaa = {$opts};");
 
 $this->registerJs(<<<JS
-var memberAdd = Morris.Line({
-  // ID of the element in which to draw the chart.
-  element: 'memebrAdd',
-  // Chart data records -- each entry in this array corresponds to a point on
-  // the chart.
-  data: [
-    { days: '6天前', a: 20 , b:10, c:15 },
-    { days: '5天前', a: 10 , b:20, c:5 },
-    { days: '4天前', a: 5 , b:10, c:25 },
-    { days: '3天前', a: 10 , b:20, c:5 },
-    { days: '2天前', a: 20 , b:10, c:15 },
-    { days: '1天前', a: 20 , b:10, c:15 },
-    { days: '今天', a: 20 , b:10, c:15 }
-  ],
-  // The name of the data record attribute that contains x-values.
-  xkey: 'days',
-  // A list of names of data record attributes that contain y-values.
-  ykeys: ['a', 'b', 'c'],
-  // Labels for the ykeys -- will be displayed when you hover over the
-  // chart.
-  labels: ['会员', '服务商', '代理商']
-});
-var orderrAdd = new Morris.Line({
-  // ID of the element in which to draw the chart.
-  element: 'orderAdd',
-  // Chart data records -- each entry in this array corresponds to a point on
-  // the chart.
-  data: [
-    { year: '2017', a: 20 , b:10, c:15, d:18, e:30},
-    { year: '2018', a: 10 , b:20, c:5, d:25, e:18},
-    { year: '2019', a: 5 , b:10, c:25, d:18, e:15},
-    { year: '2020', a: 10 , b:20, c:5, d:25, e:18},
-    { year: '2021', a: 20 , b:10, c:15, d:18, e:5}
-  ],
-  // The name of the data record attribute that contains x-values.
-  xkey: 'year',
-  // A list of names of data record attributes that contain y-values.
-  ykeys: ['a', 'b', 'c', 'd', 'e'],
-  // Labels for the ykeys -- will be displayed when you hover over the
-  // chart.
-  labels: ['救援', '维修', '保养', '审车', '保险']
-});
+$(function() {
+    $.ajax({
+        url: 'site/stat',
+        type: 'get',
+        dataType: 'json',
+        data: {days:7},
+        success: function (res) {
+            if (res.code == 1) {
+                var memberAdd = Morris.Line({
+                // ID of the element in which to draw the chart.
+                    element: 'memebrAdd',
+                    // Chart data records -- each entry in this array corresponds to a point on
+                    // the chart.   
+                    data: [
+                        { day:res.data.xTime.one, a:res.data.people.memberSeven.memberCount1, b:res.data.people.serviceSeven.serviceCount1, c:res.data.people.agencySeven.agencyCount1 },
+                        { day:res.data.xTime.two, a:res.data.people.memberSeven.memberCount2, b:res.data.people.serviceSeven.serviceCount2, c:res.data.people.agencySeven.agencyCount2 },
+                        { day:res.data.xTime.three, a:res.data.people.memberSeven.memberCount3, b:res.data.people.serviceSeven.serviceCount3, c:res.data.people.agencySeven.agencyCount3 },
+                        { day:res.data.xTime.four, a:res.data.people.memberSeven.memberCount4, b:res.data.people.serviceSeven.serviceCount4, c:res.data.people.agencySeven.agencyCount4 },
+                        { day:res.data.xTime.five, a:res.data.people.memberSeven.memberCount5, b:res.data.people.serviceSeven.serviceCount5, c:res.data.people.agencySeven.agencyCount5 },
+                        { day:res.data.xTime.six, a:res.data.people.memberSeven.memberCount6, b:res.data.people.serviceSeven.serviceCount6, c:res.data.people.agencySeven.agencyCount6 },
+                        { day:res.data.xTime.seven, a:res.data.people.memberSeven.memberCount7, b:res.data.people.serviceSeven.serviceCount7, c:res.data.people.agencySeven.agencyCount7 }
+                    ],
+                    // The name of the data record attribute that contains x-values.
+                    xkey: 'day',
+                    // A list of names of data record attributes that contain y-values.
+                    ykeys: ['a', 'b', 'c'],
+                    // Labels for the ykeys -- will be displayed when you hover over the
+                    // chart.
+                    labels: ['会员', '服务商', '代理商']
+                });
+                var orderAdd = new Morris.Line({
+                    // ID of the element in which to draw the chart.
+                    element: 'orderAdd',
+                    // Chart data records -- each entry in this array corresponds to a point on
+                    // the chart.
+                    data: [
+                        { year:res.data.xTime.one, a:res.data.order.rescueSeven.rescueCount1, b:res.data.order.maintainSeven.maintainCount1, c:res.data.order.upkeepSeven.upkeepCount1, 
+                            d:res.data.order.checkSeven.checkCount1, e:res.data.order.insuranceSeven.insuranceCount1},
+                        { year:res.data.xTime.two, a:res.data.order.rescueSeven.rescueCount2, b:res.data.order.maintainSeven.maintainCount2, c:res.data.order.upkeepSeven.upkeepCount2, 
+                            d:res.data.order.checkSeven.checkCount2, e:res.data.order.insuranceSeven.insuranceCount2},
+                        { year:res.data.xTime.three, a:res.data.order.rescueSeven.rescueCount3, b:res.data.order.maintainSeven.maintainCount3, c:res.data.order.upkeepSeven.upkeepCount3, 
+                            d:res.data.order.checkSeven.checkCount3, e:res.data.order.insuranceSeven.insuranceCount3},
+                        { year:res.data.xTime.four, a:res.data.order.rescueSeven.rescueCount4, b:res.data.order.maintainSeven.maintainCount4, c:res.data.order.upkeepSeven.upkeepCount4, 
+                            d:res.data.order.checkSeven.checkCount4, e:res.data.order.insuranceSeven.insuranceCount4},
+                        { year:res.data.xTime.five, a:res.data.order.rescueSeven.rescueCount5, b:res.data.order.maintainSeven.maintainCount5, c:res.data.order.upkeepSeven.upkeepCount5, 
+                            d:res.data.order.checkSeven.checkCount5, e:res.data.order.insuranceSeven.insuranceCount5},
+                        { year:res.data.xTime.six, a:res.data.order.rescueSeven.rescueCount6, b:res.data.order.maintainSeven.maintainCount6, c:res.data.order.upkeepSeven.upkeepCount6, 
+                            d:res.data.order.checkSeven.checkCount6, e:res.data.order.insuranceSeven.insuranceCount6},
+                        { year:res.data.xTime.seven, a:res.data.order.rescueSeven.rescueCount7, b:res.data.order.maintainSeven.maintainCount7, c:res.data.order.upkeepSeven.upkeepCount7, 
+                            d:res.data.order.checkSeven.checkCount7, e:res.data.order.insuranceSeven.insuranceCount7}
+                    ],
+                    // The name of the data record attribute that contains x-values.
+                    xkey: 'year',
+                    // A list of names of data record attributes that contain y-values.
+                    ykeys: ['a', 'b', 'c', 'd', 'e'],
+                    // Labels for the ykeys -- will be displayed when you hover over the
+                    // chart.
+                    labels: ['救援', '维修', '保养', '审车', '保险']
+                  });
+            } else {
+                swal(res.message, "", "error");
+            }
+        },
+        error: function (xhr) {
+            swal("网络错误", "", "error");
+        }
+    });
+})
 JS
 );

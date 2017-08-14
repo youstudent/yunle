@@ -1019,9 +1019,9 @@ class Helper
     }
 
     /*
-     * 获取平台首页的统计信息
+     * 获取登录用户的订单统计
      */
-    public static function getStat()
+    public static function getStatCount()
     {
         //登录信息
         $id = $_SESSION['LOGIN_MEMBER']['id'];
@@ -1040,7 +1040,7 @@ class Helper
                 ->where(['status'=>97])
                 ->count();
             $d = Car::find()->select('id, status')->where(['status'=>0])->count() +
-                 DrivingLicense::find()->select('id, status')->where(['status'=>0])->count();
+                DrivingLicense::find()->select('id, status')->where(['status'=>0])->count();
         } else {
             //TODO:服务商和代理商
             $a = Order::find()->select('type, status')
@@ -1065,100 +1065,267 @@ class Helper
             'afterStatusChange' => $d,
         ];
 
-        //用户增长
+        $all = [
+            'orderCount' => $orderCount,
+        ];
+
+        return $all;
+    }
+
+    /*
+     * 获取平台首页的增长统计信息
+     */
+    public static function getStat($days=null)
+    {
+        //增长时间
         $nowTime = time();
         $nowDay = date('d');
         $nowMonth = date('m');
         $nowYear = date('Y');
 
         $todayTime = strtotime($nowYear.'-'.$nowMonth.'-'.$nowDay.' '.'00:00:00');
-        // 7天
-        $start_at1 = $todayTime - 6*24*3600;
-        $start_at2 = $todayTime - 5*24*3600;
-        $start_at3 = $todayTime - 4*24*3600;
-        $start_at4 = $todayTime - 3*24*3600;
-        $start_at5 = $todayTime - 2*24*3600;
-        $start_at6 = $todayTime - 1*24*3600;
-        $memberCount1 = Member::find()->where(['between', 'created_at', $start_at1, $start_at2])->count();
-        $memberCount2 = Member::find()->where(['between', 'created_at', $start_at2, $start_at3])->count();
-        $memberCount3 = Member::find()->where(['between', 'created_at', $start_at3, $start_at4])->count();
-        $memberCount4 = Member::find()->where(['between', 'created_at', $start_at4, $start_at5])->count();
-        $memberCount5 = Member::find()->where(['between', 'created_at', $start_at5, $start_at6])->count();
-        $memberCount6 = Member::find()->where(['between', 'created_at', $start_at6, $todayTime])->count();
-        $memberCount7 = Member::find()->where(['between', 'created_at', $todayTime, $nowTime])->count();
-        $memberSeven = [$memberCount1,$memberCount2,$memberCount3,$memberCount4,$memberCount5,$memberCount6,$memberCount7];
+        if ($days == 7) {
+            // 用户
+            // 7天
+            $start_at1 = $todayTime - 6*24*3600;
+            $start_at2 = $todayTime - 5*24*3600;
+            $start_at3 = $todayTime - 4*24*3600;
+            $start_at4 = $todayTime - 3*24*3600;
+            $start_at5 = $todayTime - 2*24*3600;
+            $start_at6 = $todayTime - 1*24*3600;
+            $memberCount1 = Member::find()->where(['between', 'created_at', $start_at1, $start_at2])->count();
+            $memberCount2 = Member::find()->where(['between', 'created_at', $start_at2, $start_at3])->count();
+            $memberCount3 = Member::find()->where(['between', 'created_at', $start_at3, $start_at4])->count();
+            $memberCount4 = Member::find()->where(['between', 'created_at', $start_at4, $start_at5])->count();
+            $memberCount5 = Member::find()->where(['between', 'created_at', $start_at5, $start_at6])->count();
+            $memberCount6 = Member::find()->where(['between', 'created_at', $start_at6, $todayTime])->count();
+            $memberCount7 = Member::find()->where(['between', 'created_at', $todayTime, $nowTime])->count();
+            $memberSeven = ['memberCount1'=>$memberCount1,'memberCount2'=>$memberCount2,'memberCount3'=>$memberCount3,'memberCount4'=>$memberCount4,
+                'memberCount5'=>$memberCount5,'memberCount6'=>$memberCount6,'memberCount7'=>$memberCount7];
 
-        $serviceCount1 = Adminuser::find()->where(['between', 'created_at', $start_at1, $start_at2])->andWhere(['mark'=>2])->count();
-        $serviceCount2 = Adminuser::find()->where(['between', 'created_at', $start_at2, $start_at3])->andWhere(['mark'=>2])->count();
-        $serviceCount3 = Adminuser::find()->where(['between', 'created_at', $start_at3, $start_at4])->andWhere(['mark'=>2])->count();
-        $serviceCount4 = Adminuser::find()->where(['between', 'created_at', $start_at4, $start_at5])->andWhere(['mark'=>2])->count();
-        $serviceCount5 = Adminuser::find()->where(['between', 'created_at', $start_at5, $start_at6])->andWhere(['mark'=>2])->count();
-        $serviceCount6 = Adminuser::find()->where(['between', 'created_at', $start_at6, $todayTime])->andWhere(['mark'=>2])->count();
-        $serviceCount7 = Adminuser::find()->where(['between', 'created_at', $todayTime, $nowTime])->andWhere(['mark'=>2])->count();
-        $serviceSeven = [$serviceCount1,$serviceCount2,$serviceCount3,$serviceCount4,$serviceCount5,$serviceCount6,$serviceCount7];
+            $serviceCount1 = Adminuser::find()->where(['between', 'created_at', $start_at1, $start_at2])->andWhere(['mark'=>2])->count();
+            $serviceCount2 = Adminuser::find()->where(['between', 'created_at', $start_at2, $start_at3])->andWhere(['mark'=>2])->count();
+            $serviceCount3 = Adminuser::find()->where(['between', 'created_at', $start_at3, $start_at4])->andWhere(['mark'=>2])->count();
+            $serviceCount4 = Adminuser::find()->where(['between', 'created_at', $start_at4, $start_at5])->andWhere(['mark'=>2])->count();
+            $serviceCount5 = Adminuser::find()->where(['between', 'created_at', $start_at5, $start_at6])->andWhere(['mark'=>2])->count();
+            $serviceCount6 = Adminuser::find()->where(['between', 'created_at', $start_at6, $todayTime])->andWhere(['mark'=>2])->count();
+            $serviceCount7 = Adminuser::find()->where(['between', 'created_at', $todayTime, $nowTime])->andWhere(['mark'=>2])->count();
+            $serviceSeven = ['serviceCount1'=>$serviceCount1,'serviceCount2'=>$serviceCount2,'serviceCount3'=>$serviceCount3,'serviceCount4'=>$serviceCount4,
+                'serviceCount5'=>$serviceCount5,'serviceCount6'=>$serviceCount6,'serviceCount7'=>$serviceCount7];
 
-        $agencyCount1 = Adminuser::find()->where(['between', 'created_at', $start_at1, $start_at2])->andWhere(['mark'=>3])->count();
-        $agencyCount2 = Adminuser::find()->where(['between', 'created_at', $start_at2, $start_at3])->andWhere(['mark'=>3])->count();
-        $agencyCount3 = Adminuser::find()->where(['between', 'created_at', $start_at3, $start_at4])->andWhere(['mark'=>3])->count();
-        $agencyCount4 = Adminuser::find()->where(['between', 'created_at', $start_at4, $start_at5])->andWhere(['mark'=>3])->count();
-        $agencyCount5 = Adminuser::find()->where(['between', 'created_at', $start_at5, $start_at6])->andWhere(['mark'=>3])->count();
-        $agencyCount6 = Adminuser::find()->where(['between', 'created_at', $start_at6, $todayTime])->andWhere(['mark'=>3])->count();
-        $agencyCount7 = Adminuser::find()->where(['between', 'created_at', $todayTime, $nowTime])->andWhere(['mark'=>3])->count();
-        $agencySeven = [$agencyCount1,$agencyCount2,$agencyCount3,$agencyCount4,$agencyCount5,$agencyCount6,$agencyCount7];
+            $agencyCount1 = Adminuser::find()->where(['between', 'created_at', $start_at1, $start_at2])->andWhere(['mark'=>3])->count();
+            $agencyCount2 = Adminuser::find()->where(['between', 'created_at', $start_at2, $start_at3])->andWhere(['mark'=>3])->count();
+            $agencyCount3 = Adminuser::find()->where(['between', 'created_at', $start_at3, $start_at4])->andWhere(['mark'=>3])->count();
+            $agencyCount4 = Adminuser::find()->where(['between', 'created_at', $start_at4, $start_at5])->andWhere(['mark'=>3])->count();
+            $agencyCount5 = Adminuser::find()->where(['between', 'created_at', $start_at5, $start_at6])->andWhere(['mark'=>3])->count();
+            $agencyCount6 = Adminuser::find()->where(['between', 'created_at', $start_at6, $todayTime])->andWhere(['mark'=>3])->count();
+            $agencyCount7 = Adminuser::find()->where(['between', 'created_at', $todayTime, $nowTime])->andWhere(['mark'=>3])->count();
+            $agencySeven = ['agencyCount1'=>$agencyCount1,'agencyCount2'=>$agencyCount2,'agencyCount3'=>$agencyCount3,'agencyCount4'=>$agencyCount4,
+                'agencyCount5'=>$agencyCount5,'agencyCount6'=>$agencyCount6,'agencyCount7'=>$agencyCount7];
 
-        $seven = ['memberSeven'=>$memberSeven, 'serviceSeven'=>$serviceSeven, 'agencySeven'=>$agencySeven];
+            $people = ['memberSeven'=>$memberSeven, 'serviceSeven'=>$serviceSeven, 'agencySeven'=>$agencySeven];
 
-        //一个月
-        $start_at1 = time() - 28*24*3600;
-        $start_at2 = time() - 21*24*3600;
-        $start_at3 = time() - 14*24*3600;
-        $start_at4 = time() - 7*24*3600;
-        $memberCount1 = Member::find()->where(['between', 'created_at', $start_at1, $start_at2])->count();
-        $memberCount2 = Member::find()->where(['between', 'created_at', $start_at2, $start_at3])->count();
-        $memberCount3 = Member::find()->where(['between', 'created_at', $start_at3, $start_at4])->count();
-        $memberCount4 = Member::find()->where(['between', 'created_at', $start_at4, $nowTime])->count();
-        $memberMonth = [$memberCount1,$memberCount2,$memberCount3,$memberCount4];
+            // 订单
+            // 7天
+            // 救援
+            $rescueCount1 = Order::find()->where(['between', 'created_at', $start_at1, $start_at2])->andWhere(['type'=>1])->count();
+            $rescueCount2 = Order::find()->where(['between', 'created_at', $start_at2, $start_at3])->andWhere(['type'=>1])->count();
+            $rescueCount3 = Order::find()->where(['between', 'created_at', $start_at3, $start_at4])->andWhere(['type'=>1])->count();
+            $rescueCount4 = Order::find()->where(['between', 'created_at', $start_at4, $start_at5])->andWhere(['type'=>1])->count();
+            $rescueCount5 = Order::find()->where(['between', 'created_at', $start_at5, $start_at6])->andWhere(['type'=>1])->count();
+            $rescueCount6 = Order::find()->where(['between', 'created_at', $start_at6, $todayTime])->andWhere(['type'=>1])->count();
+            $rescueCount7 = Order::find()->where(['between', 'created_at', $todayTime, $nowTime])->andWhere(['type'=>1])->count();
+            $rescueSeven = ['rescueCount1'=>$rescueCount1,'rescueCount2'=>$rescueCount2,'rescueCount3'=>$rescueCount3,'rescueCount4'=>$rescueCount4,
+                'rescueCount5'=>$rescueCount5,'rescueCount6'=>$rescueCount6,'rescueCount7'=>$rescueCount7];
 
-        $serviceCount1 = Adminuser::find()->where(['between', 'created_at', $start_at1, $start_at2])->andWhere(['mark'=>2])->count();
-        $serviceCount2 = Adminuser::find()->where(['between', 'created_at', $start_at2, $start_at3])->andWhere(['mark'=>2])->count();
-        $serviceCount3 = Adminuser::find()->where(['between', 'created_at', $start_at3, $start_at4])->andWhere(['mark'=>2])->count();
-        $serviceCount4 = Adminuser::find()->where(['between', 'created_at', $start_at4, $nowTime])->andWhere(['mark'=>2])->count();
-        $serviceMonth = [$serviceCount1,$serviceCount2,$serviceCount3,$serviceCount4];
+            // 维修
+            $maintainCount1 = Order::find()->where(['between', 'created_at', $start_at1, $start_at2])->andWhere(['type'=>2])->count();
+            $maintainCount2 = Order::find()->where(['between', 'created_at', $start_at2, $start_at3])->andWhere(['type'=>2])->count();
+            $maintainCount3 = Order::find()->where(['between', 'created_at', $start_at3, $start_at4])->andWhere(['type'=>2])->count();
+            $maintainCount4 = Order::find()->where(['between', 'created_at', $start_at4, $start_at5])->andWhere(['type'=>2])->count();
+            $maintainCount5 = Order::find()->where(['between', 'created_at', $start_at5, $start_at6])->andWhere(['type'=>2])->count();
+            $maintainCount6 = Order::find()->where(['between', 'created_at', $start_at6, $todayTime])->andWhere(['type'=>2])->count();
+            $maintainCount7 = Order::find()->where(['between', 'created_at', $todayTime, $nowTime])->andWhere(['type'=>2])->count();
+            $maintainSeven = ['maintainCount1'=>$maintainCount1,'maintainCount2'=>$maintainCount2,'maintainCount3'=>$maintainCount3,'maintainCount4'=>$maintainCount4,
+                'maintainCount5'=>$maintainCount5,'maintainCount6'=>$maintainCount6,'maintainCount7'=>$maintainCount7];
 
-        $agencyCount1 = Adminuser::find()->where(['between', 'created_at', $start_at1, $start_at2])->andWhere(['mark'=>3])->count();
-        $agencyCount2 = Adminuser::find()->where(['between', 'created_at', $start_at2, $start_at3])->andWhere(['mark'=>3])->count();
-        $agencyCount3 = Adminuser::find()->where(['between', 'created_at', $start_at3, $start_at4])->andWhere(['mark'=>3])->count();
-        $agencyCount4 = Adminuser::find()->where(['between', 'created_at', $start_at4, $nowTime])->andWhere(['mark'=>3])->count();
-        $agencyMonth = [$agencyCount1,$agencyCount2,$agencyCount3,$agencyCount4];
+            // 保养
+            $upkeepCount1 = Order::find()->where(['between', 'created_at', $start_at1, $start_at2])->andWhere(['type'=>3])->count();
+            $upkeepCount2 = Order::find()->where(['between', 'created_at', $start_at2, $start_at3])->andWhere(['type'=>3])->count();
+            $upkeepCount3 = Order::find()->where(['between', 'created_at', $start_at3, $start_at4])->andWhere(['type'=>3])->count();
+            $upkeepCount4 = Order::find()->where(['between', 'created_at', $start_at4, $start_at5])->andWhere(['type'=>3])->count();
+            $upkeepCount5 = Order::find()->where(['between', 'created_at', $start_at5, $start_at6])->andWhere(['type'=>3])->count();
+            $upkeepCount6 = Order::find()->where(['between', 'created_at', $start_at6, $todayTime])->andWhere(['type'=>3])->count();
+            $upkeepCount7 = Order::find()->where(['between', 'created_at', $todayTime, $nowTime])->andWhere(['type'=>3])->count();
+            $upkeepSeven = ['upkeepCount1'=>$upkeepCount1,'upkeepCount2'=>$upkeepCount2,'upkeepCount3'=>$upkeepCount3,'upkeepCount4'=>$upkeepCount4,
+                'upkeepCount5'=>$upkeepCount5,'upkeepCount6'=>$upkeepCount6,'upkeepCount7'=>$upkeepCount7];
 
-        $oneMonth = ['memberMonth'=>$memberMonth, 'serviceMonth'=>$serviceMonth, 'agencyMonth'=>$agencyMonth];
+            // 审车
+            $checkCount1 = Order::find()->where(['between', 'created_at', $start_at1, $start_at2])->andWhere(['type'=>[4,5]])->count();
+            $checkCount2 = Order::find()->where(['between', 'created_at', $start_at2, $start_at3])->andWhere(['type'=>[4,5]])->count();
+            $checkCount3 = Order::find()->where(['between', 'created_at', $start_at3, $start_at4])->andWhere(['type'=>[4,5]])->count();
+            $checkCount4 = Order::find()->where(['between', 'created_at', $start_at4, $start_at5])->andWhere(['type'=>[4,5]])->count();
+            $checkCount5 = Order::find()->where(['between', 'created_at', $start_at5, $start_at6])->andWhere(['type'=>[4,5]])->count();
+            $checkCount6 = Order::find()->where(['between', 'created_at', $start_at6, $todayTime])->andWhere(['type'=>[4,5]])->count();
+            $checkCount7 = Order::find()->where(['between', 'created_at', $todayTime, $nowTime])->andWhere(['type'=>[4,5]])->count();
+            $checkSeven = ['checkCount1'=>$checkCount1,'checkCount2'=>$checkCount2,'checkCount3'=>$checkCount3,'checkCount4'=>$checkCount4,
+                'checkCount5'=>$checkCount5,'checkCount6'=>$checkCount6,'checkCount7'=>$checkCount7];
 
-        //三个月
-        $start_at1 = time() - 90*24*3600;
-        $start_at2 = time() - 60*24*3600;
-        $start_at3 = time() - 30*24*3600;
-        $memberCount1 = Member::find()->where(['between', 'created_at', $start_at1, $start_at2])->count();
-        $memberCount2 = Member::find()->where(['between', 'created_at', $start_at2, $start_at3])->count();
-        $memberCount3 = Member::find()->where(['between', 'created_at', $start_at3, $nowTime])->count();
-        $memberThree = [$memberCount1,$memberCount2,$memberCount3];
+            // 保险
+            $insuranceCount1 = Order::find()->where(['between', 'created_at', $start_at1, $start_at2])->andWhere(['type'=>1])->count();
+            $insuranceCount2 = Order::find()->where(['between', 'created_at', $start_at2, $start_at3])->andWhere(['type'=>1])->count();
+            $insuranceCount3 = Order::find()->where(['between', 'created_at', $start_at3, $start_at4])->andWhere(['type'=>1])->count();
+            $insuranceCount4 = Order::find()->where(['between', 'created_at', $start_at4, $start_at5])->andWhere(['type'=>1])->count();
+            $insuranceCount5 = Order::find()->where(['between', 'created_at', $start_at5, $start_at6])->andWhere(['type'=>1])->count();
+            $insuranceCount6 = Order::find()->where(['between', 'created_at', $start_at6, $todayTime])->andWhere(['type'=>1])->count();
+            $insuranceCount7 = Order::find()->where(['between', 'created_at', $todayTime, $nowTime])->andWhere(['type'=>1])->count();
+            $insuranceSeven = ['insuranceCount1'=>$insuranceCount1,'insuranceCount2'=>$insuranceCount2,'insuranceCount3'=>$insuranceCount3,
+                'insuranceCount4'=>$insuranceCount4, 'insuranceCount5'=>$insuranceCount5,'insuranceCount6'=>$insuranceCount6,
+                'insuranceCount7'=>$insuranceCount7];
 
-        $serviceCount1 = Adminuser::find()->where(['between', 'created_at', $start_at1, $start_at2])->andWhere(['mark'=>2])->count();
-        $serviceCount2 = Adminuser::find()->where(['between', 'created_at', $start_at2, $start_at3])->andWhere(['mark'=>2])->count();
-        $serviceCount3 = Adminuser::find()->where(['between', 'created_at', $start_at3, $nowTime])->andWhere(['mark'=>2])->count();
-        $serviceThree = [$serviceCount1,$serviceCount2,$serviceCount3];
+            $order = ['rescueSeven'=>$rescueSeven, 'maintainSeven'=>$maintainSeven, 'upkeepSeven'=>$upkeepSeven, 'checkSeven'=>$checkSeven,
+                'insuranceSeven'=>$insuranceSeven];
 
-        $agencyCount1 = Adminuser::find()->where(['between', 'created_at', $start_at1, $start_at2])->andWhere(['mark'=>3])->count();
-        $agencyCount2 = Adminuser::find()->where(['between', 'created_at', $start_at2, $start_at3])->andWhere(['mark'=>3])->count();
-        $agencyCount3 = Adminuser::find()->where(['between', 'created_at', $start_at3, $nowTime])->andWhere(['mark'=>3])->count();
-        $agencyThree = [$agencyCount1,$agencyCount2,$agencyCount3];
+            $time = ['one'=>date('Y-m-d',$start_at1),'two'=>date('Y-m-d',$start_at2),'three'=>date('Y-m-d',$start_at3),
+                'four'=>date('Y-m-d',$start_at4),'five'=>date('Y-m-d',$start_at5),'six'=>date('Y-m-d',$start_at6),
+                'seven'=>date('Y-m-d',$nowTime)];
 
-        $threeMonth = ['memberThree'=>$memberThree, 'serviceThree'=>$serviceThree, 'agencyThree'=>$agencyThree];
+        } elseif ($days == 30) {
+            // 用户
+            // 一个月
+            $start_at1 = time() - 28*24*3600;
+            $start_at2 = time() - 21*24*3600;
+            $start_at3 = time() - 14*24*3600;
+            $start_at4 = time() - 7*24*3600;
+            $memberCount1 = Member::find()->where(['between', 'created_at', $start_at1, $start_at2])->count();
+            $memberCount2 = Member::find()->where(['between', 'created_at', $start_at2, $start_at3])->count();
+            $memberCount3 = Member::find()->where(['between', 'created_at', $start_at3, $start_at4])->count();
+            $memberCount4 = Member::find()->where(['between', 'created_at', $start_at4, $nowTime])->count();
+            $memberMonth = ['memberCount1'=>$memberCount1,'memberCount2'=>$memberCount2,'memberCount3'=>$memberCount3,'memberCount4'=>$memberCount4];
 
-        $people = ['seven' => $seven, 'oneMonth' => $oneMonth, 'threeMonth' => $threeMonth];
+            $serviceCount1 = Adminuser::find()->where(['between', 'created_at', $start_at1, $start_at2])->andWhere(['mark'=>2])->count();
+            $serviceCount2 = Adminuser::find()->where(['between', 'created_at', $start_at2, $start_at3])->andWhere(['mark'=>2])->count();
+            $serviceCount3 = Adminuser::find()->where(['between', 'created_at', $start_at3, $start_at4])->andWhere(['mark'=>2])->count();
+            $serviceCount4 = Adminuser::find()->where(['between', 'created_at', $start_at4, $nowTime])->andWhere(['mark'=>2])->count();
+            $serviceMonth = ['serviceCount1'=>$serviceCount1,'serviceCount2'=>$serviceCount2,'serviceCount3'=>$serviceCount3,'serviceCount4'=>$serviceCount4];
+
+            $agencyCount1 = Adminuser::find()->where(['between', 'created_at', $start_at1, $start_at2])->andWhere(['mark'=>3])->count();
+            $agencyCount2 = Adminuser::find()->where(['between', 'created_at', $start_at2, $start_at3])->andWhere(['mark'=>3])->count();
+            $agencyCount3 = Adminuser::find()->where(['between', 'created_at', $start_at3, $start_at4])->andWhere(['mark'=>3])->count();
+            $agencyCount4 = Adminuser::find()->where(['between', 'created_at', $start_at4, $nowTime])->andWhere(['mark'=>3])->count();
+            $agencyMonth = ['agencyCount1'=>$agencyCount1,'agencyCount2'=>$agencyCount2,'agencyCount3'=>$agencyCount3,'agencyCount4'=>$agencyCount4];
+
+            $people = ['memberMonth'=>$memberMonth, 'serviceMonth'=>$serviceMonth, 'agencyMonth'=>$agencyMonth];
+
+            // 订单
+            // 一个月
+            // 救援
+            $rescueCount1 = Order::find()->where(['between', 'created_at', $start_at1, $start_at2])->andWhere(['type'=>1])->count();
+            $rescueCount2 = Order::find()->where(['between', 'created_at', $start_at2, $start_at3])->andWhere(['type'=>1])->count();
+            $rescueCount3 = Order::find()->where(['between', 'created_at', $start_at3, $start_at4])->andWhere(['type'=>1])->count();
+            $rescueCount4 = Order::find()->where(['between', 'created_at', $todayTime, $nowTime])->andWhere(['type'=>1])->count();
+            $rescueSeven = ['rescueCount1'=>$rescueCount1,'rescueCount2'=>$rescueCount2,'rescueCount3'=>$rescueCount3,'rescueCount4'=>$rescueCount4];
+
+            // 维修
+            $maintainCount1 = Order::find()->where(['between', 'created_at', $start_at1, $start_at2])->andWhere(['type'=>2])->count();
+            $maintainCount2 = Order::find()->where(['between', 'created_at', $start_at2, $start_at3])->andWhere(['type'=>2])->count();
+            $maintainCount3 = Order::find()->where(['between', 'created_at', $start_at3, $start_at4])->andWhere(['type'=>2])->count();
+            $maintainCount4 = Order::find()->where(['between', 'created_at', $todayTime, $nowTime])->andWhere(['type'=>2])->count();
+            $maintainSeven = ['maintainCount1'=>$maintainCount1,'maintainCount2'=>$maintainCount2,'maintainCount3'=>$maintainCount3,
+                'maintainCount4'=>$maintainCount4];
+
+            // 保养
+            $upkeepCount1 = Order::find()->where(['between', 'created_at', $start_at1, $start_at2])->andWhere(['type'=>3])->count();
+            $upkeepCount2 = Order::find()->where(['between', 'created_at', $start_at2, $start_at3])->andWhere(['type'=>3])->count();
+            $upkeepCount3 = Order::find()->where(['between', 'created_at', $start_at3, $start_at4])->andWhere(['type'=>3])->count();
+            $upkeepCount4 = Order::find()->where(['between', 'created_at', $todayTime, $nowTime])->andWhere(['type'=>3])->count();
+            $upkeepSeven = ['upkeepCount1'=>$upkeepCount1,'upkeepCount2'=>$upkeepCount2,'upkeepCount3'=>$upkeepCount3,'upkeepCount4'=>$upkeepCount4];
+
+            // 审车
+            $checkCount1 = Order::find()->where(['between', 'created_at', $start_at1, $start_at2])->andWhere(['type'=>[4,5]])->count();
+            $checkCount2 = Order::find()->where(['between', 'created_at', $start_at2, $start_at3])->andWhere(['type'=>[4,5]])->count();
+            $checkCount3 = Order::find()->where(['between', 'created_at', $start_at3, $start_at4])->andWhere(['type'=>[4,5]])->count();
+            $checkCount4 = Order::find()->where(['between', 'created_at', $todayTime, $nowTime])->andWhere(['type'=>[4,5]])->count();
+            $checkSeven = ['checkCount1'=>$checkCount1,'checkCount2'=>$checkCount2,'checkCount3'=>$checkCount3,'checkCount4'=>$checkCount4];
+
+            // 保险
+            $insuranceCount1 = Order::find()->where(['between', 'created_at', $start_at1, $start_at2])->andWhere(['type'=>1])->count();
+            $insuranceCount2 = Order::find()->where(['between', 'created_at', $start_at2, $start_at3])->andWhere(['type'=>1])->count();
+            $insuranceCount3 = Order::find()->where(['between', 'created_at', $start_at3, $start_at4])->andWhere(['type'=>1])->count();
+            $insuranceCount4 = Order::find()->where(['between', 'created_at', $todayTime, $nowTime])->andWhere(['type'=>1])->count();
+            $insuranceSeven = ['insuranceCount1'=>$insuranceCount1,'insuranceCount2'=>$insuranceCount2,'insuranceCount3'=>$insuranceCount3,
+                'insuranceCount4'=>$insuranceCount4];
+
+            $order = ['rescueSeven'=>$rescueSeven, 'maintainSeven'=>$maintainSeven, 'upkeepSeven'=>$upkeepSeven, 'checkSeven'=>$checkSeven,
+                'insuranceSeven'=>$insuranceSeven];
+
+            $time = ['one'=>date('Y-m-d',$start_at1),'two'=>date('Y-m-d',$start_at2),'three'=>date('Y-m-d',$start_at3),
+                'four'=>date('Y-m-d',$nowTime)];
+        } else {
+            // 用户
+            // 三个月
+            $start_at1 = time() - 90*24*3600;
+            $start_at2 = time() - 60*24*3600;
+            $start_at3 = time() - 30*24*3600;
+            $memberCount1 = Member::find()->where(['between', 'created_at', $start_at1, $start_at2])->count();
+            $memberCount2 = Member::find()->where(['between', 'created_at', $start_at2, $start_at3])->count();
+            $memberCount3 = Member::find()->where(['between', 'created_at', $start_at3, $nowTime])->count();
+            $memberThree = ['memberCount1'=>$memberCount1,'memberCount2'=>$memberCount2,'memberCount3'=>$memberCount3];
+
+            $serviceCount1 = Adminuser::find()->where(['between', 'created_at', $start_at1, $start_at2])->andWhere(['mark'=>2])->count();
+            $serviceCount2 = Adminuser::find()->where(['between', 'created_at', $start_at2, $start_at3])->andWhere(['mark'=>2])->count();
+            $serviceCount3 = Adminuser::find()->where(['between', 'created_at', $start_at3, $nowTime])->andWhere(['mark'=>2])->count();
+            $serviceThree = ['serviceCount1'=>$serviceCount1,'serviceCount2'=>$serviceCount2,'serviceCount3'=>$serviceCount3];
+
+            $agencyCount1 = Adminuser::find()->where(['between', 'created_at', $start_at1, $start_at2])->andWhere(['mark'=>3])->count();
+            $agencyCount2 = Adminuser::find()->where(['between', 'created_at', $start_at2, $start_at3])->andWhere(['mark'=>3])->count();
+            $agencyCount3 = Adminuser::find()->where(['between', 'created_at', $start_at3, $nowTime])->andWhere(['mark'=>3])->count();
+            $agencyThree = ['agencyCount1'=>$agencyCount1,'agencyCount2'=>$agencyCount2,'agencyCount3'=>$agencyCount3];
+
+            $people = ['memberThree'=>$memberThree, 'serviceThree'=>$serviceThree, 'agencyThree'=>$agencyThree];
+
+            // 订单
+            // 三个月
+            // 救援
+            $rescueCount1 = Order::find()->where(['between', 'created_at', $start_at1, $start_at2])->andWhere(['type'=>1])->count();
+            $rescueCount2 = Order::find()->where(['between', 'created_at', $start_at2, $start_at3])->andWhere(['type'=>1])->count();
+            $rescueCount3 = Order::find()->where(['between', 'created_at', $todayTime, $nowTime])->andWhere(['type'=>1])->count();
+            $rescueSeven = ['rescueCount1'=>$rescueCount1,'rescueCount2'=>$rescueCount2,'rescueCount3'=>$rescueCount3];
+
+            // 维修
+            $maintainCount1 = Order::find()->where(['between', 'created_at', $start_at1, $start_at2])->andWhere(['type'=>2])->count();
+            $maintainCount2 = Order::find()->where(['between', 'created_at', $start_at2, $start_at3])->andWhere(['type'=>2])->count();
+            $maintainCount3 = Order::find()->where(['between', 'created_at', $todayTime, $nowTime])->andWhere(['type'=>2])->count();
+            $maintainSeven = ['maintainCount1'=>$maintainCount1,'maintainCount2'=>$maintainCount2,'maintainCount3'=>$maintainCount3];
+
+            // 保养
+            $upkeepCount1 = Order::find()->where(['between', 'created_at', $start_at1, $start_at2])->andWhere(['type'=>3])->count();
+            $upkeepCount2 = Order::find()->where(['between', 'created_at', $start_at2, $start_at3])->andWhere(['type'=>3])->count();
+            $upkeepCount3 = Order::find()->where(['between', 'created_at', $todayTime, $nowTime])->andWhere(['type'=>3])->count();
+            $upkeepSeven = ['upkeepCount1'=>$upkeepCount1,'upkeepCount2'=>$upkeepCount2,'upkeepCount3'=>$upkeepCount3];
+
+            // 审车
+            $checkCount1 = Order::find()->where(['between', 'created_at', $start_at1, $start_at2])->andWhere(['type'=>[4,5]])->count();
+            $checkCount2 = Order::find()->where(['between', 'created_at', $start_at2, $start_at3])->andWhere(['type'=>[4,5]])->count();
+            $checkCount3 = Order::find()->where(['between', 'created_at', $todayTime, $nowTime])->andWhere(['type'=>[4,5]])->count();
+            $checkSeven = ['checkCount1'=>$checkCount1,'checkCount2'=>$checkCount2,'checkCount3'=>$checkCount3];
+
+            // 保险
+            $insuranceCount1 = Order::find()->where(['between', 'created_at', $start_at1, $start_at2])->andWhere(['type'=>1])->count();
+            $insuranceCount2 = Order::find()->where(['between', 'created_at', $start_at2, $start_at3])->andWhere(['type'=>1])->count();
+            $insuranceCount3 = Order::find()->where(['between', 'created_at', $todayTime, $nowTime])->andWhere(['type'=>1])->count();
+            $insuranceSeven = ['insuranceCount1'=>$insuranceCount1,'insuranceCount2'=>$insuranceCount2,'insuranceCount3'=>$insuranceCount3];
+
+            $order = ['rescueSeven'=>$rescueSeven, 'maintainSeven'=>$maintainSeven, 'upkeepSeven'=>$upkeepSeven, 'checkSeven'=>$checkSeven,
+                'insuranceSeven'=>$insuranceSeven];
+
+            $time = ['one'=>date('Y-m-d',$start_at1),'two'=>date('Y-m-d',$start_at2),'three'=>date('Y-m-d',$nowTime)];
+        }
 
         $all = [
             'people' => $people,
-            'orderCount' => $orderCount,
+            'order' => $order,
+            'xTime' => $time
         ];
         return $all;
     }

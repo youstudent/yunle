@@ -20,7 +20,7 @@ class ActImg extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'cdc_act_img';
+        return '{{%act_img}}';
     }
 
     /**

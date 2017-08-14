@@ -62,10 +62,18 @@ class SiteController extends BackendController
      */
     public function actionIndex()
     {
-        $model = \common\models\Helper::getStat();
+        $model = \common\models\Helper::getStatCount();
         return $this->renderPjax('index', [
             'model' => $model,
         ]);
+    }
+    public function actionStat($days)
+    {
+        $model = \common\models\Helper::getStat($days);
+        if($model){
+            return $this->asJson(['data'=> $model, 'code'=>1, 'message'=> 'success']);
+        }
+        return $this->asJson(['data'=> '', 'code'=>0, 'message'=> 'error']);
     }
 
     /**
