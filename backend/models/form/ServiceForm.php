@@ -138,9 +138,9 @@ class ServiceForm  extends Service
                 throw new Exception("记录分配关系失败");
             }
 
-            // if(!Helper::createDefaultRole($this->id)){
-            //     throw new Exception("分配默认角色组失败");
-            // }
+             if(!Helper::createDefaultRole($this->id)){
+                 throw new Exception("分配默认角色组失败");
+             }
 
             return $this;
         });
