@@ -77,7 +77,7 @@ class InvitationCode extends \yii\db\ActiveRecord
         $model->status =1;
         $model->code = $user_id;
         while(strlen($model->code) < 6){
-            $model->code .=  time()[9] > 5 ? 6 : 8;
+            $model->code .= strval(time())[9] > 5 ? 6 : 8;
         }
         $ret = $model->save();
         return $ret ? true : false;
