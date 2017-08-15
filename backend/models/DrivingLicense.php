@@ -82,12 +82,30 @@ class DrivingLicense extends \yii\db\ActiveRecord
             return false;
         }
 
+        $this->imgs = explode(',', trim($this->imgs,','));
+        if(count($this->imgs) == 0){
+            $this->addError('imgs', '请上传附件');
+            return false;
+        }
+
         return Yii::$app->db->transaction(function(){
             $this->created_at = time();
             $this->updated_at = time();
             if(!$this->save()){
                 throw new Exception('error');
             }
+
+            //更新图片
+            //设置图片绑定
+            $models =  DrivingImg::find()->where(['id'=> $this->imgs])->all();
+            foreach ($models as $model){
+                $model->driver_id = $this->id;
+                $model->status = 1;
+                if(!$model->save()){
+                    throw new Exception("绑定图片信息失败");
+                }
+            }
+
             return $this;
         });
     }
@@ -107,5 +125,35 @@ class DrivingLicense extends \yii\db\ActiveRecord
             }
             return $this;
         });
+    }
+
+    /**
+     * 上传土图片要用到的
+     * @param $data
+     * @param string $type
+     * @return ServiceImg|null
+     */
+    public function saveImg($data, $type = 'head')
+    {
+        $model = new DrivingImg();
+        $model->img_path = $data['files'][0]['url'];
+        $model->thumb = $data['files'][0]['thumbnailUrl'];
+        $model->status = 0;
+        $model->size = $data['files'][0]['size'];
+        $model->img = $data['files'][0]['name'];
+        if(!$model->save()){
+            return null;
+        }
+        return $model;
+    }
+
+    public static function getOne($id)
+    {
+        $model = DrivingLicense::findOne($id);
+
+        $imgs = DrivingImg::find()->where(['driver_id'=>$id, 'status'=> 1])->select('id')->column();
+        $model->imgs = implode(",",$imgs);
+
+        return $model;
     }
 }

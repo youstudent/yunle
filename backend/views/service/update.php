@@ -87,7 +87,7 @@ function setPlace(){
         onSearchComplete: myFun
     });
     local.search(myValue);
-   
+
 }
 
 function setLocal(local){
@@ -96,11 +96,76 @@ function setLocal(local){
     document.getElementById('serviceform-lng').value = local.lng;
 }
 
+
 JS
 
     , \yii\web\View::POS_READY);
 ?>
+<style media="screen">
+/*      元素变成弹性盒            */
 
+.ak-flex {
+display: -webkit-box;
+display: -webkit-flex;
+display: -ms-flexbox;
+display: flex;
+}
+/*     实体的阴影          */
+.ak-boxSad {
+    box-shadow: 1px 1px 20px #000;
+}
+/*              弹性盒纵向排列              */
+
+.ak-flex-columnC {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    justify-content: space-around;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+}
+.base-imgBox{
+    width: 300px;
+    height: 200px;
+    background-position: center;
+    background-size: cover;
+    /*background-size: contain; 图片拉伸以适应图片*/
+    background-repeat: no-repeat;
+}
+.flex-sum-mR{
+    margin-right: 5%;
+}
+.ak-mask{
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0
+}
+.ak-mask-son{
+    width: 80%;
+    height: auto;
+    margin: 50px auto;
+    background-color: #fff;
+}
+
+.ak-del-son{
+    width: 40%;
+    min-height: 30vh;
+    margin: 25vh auto;
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 0.5rem 0.75rem 0;
+}
+.ak-mask-son img{
+    width: 100%;
+}
+</style>
 <div class="service-create">
 
     <h1>更新服务商</h1>
@@ -159,8 +224,20 @@ JS
                                 <?php if($model->serviceImg) : ?>
                                     <?php foreach($model->serviceImg as $img) : ?>
                                         <?php if($img->type == 1): ?>
+                                            <div class="ak-flex" style="justify-content: flex-start;">
+                                                <div class="base-imgBox flex-sum-mR showTheBigPic"
+                                                 style="background-image:url(<?php echo Yii::$app->params['img_domain']. $img->thumb; ?>)"
+                                                 data-src="<?php echo Yii::$app->params['img_domain']. $img->thumb; ?>">
 
-                                        <img src="<?php echo Yii::$app->params['img_domain']. $img->thumb; ?>" alt="">
+                                                </div>
+                                                <div class="">
+                                                    <a class="btn btn-danger delete showTheDel" data-something="id or other">
+                                                        <i class="glyphicon glyphicon-trash"></i>
+                                                        <span>删除</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        <!-- <img src="<?php echo Yii::$app->params['img_domain']. $img->thumb; ?>" alt=""> -->
                                         <?php endif; ?>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
@@ -192,7 +269,7 @@ JS
                                              img_input.val(ids);
                                         }',
                                         'fileuploadfail' => 'function(e, data) {
-                                          
+
                                         }',
 
                                     ],
@@ -210,7 +287,20 @@ JS
                                 <?php if($model->serviceImg) : ?>
                                     <?php foreach($model->serviceImg as $img) : ?>
                                         <?php if($img->type == 0): ?>
-                                            <img src="<?php echo Yii::$app->params['img_domain']. $img->thumb; ?>" alt="">
+                                            <div class="ak-flex" style="justify-content: flex-start; margin-bottom:10px;">
+                                                <div class="base-imgBox flex-sum-mR showTheBigPic"
+                                                 style="background-image:url(<?php echo Yii::$app->params['img_domain']. $img->thumb; ?>)"
+                                                 data-src="<?php echo Yii::$app->params['img_domain']. $img->thumb; ?>">
+
+                                                </div>
+                                                <div class="">
+                                                    <a class="btn btn-danger delete showTheDel" data-something="id or other">
+                                                        <i class="glyphicon glyphicon-trash"></i>
+                                                        <span>删除</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <!-- <img src="<?php echo Yii::$app->params['img_domain']. $img->thumb; ?>" alt=""> -->
                                         <?php endif; ?>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
@@ -240,10 +330,10 @@ JS
                                              var ids =  img_input.val();
                                              var ids = ids + "," + img_id;
                                              img_input.val(ids);
-                      
+
                             }',
                                         'fileuploadfail' => 'function(e, data) {
-                              
+
                             }',
                                     ],
                                 ]); ?>
@@ -322,6 +412,37 @@ JS
         </div>
         <!-- end row -->
     </div>
+    <!-- mask and bigImg to show -->
+    <div class="hidden ak-mask ak_img_mask">
+        <div class="ak-mask-son ak-boxSad">
+            <img class="ak_mask_img" src="" alt="">
+        </div>
+    </div>
+    <!-- mask and bigImg to show __  end -->
+
+    <!-- mask and del to show -->
+    <div class="hidden ak-mask ak_del_mask">
+        <div class="ak-del-son ak-boxSad">
+            <div class="ak-flex" style="justify-content:space-between">
+                <h3>提示</h3>
+                <h3 class="close_del_mask" style="color:red; cursor: pointer;">x</h3>
+            </div>
+            <p style="font-size:18px; text-align:center; margin-top:5vh;color:#222;">您确定要删除该图片吗？</p>
+            <div class="ak-flex" style="justify-content:space-around;margin-top:6.5vh;">
+
+                    <a class="btn btn-warning cancel" data-something="id or other">
+                        <i class="glyphicon glyphicon-trash"></i>
+                        <span>确认</span>
+                    </a>
+
+                        <a class="btn btn-primary start" data-something="id or other">
+                            <i class="glyphicon glyphicon-trash"></i>
+                            <span>取消</span>
+                        </a>
+            </div>
+        </div>
+    </div>
+    <!-- mask and del to show __  end -->
 </div>
 <?php
 
@@ -377,6 +498,23 @@ $(function () {
         });
         f.submit();
     });
+})
+$('.showTheBigPic').on('click', function(){
+    var imgUrl = $(this).attr('data-src')
+    $('.ak_img_mask').removeClass('hidden');
+    $('.ak_mask_img').attr('src', imgUrl)
+})
+$('.ak_img_mask').on('click', function(){
+    $(this).addClass('hidden')
+})
+
+
+$('.showTheDel').on('click', function(){
+    var imgUrl = $(this).attr('data-something')
+    $('.ak_del_mask').removeClass('hidden');
+})
+$('.close_del_mask').on('click', function(){
+    $('.ak_del_mask').addClass('hidden')
 })
 JS
 );
