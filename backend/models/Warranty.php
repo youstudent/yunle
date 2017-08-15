@@ -95,21 +95,22 @@ class Warranty extends \yii\db\ActiveRecord
         $model = Warranty::findOne(['order_id'=>$id]);
         $business = BusinessDetail::findOne(['id'=>$model->business_id]);
         $compensatory = CompensatoryDetail::findOne(['id'=>$model->compensatory_id]);
-        $model->start_at = $data['c_st'];
-        $model->end_at = $data['c_en'];
+        $model->start_at = strtotime($data['c_st']);
+        $model->end_at = strtotime($data['c_et']);
+
         $model->save(false);
         $compensatory->serial_number = $data['c_sn'];
         $compensatory->warranty_number = $data['c_wn'];
         $compensatory->cost = $data['c_cost'];
         $compensatory->travel_tax = $data['c_tt'];
-        $compensatory->start_at = $data['c_st'];
-        $compensatory->end_at = $data['c_en'];
+        $compensatory->start_at = strtotime($data['c_st']);
+        $compensatory->end_at = strtotime($data['c_et']);
 
         $business->serial_number = $data['b_sn'];
         $business->warranty_number = $data['b_wn'];
         $business->cost = $data['b_cost'];
-        $business->start_at = $data['b_st'];
-        $business->end_at = $data['b_en'];
+        $business->start_at = strtotime($data['b_st']);
+        $business->end_at = strtotime($data['b_et']);
 
         $cost = InsuranceOrder::findOne(['id'=>$id]);
         $cost->cost = $data['c_tt'] + $data['c_cost'] + $data['b_cost'];
@@ -161,7 +162,7 @@ class Warranty extends \yii\db\ActiveRecord
     public static function changeDetail($data)
     {
         $id = $data['order_id'];
-
+//var_dump($data);die;
         $cost = InsuranceOrder::findOne(['id'=>$id]);
         $cost->company = InsuranceCompany::findOne(['id'=>$data['company']])->name;
         $cost->car = Car::findOne(['id'=>$data['car']])->license_number;
@@ -215,21 +216,21 @@ class Warranty extends \yii\db\ActiveRecord
             $model = Warranty::findOne(['order_id'=>$id]);
             $business = BusinessDetail::findOne(['id'=>$model->business_id]);
             $compensatory = CompensatoryDetail::findOne(['id'=>$model->compensatory_id]);
-            $model->start_at = $data['c_st'];
-            $model->end_at = $data['c_en'];
+            $model->start_at = strtotime($data['c_st']);
+            $model->end_at = strtotime($data['c_et']);
             $model->save(false);
             $compensatory->serial_number = $data['c_sn'];
             $compensatory->warranty_number = $data['c_wn'];
             $compensatory->cost = $data['c_cost'];
             $compensatory->travel_tax = $data['c_tt'];
-            $compensatory->start_at = $data['c_st'];
-            $compensatory->end_at = $data['c_en'];
+            $compensatory->start_at = strtotime($data['c_st']);
+            $compensatory->end_at = strtotime($data['c_et']);
 
             $business->serial_number = $data['b_sn'];
             $business->warranty_number = $data['b_wn'];
             $business->cost = $data['b_cost'];
-            $business->start_at = $data['b_st'];
-            $business->end_at = $data['b_en'];
+            $business->start_at = strtotime($data['b_st']);
+            $business->end_at = strtotime($data['b_et']);
             $cost->cost = $data['c_tt'] + $data['c_cost'] + $data['b_cost'];
             if ($compensatory->save(false) && $business->save(false) && $cost->save(false)) {
                 return true;

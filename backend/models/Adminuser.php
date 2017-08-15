@@ -49,6 +49,7 @@ class Adminuser extends \yii\db\ActiveRecord
             [['password', 'new_password', 're_password'], 'required', 'on' => 'modifyPassword'],
             [['new_password'], 'string', 'max'=> '16', 'on' => 'modifyPassword'],
             [['new_password'], 'validateNewPassword', 'on'=> 'modifyPassword'],
+            [['new_password','re_password'], 'validateRePassword', 'on'=> 'modifyPassword'],
             [['old_password'], 'validatePassword', 'on'=> 'modifyPassword'],
         ];
     }
@@ -117,6 +118,14 @@ class Adminuser extends \yii\db\ActiveRecord
             }
         }
     }
+    public function validateRePassword($attributes, $params)
+    {
+        if(!$this->hasErrors()){
+            if($this->new_password == $this->old_password){
+                $this->addError('new_password', '新密码与旧密码一致,请重新输入');
+            }
+        }
+    }
 
     public function validateNewPassword($attributes, $params)
     {
@@ -135,7 +144,7 @@ class Adminuser extends \yii\db\ActiveRecord
 
         return Yii::$app->db->transaction(function(){
             $this->password_hash = Yii::$app->security->generatePasswordHash($this->new_password);
-            $this->save();
+            $this->save(false);
             return $this;
         });
     }

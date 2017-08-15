@@ -329,7 +329,11 @@ class RbacController extends BackendController
             if($model->modifyPassword()){
                 return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['role-index'])]);
             }
-
+            return $this->asJson([
+                'data'=> '',
+                'code'=>0,
+                'message'=> current($model->getFirstErrors())
+            ]);
         }
         return $this->renderAjax('modify-password', [
             'model' => $model

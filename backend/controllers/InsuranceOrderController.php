@@ -149,6 +149,7 @@ class InsuranceOrderController extends BackendController
     public function actionUpdate()
     {
         $data = Yii::$app->request->post();
+
         $model =  Warranty::getDetail($data['order_id']);
         $info = Warranty::changeInfo($model,$data);
         if($info){

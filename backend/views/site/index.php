@@ -120,7 +120,7 @@
 $this->registerJs(<<<JS
 $(function() {
     $.ajax({
-        url: 'site/stat',
+        url: 'stat',
         type: 'get',
         dataType: 'json',
         data: {days:7},
