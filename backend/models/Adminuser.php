@@ -152,7 +152,7 @@ class Adminuser extends \yii\db\ActiveRecord
     public static function getCustomerManager()
     {
         $ids = Yii::$app->getAuthManager()->getUserIdsByRole("客户经理");
-        $data = Adminuser::find()->where(['id'=>$ids])->select('username,id')->column();
+        $data = Adminuser::find()->where(['id'=>$ids])->select('name,id')->column();
         return $data;
     }
 }

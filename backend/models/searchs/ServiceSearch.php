@@ -56,7 +56,7 @@ class ServiceSearch extends Service
         $query->andFilterWhere(['LIKE', 'name' , $this->name]);
         $query->andFilterWhere(['LIKE', 'principal' , $this->principal]);
         $query->andFilterWhere(['LIKE', 'contact_phone' , $this->contact_phone]);
-        $query->andFilterWhere(['pid'=> $this->pid]);
+        $query->andFilterWhere(['sid'=> $this->pid]);
 
         return $dataProvider;
     }
