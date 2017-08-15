@@ -29,7 +29,7 @@ class AppRole extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'name', 'service_id'], 'required'],
+            [['name', 'service_id'], 'required'],
             [['id', 'service_id'], 'integer'],
             [['name', 'description'], 'string', 'max' => 255],
             [['service_id'], 'notAdmin']

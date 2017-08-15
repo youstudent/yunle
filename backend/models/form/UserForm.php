@@ -63,7 +63,7 @@ class UserForm extends User
                 throw new Exception("生成邀请信息失败");
             }
             //绑定添加的业务员到业务员的角色
-            Helper::bindAppUserRole($this->pid, $this->id);
+            Helper::bindAppUserRole($this->id,$this->pid);
 
             return $this;
         });

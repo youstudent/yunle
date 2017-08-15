@@ -376,7 +376,6 @@ class Helper
         $model->description = '添加时系统生成的，将作为默认的角色组';
         $model->service_id = $service_id;
         return $model->save();
-
     }
     public static function bindAppUserRole($user_id, $service_id)
     {

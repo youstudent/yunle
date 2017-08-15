@@ -65,7 +65,7 @@ use yii\helpers\Url;
             var f = $('#UserForm');
             f.on('beforeSubmit', function (e) {
                 swal({
-                        title: "确认保存会员信息",
+                        title: "确认保存业务员",
                         text: "",
                         type: "warning",
                         showCancelButton: true,

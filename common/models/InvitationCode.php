@@ -47,8 +47,7 @@ class InvitationCode extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'status', 'created_at'], 'integer'],
-            [['code'], 'string', 'max' => 50],
+            [['user_id', 'status', 'created_at', 'code'], 'integer'],
         ];
     }
 
@@ -77,6 +76,9 @@ class InvitationCode extends \yii\db\ActiveRecord
         $model->user_id = $user_id;
         $model->status =1;
         $model->code = $user_id;
+        while(strlen($model->code) < 6){
+            $model->code .=  time()[9] > 5 ? 6 : 8;
+        }
         $ret = $model->save();
         return $ret ? true : false;
     }
