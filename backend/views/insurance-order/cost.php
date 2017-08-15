@@ -13,6 +13,7 @@ use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yii\widgets\LinkPager;
 use kartik\file\FileInput;
+use kartik\datetime\DateTimePicker;
 ?>
 
 <!-- begin page-header -->
@@ -61,14 +62,35 @@ use kartik\file\FileInput;
                 <td></td>
                 <td><b>生效时间</b></td>
                 <td>
-                    <input name= "c_st" class="form-control input-lg" type="text" value="<?= \common\models\Helper::getTime($model->compensatory->start_at) ?>" />
+                    <?php echo DateTimePicker::widget([
+                        'name' => 'c_st',
+                        'options' => ['placeholder' => date('Y-m-d H:i',time())],
+                        //注意，该方法更新的时候你需要指定value值
+//                        'value' => time(),
+                        'pluginOptions' => [
+                            'autoclose' => true,
+                            'format' => 'yyyy-mm-dd HH:ii',
+                            'todayHighlight' => true
+                        ]
+                    ]);?>
                 </td>
             </tr>
             <tr>
                 <td></td>
                 <td><b>失效时间</b></td>
                 <td>
-                    <input name= "c_en" class="form-control input-lg" type="text" value="<?= \common\models\Helper::getTime($model->compensatory->end_at) ?>" />
+                    <?php echo DateTimePicker::widget([
+                        'name' => 'c_et',
+                        'options' => ['placeholder' => date('Y-m-d H:i',time()+3600*24*365)],
+                        //注意，该方法更新的时候你需要指定value值
+//                        'value' => ,
+                        'pluginOptions' => [
+                            'autoclose' => true,
+                            'format' => 'yyyy-mm-dd HH:ii',
+                            'todayHighlight' => true
+                        ]
+                    ]);?>
+
                 </td>
             </tr>
             <tr>
@@ -99,14 +121,34 @@ use kartik\file\FileInput;
                 <td></td>
                 <td><b>生效时间</b></td>
                 <td>
-                    <input name= "b_st" class="form-control input-lg" type="text" value="<?= \common\models\Helper::getTime($model->business->start_at) ?>" />
+                    <?php echo DateTimePicker::widget([
+                        'name' => 'b_st',
+                        'options' => ['placeholder' => date('Y-m-d H:i',time())],
+                        //注意，该方法更新的时候你需要指定value值
+//                        'value' => time(),
+                        'pluginOptions' => [
+                            'autoclose' => true,
+                            'format' => 'yyyy-mm-dd HH:ii',
+                            'todayHighlight' => true
+                        ]
+                    ]);?>
                 <td>
             </tr>
             <tr>
                 <td></td>
                 <td><b>失效时间</b></td>
                 <td>
-                    <input name= "b_en" class="form-control input-lg" type="text" value="<?= \common\models\Helper::getTime($model->business->end_at) ?>" />
+                    <?php echo DateTimePicker::widget([
+                        'name' => 'b_et',
+                        'options' => ['placeholder' => date('Y-m-d H:i',time()+3600*24*365)],
+                        //注意，该方法更新的时候你需要指定value值
+//                        'value' => time(),
+                        'pluginOptions' => [
+                            'autoclose' => true,
+                            'format' => 'yyyy-mm-dd HH:ii',
+                            'todayHighlight' => true
+                        ]
+                    ]);?>
                 <td>
             </tr>
             <tr>
@@ -127,7 +169,7 @@ use kartik\file\FileInput;
             </tr>
         </table>
         <a href="<?= Url::to(['detail?id='.$model->order_id]) ?>" class="btn btn-sm btn-white" data-dismiss="modal">取消</a>
-        <button type="submit" class="btn btn-sm btn-success">修改</button>
+        <button type="submit" class="btn btn-sm btn-success">确认付款</button>
         <!-- end col-6 -->
     </form>
 </div>

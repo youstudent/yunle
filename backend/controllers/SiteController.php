@@ -63,7 +63,7 @@ class SiteController extends Controller
     public function actionIndex()
     {
         $model = \common\models\Helper::getStatCount();
-        return $this->renderPjax('index', [
+        return $this->render('index', [
             'model' => $model,
         ]);
     }

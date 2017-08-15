@@ -9,6 +9,7 @@
 
 use yii\helpers\Url;
 use kartik\file\FileInput;
+use kartik\datetime\DateTimePicker;
 ?>
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -121,7 +122,7 @@ use kartik\file\FileInput;
                         <tr>
                             <td>承保公司</td>
                             <td>
-                                <select name="payment" class="form-control">
+                                <select name="company" class="form-control">
                                     <?php foreach (\backend\models\InsuranceCompany::find()->select('name,id')->all() as $v) {?>
                                         <option id="company_id" value="<?= $v->id ?>" <?php if ($v->name == $model->insurance->company) {?> selected <?php }?>><?= $v->name ?></option>
                                     <?php }?>
@@ -201,14 +202,34 @@ use kartik\file\FileInput;
                             <td></td>
                             <td><b>生效时间</b></td>
                             <td>
-                                <input name= "c_st" class="form-control input-lg" type="text" value="<?= \common\models\Helper::getTime($model->compensatory->start_at) ?>" />
+                                <?php echo DateTimePicker::widget([
+                                    'name' => 'c_st',
+                                    'options' => ['placeholder' => ''],
+                                    //注意，该方法更新的时候你需要指定value值
+                                    'value' => date('Y-m-d H:i',$model->compensatory->start_at),
+                                    'pluginOptions' => [
+                                        'autoclose' => true,
+                                        'format' => 'yyyy-mm-dd HH:ii',
+                                        'todayHighlight' => true
+                                    ]
+                                ]);?>
                             </td>
                         </tr>
                         <tr>
                             <td></td>
                             <td><b>失效时间</b></td>
                             <td>
-                                <input name= "c_en" class="form-control input-lg" type="text" value="<?= \common\models\Helper::getTime($model->compensatory->end_at) ?>" />
+                                <?php echo DateTimePicker::widget([
+                                    'name' => 'c_et',
+                                    'options' => ['placeholder' => ''],
+                                    //注意，该方法更新的时候你需要指定value值
+                                    'value' => date('Y-m-d H:i',$model->compensatory->end_at),
+                                    'pluginOptions' => [
+                                        'autoclose' => true,
+                                        'format' => 'yyyy-mm-dd HH:ii',
+                                        'todayHighlight' => true
+                                    ]
+                                ]);?>
                             </td>
                         </tr>
                         <tr>
@@ -239,14 +260,34 @@ use kartik\file\FileInput;
                             <td></td>
                             <td><b>生效时间</b></td>
                             <td>
-                                <input name= "b_st" class="form-control input-lg" type="text" value="<?= \common\models\Helper::getTime($model->business->start_at) ?>" />
+                                <?php echo DateTimePicker::widget([
+                                    'name' => 'b_st',
+                                    'options' => ['placeholder' => ''],
+                                    //注意，该方法更新的时候你需要指定value值
+                                    'value' => date('Y-m-d H:i',$model->business->start_at),
+                                    'pluginOptions' => [
+                                        'autoclose' => true,
+                                        'format' => 'yyyy-mm-dd HH:ii',
+                                        'todayHighlight' => true
+                                    ]
+                                ]);?>
                             <td>
                         </tr>
                         <tr>
                             <td></td>
                             <td><b>失效时间</b></td>
                             <td>
-                                <input name= "b_en" class="form-control input-lg" type="text" value="<?= \common\models\Helper::getTime($model->business->end_at) ?>" />
+                                <?php echo DateTimePicker::widget([
+                                    'name' => 'b_et',
+                                    'options' => ['placeholder' => ''],
+                                    //注意，该方法更新的时候你需要指定value值
+                                    'value' => date('Y-m-d H:i',$model->business->end_at),
+                                    'pluginOptions' => [
+                                        'autoclose' => true,
+                                        'format' => 'yyyy-mm-dd HH:ii',
+                                        'todayHighlight' => true
+                                    ]
+                                ]);?>
                             <td>
                         </tr>
                         <tr>

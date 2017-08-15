@@ -19,6 +19,7 @@ return array(
     'mdm\\admin\\' => array($vendorDir . '/mdmsoft/yii2-admin'),
     'kartik\\plugins\\fileinput\\' => array($vendorDir . '/kartik-v/bootstrap-fileinput'),
     'kartik\\file\\' => array($vendorDir . '/kartik-v/yii2-widget-fileinput'),
+    'kartik\\datetime\\' => array($vendorDir . '/kartik-v/yii2-widget-datetimepicker'),
     'kartik\\base\\' => array($vendorDir . '/kartik-v/yii2-krajee-base'),
     'dosamigos\\gallery\\' => array($vendorDir . '/2amigos/yii2-gallery-widget/src'),
     'dosamigos\\fileupload\\' => array($vendorDir . '/2amigos/yii2-file-upload-widget/src'),
