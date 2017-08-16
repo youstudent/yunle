@@ -256,11 +256,10 @@ class Car extends \yii\db\ActiveRecord
         $car = Car::findOne(['id'=>$data['car_id']]);
         $car->stick = 1;
 
-        if ($car->save(false)) {
-            $newList = $this->getCar($data);
-            return $newList;
+        if (!$car->save(false)) {
+            return false;
         }
-        return false;
+        return true;
     }
 
 }

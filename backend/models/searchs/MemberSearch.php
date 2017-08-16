@@ -40,6 +40,7 @@ class MemberSearch extends Member
             'query' => $query
         ]);
 
+
         if (!($this->load($params) && $this->validate())) {
             return $dataProvider;
         }
@@ -87,7 +88,7 @@ class MemberSearch extends Member
         if($group == 1){
             //用客户经理的身份查询
             $ids = \common\components\Helper::byCustomerManagerIdGetServiceMemberIds($id);
-            $query->andWhere(['m.pid'=>$ids]);
+//            $query->andWhere(['m.pid'=>$ids]);
             return $query;
         }
         if($group == 2){

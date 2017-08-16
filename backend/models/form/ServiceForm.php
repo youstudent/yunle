@@ -92,10 +92,11 @@ class ServiceForm  extends Service
                 $this->addErrors($adminuserModel->getFirstErrors());
                 throw new Exception("添加会员信息失败");
             }
+
             $this->owner_username = $this->username;
             $this->owner_id = $adminuserModel->id;
             $this->type=1;
-            $this->pid = 1;
+            $this->pid = $this->sid;
             $this->scenario = 'created_service';
             $this->created_at = time();
             $this->updated_at = time();

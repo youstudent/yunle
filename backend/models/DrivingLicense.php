@@ -101,7 +101,7 @@ class DrivingLicense extends \yii\db\ActiveRecord
             foreach ($models as $model){
                 $model->driver_id = $this->id;
                 $model->status = 1;
-                if(!$model->save()){
+                if(!$model->save(false)){
                     throw new Exception("绑定图片信息失败");
                 }
             }

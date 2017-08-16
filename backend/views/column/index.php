@@ -11,7 +11,7 @@ use yii\widgets\LinkPager;
 /* @var $searchModel backend\models\searchs\OrderSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = '文章列表';
+$this->title = '栏目列表';
 $this->params['breadcrumbs'][] = $this->title;
 
 \pd\coloradmin\web\plugins\DaterangePickerAsset::register($this);

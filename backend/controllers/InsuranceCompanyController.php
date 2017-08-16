@@ -74,10 +74,12 @@ class InsuranceCompanyController extends BackendController
      */
     public function actionDelete($id)
     {
-        var_dump($id);EXIT;
-        $this->findModel($id)->delete();
-        
-        return $this->redirect(['index']);
+        $company = new InsuranceCompany();
+        $data = $company->findOne($id)->delete();
+        if ($data) {
+            return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['index'])]);
+        }
+        return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作失败', 'url'=> Url::to(['index'])]);
     }
 
     public function actionValidateForm($scenario, $id = null)

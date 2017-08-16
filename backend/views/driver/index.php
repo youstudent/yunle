@@ -108,10 +108,10 @@ JS
                 <thead>
                 <tr>
                     <th>#</th>
-                    <td>证件号</td>
                     <th>名字</th>
                     <th>性别</th>
                     <th>国籍</th>
+                    <td>证件号</td>
                     <th>出生日期</th>
                     <th>领证日期</th>
                     <th>准驾车型</th>
