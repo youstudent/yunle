@@ -13,13 +13,13 @@
 //        $menu = \mdm\admin\components\MenuHelper::getAssignedMenu(Yii::$app->user->getIdentity()->id);
 //        echo '<pre>';
 //        print_r($menu);die;
-        if(false &&Yii::$app->user->getIdentity() && Yii::$app->user->getIdentity()->id > 1){
+        if(Yii::$app->user->getIdentity() ){
             $menu = \mdm\admin\components\MenuHelper::getAssignedMenu(Yii::$app->user->getIdentity()->id, null, null, true);
         }else{
             $menu =
                 [
                     ['label' => '', 'options' => ['class' => 'nav-header']],
-                    ['label' => '统计信息', 'url' => '/site/index'],
+                    ['label' => '统计信息', 'url' => '/panel/index'],
                     ['label' => '账号信息', 'url' => '/account/index'],
                     [
                         'label'   => '用户管理',

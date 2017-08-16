@@ -136,10 +136,8 @@ JS
                 ); ?>
             <?php endif; ?>
 
-
-
-                            <button type="submit" class="btn btn-sm btn-primary m-r-5">搜索</button>
-                            <button type="button" class="btn btn-sm btn-info m-r-5" onclick="">重置</button>
+            <button type="submit" class="btn btn-sm btn-primary m-r-5">搜索</button>
+            <button type="reset" class="btn btn-sm btn-info m-r-5" onclick="">重置</button>
 
             <?php yii\bootstrap\ActiveForm::end() ?>
 

@@ -12,30 +12,33 @@ use yii\web\Controller;
 
 class PanelController extends BackendController
 {
+    /**
+     * @return string
+     */
     public function actionIndex()
     {
-        return $this->renderPjax('index', []);
+        $model = \common\models\Helper::getStatCount();
+        return $this->render('index', [
+            'model' => $model,
+        ]);
     }
-
-
-    public function actionWaitCheckOrder()
+    public function actionStat($days)
     {
-        return $this->asJson(['data'=> ['num'=> 100], 'code'=>1, 'message'=> '']);
+        $model = \common\models\Helper::getStat($days);
+        if($model){
+            return $this->asJson(['data'=> $model, 'code'=>1, 'message'=> 'success']);
+        }
+        return $this->asJson(['data'=> '', 'code'=>0, 'message'=> 'error']);
     }
 
-    public function actionWaitCheckInsuranceOrder()
+    public function actionUserAdd()
     {
-        return $this->asJson(['data'=> ['num'=> 100], 'code'=>1, 'message'=> '']);
+
     }
 
-
-    public function actionWaitCheckInsuranceOrderSuccess()
+    public function actionOrderAdd()
     {
-        return $this->asJson(['data'=> ['num'=> 100], 'code'=>1, 'message'=> '']);
+
     }
 
-    public function actionWaitCheckState()
-    {
-        return $this->asJson(['data'=> ['num'=> 100], 'code'=>1, 'message'=> '']);
-    }
 }

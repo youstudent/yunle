@@ -8,7 +8,7 @@ $params = array_merge(
 
 return [
     'id' => '云乐享车',
-    'homeUrl' => '/site/index',
+    'homeUrl' => '/pace/index',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
@@ -34,16 +34,6 @@ return [
         "@pd/sms" => "@vendor/pokerdragon/yii2-aliyun-sms",
     ],
     'components' => [
-//        'assetManager' => [
-//            'bundles' => [
-//                'yii\web\JqueryAsset' => [
-//                    'sourcePath' => null,   // 一定不要发布该资源
-//                    'js' => [
-//
-//                    ]
-//                ],
-//            ],
-//        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'KIyOZVHLRMgh-Uef6sMAJL630ctmmj4f',
@@ -101,9 +91,7 @@ return [
         'allowActions' => [
             '/admin/user/login',
             '/admin/user/logout',
-//            '/site/logout',
-//            '/site/login',
-            '*',
+            //'*',
         ]
     ],
     'params' => $params,

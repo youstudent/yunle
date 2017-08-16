@@ -68,5 +68,9 @@ class AccountController extends BackendController
         ]);
     }
 
+    public function actionModifyPassword()
+    {
+
+    }
 
 }

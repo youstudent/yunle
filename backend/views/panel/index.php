@@ -10,80 +10,90 @@
     <!-- end page-header -->
     <!-- begin row -->
     <div class="row">
-        <!-- begin col-3 -->
-        <div class="col-md-4">
-            <div class="widget widget-stats bg-green">
-                <div class="stats-icon"><i class="fa fa-desktop"></i></div>
-                <div class="stats-info">
-                    <h4>待审车订单</h4>
-                    <p><?= $model['orderCount']['afterCheckCar']?></p>
-                </div>
-                <div class="stats-link">
-                    <a href="javascript:;">查看详情 <i class="fa fa-arrow-circle-o-right"></i></a>
-                </div>
-            </div>
-        </div>
-        <!-- end col-3 -->
-        <!-- begin col-3 -->
-        <div class="col-md-4">
-            <div class="widget widget-stats bg-blue">
-                <div class="stats-icon"><i class="fa fa-chain-broken"></i></div>
-                <div class="stats-info">
-                    <h4>待核保订单</h4>
-                    <p><?= $model['orderCount']['afterSuccess']?></p>
-                </div>
-                <div class="stats-link">
-                    <a href="javascript:;">查看详情 <i class="fa fa-arrow-circle-o-right"></i></a>
+        <?php if(pd\admin\components\Helper::checkRoute('/abs-route/panel-get-wait-check-car-order')) : ?>
+            <!-- begin col-3 -->
+            <div class="col-md-4">
+                <div class="widget widget-stats bg-green">
+                    <div class="stats-icon"><i class="fa fa-desktop"></i></div>
+                    <div class="stats-info">
+                        <h4>待审车订单</h4>
+                        <p><?= $model['orderCount']['afterCheckCar']?></p>
+                    </div>
+                    <div class="stats-link">
+                        <a href="javascript:;">查看详情 <i class="fa fa-arrow-circle-o-right"></i></a>
+                    </div>
                 </div>
             </div>
-        </div>
-        <!-- end col-3 -->
-        <!-- begin col-3 -->
-        <div class="col-md-4">
-            <div class="widget widget-stats bg-purple">
-                <div class="stats-icon"><i class="fa fa-users"></i></div>
-                <div class="stats-info">
-                    <h4>核保成功订单</h4>
-                    <p><?= $model['orderCount']['success']?></p>
-                </div>
-                <div class="stats-link">
-                    <a href="javascript:;">查看详情 <i class="fa fa-arrow-circle-o-right"></i></a>
-                </div>
-            </div>
-        </div>
-        <!-- end col-3 -->
-        <!-- begin col-3 -->
-        <div class="col-md-4">
-            <div class="widget widget-stats bg-black">
-                <div class="stats-icon"><i class="fa fa-users"></i></div>
-                <div class="stats-info">
-                    <h4>待审核订单</h4>
-                    <p><?= $model['orderCount']['afterStatusChange']?></p>
-                </div>
-                <div class="stats-link">
-                    <a href="javascript:;">查看详情 <i class="fa fa-arrow-circle-o-right"></i></a>
+            <!-- end col-3 -->
+        <?php endif;?>
+        <?php if(pd\admin\components\Helper::checkRoute('/abs-route/panel-get-wait-check-insurance-order')) : ?>
+            <!-- begin col-3 -->
+            <div class="col-md-4">
+                <div class="widget widget-stats bg-blue">
+                    <div class="stats-icon"><i class="fa fa-chain-broken"></i></div>
+                    <div class="stats-info">
+                        <h4>待核保订单</h4>
+                        <p><?= $model['orderCount']['afterSuccess']?></p>
+                    </div>
+                    <div class="stats-link">
+                        <a href="javascript:;">查看详情 <i class="fa fa-arrow-circle-o-right"></i></a>
+                    </div>
                 </div>
             </div>
-        </div>
-        <!-- end col-3 -->
-        <!-- begin col-3 -->
-        <div class="col-md-8">
-            <div class="widget widget-stats bg-black">
-                <p>公告1</p>
-                <p>公告2</p>
-                <p>公告3</p>
+            <!-- end col-3 -->
+        <?php endif;?>
+        <?php if(pd\admin\components\Helper::checkRoute('/abs-route/panel-get-wait-check-insurance-order-success')) : ?>
+            <!-- begin col-3 -->
+            <div class="col-md-4">
+                <div class="widget widget-stats bg-purple">
+                    <div class="stats-icon"><i class="fa fa-users"></i></div>
+                    <div class="stats-info">
+                        <h4>核保成功订单</h4>
+                        <p><?= $model['orderCount']['success']?></p>
+                    </div>
+                    <div class="stats-link">
+                        <a href="javascript:;">查看详情 <i class="fa fa-arrow-circle-o-right"></i></a>
+                    </div>
+                </div>
             </div>
-        </div>
+            <!-- end col-3 -->
+        <?php endif;?>
+        <?php if(pd\admin\components\Helper::checkRoute('/abs-route/panel-get-wait-check-order')) : ?>
+            <!-- begin col-3 -->
+            <div class="col-md-4">
+                <div class="widget widget-stats bg-black">
+                    <div class="stats-icon"><i class="fa fa-users"></i></div>
+                    <div class="stats-info">
+                        <h4>待审核订单</h4>
+                        <p><?= $model['orderCount']['afterStatusChange']?></p>
+                    </div>
+                    <div class="stats-link">
+                        <a href="javascript:;">查看详情 <i class="fa fa-arrow-circle-o-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            <!-- end col-3 -->
+        <?php endif;?>
+        <?php if(pd\admin\components\Helper::checkRoute('/abs-route/panel-get-notice')) : ?>
+            <!-- begin col-3 -->
+            <div class="col-md-8">
+                <div class="widget widget-stats bg-black">
+                    <p>公告1</p>
+                    <p>公告2</p>
+                    <p>公告3</p>
+                </div>
+            </div>
+            <!-- end col-3 -->
+        <?php endif; ?>
     </div>
     <!-- end row -->
     <div class="row">
-
-
         <!-- end col-3 -->
         <div class="col-md-3 col-sm-6">
 
         </div>
         <div class="col-md-12 col-sm-6">
+            <?php if(pd\admin\components\Helper::checkRoute('/panel/user-add')) : ?>
             <div class="panel panel-inverse" data-sortable-id="index-1">
                 <div class="panel-heading">
                     <div class="panel-heading-btn">
@@ -98,6 +108,8 @@
                     <div id="memebrAdd" style="height: 250px;"></div>
                 </div>
             </div>
+            <?php endif; ?>
+            <?php if(pd\admin\components\Helper::checkRoute('/panel/order-add')) : ?>
             <div class="panel panel-inverse" data-sortable-id="index-2">
                 <div class="panel-heading">
                     <div class="panel-heading-btn">
@@ -112,6 +124,7 @@
                     <div id="orderAdd" style="height: 250px;"></div>
                 </div>
             </div>
+            <?php endif; ?>
         </div>
     </div>
 <?php
@@ -182,7 +195,7 @@ $(function() {
             }
         },
         error: function (xhr) {
-            swal("网络错误", "", "error");
+            //swal("网络错误", "", "error");
         }
     });
 })
