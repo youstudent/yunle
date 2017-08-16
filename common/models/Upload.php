@@ -119,7 +119,7 @@ class Upload extends Model
     {
         $save_path = '';
         $this->db_save_path = '/upload/'. $type .'_imgs/' . date('Y-m-d') . '/' . sha1($chars[ mt_rand(0, strlen($chars) - 1) ] . time()) . '.' . $extension;
-        $save_path = '/static' . $this->db_save_path;
+        $save_path = $this->db_save_path;
 
         if (!empty($save_path)) {
             $save_dir = dirname(Yii::getAlias('@common') . $save_path);

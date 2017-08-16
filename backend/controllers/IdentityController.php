@@ -9,6 +9,7 @@ namespace backend\controllers;
 
 
 use backend\models\Identification;
+use backend\models\searchs\IdentificationSearch;
 use Yii;
 use yii\data\ActiveDataProvider;
 
@@ -16,13 +17,13 @@ class IdentityController extends BackendController
 {
     public function actionIndex()
     {
+        $searchModel = new IdentificationSearch();
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => Identification::find(),
-        ]);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->renderPjax('index', [
             'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel
         ]);
     }
 
