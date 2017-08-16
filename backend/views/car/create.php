@@ -5,6 +5,7 @@ use dosamigos\fileupload\FileUploadUI;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
+use kartik\widgets\FileInput;
 
 /* @var $this yii\web\View */
 /* @var $adminUserModel backend\models\Adminuser */
@@ -81,12 +82,14 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
 
                             <?= $form->field($model, 'certificate_at')->textInput() ?>
 
+
+
                             <div class="form-group field-carform-cat_img">
                                 <label class="control-label control-label col-md-4 col-sm-4" for="carform-cat_img">行驶证图片</label>
                                 <div class="col-md-6 col-sm-6">
                                     <?= FileUploadUI::widget([
                                         'model' => $model,
-                                        'attribute' => 'cat_img',
+                                        'attribute' => 'car_img',
                                         'url' => ['media/image-upload', 'model'=> 'agency'],
                                         'gallery' => true,
                                         'fieldOptions' => [

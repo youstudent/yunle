@@ -8,6 +8,7 @@
 namespace backend\controllers;
 
 
+use backend\models\DrivingLicense;
 use backend\models\form\AgencyForm;
 use backend\models\form\ServiceForm;
 use backend\models\Service;
@@ -29,7 +30,6 @@ class MediaController extends BackendController
         $attribute = null;
         $sub_dir = 'default';
         $directory = Yii::getAlias('@common/static/upload/default') . DIRECTORY_SEPARATOR;
-
         switch($model){
             case 'service':
                 $model = new ServiceForm();
@@ -50,12 +50,18 @@ class MediaController extends BackendController
                 $attribute = 'attachment';
                 $thumb_width = $thumb_height = 60;
                 break;
+            case 'driver':
+                $model = new DrivingLicense();
+                $directory = Yii::getAlias('@common/static/upload/driver') . DIRECTORY_SEPARATOR;
+                $sub_dir = 'driver';
+                $attribute = 'img';
+                break;
         }
+
         $imageFile = UploadedFile::getInstance($model, $attribute);
         if (!is_dir($directory)) {
             FileHelper::createDirectory($directory);
         }
-
         if ($imageFile) {
             //$uid = uniqid(time(), true);
             $uid = mt_rand(1000000, 9999999) . date('Y-m-d-H-i-s');

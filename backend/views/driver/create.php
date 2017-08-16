@@ -1,7 +1,7 @@
 <?php
 
 use common\components\Helper;
-use dosamigos\fileupload\FileUploadUI;
+use kartik\widgets\FileInput;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
@@ -55,7 +55,7 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
                                     'hint'    => '',
                                 ],
                             ],
-                            'options' => ['class' => 'form-horizontal form-bordered'],
+                            'options' => ['class' => 'form-horizontal form-bordered', 'enctype' => 'multipart/form-data'],
                             'enableAjaxValidation' => true,
                             'validationUrl'        => $model->isNewRecord ? Url::toRoute(['validate-form', 'scenario' => 'create']) : Url::toRoute(['validate-form', 'scenario' => 'update']),
                         ]) ?>
@@ -81,38 +81,24 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
 
                         <?= $form->field($model, 'certificate_at')->textInput() ?>
 
-                        <div class="form-group field-carform-cat_img">
-                            <label class="control-label control-label col-md-4 col-sm-4" for="carform-cat_img">驾驶证图片</label>
-                            <div class="col-md-6 col-sm-6">
-                                <?= FileUploadUI::widget([
-                                    'model' => $model,
-                                    'attribute' => 'img',
-                                    'url' => ['media/image-upload', 'model'=> 'agency'],
-                                    'gallery' => true,
-                                    'fieldOptions' => [
-                                        'accept' => 'image/*'
-                                    ],
-                                    'clientOptions' => [
-                                        'maxFileSize' => 2000000
-                                    ],
-                                    // ...
-                                    'clientEvents' => [
-                                        'fileuploaddone' => 'function(e, data) {
-                                        console.log(1);
-                                        console.log(data);
-//                                console.log(e);
-//                                console.log(data);
-                            }',
-                                        'fileuploadfail' => 'function(e, data) {
-//                                console.log(e);
-//                                console.log(data);
-                            }',
-                                    ],
-                                ]); ?>
+                        <?=$form->field($model, 'img')->widget(FileInput::classname(), [
+                            'language' => 'zh',
+                            'options' => [
+                                    'accept' => 'image/*',
+                                    'multiple'=>true
 
-                                <div class="help-block help-block-error "></div>
-                            </div>
-                        </div>
+                            ],
+                            'pluginOptions' => [
+                                'uploadUrl' => Url::to(['/media/image-upload', 'model' => 'driver']),
+                                'maxFileSize'=>2800,
+                                'showPreview' => true,
+                                'showCaption' => true,
+                                'showRemove' => true,
+                                'showUpload' => true,
+                                'maxFileCount' => 2,
+                                'minFileCount' => 1,
+                            ]
+                        ]) ?>
 
                         <?= $form->field($model, 'imgs', ['template'=> "{input}"])->hiddenInput() ?>
 
@@ -140,20 +126,18 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
 $formId = $model->formName();
 $this->registerJs(<<<JS
 $(function () {
-    var img_input = $('input[name="AgencyForm[imgs]"]');
-    
-    $('body').on('fileuploaddone', function(e, data){
-        var img_id = data.result.files[0].img_id;
-       
-        //将上传完成的数据添加到表单中
+    var img_input = $('input[name="DrivingLicense[imgs]"]');
+    $('.field-drivinglicense-img').on('fileuploaded', function(event, data, previewId, index) {
+        var img_id = data.response.files[0].img_id;
         var ids =  img_input.val();
         img_input.val(ids+','+img_id)
-    })
+    });
+   
     $('.btn-submit').on('click', function () {
         var f = $('#{$formId}');
         f.on('beforeSubmit', function (e) {
             if(img_input.val() == ''){
-                swal("请先上传附件");
+                swal("请先上传行驶证照片");
                 return false;
             }
             swal({

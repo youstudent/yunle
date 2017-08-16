@@ -41,6 +41,7 @@ class DrivingLicense extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['member_id', 'name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at', 'imgs'], 'required'],
             [['member_id', 'status', 'created_at', 'updated_at'], 'integer'],
             [['name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at'], 'string', 'max' => 50],
         ];
@@ -49,8 +50,8 @@ class DrivingLicense extends \yii\db\ActiveRecord
     public function scenarios()
     {
         return [
-            'create' => ['name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at'],
-            'update' => ['name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at'],
+            'create' => ['name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at', 'imgs'],
+            'update' => ['name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at', 'imgs'],
         ];
     }
 
@@ -74,6 +75,7 @@ class DrivingLicense extends \yii\db\ActiveRecord
             'status' => '1:正常 0:待审核',
             'created_at' => '创建时间',
             'updated_at' => '修改时间',
+            'img' => '行驶证图片'
         ];
     }
     public function addDrivingLicense()
@@ -83,8 +85,8 @@ class DrivingLicense extends \yii\db\ActiveRecord
         }
 
         $this->imgs = explode(',', trim($this->imgs,','));
-        if(count($this->imgs) == 0){
-            $this->addError('imgs', '请上传附件');
+        if(count($this->imgs) < 2){
+            $this->addError('imgs', '请上传2张附件');
             return false;
         }
 
@@ -92,6 +94,7 @@ class DrivingLicense extends \yii\db\ActiveRecord
             $this->created_at = time();
             $this->updated_at = time();
             if(!$this->save()){
+                print_r($this->getFirstErrors());
                 throw new Exception('error');
             }
 
@@ -152,8 +155,23 @@ class DrivingLicense extends \yii\db\ActiveRecord
         $model = DrivingLicense::findOne($id);
 
         $imgs = DrivingImg::find()->where(['driver_id'=>$id, 'status'=> 1])->select('id')->column();
+
         $model->imgs = implode(",",$imgs);
 
         return $model;
+    }
+
+    public  function getPic()
+    {
+        return $this->hasMany(DrivingImg::className(), ['driver_id'=> 'id'])->where(['status'=> 1]);
+    }
+
+    public function getPicImg()
+    {
+        $arr = [];
+        foreach($this->pic as $i){
+            $arr[] = '<img src="'.Yii::$app->params['img_domain']. $i->thumb.'" />';
+        }
+        return $arr;
     }
 }

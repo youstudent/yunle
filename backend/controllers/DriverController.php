@@ -49,7 +49,7 @@ class DriverController extends BackendController
 
     public function actionUpdate($id)
     {
-        $model =  DrivingLicense::findOne($id);
+        $model =  DrivingLicense::getOne($id);
         $model->scenario = 'update';
 
         if($model->load(Yii::$app->request->post())){
@@ -59,7 +59,7 @@ class DriverController extends BackendController
             return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '添加失败']);
         }
 
-        return $this->renderPjax('create', [
+        return $this->renderPjax('update', [
             'model' => $model
         ]);
     }
@@ -84,4 +84,6 @@ class DriverController extends BackendController
         $model->load(Yii::$app->request->post());
         return \yii\bootstrap\ActiveForm::validate($model);
     }
+
+
 }
