@@ -58,7 +58,7 @@ class Element extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'insurance_id' => 'Insurance ID',
+            'insurance_id' => 'insurance ID',
             'name' => 'Name',
             'created_at' => 'Created At',
         ];

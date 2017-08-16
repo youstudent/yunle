@@ -61,7 +61,7 @@ class InsuranceElement extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'order_id' => 'Order ID',
-            'insurance' => 'Insurance',
+            'insurance' => 'insurance',
             'element' => 'Element',
             'deduction' => 'Deduction',
             'created_at' => 'Created At',
