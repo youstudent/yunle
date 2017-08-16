@@ -19,7 +19,7 @@
             $menu =
                 [
                     ['label' => '', 'options' => ['class' => 'nav-header']],
-                    ['label' => '首页', 'url' => '/site'],
+                    ['label' => '统计信息', 'url' => '/site/index'],
                     ['label' => '账号信息', 'url' => '/account/index'],
                     [
                         'label'   => '用户管理',
@@ -37,18 +37,8 @@
                         'url'     => 'javascript:;',
                         'options' => ['class' => 'has-sub'],
                         'items'   => [
-                            ['label' => '订单池', 'url' => ['/order/wall']],
                             ['label' => '订单列表', 'url' => ['/order/index']],
                             ['label' => '保险订单', 'url' => ['/insurance-order/index']],
-                        ],
-                    ],
-                    [
-                        'label'   => '审核',
-                        'url'     => 'javascript:;',
-                        'options' => ['class' => 'has-sub'],
-                        'items'   => [
-                            ['label' => '行驶证', 'url' => ['/b/index']],
-                            ['label' => '服务商', 'url' => ['/c-order/index']],
                         ],
                     ],
                     [

@@ -30,7 +30,6 @@ TRUNCATE TABLE cdc_member_code;
 TRUNCATE TABLE cdc_member_img;
 TRUNCATE TABLE cdc_member_tag;
 TRUNCATE TABLE cdc_message_code;
-TRUNCATE TABLE cdc_migration;
 TRUNCATE TABLE cdc_notice;
 TRUNCATE TABLE cdc_order;
 TRUNCATE TABLE cdc_order_detail;
@@ -49,10 +48,13 @@ TRUNCATE TABLE cdc_warranty;
 DELETE FROM cdc_adminuser WHERE id>1;
 ALTER TABLE cdc_adminuser AUTO_INCREMENT=2;
 
-#cdc_app_menu
-#cdc_auth_item
-#cdc_auth_item_child
-#cdc_auth_rule
-#cdc_menu
-#cdc_menu_group
+
+TRUNCATE TABLE cdc_app_menu_without
+TRUNCATE TABLE cdc_auth_item
+TRUNCATE TABLE cdc_auth_item_child
+TRUNCATE TABLE cdc_auth_rule
+TRUNCATE TABLE cdc_menu
+TRUNCATE TABLE cdc_menu_group
+
+#TRUNCATE TABLE cdc_app_menu
 #cdc_setting

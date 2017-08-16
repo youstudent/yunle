@@ -268,8 +268,7 @@ JS
                             4=> '四星',
                             5=> '五星',
                         ]) ?>
-
-                        <?php if(\mdm\admin\components\Helper::checkRoute('/account/get-customer-manager')) : ?>
+                        <?php if(pd\admin\components\Helper::checkRoute('/account/get-customer-manager')) : ?>
                             <?= $form->field($model, 'sid')->dropDownList(
                                 \backend\models\Adminuser::getCustomerManager()
                             ) ?>

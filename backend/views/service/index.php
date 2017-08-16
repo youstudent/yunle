@@ -81,7 +81,9 @@ JS
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="row">
         <div class="col-md-6">
-            <a href="<?= Url::to(['create']) ?>" class="btn btn-success">添加服务商</a>
+            <?php if(pd\admin\components\Helper::checkRoute('/service/create')) : ?>
+                <a href="<?= Url::to(['create']) ?>" class="btn btn-success">添加服务商</a>
+            <?php endif; ?>
         </div>
     </div>
     <p></p>
@@ -116,6 +118,7 @@ JS
             ]) ?>
 
             <div class="form-group m-r-10">
+
                 <input type="text" class="form-control" name="ServiceSearch[created_at]" id="daterangepicker" value="<?= $searchModel->created_at ?>" placeholder="创建时间">
             </div>
 
@@ -168,7 +171,7 @@ JS
                         <td><?= \pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
                         <td align="center">
                             <div class="btn-group">
-                                <a href="<?= Url::to(['index']) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">更多</span></a>
+                                <a href="<?= Url::to(['view', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">更多</span></a>
 <!--                                <a href="--><?//= Url::to(['order/index', 'OrderSearch[order_service]'=> $model->name]) ?><!--"><span class="btn btn-info m-r-1 m-b-5 btn-xs">订单</span></a>-->
 <!--                                <a href="--><?//= Url::to(['insurance-order/index','OrderSearch[order_service]'=> $model->name]) ?><!--"><span class="btn btn-info m-r-1 m-b-5 btn-xs">保险</span></a>-->
                                 <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>

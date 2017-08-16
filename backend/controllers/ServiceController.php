@@ -56,8 +56,10 @@ class ServiceController extends BackendController
      */
     public function actionView($id)
     {
+        $model =  ServiceForm::getOne($id);
+
         return $this->renderPjax('view', [
-            'model' => $this->findModel($id),
+            'model' => $model
         ]);
     }
     /**
