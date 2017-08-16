@@ -139,23 +139,5 @@ class MemberController extends BackendController
         $model->load(Yii::$app->request->post());
         return ActiveForm::validate($model);
     }
-    //用户实名认证信息
-    public function actionReal($id)
-    {
-        $member = MemberForm::getOne($id);
-        $identification = Identification::findOne(['member_id'=>$member->id]);
-
-        $member->scenario = 'update';
-        if ($member->load(Yii::$app->request->post()) && $identification->load(Yii::$app->request->post())) {
-            if( $member->updateMember() && $identification->updateInfo() ){
-                return $this->asJson(['data' => '', 'code' => 1, 'message' => '更新成功', 'url' => Url::to(['member/index'])]);
-            }
-            return $this->asJson(['data' => '', 'code' => 0, 'message' => '更新失败']);
-        }
-        return $this->renderPjax('real', [
-            'member' => $member,
-            'identification' => $identification,
-        ]);
-
-    }
+    
 }
