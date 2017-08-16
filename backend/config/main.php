@@ -103,7 +103,7 @@ return [
             '/admin/user/logout',
 //            '/site/logout',
 //            '/site/login',
-//            '*',
+            '*',
         ]
     ],
     'params' => $params,

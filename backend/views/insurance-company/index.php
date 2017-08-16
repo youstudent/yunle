@@ -156,7 +156,7 @@ JS
                         <td align="center">
                             <div class="btn-group">
                                 <a href="<?= Url::to(['insurance-company/update', 'id'=> $model->id]) ?>" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
-                                <a href="javasrcitp:;" data-confirm="确认删除此会员？" data-url="<?= Url::to(['insurance-company/delete', 'id' => $model->id]) ?>"  data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                                <a href="javasrcitp:;" data-confirm="确认删除此保险商？" data-url="<?= Url::to(['insurance-company/delete', 'id' => $model->id]) ?>"  data-method="get" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
                             </div>
                         </td>
                     </tr>

@@ -329,7 +329,7 @@ class Order extends \yii\db\ActiveRecord
 
         //获取服务商信息
         $service_id = OrderDetail::findOne(['order_id'=>$data['order_id']])->service_id;
-        $service = Service::find()->select('id, name, level, lat, lng, open_at, close_at')
+        $service = Service::find()->select('id, name, level, lat, lng, state, open_at, close_at')
             ->where(['id'=>$service_id])
             ->asArray()
             ->one();
@@ -340,11 +340,9 @@ class Order extends \yii\db\ActiveRecord
         $fac['name'] = $service['name'];
         $fac['level'] = $service['level'];
         //计算时间区间
-        $status = Helper::getOpen($service['open_at'], $service['close_at']);
         $fac['tag'] = Helper::getServiceTag($fac['id']);
-        $fac['status'] = Helper::getClose($status);
+        $fac['status'] = Helper::getClose($service['state']);
         $fac['img_path'] = Yii::$app->params['img_domain'].ServiceImg::findOne(['service_id'=>$fac['id'],'type'=>1])->img_path;
-
 
         $all = ['buttonStatus'=>$buttonStatus, 'order'=>$order, 'insurance'=>$insurance, 'service'=>$fac];
         return $all;
