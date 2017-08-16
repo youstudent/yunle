@@ -53,7 +53,7 @@ class InsuranceCompanyController extends BackendController
     public function actionUpdate($id)
     {
         $model = InsuranceCompany::findOne(['id'=>$id]);
-        $model->scenario = 'update';
+
         if($model->load(Yii::$app->request->post())){
             if($model->updateInsuranceCompany()){
                 return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['salesman/index'])]);

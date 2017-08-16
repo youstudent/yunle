@@ -87,7 +87,7 @@ class Warranty extends \yii\db\ActiveRecord
         return $model;
     }
 
-    public static function changeInfo($modelImgs,$data)
+    public static function changeInfo($modelImgs=null,$data)
     {
         $user_id = Yii::$app->user->identity->id;
         $user = Adminuser::findOne(['id'=>$user_id])->name;

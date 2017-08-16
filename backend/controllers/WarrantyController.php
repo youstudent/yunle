@@ -64,7 +64,7 @@ class WarrantyController extends BackendController
     {
         $data = Yii::$app->request->post();
         $model =  Warranty::getDetail($data['order_id']);
-        $info = Warranty::changeInfo($data);
+        $info = Warranty::changeInfo(null,$data);
         if($info){
             Yii::$app->session->setFlash('success', '修改成功!  ');
             return $this->redirect(['index']);
