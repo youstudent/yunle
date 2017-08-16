@@ -10,8 +10,13 @@ namespace backend\controllers;
 
 use backend\models\Identification;
 use backend\models\searchs\IdentificationSearch;
+use common\models\IdentificationImg;
+use common\models\Upload;
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\helpers\Url;
+use yii\web\Response;
+use yii\web\UploadedFile;
 
 class IdentityController extends BackendController
 {
@@ -47,16 +52,15 @@ class IdentityController extends BackendController
     public function actionUpdate($id)
     {
         $model =  Identification::findOne($id);
-        $model->scenario = 'update';
 
         if($model->load(Yii::$app->request->post())){
-            if($model->updateIdentification()){
-                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['index'])]);
+            if($model->addIdentification()){
+                return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['index?member_id='.$id])]);
             }
-            return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '添加失败']);
+            return json_encode(['data'=> '', 'code'=>0, 'message'=> '操作失败', 'url'=> Url::to(['index?member_id='.$id])]);
         }
 
-        return $this->renderPjax('create', [
+        return $this->renderAjax('update', [
             'model' => $model
         ]);
     }
@@ -81,4 +85,18 @@ class IdentityController extends BackendController
         $model->load(Yii::$app->request->post());
         return \yii\bootstrap\ActiveForm::validate($model);
     }
+
+//    public function actionAsyncImage()
+//    {
+//        $model = new Identification();
+//        $id = $model->saveImg(Yii::$app->request->post());
+//
+//        Yii::$app->response->format = Response::FORMAT_JSON;
+//
+//        if($id){
+//            return ['code'=>1, 'message'=> 'success', 'data' => ['id'=>$id], 'timestamp'=>time()];
+//        }
+//        return ['code'=>0, 'message'=> 'error', 'data' => [], 'timestamp'=>time()];
+//
+//    }
 }

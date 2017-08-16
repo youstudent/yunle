@@ -2,8 +2,11 @@
 
 namespace backend\models;
 
+use common\models\IdentificationImg;
+use common\models\Upload;
 use Yii;
 use yii\base\Exception;
+use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "{{%identification}}".
@@ -23,6 +26,7 @@ use yii\base\Exception;
  */
 class Identification extends \yii\db\ActiveRecord
 {
+    public $img;
     /**
      * @inheritdoc
      */
@@ -41,6 +45,7 @@ class Identification extends \yii\db\ActiveRecord
             [['member_id', 'status', 'created_at', 'updated_at'], 'integer'],
             [['name', 'nation', 'sex', 'birthday', 'start_at', 'end_at'], 'string', 'max' => 50],
             [['licence'], 'string', 'max' => 255],
+            [['img'], 'safe'],
         ];
     }
 
@@ -51,6 +56,7 @@ class Identification extends \yii\db\ActiveRecord
     {
         return [
             'id' => '自增id',
+            'img' => '身份证图片',
             'member_id' => '所属用户id',
             'name' => '公司名称或姓名',
             'nation' => '名族',
@@ -69,15 +75,13 @@ class Identification extends \yii\db\ActiveRecord
         if(!$this->validate()){
             return false;
         }
-
-        return Yii::$app->db->transaction(function(){
-            $this->created_at = time();
-            $this->updated_at = time();
-            if(!$this->save()){
-                throw new Exception('error');
-            }
-            return $this;
-        });
+        $this->created_at = time();
+        $this->updated_at = time();
+        $this->status = 1;
+        if(!$this->save(false)){
+            return false;
+        }
+        return true;
     }
 
     public function updateIdentification()
@@ -96,4 +100,9 @@ class Identification extends \yii\db\ActiveRecord
             return $this;
         });
     }
+
+//    public function saveImg($data)
+//    {
+//
+//    }
 }

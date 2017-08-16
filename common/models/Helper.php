@@ -43,6 +43,12 @@ class Helper
      * @param $pick
      */
 
+    public static function getMemberType($id)
+    {
+        $type = Member::findOne($id)->type;
+        return $type;
+    }
+
     //获得服务商名称和简介
     public static function getFacilitator($facilitator_id)
     {

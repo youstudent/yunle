@@ -91,7 +91,7 @@ class Upload extends Model
                     $model = UserImg::findOne(['user_id'=>$id]);
                     if (!isset($model) || empty($model)) {
                         $model = new UserImg();
-                        $model->user_id = $id;
+                        $model->User_id = $id;
                     }
 
                     $model->img_path = $img_path;
