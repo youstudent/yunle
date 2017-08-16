@@ -17,9 +17,11 @@ $this->title = '账号信息';
 
 <div class="info">
     <div class="row">
+        <?php if(pd\admin\components\Helper::checkRoute('/account/modify-password')) : ?>
         <div class="col-md-6">
-            <a href="<?= Url::to(['rbac/modify-platform-password', 'id'=>$model->id]) ?>" class="btn btn-success" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static" >修改密码</a>
+            <a href="<?= Url::to(['/account/modify-password']) ?>" class="btn btn-success" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static" >修改密码</a>
         </div>
+        <?php endif; ?>
     </div>
     <p></p>
     <!-- begin panel -->

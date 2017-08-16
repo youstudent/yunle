@@ -55,27 +55,7 @@ class SiteController extends Controller
         ];
     }
 
-    /**
-     * Displays homepage.
-     *
-     * @return string
-     */
-    public function actionIndex()
-    {
-        $model = \common\models\Helper::getStatCount();
-        return $this->render('index', [
-            'model' => $model,
-        ]);
-    }
-    public function actionStat($days)
-    {
-        $model = \common\models\Helper::getStat($days);
-        if($model){
-            return $this->asJson(['data'=> $model, 'code'=>1, 'message'=> 'success']);
-        }
-        return $this->asJson(['data'=> '', 'code'=>0, 'message'=> 'error']);
 
-    }
 
     /**
      * Login action.
