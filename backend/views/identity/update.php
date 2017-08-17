@@ -11,7 +11,7 @@ use yii\widgets\ActiveForm;
 /* @var $model backend\models\form\ServiceForm */
 /* @var $form yii\widgets\ActiveForm */
 
-$this->title = '添加认证信息';
+$this->title = '编辑认证信息';
 $this->params['breadcrumbs'][] = $this->title;
 
 pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
@@ -19,7 +19,7 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
 
     <div class="service-create">
 
-        <h1>添加认证信息</h1>
+        <h1>编辑认证信息</h1>
 
         <div class="adminuser-form">
             <!-- begin row -->

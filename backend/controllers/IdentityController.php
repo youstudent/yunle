@@ -28,7 +28,7 @@ class IdentityController extends BackendController
         ]);
     }
 
-    public function actionCreate($member_id)
+    public function actionCreate($member_id=null)
     {
         $model = new Identification();
         $model->member_id = $member_id;
@@ -51,8 +51,6 @@ class IdentityController extends BackendController
     {
         $model =  Identification::getOne($id);
         $model->scenario = 'update';
-
-
 
         if($model->load(Yii::$app->request->post())){
 
