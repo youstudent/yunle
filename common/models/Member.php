@@ -184,7 +184,7 @@ class Member extends \yii\db\ActiveRecord
         $count3 = InsuranceDetail::find()->select('member_id, action')
             ->where(['member_id'=>$member_id, 'action'=>'核保成功'])
             ->count();
-        $topStatus = [['statusName'=> '待接单','top'=>1,'count'=>$count1], ['statusName'=> '待交车', 'top'=>2,'count'=>$count2], ['statusName'=> '待交车', 'top'=>3,'count'=>$count3]];
+        $topStatus = [['statusName'=> '待接单','top'=>1,'count'=>$count1], ['statusName'=> '待交车', 'top'=>2,'count'=>$count2], ['statusName'=> '核保成功', 'top'=>3,'count'=>$count3]];
 
         //我的管家
         $pid = Member::findOne(['id'=>$member_id])->pid;

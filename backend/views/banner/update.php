@@ -56,9 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <?= $form->field($model, 'action_value')->textInput() ?>
 
-                <?php $model->status = 1; ?>
-
-                <?= $form->field($model, 'status')->dropDownList(['禁用', '正常']) ?>
+                <?= $form->field($model, 'status')->dropDownList([0 => '禁用', 1 => '正常']) ?>
 
                 <?php \yii\bootstrap\ActiveForm::end() ?>
 
@@ -78,7 +76,7 @@ $(function () {
         var f = $('#BannerForm');
         f.on('beforeSubmit', function (e) {
             swal({
-                    title: "确认添加",
+                    title: "确认修改",
                     text: "",
                     type: "warning",
                     showCancelButton: true,
@@ -96,10 +94,10 @@ $(function () {
                         success: function (res) {
                             if (res.code == 1) {
                                 swal({title: res.message, text: "3秒之后将自动跳转，点击确定立即跳转。", timer: 3000}, function () {
-                                    location.reload();
+                                    window.location.href = res.url;
                                 });
                                 setTimeout(function () {
-                                    location.reload();
+                                    window.location.href = res.url;
                                 }, 3000)
                             } else {
                                 swal(res.message, "", "error");

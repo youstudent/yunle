@@ -19,9 +19,7 @@ class ArticleController extends BackendController
     public function actionIndex()
     {
         $searchModel = new ArticleSearch();
-
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
 
         return $this->renderPjax('index', [
             'dataProvider' => $dataProvider,

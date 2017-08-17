@@ -16,15 +16,17 @@ class ArticleSearch extends Article
     public function rules()
     {
         return [
-            [['type'], 'integer'],
-            [['created_at', 'salesman_name', 'service_name', 'user', 'car', 'service'], 'string'],
-            [['phone'], 'number'],
+            [['content'], 'required'],
+            [['content'], 'string'],
+            [['status', 'column_id', 'views', 'created_at', 'updated_at'], 'integer'],
+            [['title', 'author'], 'string', 'max' => 50],
         ];
     }
 
     public function search($params)
     {
         $query = Article::find();
+        $query->alias('a')->joinWith('column');
 
         //$query = $this->authFilter($query);
 
@@ -40,21 +42,19 @@ class ArticleSearch extends Article
             $start = strtotime($start_date);
 
             if ($start > 0) {
-                $query->andFilterWhere(['>=', 'created_at', $start]);
+                $query->andFilterWhere(['>=', 'a.created_at', $start]);
             }
 
             $end_date = substr($this->created_at, 12);
             $end = strtotime($end_date);
 
             if ($end > 0) {
-                $query->andFilterWhere(['<=', 'created_at', $end]);
+                $query->andFilterWhere(['<=', 'a.created_at', $end]);
             }
         }
-        $query->andFilterWhere(['type' => $this->type])
-            ->andFilterWhere(['LIKE', 'service', $this->service])
-            ->andFilterWhere(['LIKE', 'user', $this->user])
-            ->andFilterWhere(['LIKE', 'phone', $this->phone]);
-
+        $query->andFilterWhere(['status' => $this->status])
+            ->andFilterWhere(['author' => $this->author])
+            ->andFilterWhere(['title' => $this->title]);
 
         return $dataProvider;
     }
