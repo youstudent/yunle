@@ -5,6 +5,7 @@ namespace backend\models;
 use common\models\IdentificationImg;
 use Yii;
 use yii\base\Exception;
+use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "{{%identification}}".
@@ -26,6 +27,7 @@ class Identification extends \yii\db\ActiveRecord
 {
     public $img;
     public $imgs;
+
     /**
      * @inheritdoc
      */
@@ -44,6 +46,7 @@ class Identification extends \yii\db\ActiveRecord
             [['member_id', 'status', 'created_at', 'updated_at'], 'integer'],
             [['name', 'nation', 'sex', 'birthday', 'start_at', 'end_at'], 'string', 'max' => 50],
             [['licence'], 'string', 'max' => 255],
+            [['img'], 'safe'],
         ];
     }
 
@@ -62,6 +65,7 @@ class Identification extends \yii\db\ActiveRecord
     {
         return [
             'id' => '自增id',
+            'img' => '身份证图片',
             'member_id' => '所属用户id',
             'name' => '公司名称或姓名',
             'nation' => '名族',
@@ -105,6 +109,7 @@ class Identification extends \yii\db\ActiveRecord
 
             return $this;
         });
+
     }
 
     public function updateIdentification()
@@ -123,7 +128,6 @@ class Identification extends \yii\db\ActiveRecord
             return $this;
         });
     }
-
     /**
      * 上传土图片要用到的
      * @param $data
@@ -168,4 +172,5 @@ class Identification extends \yii\db\ActiveRecord
         }
         return $arr;
     }
+
 }

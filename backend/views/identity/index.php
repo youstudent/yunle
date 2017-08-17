@@ -82,9 +82,11 @@ JS
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="row">
+
         <div class="col-md-6">
             <?= Html::a('添加', ['create', 'member_id'=> 1], ['class' => 'btn btn-success']) ?>
         </div>
+
     </div>
     <p></p>
 
@@ -105,7 +107,7 @@ JS
                 <thead>
                 <tr>
                     <th>#</th>
-                    <td>证件号</td>
+                    <th>证件号</th>
                     <th>姓名</th>
                     <th>性别</th>
                     <th>民族</th>
@@ -134,6 +136,7 @@ JS
                             <div class="btn-group">
                                 <a href="<?= Url::to(['view', 'id'=> $model->id]) ?>" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">查看</span></a>
                                 <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">编辑</span></a>
+
                             </div>
                         </td>
                     </tr>
