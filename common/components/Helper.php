@@ -70,7 +70,7 @@ class Helper
         if(empty($app_key) || empty($master_secret)){
             return false;
         }
-        $log_path = \Yii::getAlias('@common') . '\runtime\log\jpush.log';
+        $log_path = Yii::getAlias('@common') . '\runtime\log\jpush'. date('Y-m-d') . '.log';
         //init
         $client = new \JPush\Client($app_key, $master_secret, $log_path);
 

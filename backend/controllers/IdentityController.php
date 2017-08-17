@@ -10,13 +10,9 @@ namespace backend\controllers;
 
 use backend\models\Identification;
 use backend\models\searchs\IdentificationSearch;
-use common\models\IdentificationImg;
-use common\models\Upload;
 use Yii;
-use yii\data\ActiveDataProvider;
 use yii\helpers\Url;
-use yii\web\Response;
-use yii\web\UploadedFile;
+
 
 class IdentityController extends BackendController
 {
@@ -32,9 +28,11 @@ class IdentityController extends BackendController
         ]);
     }
 
-    public function actionCreate()
+    public function actionCreate($member_id)
     {
         $model = new Identification();
+        $model->member_id = $member_id;
+
         $model->scenario = 'create';
 
         if($model->load(Yii::$app->request->post())){
@@ -51,17 +49,31 @@ class IdentityController extends BackendController
 
     public function actionUpdate($id)
     {
-        $model =  Identification::findOne($id);
+        $model =  Identification::getOne($id);
+        $model->scenario = 'update';
+
+
 
         if($model->load(Yii::$app->request->post())){
-            if($model->addIdentification()){
-                return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['index?member_id='.$id])]);
+
+            if($model->updateIdentification()){
+                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '保存成功', 'url'=> Url::to(['index'])]);
             }
             return json_encode(['data'=> '', 'code'=>0, 'message'=> '操作失败', 'url'=> Url::to(['index?member_id='.$id])]);
         }
 
-        return $this->renderAjax('update', [
+
+        return $this->renderPjax('update', [
             'model' => $model
+        ]);
+    }
+
+    public function actionView($id)
+    {
+        $model = Identification::getOne($id);
+
+        return $this->renderPjax('view', [
+            'model' => $model,
         ]);
     }
 
