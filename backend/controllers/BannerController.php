@@ -23,7 +23,6 @@ class BannerController extends BackendController
 
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-
         return $this->renderPjax('index', [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel

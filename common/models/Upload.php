@@ -41,7 +41,7 @@ class Upload extends Model
             $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
             $img_path = $this->getSavePath($type, $chars, $extension);
-            file_put_contents(Yii::getAlias('@common').$img_path, $file);
+            file_put_contents(Yii::getAlias('@common').'/static'.$img_path, $file);
 
 //            $path_Str = Yii::getAlias('@common');
 //            $str = str_replace('\\','/',$path_Str);
@@ -122,7 +122,7 @@ class Upload extends Model
         $save_path = $this->db_save_path;
 
         if (!empty($save_path)) {
-            $save_dir = dirname(Yii::getAlias('@common') . $save_path);
+            $save_dir = dirname(Yii::getAlias('@common') .'/static'. $save_path);
             if (!is_dir($save_dir)) {
 //                mkdir($save_dir, 0755);
                 FileHelper::createDirectory($save_dir, $mode = 0775, $recursive = true);

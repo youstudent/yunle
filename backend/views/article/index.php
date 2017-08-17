@@ -103,19 +103,19 @@ JS
         <div class="panel-body">
             <form class="form-inline"  action="" method="GET">
                 <div class="form-group m-r-15">
-                    <input type="text" class="form-control" style="min-width: 103%;margin-right: 70px;" name="InsuranceOrderSearch[created_at]" id="daterangepicker" value="<?= $searchModel->created_at ?>" placeholder="创建时间">
+                    <input type="text" class="form-control" style="min-width: 103%;margin-right: 70px;" name="ArticleSearch[created_at]" id="daterangepicker" value="<?= $searchModel->created_at ?>" placeholder="创建时间">
                 </div>
                 <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="InsuranceOrderSearch[user]" id="user" value="<?= $searchModel->author ?>" placeholder="作者">
+                    <input type="text" class="form-control" name="ArticleSearch[author]" id="author" value="<?= $searchModel->author ?>" placeholder="作者">
                 </div>
                 <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="InsuranceOrderSearch[phone]" id="phone" value="<?= $searchModel->title ?>" placeholder="标题">
+                    <input type="text" class="form-control" name="ArticleSearch[title]" id="title" value="<?= $searchModel->title ?>" placeholder="标题">
                 </div>
                 <div class="form-group m-r-10">
-                    <select class="form-control" name="InsuranceOrderSearch[status]" id="InsuranceSearchStatus" style="min-width: 105%;">
+                    <select class="form-control" name="ArticleSearch[status]" id="ArticleSearchStatus" style="min-width: 105%;">
                         <option value="" selected>全部</option>
-                        <option value="0" <?= $searchModel->status == 0 && strlen($searchModel->status) ? 'selected' : '' ?>>正常</option>
-                        <option value="100" <?= $searchModel->status == 100 ? 'selected' : '' ?>>取消</option>
+                        <option value="1" <?= $searchModel->status == 1 && strlen($searchModel->status) ? 'selected' : '' ?>>正常</option>
+                        <option value="0" <?= $searchModel->status == 0 && strlen($searchModel->status) ? 'selected' : '' ?>>禁用</option>
                     </select>
 
                 </div>
@@ -144,14 +144,14 @@ JS
                         <td><?= $model->title ?></td>
                         <td><?= $model->author ?></td>
 
-                        <td><?= $model->column_id ?></td>
+                        <td><?= $model->column ? $model->column->name : '<span class="badge badge-warning">'. '未选择栏目'. '</span>' ?></span></td>
                         <td><?= $model->views ?></td>
                         <td><?= pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
                         <td>
-                            <?php switch ($model->status):?><?php case 0: ?>
+                            <?php switch ($model->status):?><?php case 1: ?>
                                 <span class="badge badge-primary">正常</span>
-                                <?php break;?><?php case 100: ?>
-                                <span class="badge badge-danger">取消</span>
+                                <?php break;?><?php case 0: ?>
+                                <span class="badge badge-danger">禁用</span>
                                 <?php break;?><?php default: ?>
                             <?php endswitch ?>
                         </td>

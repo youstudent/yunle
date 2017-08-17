@@ -57,4 +57,9 @@ class Article extends \yii\db\ActiveRecord
             'updated_at' => '更新时间',
         ];
     }
+
+    public function getColumn()
+    {
+        return $this->hasOne(Column::className(), ['id'=> 'column_id'])->alias('c');
+    }
 }

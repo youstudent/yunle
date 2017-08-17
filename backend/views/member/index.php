@@ -160,7 +160,7 @@ JS
                         <td><?= $model->phone ?></td>
                         <td>不知道</td>
                         <td>
-                            <a href="<?= Url::to(['modify-salesman', 'id'=> $model->id]) ?>"  data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><?= $model->salesmanName ? $model->salesmanName->username : '<span class="text-danger">未设置</span>' ?></a>
+                            <a href="<?= Url::to(['modify-salesman', 'id'=> $model->id]) ?>"  data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><?= $model->salesmanName ? $model->salesmanName->name : $model->salesmanName->username ?></a>
                         </td>
 <!--                        <td>--><?//= $model->type == 1 ? '<span class="badge badge-info">个人</span>' : '<span class="badge badge-warning">组织</span>' ?><!--</td>-->
                         <td><?= $model->status == 1 ? '<span class="badge badge-info">正常</span>' : '<span class="badge badge-danger">冻结</span>' ?></td>

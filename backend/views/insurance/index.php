@@ -126,14 +126,14 @@ JS
                     <tr class="">
                         <td><?= \pd\helpers\Yii2Helpers::serialColumn($dataProvider, $index) ?></td>
                         <td><?= $model->title ?></td>
-                        <td><?= $model->type == 1 ? '<span class="badge badge-info">商业险</span>' : '<span class="badge badge-danger">交强险</span>' ?></td>
+                        <td><?= $model->type == 2 ? '<span class="badge badge-info">商业险</span>' : '<span class="badge badge-danger">交强险</span>' ?></td>
                         <td><?= $model->cost ?></td>
                         <td><?= \pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
 
                         <td align="center">
                             <div class="btn-group">
                                 <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">编辑</span></a>
-                                <a href="javascript:;" data-confirm="确认删除此条记录？" data-url="<?= Url::to(['delete', 'id' => $model->id]) ?>"  data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                                <a href="javascript:;" data-confirm="确认删除此险种？" data-url="<?= Url::to(['delete', 'id' => $model->id]) ?>"  data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
                             </div>
                         </td>
                     </tr>

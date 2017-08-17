@@ -94,10 +94,10 @@ $(function () {
                         success: function (res) {
                             if (res.code == 1) {
                                 swal({title: res.message, text: "3秒之后将自动跳转，点击确定立即跳转。", timer: 3000}, function () {
-                                    location.reload();
+                                    window.location.href = res.url;
                                 });
                                 setTimeout(function () {
-                                    location.reload();
+                                    window.location.href = res.url;
                                 }, 3000)
                             } else {
                                 swal(res.message, "", "error");
