@@ -12,6 +12,7 @@ use backend\models\Identification;
 use backend\models\searchs\IdentificationSearch;
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\helpers\Url;
 
 class IdentityController extends BackendController
 {
@@ -27,9 +28,11 @@ class IdentityController extends BackendController
         ]);
     }
 
-    public function actionCreate()
+    public function actionCreate($member_id)
     {
         $model = new Identification();
+        $model->member_id = $member_id;
+
         $model->scenario = 'create';
 
         if($model->load(Yii::$app->request->post())){
@@ -46,18 +49,28 @@ class IdentityController extends BackendController
 
     public function actionUpdate($id)
     {
-        $model =  Identification::findOne($id);
+        $model =  Identification::getOne($id);
         $model->scenario = 'update';
+
 
         if($model->load(Yii::$app->request->post())){
             if($model->updateIdentification()){
-                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['index'])]);
+                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '保存成功', 'url'=> Url::to(['index'])]);
             }
             return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '添加失败']);
         }
 
-        return $this->renderPjax('create', [
+        return $this->renderPjax('update', [
             'model' => $model
+        ]);
+    }
+
+    public function actionView($id)
+    {
+        $model = Identification::getOne($id);
+
+        return $this->renderPjax('view', [
+            'model' => $model,
         ]);
     }
 

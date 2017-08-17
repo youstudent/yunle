@@ -11,6 +11,7 @@ namespace backend\controllers;
 use backend\models\DrivingLicense;
 use backend\models\form\AgencyForm;
 use backend\models\form\ServiceForm;
+use backend\models\Identification;
 use backend\models\Service;
 use backend\models\ServiceImg;
 use Imagine\Image\ImageInterface;
@@ -25,8 +26,8 @@ class MediaController extends BackendController
 
     public function actionImageUpload($model = null, $type = null)
     {
-        $thumb_width = null;
-        $thumb_height = null;
+        $thumb_width = 300;
+        $thumb_height = 200;
         $attribute = null;
         $sub_dir = 'default';
         $directory = Yii::getAlias('@common/static/upload/default') . DIRECTORY_SEPARATOR;
@@ -48,7 +49,6 @@ class MediaController extends BackendController
                 $directory = Yii::getAlias('@common/static/upload/agency') . DIRECTORY_SEPARATOR;
                 $sub_dir = 'agency';
                 $attribute = 'attachment';
-                $thumb_width = $thumb_height = 60;
                 break;
             case 'driver':
                 $model = new DrivingLicense();
@@ -56,6 +56,11 @@ class MediaController extends BackendController
                 $sub_dir = 'driver';
                 $attribute = 'img';
                 break;
+            case 'identification':
+                $model = new Identification();
+                $directory = Yii::getAlias('@common/static/upload/identification') . DIRECTORY_SEPARATOR;
+                $sub_dir = 'identification';
+                $attribute = 'img';
         }
 
         $imageFile = UploadedFile::getInstance($model, $attribute);
