@@ -27,7 +27,7 @@ class DriverController extends BackendController
         ]);
     }
 
-    public function actionCreate($member_id)
+    public function actionCreate($member_id=null)
     {
         $model = new DrivingLicense();
         $model->scenario = 'create';
@@ -35,7 +35,7 @@ class DriverController extends BackendController
 
         if($model->load(Yii::$app->request->post())){
             if($model->addDrivingLicense()){
-                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['index'])]);
+                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['index?member_id='.$member_id])]);
             }
             return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '添加失败']);
         }

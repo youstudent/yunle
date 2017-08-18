@@ -9,7 +9,7 @@ use Yii;
  * This is the model class for table "{{%order}}".
  *
  * @property integer $id
- * @property string $order
+ * @property string $order_sn
  * @property integer $type
  * @property string $user
  * @property string $phone
@@ -27,7 +27,10 @@ class Order extends \yii\db\ActiveRecord
 {
     public $status_id;
     public $type_label;
+    public $member_id;
 
+    public $errorMsg;
+    public $transaction;
     /**
      * @inheritdoc
      */
@@ -100,6 +103,7 @@ class Order extends \yii\db\ActiveRecord
         $model = Order::findOne($id);
         $model->status_id = $model->getOrderAct()->orderBy(['id'=> SORT_DESC])->one()->status;
         $model->type_label = Helper::getType($model->type);
+        $model->member_id = OrderDetail::findOne(['order_id'=>$id])->member_id;
         return $model;
     }
 }

@@ -127,7 +127,7 @@ use yii\helpers\Url;
             var f = $('#OrderForm');
             f.on('beforeSubmit', function (e) {
                 swal({
-                        title: "确认更新会员信息",
+                        title: "确认添加此订单?",
                         text: "",
                         type: "warning",
                         showCancelButton: true,

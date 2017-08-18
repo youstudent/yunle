@@ -1,6 +1,7 @@
 <?php
 
 use backend\models\Member;
+use backend\models\DrivingLicense;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\Url;
@@ -82,12 +83,25 @@ JS
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="row">
+        <?php if (Yii::$app->request->get('member_id')) {?>
+            <?php if (Member::findOne(Yii::$app->request->get('member_id'))->type ==2) {?>
+            <div class="col-md-6">
+                <?= Html::a('添加', ['create', 'member_id'=> Yii::$app->request->get('member_id')], ['class' => 'btn btn-success']) ?>
+            </div>
+            <?php } elseif (Member::findOne(Yii::$app->request->get('member_id'))->type ==1 && DrivingLicense::find()->where(['member_id'=>Yii::$app->request->get('member_id')])->count() < 1) {?>
+            <div class="col-md-6">
+                <?= Html::a('添加', ['create', 'member_id'=> Yii::$app->request->get('member_id')], ['class' => 'btn btn-success']) ?>
+            </div>
+            <?} else {?>
+            <div class="col-md-6">
+
+            </div>
+            <?php }?>
+        <?} else {?>
         <div class="col-md-6">
-            <?php if($searchModel->member_id) : ?>
-                <a href="<?= Url::to(['create', 'member_id'=>$searchModel->member_id]) ?>" class="btn btn-success" >添加驾照</a>
-            <?php endif; ?>
-            <a href="<?= Url::to(['create', 'member_id'=>1]) ?>" class="btn btn-success" >添加驾照</a>
+
         </div>
+        <?php }?>
     </div>
     <p></p>
 

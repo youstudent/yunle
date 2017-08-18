@@ -10,6 +10,7 @@ namespace backend\controllers;
 
 use backend\models\DrivingLicense;
 use backend\models\form\AgencyForm;
+use backend\models\form\CarForm;
 use backend\models\form\ServiceForm;
 use backend\models\Identification;
 use backend\models\Service;
@@ -61,6 +62,13 @@ class MediaController extends BackendController
                 $directory = Yii::getAlias('@common/static/upload/identification') . DIRECTORY_SEPARATOR;
                 $sub_dir = 'identification';
                 $attribute = 'img';
+                break;
+            case 'car':
+                $model = new CarForm();
+                $directory = Yii::getAlias('@common/static/upload/car') . DIRECTORY_SEPARATOR;
+                $sub_dir = 'car';
+                $attribute = 'car_img';
+                break;
         }
 
         $imageFile = UploadedFile::getInstance($model, $attribute);

@@ -28,7 +28,7 @@ class IdentificationSearch extends Identification
             'query' => $query->where(['status'=>1])
         ]);
 
-        if (!empty($params)) {
+        if (isset($params['member_id']) || !empty($params['member_id'])) {
             $query->andFilterWhere(['member_id' => $params['member_id']]);
         }
         $query->andFilterWhere(['member_id' => $this->id]);
