@@ -84,13 +84,13 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
 
 
 
-                            <div class="form-group field-carform-cat_img">
-                                <label class="control-label control-label col-md-4 col-sm-4" for="carform-cat_img">行驶证图片</label>
+                            <div class="form-group field-carform-car_img">
+                                <label class="control-label control-label col-md-4 col-sm-4" for="carform-car_img">行驶证图片</label>
                                 <div class="col-md-6 col-sm-6">
                                     <?= FileUploadUI::widget([
                                         'model' => $model,
                                         'attribute' => 'car_img',
-                                        'url' => ['media/image-upload', 'model'=> 'agency'],
+                                        'url' => ['media/image-upload', 'model'=> 'car'],
                                         'gallery' => true,
                                         'fieldOptions' => [
                                             'accept' => 'image/*'
@@ -117,7 +117,7 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
                                 </div>
                             </div>
 
-                            <?= $form->field($model, 'cat_imgs', ['template'=> "{input}"])->hiddenInput() ?>
+                            <?= $form->field($model, 'car_imgs', ['template'=> "{input}"])->hiddenInput() ?>
 
 
 
@@ -143,7 +143,7 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
 $formId = $model->formName();
 $this->registerJs(<<<JS
 $(function () {
-    var img_input = $('input[name="AgencyForm[imgs]"]');
+    var img_input = $('input[name="CarForm[car_imgs]"]');
     
     $('body').on('fileuploaddone', function(e, data){
         var img_id = data.result.files[0].img_id;

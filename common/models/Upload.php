@@ -118,7 +118,7 @@ class Upload extends Model
     public function getSavePath($type, $chars ,$extension)
     {
         $save_path = '';
-        $this->db_save_path = '/upload/'. $type .'_imgs/' . date('Y-m-d') . '/' . sha1($chars[ mt_rand(0, strlen($chars) - 1) ] . time()) . '.' . $extension;
+        $this->db_save_path = '/upload/'. $type . '/' . sha1($chars[ mt_rand(0, strlen($chars) - 1) ] . time()) . '.' . $extension;
         $save_path = $this->db_save_path;
 
         if (!empty($save_path)) {
