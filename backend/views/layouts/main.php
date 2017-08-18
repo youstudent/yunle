@@ -1,15 +1,29 @@
 <?php
 use yii\helpers\Html;
+use kartik\dialog\Dialog;
+
+echo Dialog::widget([
+    'dialogDefaults' => [
+        Dialog::DIALOG_CONFIRM => [
+            'btnCancelLabel' => '取消',
+            'btnOKLabel' => '确定',
+            'btnOKClass' => 'btn btn-sm btn-danger',
+            'btnCancelClass' => 'btn btn-sm btn-white',
+            'type' => 'type-default',
+        ],
+    ],
+]);
+
 
 /* @var $this \yii\web\View */
 /* @var $content string */
 
 
 if (Yii::$app->controller->action->id === 'login') {
-/**
- * Do not use this code in your template. Remove it.
- * Instead, use the code  $this->layout = '//main-login'; in your controller.
- */
+    /**
+     * Do not use this code in your template. Remove it.
+     * Instead, use the code  $this->layout = '//main-login'; in your controller.
+     */
     echo $this->render(
         'main-login',
         ['content' => $content]
@@ -24,8 +38,8 @@ if (Yii::$app->controller->action->id === 'login') {
     <!DOCTYPE html>
     <html lang="<?= Yii::$app->language ?>">
     <head>
-        <meta charset="<?= Yii::$app->charset ?>" />
-        <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+        <meta charset="<?= Yii::$app->charset ?>"/>
+        <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
         <?= Html::csrfMetaTags() ?>
         <title><?= Html::encode($this->title) ?></title>
         <?php $this->head() ?>
@@ -67,3 +81,5 @@ if (Yii::$app->controller->action->id === 'login') {
     </html>
     <?php $this->endPage() ?>
 <?php } ?>
+
+

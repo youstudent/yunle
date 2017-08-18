@@ -53,6 +53,24 @@ class ServiceForm  extends Service
         ];
     }
 
+    public function attributeHints()
+    {
+        return [
+            'username' => '登录账号将作为服务商使用服务平台的登录账号,服务商的账号不能直接在服务端APP直接使用',
+            'password' => '最少6位，最长16位',
+            'name' => '服务商名称',
+            'principal' => '负责人名称',
+            'contact_phone' => '客户的联系电话',
+            'level' => '展示在客户端的服务商星级',
+            'address' => '展示在客户端的服务商详细地址',
+            'lat' => '服务商地址纬度,不建议直接填写',
+            'lng' => '服务商地址经度,不建议直接填写',
+            'heads' => '服务商头像',
+            'attachments' => '服务商附件，最多传11张，将展示在APP服务商详情',
+            'sid' => '平台的客户经理',
+        ];
+    }
+
     public function attributeLabels()
     {
         return ArrayHelper::merge(parent::attributeLabels(), [

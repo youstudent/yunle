@@ -144,7 +144,6 @@ JS
                             'validationUrl'        => $model->isNewRecord ? Url::toRoute(['validate-form', 'scenario' => 'create']) : Url::toRoute(['validate-form', 'scenario' => 'update']),
                         ]) ?>
 
-
                         <?= $form->field($model, 'username')->textInput() ?>
 
                         <?= $form->field($model, 'password')->textInput() ?>

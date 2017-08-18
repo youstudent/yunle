@@ -28,7 +28,7 @@ class ServiceController extends BackendController
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['POST'],
+                    'set-status' => ['POST'],
                 ],
             ],
         ];
@@ -100,18 +100,6 @@ class ServiceController extends BackendController
         ]);
     }
 
-    /**
-     * Deletes an existing Adminuser model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
-    }
 
     /**
      * Finds the Adminuser model based on its primary key value.
@@ -150,6 +138,13 @@ class ServiceController extends BackendController
         return \yii\bootstrap\ActiveForm::validate($model);
     }
 
-
+    public function actionSetStatus($id, $opt)
+    {
+        $model = Service::findOne($id);
+        $model->status = $opt;
+        $model->save();
+        Yii::$app->session->setFlash('success', '服务商 ['. $model->name .' ] 状态变更成功');
+        return $this->redirect(['index']);
+    }
 
 }

@@ -52,6 +52,19 @@ class AgencyForm  extends Agency
         ];
     }
 
+    public function attributeHints()
+    {
+        return [
+            'username' => '登录账号将作为代理商使用服务平台的登录账号,代理商的账号不能直接在服务端APP直接使用',
+            'password' => '最少6位，最长16位',
+            'name' => '代理商名称',
+            'principal' => '负责人名称',
+            'principal_phone' => '负责人名称的联系电话',
+            'attachments' => '代理商附件，最多传11张，将展示在APP代理商详情',
+            'sid' => '平台的客户经理',
+        ];
+    }
+
     public function attributeLabels()
     {
         return ArrayHelper::merge(parent::attributeLabels(), [

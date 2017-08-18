@@ -131,6 +131,7 @@ JS
                     <th>用户名</th>
                     <th>联系电话</th>
                     <th>状态</th>
+                    <th>推荐码</th>
                     <th>服务商</th>
                     <th>创建时间</th>
                     <th>操作</th>
@@ -143,15 +144,16 @@ JS
                         <td><?= $model->username ?></td>
                         <td><?= $model->phone ?></td>
                         <td><?= $model->status == 1 ? '<span class="badge badge-info">正常</span>' : '<span class="badge badge-danger">冻结</span>' ?></td>
+                        <td><?= $model->code ? $model->code->code : '<span class="badge badge-warning">'. '未设置'. '</span>' ?></span></td>
                         <td><?= $model->service ? $model->service->name : '<span class="badge badge-warning">'. '未设置'. '</span>' ?></span></td>
                         <td><?= \pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
                         <td align="center">
                             <div class="btn-group">
-                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">信息</span></a>
+                                <a href="<?= Url::to(['salesman/view', 'id'=> $model->id]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">信息</span></a>
+                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
                                 <a href="<?= Url::to(['member/index', 'MemberSearch[salesman_username]'=> $model->username ]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">客户列表</span></a>
                                 <a href="<?= Url::to(['order/index', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">订单</span></a>
                                 <a href="<?= Url::to(['insurance/index', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">保险</span></a>
-                                <a href="#member-edit-modal-<?= $model->id ?>" data-url="<?= Url::to(['salesman/update', 'id'=> $model->id]) ?>" data-toggle="modal" ><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
                                 <a href="javasrcitp:;" data-confirm="确认冻结此会员？" data-url="<?= Url::to(['salesman/set-status','id' => $model->id, 'status'=> Member::STATUS_INACTIVE]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">冻结</span></a>
                                 <a href="javasrcitp:;" data-confirm="确认激活此会员？" data-url="<?= Url::to(['salesman/set-status','id' => $model->id, 'status'=> Member::STATUS_ACTIVE]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">激活</span></a>
                                 <a href="javasrcitp:;" data-confirm="确认删除此会员？" data-url="<?= Url::to(['salesman/soft-delete', 'id' => $model->id]) ?>"  data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>

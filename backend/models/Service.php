@@ -3,6 +3,7 @@
 namespace backend\models;
 
 use Yii;
+use yii\base\Exception;
 
 /**
  * This is the model class for table "{{%service}}".
@@ -97,11 +98,8 @@ class Service extends \yii\db\ActiveRecord
         return $list;
     }
 
-
     public function getServiceImg()
     {
         return $this->hasMany(ServiceImg::className(), ['service_id'=>'id']);
     }
-
-
 }

@@ -38,23 +38,23 @@ class Alert extends Widget
      */
     public $alertTypes = [
         'error' => [
-            'class' => 'alert-danger',
+            'class' => 'alert-danger fade in m-b-15',
             'icon' => '<i class=""></i>',
         ],
         'danger' => [
-            'class' => 'alert-danger',
+            'class' => 'alert-danger fade in m-b-15',
             'icon' => '<i class=""></i>',
         ],
         'success' => [
-            'class' => 'alert-success',
+            'class' => 'alert-success fade in m-b-15',
             'icon' => '<i class=""></i>',
         ],
         'info' => [
-            'class' => 'alert-info',
+            'class' => 'alert-info fade in m-b-15',
             'icon' => '<i class=""></i>',
         ],
         'warning' => [
-            'class' => 'alert-warning',
+            'class' => 'alert-warning fade in m-b-15',
             'icon' => '<i class=""></i>',
         ],
     ];

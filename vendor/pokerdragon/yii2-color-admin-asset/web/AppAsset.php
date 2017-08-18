@@ -38,5 +38,6 @@ class AppAsset extends BaseColorAdminAsset
         'pd\coloradmin\web\plugins\JqueryCookieAsset',
         'pd\coloradmin\web\plugins\JqueryGritterAsset',
         'pd\coloradmin\web\plugins\SwitcheryAsset',
+        'kartik\dialog\DialogAsset',
     ];
 }

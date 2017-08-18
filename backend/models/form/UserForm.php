@@ -45,6 +45,18 @@ class UserForm extends User
             'update'  => ['username', 'name', 'pid', 'phone', 'password', 'status', 'level', 'system_switch', 'check_switch'],
         ];
     }
+    public function attributeHints()
+    {
+        return [
+            'username' => 'APP业务员登录账号,最短6位，最长16位',
+            'password' => '最少6位，最长16位',
+            'phone' => '业务员的联系电话',
+            'status' => '负责人名称',
+            'system_switch' => '是否接受APP订单状态推送',
+            'check_switch' => '是否接受APP审核订单推送',
+            'pid' => '服务商/代理商的推荐人',
+        ];
+    }
 
     public function addUser()
     {

@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use common\models\InvitationCode;
 use Yii;
 
 /**
@@ -83,6 +84,11 @@ class User extends \yii\db\ActiveRecord
     protected function getService()
     {
         return $this->hasOne(Service::className(), ['id'=> 'pid'])->alias('s');
+    }
+
+    public function getCode()
+    {
+        return $this->hasOne(InvitationCode::className(), ['user_id'=> 'id']);
     }
 
     public static function dropDownList($pid)

@@ -69,7 +69,7 @@ class SalesmanController extends BackendController
     {
         $model = UserForm::findOne(['id'=>$id]);
 
-        return $this->renderAjax('view', [
+        return $this->renderPjax('view', [
             'model' => $model
         ]);
     }

@@ -4,13 +4,15 @@
 window.pokerDragon = (function($){
     var pub = {
         confirm: function (message, ok, cancel) {
-            $('#pd-confirm-modal-alert').remove();
-
-            $('body').append(pub.confirmModal(message, '重要提示', '确定', '取消', $(this).data('url')));
-            $('#pd-confirm-modal-alert').modal();
-            return;
+            var msg = '<div class="alert alert-danger m-b-0"><h4><i class="fa fa-info-circle"></i> angke-伊普西龙温馨提示你:</h4><p>' + message +'</p></div></div>';
+            krajeeDialog.confirm(msg , function (result) {
+                if (result) {
+                    !ok || ok();
+                } else {
+                    !cancel || cancel();
+                }
+            });
         },
-
         initModule: function (module){
             if(module.isActive !== undefined && !module.isActive){
                 return ;

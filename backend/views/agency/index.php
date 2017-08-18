@@ -97,8 +97,10 @@ JS
             </div>
             <h4 class="panel-title">表格</h4>
         </div>
-        <?= \pd\coloradmin\widgets\Alert::widget() ?>
         <div class="panel-body">
+            <!-- begin alert-widget -->
+            <?= \pd\coloradmin\widgets\Alert::widget() ?>
+            <!-- end alert-widget -->
             <?php $form = \yii\bootstrap\ActiveForm::begin([
                 'id'                   => $searchModel->formName(),
                 'method' => 'get',
