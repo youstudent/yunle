@@ -503,11 +503,7 @@ class InsuranceOrder extends \yii\db\ActiveRecord
             $order->order_id = $order_id;
             if (isset($v['id']) || !empty($v['id'])) {
                 $order->insurance = Helper::getInsuranceName($v['id']);
-                if (!isset($v['element']) || empty($v['element'])) {
-                    $order->element = '保额66W';
-                } else {
-                    $order->element = Helper::getElement($v['element']);
-                }
+                $order->element = Helper::getElement($v['element']);
                 if (!isset($v['deduction']) || empty($v['deduction'])) {
                     $v['deduction'] = 0;
                 }

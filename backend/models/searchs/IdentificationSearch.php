@@ -7,25 +7,31 @@
 
 namespace backend\models\searchs;
 
-
 use backend\models\Identification;
 use yii\data\ActiveDataProvider;
 
 class IdentificationSearch extends Identification
 {
+
+    public function rules()
+    {
+        return [
+            ['member_id', 'integer'],
+        ];
+    }
+
     public function search($params)
     {
         $query = Identification::find();
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query
+            'query' => $query->where(['status'=>1])
         ]);
-        if (!($this->load($params) && $this->validate())) {
-            return $dataProvider;
+
+        if (!empty($params)) {
+            $query->andFilterWhere(['member_id' => $params['member_id']]);
         }
-
-        $query->andFilterWhere(['member_id'=> $this->member_id]);
-
+        $query->andFilterWhere(['member_id' => $this->id]);
         return $dataProvider;
     }
 }

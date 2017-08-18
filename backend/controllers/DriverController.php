@@ -19,9 +19,7 @@ class DriverController extends BackendController
     public function actionIndex()
     {
         $searchModel = new DrivingLicenseSearch();
-
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
 
         return $this->renderPjax('index', [
             'dataProvider' => $dataProvider,

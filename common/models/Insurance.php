@@ -92,6 +92,11 @@ class Insurance extends \yii\db\ActiveRecord
            if(!$this->save()){
                throw new Exception("添加失败");
            }
+           $element = new Element();
+           $element->insurance_id = $this->id;
+           $element->name = '标准';
+           $element->created_at = time();
+           $element->save(false);
            return $this;
         });
     }

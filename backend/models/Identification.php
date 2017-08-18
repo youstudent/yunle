@@ -19,6 +19,7 @@ use yii\web\UploadedFile;
  * @property string $licence
  * @property string $start_at
  * @property string $end_at
+ * @property string $img
  * @property integer $status
  * @property integer $created_at
  * @property integer $updated_at
@@ -67,11 +68,11 @@ class Identification extends \yii\db\ActiveRecord
             'id' => '自增id',
             'img' => '身份证图片',
             'member_id' => '所属用户id',
-            'name' => '公司名称或姓名',
+            'name' => '姓名/机构名',
             'nation' => '名族',
             'sex' => '性别',
             'birthday' => '出生年月',
-            'licence' => '组织机构代码或身份证号',
+            'licence' => '证件号',
             'start_at' => '身份证生效时间',
             'end_at' => '身份证失效时间',
             'status' => '认证状态',
@@ -85,6 +86,7 @@ class Identification extends \yii\db\ActiveRecord
         if(!$this->validate()){
             return false;
         }
+
         $this->imgs = explode(',', trim($this->imgs,','));
         if(count($this->imgs) < 2){
             $this->addError('imgs', '请上传2张附件');
@@ -94,7 +96,7 @@ class Identification extends \yii\db\ActiveRecord
         return Yii::$app->db->transaction(function(){
             $this->created_at = time();
             $this->updated_at = time();
-            if(!$this->save()){
+            if(!$this->save(false)){
                 throw new Exception('error');
             }
 

@@ -84,7 +84,7 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
 
                             <?php }?>
 
-                            <?= $form->field($model, 'status')->dropDownList(['未认证', '已认证']) ?>
+<!--                            --><?//= $form->field($model, 'status')->dropDownList(['未认证', '已认证']) ?>
 
                             <?=$form->field($model, 'img')->widget(FileInput::classname(), [
                                 'language' => 'zh',
