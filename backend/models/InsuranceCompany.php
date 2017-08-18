@@ -15,6 +15,7 @@ use yii\db\Exception;
  * @property string $name
  * @property string $brief
  * @property integer $created_at
+ * @property integer $updated_at
  */
 class InsuranceCompany extends \yii\db\ActiveRecord
 {
@@ -34,7 +35,7 @@ class InsuranceCompany extends \yii\db\ActiveRecord
         return [
 
             [['name','brief'],'required'],
-            [['created_at','id'], 'integer'],
+            [['created_at','id','updated_at'], 'integer'],
             [['created_at', 'updated_at'], 'integer'],
             [['name', 'brief'], 'string', 'max' => 255],
             [['name'], 'unique', 'on'=> 'create'],
@@ -60,6 +61,7 @@ class InsuranceCompany extends \yii\db\ActiveRecord
             'name' => '保险商名',
             'brief' => '介绍',
             'created_at' => '创建时间',
+            'updated_at' => '创建时间',
             'status' => '状态',
         ];
     }
@@ -105,7 +107,7 @@ class InsuranceCompany extends \yii\db\ActiveRecord
             return false;
         }
         return Yii::$app->db->transaction(function(){
-            $this->created_at=time();
+            $this->updated_at=time();
             if(!$this->save()){
                 throw new Exception('保存失败');
             }

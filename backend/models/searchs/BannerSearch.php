@@ -16,9 +16,8 @@ class BannerSearch extends Banner
     public function rules()
     {
         return [
-            [['type'], 'integer'],
-            [['created_at', 'salesman_name', 'service_name', 'user', 'car', 'service'], 'string'],
-            [['phone'], 'number'],
+            [['status'], 'integer'],
+            [['created_at'], 'string'],
         ];
     }
 
@@ -48,10 +47,7 @@ class BannerSearch extends Banner
                 $query->andFilterWhere(['<=', 'created_at', $end]);
             }
         }
-        $query->andFilterWhere(['type' => $this->type])
-            ->andFilterWhere(['LIKE', 'service', $this->service])
-            ->andFilterWhere(['LIKE', 'user', $this->user])
-            ->andFilterWhere(['LIKE', 'phone', $this->phone]);
+        $query->andFilterWhere(['LIKE', 'status', $this->status]);
 
 
         return $dataProvider;

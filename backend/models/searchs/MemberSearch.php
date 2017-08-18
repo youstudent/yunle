@@ -70,9 +70,9 @@ class MemberSearch extends Member
         }
 
 
-        $query->andFilterWhere(['LIKE', 'u.username' , $this->salesman_username]);
+        $query->andFilterWhere(['LIKE', 'u.name' , $this->salesman_username]);
         $query->andFilterWhere(['LIKE', 'm.phone' , $this->phone]);
-        $query->andFilterWhere(['LIKE', 'md.name' , $this->member_name]);
+        $query->andFilterWhere(['LIKE', 'm.name' , $this->member_name]);
 
         return $dataProvider;
     }

@@ -82,11 +82,11 @@ JS
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="row">
-
+    <?php if (Yii::$app->request->get('member_id') && \backend\models\Identification::findOne(['member_id'=>Yii::$app->request->get('member_id')])->status == 0) {?>
         <div class="col-md-6">
-            <?= Html::a('添加', ['create', 'member_id'=> 1], ['class' => 'btn btn-success']) ?>
+            <?= Html::a('添加', ['create', 'member_id'=> Yii::$app->request->get('member_id')], ['class' => 'btn btn-success']) ?>
         </div>
-
+    <?php }?>
     </div>
     <p></p>
 
@@ -108,13 +108,12 @@ JS
                 <tr>
                     <th>#</th>
                     <th>证件号</th>
-                    <th>姓名</th>
+                    <th>姓名/机构名</th>
                     <th>性别</th>
                     <th>民族</th>
                     <th>出生日期</th>
                     <th>生效时间</th>
                     <th>失效时间</th>
-                    <th>审核状态</th>
                     <th>上传时间</th>
                     <th>操作</th>
                 </tr>
@@ -130,7 +129,6 @@ JS
                         <td><?= $model->birthday ?></td>
                         <td><?= $model->start_at ?></td>
                         <td><?= $model->end_at ?></td>
-                        <td><?= $model->status ?></td>
                         <td><?= pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
                         <td align="center">
                             <div class="btn-group">

@@ -143,7 +143,7 @@ class User extends ActiveRecord
             return false;
         }
         if($user->status != 1){
-            $this->addError('message', '请联系管理员');
+            $this->addError('message', '账号异常,请联系管理员');
             return false;
         }
         $user->last_login_at = time();

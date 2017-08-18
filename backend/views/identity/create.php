@@ -58,23 +58,31 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
                                 'validationUrl'        => $model->isNewRecord ? Url::toRoute(['validate-form', 'scenario' => 'create']) : Url::toRoute(['validate-form', 'scenario' => 'update']),
                             ]) ?>
 
+                            <?php if (\common\models\Helper::getMemberType($model->member_id) == 1) {?>
 
-                            <?= $form->field($model, 'name')->textInput() ?>
+                                <?= $form->field($model, 'name')->textInput()->label('姓名') ?>
 
-                            <?= $form->field($model, 'sex')->textInput() ?>
+                                <?= $form->field($model, 'nation')->textInput() ?>
 
-                            <?= $form->field($model, 'nation')->textInput() ?>
+                                <?= $form->field($model, 'sex')->textInput() ?>
 
-                            <?= $form->field($model, 'birthday')->textInput() ?>
+                                <?= $form->field($model, 'birthday')->textInput() ?>
 
-                            <?= $form->field($model, 'licence')->textInput() ?>
+                                <?= $form->field($model, 'licence')->textInput()->label('身份证号') ?>
 
+                                <?= $form->field($model, 'start_at')->textInput() ?>
 
-                            <?= $form->field($model, 'start_at')->textInput() ?>
+                                <?= $form->field($model, 'end_at')->textInput() ?>
 
-                            <?= $form->field($model, 'end_at')->textInput() ?>
+                            <?php } else {?>
 
-                            <?= $form->field($model, 'status')->dropDownList(['未认证', '已认证']) ?>
+                                <?= $form->field($model, 'name')->textInput()->label('组织机构名称') ?>
+
+                                <?= $form->field($model, 'licence')->textInput()->label('组织机构代码') ?>
+
+                            <?php }?>
+
+<!--                            --><?//= $form->field($model, 'status')->dropDownList(['未认证', '已认证']) ?>
 
                             <?=$form->field($model, 'img')->widget(FileInput::classname(), [
                                 'language' => 'zh',

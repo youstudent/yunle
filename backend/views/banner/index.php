@@ -103,16 +103,13 @@ JS
         <div class="panel-body">
             <form class="form-inline"  action="" method="GET">
                 <div class="form-group m-r-15">
-                    <input type="text" class="form-control" style="min-width: 103%;margin-right: 70px;" name="InsuranceOrderSearch[created_at]" id="daterangepicker" value="<?= $searchModel->created_at ?>" placeholder="创建时间">
+                    <input type="text" class="form-control" style="min-width: 103%;margin-right: 70px;" name="BannerSearch[created_at]" id="daterangepicker" value="<?= $searchModel->created_at ?>" placeholder="创建时间">
                 </div>
                 <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="InsuranceOrderSearch[name]" id="name" value="<?= $searchModel->name ?>" placeholder="作者">
-                </div>
-                <div class="form-group m-r-10">
-                    <select class="form-control" name="InsuranceOrderSearch[status]" id="InsuranceSearchStatus" style="min-width: 105%;">
+                    <select class="form-control" name="BannerSearch[status]" id="BannerSearchStatus" style="min-width: 105%;">
                         <option value="" selected>全部</option>
-                        <option value="0" <?= $searchModel->status == 0 && strlen($searchModel->status) ? 'selected' : '' ?>>正常</option>
-                        <option value="100" <?= $searchModel->status == 100 ? 'selected' : '' ?>>取消</option>
+                        <option value="1" <?= $searchModel->status == 1 ? 'selected' : '' ?>>正常</option>
+                        <option value="0" <?= $searchModel->status == 0 ? 'selected' : '' ?>>禁用</option>
                     </select>
 
                 </div>
@@ -142,7 +139,7 @@ JS
                             <?php switch ($model->status):?><?php case 1: ?>
                                 <span class="badge badge-primary">正常</span>
                                 <?php break;?><?php case 0: ?>
-                                <span class="badge badge-danger">取消</span>
+                                <span class="badge badge-danger">禁用</span>
                                 <?php break;?><?php default: ?>
                             <?php endswitch ?>
                         </td>
