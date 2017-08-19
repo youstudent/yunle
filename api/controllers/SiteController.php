@@ -134,7 +134,7 @@ class SiteController extends ApiController
         $form = json_decode($json_data,true);
         $phone = $form['phone'];
 
-        if ($model->sms($phone)) {
+        if ($model->sms(strval($phone))) {
             return $this->jsonReturn(1, 'success');
         }
         return $this->jsonReturn(0, $model->getFirstError('message'));
