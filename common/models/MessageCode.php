@@ -56,7 +56,7 @@ class MessageCode extends \yii\db\ActiveRecord
     /*
      *  短信验证码请求
      */
-    public function sms(String $phone)
+    public function sms($phone)
     {
         if(!$this->checkCode($phone, 0)){
             return false;
@@ -82,7 +82,7 @@ class MessageCode extends \yii\db\ActiveRecord
         return true;
     }
 
-    protected function sendSms(String $phone, int $code, int $out_id)
+    protected function sendSms( $phone,  $code,  $out_id)
     {
         $setting = \common\components\Helper::getSystemSetting();
         $accessKeyId = ArrayHelper::getValue($setting, 'ali_sms_access_key_id', '');
@@ -136,7 +136,7 @@ class MessageCode extends \yii\db\ActiveRecord
      * @param Int $seconds
      * @return bool
      */
-    protected function checkCode(String $phone, Int $seconds)
+    protected function checkCode( $phone,  $seconds)
     {
         return !MessageCode::find()->andWhere(['>=', 'created_at', time()- $seconds])->andWhere(['phone'=>$phone])->andWhere(['!=', 'status', -1])->one();
     }
