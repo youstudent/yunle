@@ -12,8 +12,8 @@ use backend\models\Car;
 
 class CarForm extends Car
 {
-    public $cat_imgs;
-    public $cat_img;
+    public $car_imgs;
+    public $car_img;
 
 
     public function scenarios()

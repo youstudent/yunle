@@ -44,7 +44,7 @@ class Banner extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'name' => '广告标题',
-            'describe' => '广告标题',
+            'describe' => '广告描述',
             'status' => '状态',
             'created_at' => '创建时间',
             'updated_at' => '修改时间',

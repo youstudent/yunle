@@ -11,7 +11,7 @@ use yii\widgets\ActiveForm;
 /* @var $model backend\models\form\ServiceForm */
 /* @var $form yii\widgets\ActiveForm */
 
-$this->title = '添加车辆';
+$this->title = '添加驾驶证';
 $this->params['breadcrumbs'][] = $this->title;
 
 pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
@@ -19,7 +19,7 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
 
 <div class="service-create">
 
-    <h1>添加车辆</h1>
+    <h1>添加驾驶证</h1>
 
     <div class="adminuser-form">
         <!-- begin row -->
@@ -70,8 +70,6 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
                         <?= $form->field($model, 'papers')->textInput() ?>
 
                         <?= $form->field($model, 'birthday')->textInput() ?>
-
-                        <?= $form->field($model, 'certificate_at')->textInput() ?>
 
                         <?= $form->field($model, 'permit')->textInput() ?>
 
