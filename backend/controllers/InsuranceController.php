@@ -10,6 +10,7 @@ namespace backend\controllers;
 
 use backend\models\searchs\InsuranceOrderSearch;
 use backend\models\searchs\InsuranceSearch;
+use common\models\Element;
 use common\models\Insurance;
 use Yii;
 use yii\base\Controller;
@@ -120,5 +121,14 @@ class InsuranceController extends BackendController
         $model->scenario = $scenario;
         $model->load(Yii::$app->request->post());
         return ActiveForm::validate($model);
+    }
+
+    public function actionElement($id)
+    {
+        $model = \backend\models\Insurance::findOne($id);
+
+        return $this->renderPjax('element', [
+            'model' => $model
+        ]);
     }
 }

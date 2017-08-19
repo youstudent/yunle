@@ -8,7 +8,7 @@ $params = array_merge(
 
 return [
     'id' => '云乐享车',
-    'homeUrl' => '/pace/index',
+    'homeUrl' => '/panel/index',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
@@ -85,7 +85,7 @@ return [
         'allowActions' => [
             '/admin/user/login',
             '/admin/user/logout',
-            '*',
+         //   '*',
         ]
     ],
     'params' => $params,

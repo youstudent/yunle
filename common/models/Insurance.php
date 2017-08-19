@@ -36,6 +36,9 @@ use yii\db\Exception;
  */
 class Insurance extends \yii\db\ActiveRecord
 {
+
+    public $element;
+
     /**
      * @inheritdoc
      */

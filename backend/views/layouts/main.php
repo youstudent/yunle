@@ -1,18 +1,18 @@
 <?php
 use yii\helpers\Html;
 use kartik\dialog\Dialog;
-
-echo Dialog::widget([
-    'dialogDefaults' => [
-        Dialog::DIALOG_CONFIRM => [
-            'btnCancelLabel' => '取消',
-            'btnOKLabel' => '确定',
-            'btnOKClass' => 'btn btn-sm btn-danger',
-            'btnCancelClass' => 'btn btn-sm btn-white',
-            'type' => 'type-default',
-        ],
-    ],
-]);
+//
+//echo Dialog::widget([
+//    'dialogDefaults' => [
+//        Dialog::DIALOG_CONFIRM => [
+//            'btnCancelLabel' => '取消',
+//            'btnOKLabel' => '确定',
+//            'btnOKClass' => 'btn btn-sm btn-danger',
+//            'btnCancelClass' => 'btn btn-sm btn-white',
+//            'type' => 'type-default',
+//        ],
+//    ],
+//]);
 
 
 /* @var $this \yii\web\View */
