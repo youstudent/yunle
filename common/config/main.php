@@ -9,6 +9,10 @@ return [
         ],
     ],
     "aliases" => [
-        "@Aliyun" => "@vendor/pokerdragon/yii-dysms/src",
+        "@pd/admin" => "@vendor/pokerdragon/yii2-admin",
+        "@pd/coloradmin" => "@vendor/pokerdragon/yii2-color-admin-asset",
+        "@pd/helpers" => "@vendor/pokerdragon/helpers",
+        "@Aliyun" => "@vendor/pokerdragon/yii2-ali-sms/src",
     ],
+
 ];

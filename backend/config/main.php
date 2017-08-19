@@ -27,12 +27,6 @@ return [
             'imageAllowExtensions'=>['jpg','png','gif']
         ],
     ],
-    "aliases" => [
-        "@pd/admin" => "@vendor/pokerdragon/yii2-admin",
-        "@pd/coloradmin" => "@vendor/pokerdragon/yii2-color-admin-asset",
-        "@pd/helpers" => "@vendor/pokerdragon/helpers",
-        "@pd/sms" => "@vendor/pokerdragon/yii2-aliyun-sms",
-    ],
     'components' => [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation

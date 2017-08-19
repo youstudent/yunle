@@ -1,5 +1,5 @@
 {
-    "name": "pokerdragon/dysms",
+    "name": "pokerdragon/yii2-ali-sms",
     "description": "Aliyun SMS SDK for PHP",
     "keywords": [ "aliyun", "SMS", "sdk" ],
     "type": "library",

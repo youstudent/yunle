@@ -14,10 +14,10 @@ class Menu extends \yii\widgets\Menu
      * @inheritdoc
      */
     public $linkTemplate = '<a href="{url}">{icon} {label}</a>';
-    public $submenuTemplate = "\n<ul class='sub-menu' style='display: block' {show}>\n{items}\n</ul>\n";
+    public $submenuTemplate = "\n<ul class='treeview-menu' {show}>\n{items}\n</ul>\n";
     public $activateParents = true;
-    public $defaultIconHtml = '<i class="fa fa-circle-o"></i> ';
-  
+    public $defaultIconHtml = '<i class="fa fa-circle-o"></i>';
+
     /**
      * @var string
      */
@@ -56,26 +56,24 @@ class Menu extends \yii\widgets\Menu
             echo Html::tag($tag, $this->renderItems($items), $options);
         }
     }
-  
+
     /**
      * @inheritdoc
      */
-    protected function renderItem($item, $is_sub = false)
+    protected function renderItem($item)
     {
         if(isset($item['items'])) {
-            $labelTemplate = '<a href="{url}">{icon} {label} <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>';
-            $linkTemplate = '<a href="{url}">{icon} {label} <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>';
+            $labelTemplate = '<a href="{url}"><b class="caret pull-right"></b>{icon} {label}</a>';
+            $linkTemplate = '<a href="{url}"><b class="caret pull-right"></b>{icon} {label}</a>';
         }
         else {
             $labelTemplate = $this->labelTemplate;
             $linkTemplate = $this->linkTemplate;
         }
 
-        if (isset($item['url'])) {
+        if (isset($item['url']) && isset($item['url'][0])) {
             $template = ArrayHelper::getValue($item, 'template', $linkTemplate);
 
-            //主题样式不兼容二级菜单的暂时写法
-            $icon = !$is_sub ? $this->defaultIconHtml : '';
 
             $replace = !empty($item['icon']) ? [
                 '{url}' => Url::to($item['url']),
@@ -84,15 +82,17 @@ class Menu extends \yii\widgets\Menu
             ] : [
                 '{url}' => Url::to($item['url']),
                 '{label}' => '<span>'.$item['label'].'</span>',
-                '{icon}' => $icon,
+                '{icon}' => $this->defaultIconHtml,
             ];
             return strtr($template, $replace);
         } else {
             $template = ArrayHelper::getValue($item, 'template', $labelTemplate);
             $replace = !empty($item['icon']) ? [
+                '{url}' => 'javascript:;',
                 '{label}' => '<span>'.$item['label'].'</span>',
                 '{icon}' => '<i class="' . self::$iconClassPrefix . $item['icon'] . '"></i> '
             ] : [
+                '{url}' => 'javascript:;',
                 '{label}' => '<span>'.$item['label'].'</span>',
                 '{icon}' => $this->defaultIconHtml
             ];
@@ -104,7 +104,7 @@ class Menu extends \yii\widgets\Menu
      * @param array $items the menu items to be rendered recursively
      * @return string the rendering result
      */
-    protected function renderItems($items, $is_sub = false)
+    protected function renderItems($items)
     {
         $n = count($items);
         $lines = [];
@@ -128,13 +128,16 @@ class Menu extends \yii\widgets\Menu
                     $options['class'] .= ' ' . implode(' ', $class);
                 }
             }
-            $menu = $this->renderItem($item, $is_sub);
+            $menu = $this->renderItem($item);
             if (!empty($item['items'])) {
                 $menu .= strtr($this->submenuTemplate, [
-                    '{show}' => $item['active'] ? "style='display: block'" : '',
-                    '{items}' => $this->renderItems($item['items'], true),
+                    '{show}' => $item['active'] ? "style='display: block'" : "",
+                    '{items}' => $this->renderItems($item['items']),
                 ]);
+                //color-admin 如果有二级菜单，要加个标志
+                $options['class'] = isset($options['class']) ?  $options['class'] . ' has-sub' : 'has-sub';
             }
+
             $lines[] = Html::tag($tag, $menu, $options);
         }
         return implode("\n", $lines);
