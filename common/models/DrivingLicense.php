@@ -217,6 +217,7 @@ class DrivingLicense extends \yii\db\ActiveRecord
         }
         $driver->load(['formName'=>$data],'formName');
         $driver->status = 0;
+        $driver->updated_at = time();
 
         if ($driver->save(false)) {
             return true;

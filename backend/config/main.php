@@ -85,7 +85,7 @@ return [
         'allowActions' => [
             '/admin/user/login',
             '/admin/user/logout',
-         //   '*',
+            '*',
         ]
     ],
     'params' => $params,
