@@ -44,6 +44,19 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= $form->field($model, 'deduction')->dropDownList(['计免赔', '不计免赔']) ?>
 
+    <hr>
+
+    <div class="form-group field-element-action">
+        <a class="btn btn-sm btn-success pull-right" id="add-element" style="margin-left: 40px;" >添加要素</a>
+    </div>
+
+    <div class="form-group field-insurance-element">
+        <label class="control-label control-label col-md-4 col-sm-4" for="insurance-element">要素</label>
+        <div class="col-md-6 col-sm-6">
+            <input type="text" id="insurance-cost" class="form-control" name="Insurance[element][]" value="标准">
+        </div>
+    </div>
+
     <?php \yii\bootstrap\ActiveForm::end() ?>
 
 </div>
@@ -55,6 +68,14 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <script>
     $(function () {
+        $('#add-element').on('click', function(){
+            var html = '<div class="form-group field-insurance-element">' +
+                        '<label class="control-label control-label col-md-4 col-sm-4" for="insurance-element">要素</label>' +
+                        '<div class="col-md-6 col-sm-6">'  +
+                        '<input type="text"  class="form-control" name="Insurance[element][]">' +
+                        '</div><div class="help-block delete-element" >x</div></div>';
+            $('#InsuranceForm').append(html);
+        });
         $('.btn-submit').on('click', function () {
             var f = $('#InsuranceForm');
             f.on('beforeSubmit', function (e) {

@@ -133,7 +133,6 @@ JS
                         <td align="center">
                             <div class="btn-group">
                                 <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">编辑</span></a>
-                                <a href="<?= Url::to(['element', 'id'=> $model->id]) ?>" ><span class="btn btn-info m-r-1 m-b-5 btn-xs">要素</span></a>
                                 <a href="javascript:;" data-confirm="确认删除此险种？" data-url="<?= Url::to(['delete', 'id' => $model->id]) ?>"  data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
                             </div>
                         </td>

@@ -55,8 +55,8 @@ class Insurance extends \yii\db\ActiveRecord
         return [
             [['type', 'cost', 'deduction', 'created_at', 'updated_at'], 'integer'],
             [['title'], 'string', 'max' => 50],
-            [['title'], 'unique', 'on' => ['update']],
-            [['title'], 'validateUpdateTitle', 'on' => ['update']]
+//            [['title'], 'unique', 'on' => ['update']],
+//            [['title'], 'validateUpdateTitle', 'on' => ['update']],
         ];
     }
 
@@ -86,20 +86,27 @@ class Insurance extends \yii\db\ActiveRecord
 
     public function addInsurance()
     {
+
         if(!$this->validate()){
             return false;
         }
+
         return Yii::$app->db->transaction(function(){
            $this->created_at = time();
            $this->updated_at = time();
            if(!$this->save()){
                throw new Exception("添加失败");
            }
-           $element = new Element();
-           $element->insurance_id = $this->id;
-           $element->name = '标准';
-           $element->created_at = time();
-           $element->save(false);
+
+            $this->element = Yii::$app->request->post('Insurance')['element'];
+            foreach($this->element as $element){
+                $model = new Element();
+                $model->insurance_id = $this->id;
+                $model->name = $element;
+                $model->created_at = time();
+                $model->save(false);
+           }
+
            return $this;
         });
     }
@@ -114,6 +121,17 @@ class Insurance extends \yii\db\ActiveRecord
             if(!$this->save()){
                 throw new Exception("添加失败");
             }
+
+            $this->element = Yii::$app->request->post('Insurance')['element'];
+            Element::deleteAll(['insurance_id'=>$this->id]);
+            foreach($this->element as $element){
+                $model = new Element();
+                $model->insurance_id = $this->id;
+                $model->name = $element;
+                $model->created_at = time();
+                $model->save(false);
+            }
+
             return $this;
         });
     }
@@ -129,5 +147,10 @@ class Insurance extends \yii\db\ActiveRecord
                 }
             }
         }
+    }
+
+    public function getElements()
+    {
+        return $this->hasMany(Element::className(), ['insurance_id'=> 'id']);
     }
 }

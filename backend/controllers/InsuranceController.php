@@ -123,12 +123,4 @@ class InsuranceController extends BackendController
         return ActiveForm::validate($model);
     }
 
-    public function actionElement($id)
-    {
-        $model = \backend\models\Insurance::findOne($id);
-
-        return $this->renderPjax('element', [
-            'model' => $model
-        ]);
-    }
 }

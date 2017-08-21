@@ -41,6 +41,31 @@ use yii\helpers\Url;
 
     <?= $form->field($model, 'deduction')->dropDownList(['计免赔', '不计免赔']) ?>
 
+    <hr>
+
+    <div class="form-group field-element-action">
+        <a class="btn btn-sm btn-success pull-right" id="add-element" style="margin-left: 40px;" >添加要素</a>
+    </div>
+
+    <?php if($model->elements) : ?>
+        <?php $i= 1 ?>
+        <?php foreach($model->elements as $element): ?>
+
+        <div class="form-group field-insurance-element">
+            <label class="control-label control-label col-md-4 col-sm-4" for="insurance-element">要素</label>
+            <div class="col-md-6 col-sm-6">
+                <input type="text" id="insurance-cost" class="form-control" name="Insurance[element][]" value="<?= $element->name ?>">
+            </div>
+            <?php if($i > 1) : ?>
+            <div class="help-block delete-element" >x</div>
+            <?php endif; ?>
+        </div>
+            <?php $i++; ?>
+        <?php endforeach; ?>
+
+    <?php endif; ?>
+
+
     <?php \yii\bootstrap\ActiveForm::end() ?>
 
 </div>
@@ -52,6 +77,17 @@ use yii\helpers\Url;
 
 <script>
     $(function () {
+        $('.delete-element').on('click', function(){
+            $(this).parent().remove();
+        });
+        $('#add-element').on('click', function(){
+            var html = '<div class="form-group field-insurance-element">' +
+                '<label class="control-label control-label col-md-4 col-sm-4" for="insurance-element">要素</label>' +
+                '<div class="col-md-6 col-sm-6">'  +
+                '<input type="text"  class="form-control" name="Insurance[element][]">' +
+                '</div><div class="help-block delete-element" >x</div></div>';
+            $('#InsuranceForm').append(html);
+        });
         $('.btn-submit').on('click', function () {
             var f = $('#InsuranceForm');
             f.on('beforeSubmit', function (e) {
