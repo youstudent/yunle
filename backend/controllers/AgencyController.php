@@ -55,8 +55,10 @@ class AgencyController extends BackendController
      */
     public function actionView($id)
     {
+        $model =  AgencyForm::getOne($id);
+
         return $this->renderPjax('view', [
-            'model' => $this->findModel($id),
+            'model' => $model
         ]);
     }
     /**
