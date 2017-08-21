@@ -234,6 +234,7 @@ class Car extends \yii\db\ActiveRecord
         }
         $car->load(['formName'=>$data],'formName');
         $car->status = 0;
+        $car->updated_at = time();
         if ($car->save(false)) {
             return true;
         }

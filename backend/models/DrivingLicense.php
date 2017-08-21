@@ -4,6 +4,7 @@ namespace backend\models;
 
 use Yii;
 use yii\base\Exception;
+use yii\data\ActiveDataProvider;
 
 /**
  * This is the model class for table "{{%driving_license}}".
@@ -27,6 +28,7 @@ class DrivingLicense extends \yii\db\ActiveRecord
 {
     public $img;
     public $imgs;
+    public $info;
     /**
      * @inheritdoc
      */
@@ -44,6 +46,7 @@ class DrivingLicense extends \yii\db\ActiveRecord
             [['member_id', 'name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at', 'imgs'], 'required'],
             [['member_id', 'status', 'created_at', 'updated_at'], 'integer'],
             [['name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at'], 'string', 'max' => 50],
+            [['info'], 'string', 'max' => 200],
         ];
     }
 
@@ -75,7 +78,8 @@ class DrivingLicense extends \yii\db\ActiveRecord
             'status' => '1:正常 0:待审核',
             'created_at' => '创建时间',
             'updated_at' => '修改时间',
-            'img' => '行驶证图片'
+            'img' => '行驶证图片',
+            'info' => '不通过的理由'
         ];
     }
     public function addDrivingLicense()
@@ -173,5 +177,62 @@ class DrivingLicense extends \yii\db\ActiveRecord
             $arr[] = '<img src="'.Yii::$app->params['img_domain']. $i->thumb.'" />';
         }
         return $arr;
+    }
+
+    public function checkInfo()
+    {
+        $query = DrivingLicense::find()->select('id, member_id, status, updated_at')->where(['status'=>[0,2]])->orderBy(['status'=>SORT_ASC,'updated_at'=>SORT_DESC]);
+
+        $model = new ActiveDataProvider([
+            'query' => $query
+        ]);
+        return $model;
+    }
+
+    public function driverPass($id)
+    {
+        $car = DrivingLicense::findOne($id);
+        $car->status = 2;
+
+        if (!$car->save(false)) {
+            return false;
+        }
+
+//        推送消息
+        return true;
+    }
+
+    public function driverOut($data)
+    {
+        $id = $data['DrivingLicense']['id'];
+        $info = $data['DrivingLicense']['info'];
+        $driver = DrivingLicense::findOne($id);
+        $real = \common\models\Identification::findOne(['member_id'=>$driver->member_id,'status'=>1]);
+        $member = Member::findOne(['id'=>$driver->member_id]);
+
+        if (!isset($real) || empty($real)) {
+            $realName = $member->phone;
+        } else {
+            $realName = $real->name;
+        }
+
+        $newsA = '您的驾驶证【'. $driver->name .'】信息更改请求未通过';
+        $user_idA = $member->id;
+        $switch = \common\models\Member::findOne($user_idA);
+        if ($switch->system_switch == 1) {
+            \common\models\Notice::userNews('member', $user_idA, $newsA);
+            \common\components\Helper::pushMemberMessage($user_idA,$newsA,'message');
+            \common\components\Helper::pushMemberMessage($user_idA,$newsA);
+        }
+        $newsB = '您的会员【'. $realName .'】的驾驶证【'. $driver->name .'】信息更改请求未通过，理由为 【'. trim($info) .'】';
+        $user_idB = $member->pid;
+        $switch = \common\models\User::findOne($user_idB);
+        if ($switch->system_switch == 1) {
+            \common\models\Notice::userNews('user', $user_idB, $newsB);
+            \common\components\Helper::pushServiceMessage($user_idB,$newsB,'message');
+            \common\components\Helper::pushServiceMessage($user_idB,$newsB);
+        }
+
+        return true;
     }
 }

@@ -2,8 +2,10 @@
 
 namespace backend\models;
 
+use common\models\Helper;
 use Yii;
 use yii\base\Exception;
+use yii\data\ActiveDataProvider;
 
 /**
  * This is the model class for table "cdc_car".
@@ -27,6 +29,7 @@ use yii\base\Exception;
  */
 class Car extends \yii\db\ActiveRecord
 {
+    public $info;
     /**
      * @inheritdoc
      */
@@ -43,7 +46,7 @@ class Car extends \yii\db\ActiveRecord
         return [
             [['member_id', 'load_num', 'stick', 'status', 'created_at', 'updated_at'], 'integer'],
             [['license_number', 'type', 'nature', 'brand_num', 'discern_num', 'motor_num', 'sign_at', 'certificate_at'], 'string', 'max' => 50],
-            [['owner'], 'string', 'max' => 255],
+            [['owner', 'info'], 'string', 'max' => 255],
         ];
     }
 
@@ -69,6 +72,7 @@ class Car extends \yii\db\ActiveRecord
             'status' => '1:正常 0:待审核',
             'created_at' => '创建时间',
             'updated_at' => '修改时间',
+            'info' => '不通过的理由',
         ];
     }
 
@@ -104,5 +108,61 @@ class Car extends \yii\db\ActiveRecord
             }
             return $this;
         });
+    }
+
+    public function checkInfo()
+    {
+        $query = Car::find()->select('id, member_id, status, updated_at')->where(['status'=>[0,2]])->orderBy(['status'=>SORT_ASC,'updated_at'=>SORT_DESC]);
+
+        $model = new ActiveDataProvider([
+            'query' => $query
+        ]);
+        return $model;
+    }
+
+    public function carPass($id)
+    {
+        $car = Car::findOne($id);
+        $car->status = 2;
+
+        if (!$car->save(false)) {
+            return false;
+        }
+
+//        推送消息
+        return true;
+    }
+
+    public function carOut($data)
+    {
+        $id = $data['Car']['id'];
+        $info = $data['Car']['info'];
+        $car = Car::findOne($id);
+        $real = \common\models\Identification::findOne(['member_id'=>$car->member_id]);
+        $member = Member::findOne(['id'=>$car->member_id]);
+        if (!isset($real) || empty($real)) {
+            $realName = $member->phone;
+        } else {
+            $realName = $real->name;
+        }
+
+        $newsA = '您的车辆【'. $car->license_number .'】信息更改请求未通过';
+        $user_idA = $member->id;
+        $switch = \common\models\Member::findOne($user_idA);
+        if ($switch->system_switch == 1) {
+            \common\models\Notice::userNews('member', $user_idA, $newsA);
+            \common\components\Helper::pushMemberMessage($user_idA,$newsA,'message');
+            \common\components\Helper::pushMemberMessage($user_idA,$newsA);
+        }
+        $newsB = '您的会员【'. $realName .'】的车辆【'. $car->license_number .'】信息更改请求未通过，理由为 【'. trim($info) .'】';
+        $user_idB = $member->pid;
+        $switch = \common\models\User::findOne($user_idB);
+        if ($switch->system_switch == 1) {
+            \common\models\Notice::userNews('user', $user_idB, $newsB);
+            \common\components\Helper::pushServiceMessage($user_idB,$newsB,'message');
+            \common\components\Helper::pushServiceMessage($user_idB,$newsB);
+        }
+
+        return true;
     }
 }
