@@ -12,14 +12,14 @@ use yii\widgets\ActiveForm;
 /* @var $model backend\models\form\ServiceForm */
 /* @var $form yii\widgets\ActiveForm */
 
-$this->title = '服务商详情';
+$this->title = '代理商管理';
 $this->params['breadcrumbs'][] = $this->title;
 pd\coloradmin\web\plugins\BaiduMapAsset::register($this);
 
 ?>
 <div class="service-create">
 
-    <h1>服务商详情</h1>
+    <h1>代理商商详情</h1>
 
     <div class="adminuser-form">
         <!-- begin panel -->
@@ -60,16 +60,16 @@ pd\coloradmin\web\plugins\BaiduMapAsset::register($this);
                             <td><span class="text-muted"></span></td>
                         </tr>
                         <tr>
-                            <td><?= $model->getAttributeLabel('contact_phone') ?></td>
+                            <td><?= $model->getAttributeLabel('principal_phone') ?></td>
                             <td><?= $model->contact_phone ?></td>
                             <td><span class="text-muted"></span></td>
                         </tr>
                         <tr>
-                            <td>展示头像</td>
+                            <td>代理商附件</td>
                             <td>
                                 <?php if($model->serviceImg) : ?>
                                     <?php foreach($model->serviceImg as $img) : ?>
-                                        <?php if($img->type == 1): ?>
+                                        <?php if($img->type == 0): ?>
                                             <div href="" class="thumbnail">
                                                 <img src="<?php echo Yii::$app->params['img_domain']. $img->thumb; ?>" alt="">
                                             </div>
@@ -80,51 +80,9 @@ pd\coloradmin\web\plugins\BaiduMapAsset::register($this);
                             <td><span class="text-muted"></span></td>
                         </tr>
                         <tr>
-                            <td>服务商附件</td>
-                            <td>
-                                <?php if($model->serviceImg) : ?>
-                                    <?php foreach($model->serviceImg as $img) : ?>
-                                        <?php if($img->type == 0): ?>
-                                        <div href="" class="thumbnail">
-                                             <img src="<?php echo Yii::$app->params['img_domain']. $img->thumb; ?>" alt="">
-                                        </div>
-                                        <?php endif; ?>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
-                            </td>
-                            <td><span class="text-muted"></span></td>
-                        </tr>
-                        <tr>
-                            <td><?= $model->getAttributeLabel('address') ?></td>
-                            <td><?= $model->address ?></td>
-                            <td><span class="text-muted"></span></td>
-                        </tr>
-                        <tr>
-                            <td><?= $model->getAttributeLabel('lat') ?></td>
-                            <td><?= $model->lat ?></td>
-                            <td><span class="text-muted"></span></td>
-                        </tr>
-                        <tr>
-                            <td><?= $model->getAttributeLabel('lng') ?></td>
-                            <td><?= $model->lng ?></td>
-                            <td><span class="text-muted"></span></td>
-                        </tr>
-                        <tr>
-                            <td><?= $model->getAttributeLabel('level') ?></td>
-                            <td> <?= $model->level ?> 星</td>
-                            <td><span class="text-muted"></span></td>
-                        </tr>
-                        <tr>
                             <td><?= $model->getAttributeLabel('sid') ?></td>
                             <td><?= Adminuser::findOne([$model->sid])->name ?></td>
                             <td><span class="text-muted"></span></td>
-                        </tr>
-                        <tr>
-                            <td><?= $model->getAttributeLabel('introduction') ?></td>
-                            <td>
-                               <?php echo $model->introduction; ?>
-                            </td>
-                            <td></td>
                         </tr>
                         </tbody>
                     </table>
