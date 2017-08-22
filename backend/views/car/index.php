@@ -105,7 +105,7 @@ JS
             <table id="data-table" class="table table-striped table-bordered">
                 <thead>
                 <tr>
-                    <th>#</th>
+                    <th>编号</th>
                     <th>车牌号</th>
                     <th>类型</th>
                     <th>所有人</th>

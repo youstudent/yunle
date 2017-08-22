@@ -114,4 +114,17 @@ class Member extends \yii\db\ActiveRecord
         }
         return $this->save();
     }
+
+    public function chooseType($data)
+    {
+        $type = $data['Member']['type'];
+        $id = $data['Member']['id'];
+        $member = Member::findOne($id);
+        $member->type = $type;
+        if ($member->save(false)) {
+            return true;
+        }
+
+        return false;
+    }
 }

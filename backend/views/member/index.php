@@ -171,20 +171,24 @@ JS
                             <div class="btn-group">
                                 <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">更多</span></a>
                                 <?php if($model->memberInfo) : ?>
-                                    <?php if($model->memberInfo->name) : ?>
+                                    <?php if ($model->memberInfo->name) : ?>
                                         <a href="<?= Url::to(['order/create', 'member_id'=> $model->id, 'member_name' => $model->memberInfo->name]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">非保险下单</span></a>
                                     <?php endif; ?>
                                 <?php endif; ?>
-                                <?php if($model->memberInfo) : ?>
-                                    <?php if($model->memberInfo->name) : ?>
+                                <?php if ($model->memberInfo) : ?>
+                                    <?php if ($model->memberInfo->name) : ?>
                                         <a href="<?= Url::to(['insurance-order/create', 'member_id'=> $model->id, 'member_name' => $model->memberInfo->name]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">保险下单</span></a>
                                     <?php endif; ?>
                                 <?php endif; ?>
                                 <a href="<?= Url::to(['order/index', 'OrderSearch[member_id]'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">订单</span></a>
                                 <a href="<?= Url::to(['insurance-order/index','OrderSearch[member_id]'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">保险</span></a>
                                 <a href="<?= Url::to(['car/index','CarSearch[member_id]'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">车辆</span></a>
+                                <?php if ($model->type != 0) {?>
                                 <a href="<?= Url::to(['driver/index','member_id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">驾照</span></a>
                                 <a href="<?= Url::to(['identity/index','member_id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">实名认证</span></a>
+                                <?php } else { ?>
+                                    <a href="<?= Url::to(['choose-type', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">实名认证</span></a>
+                                <?php }?>
 <!--                                <a href="javascript:;" data-confirm="确认冻结此会员？" data-url="--><?//= Url::to(['set-status','id' => $model->id, 'status'=> Member::STATUS_INACTIVE]) ?><!--"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">冻结</span></a>-->
 <!--                                <a href="javascript:;" data-confirm="确认激活此会员？" data-url="--><?//= Url::to(['set-status','id' => $model->id, 'status'=> Member::STATUS_ACTIVE]) ?><!--"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">激活</span></a>-->
 <!--                                <a href="javascript:;" data-confirm="确认删除此会员？" data-url="--><?//= Url::to(['soft-delete', 'id' => $model->id]) ?><!--"  data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>-->

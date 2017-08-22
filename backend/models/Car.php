@@ -129,7 +129,30 @@ class Car extends \yii\db\ActiveRecord
             return false;
         }
 
-//        推送消息
+        $real = \common\models\Identification::findOne(['member_id'=>$car->member_id]);
+        $member = Member::findOne(['id'=>$car->member_id]);
+        if (!isset($real) || empty($real)) {
+            $realName = $member->phone;
+        } else {
+            $realName = $real->name;
+        }
+
+        $newsA = '您的车辆【'. $car->license_number .'】信息更改请求通过';
+        $user_idA = $member->id;
+        $switch = \common\models\Member::findOne($user_idA);
+        if ($switch->system_switch == 1) {
+            \common\models\Notice::userNews('member', $user_idA, $newsA);
+            \common\components\Helper::pushMemberMessage($user_idA,$newsA,'message');
+            \common\components\Helper::pushMemberMessage($user_idA,$newsA);
+        }
+        $newsB = '您的会员【'. $realName .'】的车辆【'. $car->license_number .'】信息更改请求通过';
+        $user_idB = $member->pid;
+        $switch = \common\models\User::findOne($user_idB);
+        if ($switch->system_switch == 1) {
+            \common\models\Notice::userNews('user', $user_idB, $newsB);
+            \common\components\Helper::pushServiceMessage($user_idB,$newsB,'message');
+            \common\components\Helper::pushServiceMessage($user_idB,$newsB);
+        }
         return true;
     }
 
@@ -137,7 +160,12 @@ class Car extends \yii\db\ActiveRecord
     {
         $id = $data['Car']['id'];
         $info = $data['Car']['info'];
+
         $car = Car::findOne($id);
+        $car->status = 2;
+        if (!$car->save(false)) {
+            return false;
+        }
         $real = \common\models\Identification::findOne(['member_id'=>$car->member_id]);
         $member = Member::findOne(['id'=>$car->member_id]);
         if (!isset($real) || empty($real)) {

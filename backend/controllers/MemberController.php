@@ -139,5 +139,26 @@ class MemberController extends BackendController
         $model->load(Yii::$app->request->post());
         return ActiveForm::validate($model);
     }
+
+    public function actionChooseType()
+    {
+        $id = Yii::$app->request->get('id')? Yii::$app->request->get('id'): Yii::$app->request->post('id');
+        $model = Member::findOne($id);
+
+        if (Yii::$app->request->isPost) {
+            $data = Yii::$app->request->post();
+            if(!empty($data)){
+                if($model->chooseType($data)){
+                    return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '选择成功', 'url'=> Url::to(['index'])]);
+                }
+                return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '选择失败']);
+            }
+        }
+
+        return $this->renderAjax('choose-type', [
+            'model' => $model
+        ]);
+
+    }
     
 }
