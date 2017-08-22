@@ -134,7 +134,7 @@ class Warranty extends \yii\db\ActiveRecord
         $act->id = null;
         $act->created_at = time();
         $act->isNewRecord = 1;
-        if ($act->save(false)) {
+        if ($act->save(false) && $modelImgs != null) {
             //图片处理
             $images = UploadedFile::getInstances($modelImgs, 'img');
             foreach ($images as $v) {
