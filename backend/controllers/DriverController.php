@@ -52,9 +52,9 @@ class DriverController extends BackendController
 
         if($model->load(Yii::$app->request->post())){
             if($model->updateDrivingLicense()){
-                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['index'])]);
+                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '保存成功', 'url'=> Url::to(['index'])]);
             }
-            return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '添加失败']);
+            return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '保存失败']);
         }
 
         return $this->renderPjax('update', [

@@ -6,7 +6,7 @@
  */
 use yii\helpers\Url;
 
-$this->title = '添加文章';
+$this->title = '编辑文章';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -76,7 +76,7 @@ $(function () {
         var f = $('#ArticleForm');
         f.on('beforeSubmit', function (e) {
             swal({
-                    title: "确认添加",
+                    title: "确认修改",
                     text: "",
                     type: "warning",
                     showCancelButton: true,
