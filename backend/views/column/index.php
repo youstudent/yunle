@@ -105,9 +105,10 @@ JS
             <table id="data-table" class="table table-striped table-bordered">
                 <thead>
                 <tr>
-                    <th>#</th>
+                    <th>编号</th>
                     <th>名称</th>
                     <th>描述</th>
+                    <th>操作</th>
                 </tr>
                 </thead>
                 <tbody>

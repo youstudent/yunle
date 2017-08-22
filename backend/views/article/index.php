@@ -127,13 +127,13 @@ JS
             <table id="data-table" class="table table-striped table-bordered">
                 <thead>
                 <tr>
-                    <th>#</th>
+                    <th>编号</th>
                     <th>标题</th>
                     <th>作者</th>
                     <th>栏目</th>
                     <th>浏览量</th>
-                    <th>状态</th>
                     <th>创建时间</th>
+                    <th>状态</th>
                     <th>操作</th>
                 </tr>
                 </thead>

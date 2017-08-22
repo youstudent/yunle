@@ -137,7 +137,7 @@ JS
             <table id="data-table" class="table table-striped table-bordered">
                 <thead>
                 <tr>
-                    <th class="text-center">#</th>
+                    <th class="text-center">编号</th>
                     <th class="text-center">保险商名称</th>
                     <th class="text-center">简介</th>
                     <th class="text-center">创建时间</th>

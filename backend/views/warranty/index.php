@@ -101,7 +101,7 @@ JS
                     <input type="text" class="form-control" style="min-width: 103%;margin-right: 70px;" name="OrderSearch[order_created_at]" id="daterangepicker" value="<?= $searchModel->order_created_at ?>" placeholder="创建时间">
                 </div>
                 <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="OrderSearch[order_user]" id="user" value="<?= $searchModel->order_user ?>" placeholder="联系人">
+                    <input type="text" class="form-control" name="OrderSearch[order_user]" id="user" value="<?= $searchModel->order_user ?>" placeholder="投保人">
                 </div>
                 <div class="form-group m-r-10">
                     <input type="text" class="form-control" name="OrderSearch[order_phone]" id="phone" value="<?= $searchModel->order_phone ?>" placeholder="联系电话">
@@ -120,7 +120,7 @@ JS
             <table id="data-table" class="table table-striped table-bordered">
                 <thead>
                 <tr>
-                    <th>#</th>
+                    <th>编号</th>
                     <th>订单号</th>
                     <th>投保人</th>
                     <th>性别</th>

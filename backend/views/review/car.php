@@ -41,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <table id="data-table" class="table table-striped table-bordered">
                 <thead>
                 <tr>
-                    <th>#</th>
+                    <th>编号</th>
                     <th>发起人</th>
                     <th>发起人联系方式</th>
                     <th>状态</th>
@@ -65,9 +65,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         <td align="center">
                             <div class="btn-group">
                                 <a href="<?= Url::to(['car-detail', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">车辆详情</span></a>
-                                <a href="javascript:;" data-confirm="确认通过该审核？" data-url="<?= Url::to(['car-pass','id' => $model->id]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">通过</span></a>
-                                <a href="<?= Url::to(['car-out', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">不通过</span></a>
-                            </div>
+                                <?php if ($model->status == 0) {?>
+                                    <a href="javascript:;" data-confirm="确认通过该审核？" data-url="<?= Url::to(['car-pass','id' => $model->id]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">通过</span></a>
+                                    <a href="<?= Url::to(['car-out', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">不通过</span></a>
+                                <?php }?></div>
                         </td>
                     </tr>
 

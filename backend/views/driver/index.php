@@ -84,7 +84,7 @@ JS
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="row">
         <?php if (Yii::$app->request->get('member_id')) {?>
-            <?php if (Member::findOne(Yii::$app->request->get('member_id'))->type ==2) {?>
+            <?php if (Member::findOne(Yii::$app->request->get('member_id'))->type == 2) {?>
             <div class="col-md-6">
                 <?= Html::a('添加', ['create', 'member_id'=> Yii::$app->request->get('member_id')], ['class' => 'btn btn-success']) ?>
             </div>
@@ -121,11 +121,11 @@ JS
             <table id="data-table" class="table table-striped table-bordered">
                 <thead>
                 <tr>
-                    <th>#</th>
+                    <th>编号</th>
                     <th>名字</th>
                     <th>性别</th>
                     <th>国籍</th>
-                    <td>证件号</td>
+                    <th>证件号</th>
                     <th>出生日期</th>
                     <th>领证日期</th>
                     <th>准驾车型</th>

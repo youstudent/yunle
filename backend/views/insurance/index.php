@@ -103,7 +103,7 @@ JS
         <div class="panel-body">
             <form class="form-inline"  action="" method="GET">
                 <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="InsuranceSearch[title]" id="title" value="<?= $searchModel->title ?>" placeholder="名字">
+                    <input type="text" class="form-control" name="InsuranceSearch[title]" id="title" value="<?= $searchModel->title ?>" placeholder="名称">
                 </div>
                 <button type="submit" class="btn btn-sm btn-primary m-r-5">搜索</button>
                 <button type="reset" class="btn btn-sm btn-info m-r-5" onclick="">重置</button>
@@ -113,7 +113,7 @@ JS
             <table id="data-table" class="table table-striped table-bordered">
                 <thead>
                 <tr>
-                    <th>#</th>
+                    <th>编号</th>
                     <th>名称</th>
                     <th>类型</th>
                     <th>价格</th>

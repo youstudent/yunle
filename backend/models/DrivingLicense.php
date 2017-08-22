@@ -191,14 +191,38 @@ class DrivingLicense extends \yii\db\ActiveRecord
 
     public function driverPass($id)
     {
-        $car = DrivingLicense::findOne($id);
-        $car->status = 2;
-
-        if (!$car->save(false)) {
+        $driver = DrivingLicense::findOne($id);
+        $driver->status = 2;
+        if (!$driver->save(false)) {
             return false;
         }
 
-//        推送消息
+        $real = \common\models\Identification::findOne(['member_id'=>$driver->member_id,'status'=>1]);
+        $member = Member::findOne(['id'=>$driver->member_id]);
+
+        if (!isset($real) || empty($real)) {
+            $realName = $member->phone;
+        } else {
+            $realName = $real->name;
+        }
+
+        $newsA = '您的驾驶证【'. $driver->name .'】信息更改请求通过';
+        $user_idA = $member->id;
+        $switch = \common\models\Member::findOne($user_idA);
+        if ($switch->system_switch == 1) {
+            \common\models\Notice::userNews('member', $user_idA, $newsA);
+            \common\components\Helper::pushMemberMessage($user_idA,$newsA,'message');
+            \common\components\Helper::pushMemberMessage($user_idA,$newsA);
+        }
+        $newsB = '您的会员【'. $realName .'】的驾驶证【'. $driver->name .'】信息更改请求通过';
+        $user_idB = $member->pid;
+        $switch = \common\models\User::findOne($user_idB);
+        if ($switch->system_switch == 1) {
+            \common\models\Notice::userNews('user', $user_idB, $newsB);
+            \common\components\Helper::pushServiceMessage($user_idB,$newsB,'message');
+            \common\components\Helper::pushServiceMessage($user_idB,$newsB);
+        }
+
         return true;
     }
 
@@ -206,6 +230,13 @@ class DrivingLicense extends \yii\db\ActiveRecord
     {
         $id = $data['DrivingLicense']['id'];
         $info = $data['DrivingLicense']['info'];
+
+        $driver = DrivingLicense::findOne($id);
+        $driver->status = 2;
+        if (!$driver->save(false)) {
+            return false;
+        }
+
         $driver = DrivingLicense::findOne($id);
         $real = \common\models\Identification::findOne(['member_id'=>$driver->member_id,'status'=>1]);
         $member = Member::findOne(['id'=>$driver->member_id]);
