@@ -11,7 +11,7 @@ use yii\widgets\ActiveForm;
 /* @var $model backend\models\form\ServiceForm */
 /* @var $form yii\widgets\ActiveForm */
 
-$this->title = '添加车辆';
+$this->title = '编辑驾驶证';
 $this->params['breadcrumbs'][] = $this->title;
 
 pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
@@ -109,7 +109,7 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
                             <div class="form-group">
                                 <label class="control-label col-md-4 col-sm-4"></label>
                                 <div class="col-md-6 col-sm-6">
-                                    <button type="button" class="btn btn-primary btn-submit">添加</button>
+                                    <button type="button" class="btn btn-primary btn-submit">编辑</button>
                                 </div>
                             </div>
 

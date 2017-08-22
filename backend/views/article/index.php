@@ -127,7 +127,7 @@ JS
             <table id="data-table" class="table table-striped table-bordered">
                 <thead>
                 <tr>
-                    <th>#</th>
+                    <th>编号</th>
                     <th>标题</th>
                     <th>作者</th>
                     <th>栏目</th>
