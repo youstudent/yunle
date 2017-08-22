@@ -62,4 +62,21 @@ class Article extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Column::className(), ['id'=> 'column_id'])->alias('c');
     }
+
+    public static function dropDownListHtml($column_id, $article_id)
+    {
+        $data = Article::find()->where(['column_id'=>$column_id])->select('title,id')->indexBy('id')->column();
+        $html = '';
+        if($data){
+            foreach($data as $k => $v){
+                if($k === intval($article_id)){
+                    $html .= "<option value=".$k ." selected>".$v."</options>";
+                }else{
+                    $html .= "<option value=".$k .">".$v."</options>";
+                }
+
+            }
+        }
+        return $html;
+    }
 }

@@ -51,17 +51,25 @@ $this->title = '广告创建';
 
                 <?= $form->field($model, 'describe')->textInput() ?>
 
-                <!--                --><? //= $form->field($model, 'action_type')->dropDownList(['内链', '外链']) ?>
 
-                <?= $form->field($model, 'action_value')->textInput() ?>
+                <?= $form->field($model, 'column_id')->dropDownList(\backend\models\Column::find()->indexBy('id')->select('name,id')->column(), [
+                    'prompt'   => '请选择',
+                    'onChange' => 'pd_selectSid($(this))']) ?>
+
+                <?= $form->field($model, 'action_value')->dropDownList([]) ?>
+
 
                 <?php $model->status = 1; ?>
 
-                <?= $form->field($model, 'status')->dropDownList(['禁用', '正常']) ?>
+                <div class="form-group">
+                    <label class="control-label col-md-4 col-sm-4"></label>
+                    <div class="col-md-6 col-sm-6">
+                        <button type="button" class="btn btn-primary btn-submit">添加</button>
+                    </div>
+                </div>
 
                 <?php \yii\bootstrap\ActiveForm::end() ?>
 
-                <button type="button" class="btn btn-sm btn-primary m-r-5 btn-submit">保存</button>
             </div>
         </div>
         <!-- end panel -->
@@ -70,9 +78,24 @@ $this->title = '广告创建';
 </div>
 <!-- end row -->
 <?php
+$article_id = $model->isNewRecord ? 0 : $model->action_value;
+$url = Url::to(['article/drop-down-list']);
 $this->registerJs(<<<JS
 
 $(function () {
+    $('.field-bannerform-action_value').hide();
+    pd_selectSid = function(that){
+            $('.field-bannerform-action_value').hide();
+            var column_id = that.val();
+            if(!column_id){
+                return false;
+            }
+            var url = "{$url}?column_id=" + column_id + "&article_id=" + {$article_id};
+            $.get(url, function(rep){
+                $('#bannerform-action_value').html(rep);
+                $('.field-bannerform-action_value').show();
+            });
+        }
     $('.btn-submit').on('click', function () {
         var f = $('#BannerForm');
         f.on('beforeSubmit', function (e) {

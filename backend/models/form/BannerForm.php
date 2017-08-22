@@ -52,4 +52,5 @@ class BannerForm extends Banner
             return $this;
         });
     }
+
 }

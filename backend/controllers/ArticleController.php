@@ -8,6 +8,7 @@
 namespace backend\controllers;
 
 
+use backend\models\Article;
 use backend\models\form\ArticleForm;
 use backend\models\searchs\ArticleSearch;
 use Yii;
@@ -79,5 +80,10 @@ class ArticleController extends BackendController
         $model->scenario = $scenario;
         $model->load(Yii::$app->request->post());
         return \yii\bootstrap\ActiveForm::validate($model);
+    }
+
+    public function actionDropDownList($column_id, $article_id = 0)
+    {
+        return Article::dropDownListHtml($column_id, $article_id);
     }
 }

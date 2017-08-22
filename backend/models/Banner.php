@@ -16,6 +16,7 @@ use Yii;
  */
 class Banner extends \yii\db\ActiveRecord
 {
+    public $column_id;
     /**
      * @inheritdoc
      */
@@ -31,10 +32,11 @@ class Banner extends \yii\db\ActiveRecord
     {
         return [
             [['describe'], 'string'],
-            [['status', 'created_at', 'updated_at', 'action_type'], 'integer'],
-            [['name', 'action_value'], 'string', 'max' => 30],
+            [['status', 'created_at', 'updated_at', 'action_type', 'action_value'], 'integer'],
+            [['name'], 'string', 'max' => 30],
         ];
     }
+
 
     /**
      * @inheritdoc
@@ -50,6 +52,8 @@ class Banner extends \yii\db\ActiveRecord
             'updated_at' => '修改时间',
             'action_type' => '跳转类型',
             'action_value' => '地址',
+            'column_id' => '文章栏目',
+            'article_id' => '关联文章',
         ];
     }
 }

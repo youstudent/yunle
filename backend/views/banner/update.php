@@ -20,9 +20,9 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="panel-heading">
                 <div class="panel-heading-btn">
                     <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i
-                            class="fa fa-expand"></i></a>
+                                class="fa fa-expand"></i></a>
                     <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i
-                            class="fa fa-repeat"></i></a>
+                                class="fa fa-repeat"></i></a>
                     <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning"
                        data-click="panel-collapse"><i class="fa fa-minus"></i></a>
                     <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger"
@@ -53,14 +53,27 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= $form->field($model, 'describe')->textInput() ?>
 
                 <!--                --><? //= $form->field($model, 'action_type')->dropDownList(['内链', '外链']) ?>
+                <?php
+                $model->column_id = \backend\models\Article::findOne(['id'=>$model->action_value]) ? \backend\models\Article::findOne(['id'=>$model->action_value])->column_id : 0;
+                ?>
+                <?= $form->field($model, 'column_id')->dropDownList(\backend\models\Column::find()->indexBy('id')->select('name,id')->column(), [
+                    'prompt'   => '请选择',
+                    'onChange' => 'pd_selectSid($(this))']) ?>
 
-                <?= $form->field($model, 'action_value')->textInput() ?>
+                <?= $form->field($model, 'action_value')->dropDownList(
+                    \backend\models\Article::find()->where(['column_id'=> $model->column_id])->indexBy('id')->select('title,id')->column()
+                ) ?>
 
-                <?= $form->field($model, 'status')->dropDownList([0 => '禁用', 1 => '正常']) ?>
+
+                <div class="form-group">
+                    <label class="control-label col-md-4 col-sm-4"></label>
+                    <div class="col-md-6 col-sm-6">
+                        <button type="button" class="btn btn-primary btn-submit">保存</button>
+                    </div>
+                </div>
 
                 <?php \yii\bootstrap\ActiveForm::end() ?>
 
-                <button type="button" class="btn btn-sm btn-primary m-r-5 btn-submit">保存</button>
             </div>
         </div>
         <!-- end panel -->
@@ -69,9 +82,24 @@ $this->params['breadcrumbs'][] = $this->title;
 </div>
 <!-- end row -->
 <?php
+$article_id = $model->isNewRecord ? 0 : $model->action_value;
+$url = Url::to(['article/drop-down-list']);
 $this->registerJs(<<<JS
 
 $(function () {
+    
+    pd_selectSid = function(that){
+        $('.field-bannerform-action_value').hide();
+        var column_id = that.val();
+        if(!column_id){
+            return false;
+        }
+        var url = "{$url}?column_id=" + column_id + "&article_id=" + {$article_id};
+        $.get(url, function(rep){
+            $('#bannerform-action_value').html(rep);
+            $('.field-bannerform-action_value').show();
+        });
+    }
     $('.btn-submit').on('click', function () {
         var f = $('#BannerForm');
         f.on('beforeSubmit', function (e) {
