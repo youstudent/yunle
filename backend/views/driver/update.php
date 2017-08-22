@@ -109,7 +109,7 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
                             <div class="form-group">
                                 <label class="control-label col-md-4 col-sm-4"></label>
                                 <div class="col-md-6 col-sm-6">
-                                    <button type="button" class="btn btn-primary btn-submit">编辑</button>
+                                    <button type="button" class="btn btn-primary btn-submit">保存</button>
                                 </div>
                             </div>
 
@@ -143,7 +143,7 @@ $(function () {
                 return false;
             }
             swal({
-                    title: "确认添加",
+                    title: "确认保存",
                     text: "",
                     type: "warning",
                     showCancelButton: true,

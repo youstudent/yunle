@@ -51,9 +51,9 @@ class ColumnController extends BackendController
 
         if($model->load(Yii::$app->request->post())){
             if($model->updateColumn()){
-                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['index'])]);
+                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '修改成功', 'url'=> Url::to(['index'])]);
             }
-            return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '添加失败']);
+            return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '修改失败']);
         }
 
         return $this->renderPjax('create', [
