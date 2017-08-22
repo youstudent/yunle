@@ -393,6 +393,10 @@ display: flex;
                             ) ?>
                         <?php endif; ?>
 
+                        <?= $form->field($model, 'tags')->checkboxList(
+                            \common\models\Tag::find()->select('name,id')->indexBy('id')->column()
+                        ) ?>
+
                         <!--                        --><?php //$model->status=1; ?>
                         <!--                        --><?//= $form->field($model, 'status')->dropDownList(['禁用', '启用']) ?>
 

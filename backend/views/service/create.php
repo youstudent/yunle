@@ -277,6 +277,9 @@ JS
                             ) ?>
                         <?php endif; ?>
 
+                        <?= $form->field($model, 'tags')->checkboxList(
+                                \common\models\Tag::find()->select('name,id')->indexBy('id')->column()
+                        ) ?>
 
                         <div class="form-group">
                             <label class="control-label col-md-4 col-sm-4"></label>

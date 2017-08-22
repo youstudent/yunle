@@ -12,6 +12,7 @@ use backend\models\Service;
 use backend\models\ServiceImg;
 use backend\models\ServiceUser;
 use common\components\Helper;
+use common\models\ServiceTag;
 use pd\admin\models\Assignment;
 use Yii;
 use yii\db\Exception;
@@ -29,6 +30,8 @@ class ServiceForm  extends Service
     public $attachments;
 
     public $saleman_id;
+    public $tags;
+
 
     public function rules()
     {
@@ -78,6 +81,7 @@ class ServiceForm  extends Service
             'password' => '登录密码',
             'head' => '展示头图',
             'cover' => '服务商附件',
+            'tags' => '服务范畴',
         ]);
     }
     /**
@@ -145,6 +149,15 @@ class ServiceForm  extends Service
                 }
             }
 
+            $this->tags = Yii::$app->request->post('ServiceForm')['tags'];
+            foreach($this->tags as $tag){
+                $model = new ServiceTag();
+                $model->service_id = $this->id;
+                $model->tag_id = $tag;
+                $model->created_at = time();
+                $model->save(false);
+            }
+
             //关联角色和账户
             $items[] = Yii::$app->params['service_role_name'];
             $id = $this->owner_id;
@@ -194,6 +207,10 @@ class ServiceForm  extends Service
 
         $imgs = ServiceImg::find()->where(['service_id'=>$id, 'type'=> 0])->select('id')->column();
         $model->attachments = implode(",",$imgs);
+
+
+        $tags = ServiceTag::find()->where(['service_id'=>$id])->select('tag_id')->column();
+        $model->tags = $tags;
 
         return $model;
     }
