@@ -79,4 +79,11 @@ class Article extends \yii\db\ActiveRecord
         }
         return $html;
     }
+
+    public static function setStatus($id, $opt)
+    {
+        $model = Article::findOne($id);
+        $model->status = $opt;
+        return $model->save();
+    }
 }

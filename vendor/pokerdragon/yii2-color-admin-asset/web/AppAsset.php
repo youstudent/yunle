@@ -13,7 +13,7 @@ class AppAsset extends BaseColorAdminAsset
 {
     public $sourcePath = '@vendor/pokerdragon/color-admin/assets';
     public $css = [
-        'http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700',
+       // 'http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700',
         'css/animate.min.css',
         'css/style.min.css',
         'css/style-responsive.min.css',
@@ -38,6 +38,7 @@ class AppAsset extends BaseColorAdminAsset
         'pd\coloradmin\web\plugins\JqueryCookieAsset',
         'pd\coloradmin\web\plugins\JqueryGritterAsset',
         'pd\coloradmin\web\plugins\SwitcheryAsset',
-        'kartik\dialog\DialogAsset',
+        //'kartik\dialog\DialogAsset',
+        'pd\coloradmin\web\plugins\BootStrap3DialogAsset'
     ];
 }

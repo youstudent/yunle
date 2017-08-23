@@ -99,32 +99,15 @@ JS
             </div>
             <h4 class="panel-title">表格</h4>
         </div>
-        <?= \pd\coloradmin\widgets\Alert::widget() ?>
         <div class="panel-body">
-            <form class="form-inline"  action="" method="GET">
-                <div class="form-group m-r-15">
-                    <input type="text" class="form-control" style="min-width: 103%;margin-right: 70px;" name="BannerSearch[created_at]" id="daterangepicker" value="<?= $searchModel->created_at ?>" placeholder="创建时间">
-                </div>
-                <div class="form-group m-r-10">
-                    <select class="form-control" name="BannerSearch[status]" id="BannerSearchStatus" style="min-width: 105%;">
-                        <option value="" selected>全部</option>
-                        <option value="1" <?= $searchModel->status == 1 ? 'selected' : '' ?>>正常</option>
-                        <option value="0" <?= $searchModel->status == 0 ? 'selected' : '' ?>>禁用</option>
-                    </select>
-
-                </div>
-                <button type="submit" class="btn btn-sm btn-primary m-r-5">搜索</button>
-                <button type="button" class="btn btn-sm btn-info m-r-5" onclick="">重置</button>
-            </form>
-
-            <p></p>
+            <?= \pd\coloradmin\widgets\Alert::widget() ?>
             <table id="data-table" class="table table-striped table-bordered">
                 <thead>
                 <tr>
                     <th>编号</th>
                     <th>标题</th>
                     <th>描述</th>
-                    <th>状态</th>
+<!--                    <th>状态</th>-->
                     <th>创建时间</th>
                     <th>操作</th>
                 </tr>
@@ -135,19 +118,19 @@ JS
                         <td><?= \pd\helpers\Yii2Helpers::serialColumn($dataProvider, $index) ?></td>
                         <td><?= $model->name ?></td>
                         <td><?= $model->describe ?></td>
-                        <td>
-                            <?php switch ($model->status):?><?php case 1: ?>
-                                <span class="badge badge-primary">正常</span>
-                                <?php break;?><?php case 0: ?>
-                                <span class="badge badge-danger">禁用</span>
-                                <?php break;?><?php default: ?>
-                            <?php endswitch ?>
-                        </td>
+<!--                        <td>-->
+<!--                            --><?php //switch ($model->status):?><!----><?php //case 1: ?>
+<!--                                <span class="badge badge-primary">正常</span>-->
+<!--                                --><?php //break;?><!----><?php //case 0: ?>
+<!--                                <span class="badge badge-danger">禁用</span>-->
+<!--                                --><?php //break;?><!----><?php //default: ?>
+<!--                            --><?php //endswitch ?>
+<!--                        </td>-->
                         <td><?= pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
                         <td align="center">
                             <div class="btn-group">
                                 <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">编辑</span></a>
-                                <a href="javascript:;" data-url="<?= Url::to(['delete', 'id'=> $model->id]) ?>" onclick="pokerDragon.modalAjax($(this))"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                                <a href="<?= Url::to(['delete', 'id'=> $model->id]) ?>" data-confirm="确认删除此项吗!" data-method="post" data-pjax="0"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
                             </div>
                         </td>
                     </tr>

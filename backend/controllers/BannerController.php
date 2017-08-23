@@ -12,11 +12,24 @@ use backend\models\Banner;
 use backend\models\form\BannerForm;
 use backend\models\searchs\BannerSearch;
 use Yii;
+use yii\filters\VerbFilter;
 use yii\helpers\Url;
 use yii\web\Controller;
 
 class BannerController extends BackendController
 {
+    public function behaviors()
+    {
+        return [
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['post'],
+                ]
+            ]
+        ];
+    }
+
     public function actionIndex()
     {
         $searchModel = new BannerSearch();
@@ -65,7 +78,8 @@ class BannerController extends BackendController
     public function actionDelete($id)
     {
         BannerForm::findOne($id)->delete();
-        return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '删除成功', 'url'=> Url::to(['index'])]);
+        Yii::$app->session->setFlash('success', '删除成功!');
+        return $this->redirect(['index']);
     }
 
     public function actionValidateForm($scenario, $id = null)

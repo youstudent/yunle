@@ -99,9 +99,8 @@ JS
             </div>
             <h4 class="panel-title">表格</h4>
         </div>
-        <?= \pd\coloradmin\widgets\Alert::widget() ?>
         <div class="panel-body">
-
+            <?= \pd\coloradmin\widgets\Alert::widget() ?>
             <table id="data-table" class="table table-striped table-bordered">
                 <thead>
                 <tr>
@@ -120,7 +119,8 @@ JS
                         <td align="center">
                             <div class="btn-group">
                                 <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">编辑</span></a>
-                                <a href="javascript:;" data-url="<?= Url::to(['delete', 'id'=> $model->id]) ?>" onclick="pokerDragon.modalAjax($(this))"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                                <a href="<?= Url::to(['delete', 'id'=> $model->id]) ?>" data-confirm="确认删除吗" data-method="post" data-pjax="0" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+
                             </div>
                         </td>
                     </tr>

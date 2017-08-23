@@ -5,11 +5,20 @@ window.pokerDragon = (function($){
     var pub = {
         confirm: function (message, ok, cancel) {
             var msg = '<div class="alert alert-danger m-b-0"><h4><i class="fa fa-info-circle"></i> angke-伊普西龙温馨提示你:</h4><p>' + message +'</p></div></div>';
-            krajeeDialog.confirm(msg , function (result) {
-                if (result) {
-                    !ok || ok();
-                } else {
-                    !cancel || cancel();
+            BootstrapDialog.confirm({
+                title: '操作提示',
+                btnCancelLabel: '取消',
+                btnOKLabel: '确定',
+                message: msg,
+                btnOKClass: 'btn btn-sm btn-danger',
+                btnCancelClass: 'btn btn-sm btn-white',
+                type: BootstrapDialog.TYPE_DEFAULT,
+                callback: function(result){
+                    if (result) {
+                        !ok || ok();
+                    } else {
+                        !cancel || cancel();
+                    }
                 }
             });
         },

@@ -14,7 +14,7 @@
         "yiisoft/yii2": "2.*",
         "pokerdragon/color-admin": "~0.1",
         "pokerdragon/yii2-admin": "~0.1",
-        "pokerdragon/yii2-helpers": "~0.1"
+        "pokerdragon/yii2-helpers": "~0.1",
     },
     "autoload": {
         "psr-4": {

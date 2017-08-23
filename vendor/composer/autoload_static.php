@@ -52,7 +52,6 @@ class ComposerStaticInit8d756398758fe022ea4e34456ef1cff1
             'kartik\\growl\\' => 13,
             'kartik\\form\\' => 12,
             'kartik\\file\\' => 12,
-            'kartik\\dialog\\' => 14,
             'kartik\\depdrop\\' => 15,
             'kartik\\datetime\\' => 16,
             'kartik\\date\\' => 12,
@@ -227,10 +226,6 @@ class ComposerStaticInit8d756398758fe022ea4e34456ef1cff1
         'kartik\\file\\' => 
         array (
             0 => __DIR__ . '/..' . '/kartik-v/yii2-widget-fileinput',
-        ),
-        'kartik\\dialog\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/kartik-v/yii2-dialog',
         ),
         'kartik\\depdrop\\' => 
         array (

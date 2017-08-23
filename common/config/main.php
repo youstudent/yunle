@@ -2,6 +2,7 @@
 return [
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
     'name' => '云乐享车',
+    'timeZone' => 'Asia/Shanghai',
     'components' => [
         'cache'       => [
             'class' => 'yii\caching\FileCache',

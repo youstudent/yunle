@@ -10,13 +10,28 @@ namespace backend\controllers;
 
 use backend\models\Article;
 use backend\models\form\ArticleForm;
+use backend\models\form\BannerForm;
 use backend\models\searchs\ArticleSearch;
 use Yii;
+use yii\filters\VerbFilter;
 use yii\helpers\Url;
 use yii\web\Controller;
 
 class ArticleController extends BackendController
 {
+    public function behaviors()
+    {
+        return [
+            'verbs' =>  [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'set-status' => ['post'],
+                    'delete' => ['post']
+                ]
+            ],
+        ];
+    }
+
     public function actionIndex()
     {
         $searchModel = new ArticleSearch();
@@ -64,8 +79,15 @@ class ArticleController extends BackendController
 
     public function actionDelete($id)
     {
+        if(BannerForm::findOne(['action_value'=>$id])){
+            Yii::$app->session->setFlash('error', '请先删除关联此文章的广告，再执行此操作!');
+            return $this->redirect(['index']);
+        }
+        //先价差有没有关联对应广告
         ArticleForm::findOne($id)->delete();
-        return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '删除成功', 'url'=> Url::to(['index'])]);
+        Yii::$app->session->setFlash('success', '删除成功');
+
+        return $this->redirect(['index']);
     }
 
     public function actionValidateForm($scenario, $id = null)
@@ -80,6 +102,13 @@ class ArticleController extends BackendController
         $model->scenario = $scenario;
         $model->load(Yii::$app->request->post());
         return \yii\bootstrap\ActiveForm::validate($model);
+    }
+
+    public function actionSetStatus($id, $opt){
+        Article::setStatus($id, $opt);
+        Yii::$app->session->setFlash('success', $opt ? '文章已显示' : '文章已隐藏');
+        return $this->redirect(['index']);
+
     }
 
     public function actionDropDownList($column_id, $article_id = 0)

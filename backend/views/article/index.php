@@ -99,8 +99,8 @@ JS
             </div>
             <h4 class="panel-title">表格</h4>
         </div>
-        <?= \pd\coloradmin\widgets\Alert::widget() ?>
         <div class="panel-body">
+            <?= \pd\coloradmin\widgets\Alert::widget() ?>
             <form class="form-inline"  action="" method="GET">
                 <div class="form-group m-r-15">
                     <input type="text" class="form-control" style="min-width: 103%;margin-right: 70px;" name="ArticleSearch[created_at]" id="daterangepicker" value="<?= $searchModel->created_at ?>" placeholder="创建时间">
@@ -149,16 +149,22 @@ JS
                         <td><?= pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
                         <td>
                             <?php switch ($model->status):?><?php case 1: ?>
-                                <span class="badge badge-primary">正常</span>
+                                <span class="badge badge-primary">显示</span>
                                 <?php break;?><?php case 0: ?>
-                                <span class="badge badge-danger">禁用</span>
+                                <span class="badge badge-danger">隐藏</span>
                                 <?php break;?><?php default: ?>
                             <?php endswitch ?>
                         </td>
                         <td align="center">
                             <div class="btn-group">
                                 <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">编辑</span></a>
-                                <a href="javascript:;" data-url="<?= Url::to(['delete', 'id'=> $model->id]) ?>" onclick="pokerDragon.modalAjax($(this))"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                                <a href="<?= Url::to(['delete', 'id'=> $model->id]) ?>" data-confirm="确认删除吗" data-method="post" data-pjax="0" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                                <?php switch ($model->status):?><?php case 0: ?>
+                                    <a href="<?= Url::to(['set-status', 'id'=> $model->id, 'opt'=> 1]) ?>" data-confirm="确认显示文章吗" data-method="post" data-pjax="0" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">显示</span></a>
+                                    <?php break;?><?php case 1: ?>
+                                    <a href="<?= Url::to(['set-status', 'id'=> $model->id, 'opt'=> 0]) ?>" data-confirm="确认隐藏文章吗" data-method="post" data-pjax="0" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">隐藏</span></a>
+                                    <?php break;?><?php default: ?>
+                                <?php endswitch ?>
                             </div>
                         </td>
                     </tr>

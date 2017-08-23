@@ -8,13 +8,27 @@
 namespace backend\controllers;
 
 
+use backend\models\Article;
 use backend\models\Column;
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\filters\VerbFilter;
 use yii\helpers\Url;
 
 class ColumnController extends BackendController
 {
+    public function behaviors()
+    {
+        return [
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['post'],
+                ]
+            ]
+        ];
+    }
+
     public function actionIndex()
     {
 
@@ -64,8 +78,13 @@ class ColumnController extends BackendController
     public function actionDelete($id)
     {
         //TODO::检查栏目下是否有文章
+        if(Article::findOne(['column_id'=>$id])){
+            Yii::$app->session->setFlash('error', '请先删除栏目下所有文章，再执行此操作!');
+            return $this->redirect(['index']);
+        }
         Column::findOne($id)->delete();
-        return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '删除成功', 'url'=> Url::to(['index'])]);
+        Yii::$app->session->setFlash('success', '删除成功!');
+        return $this->redirect(['index']);
     }
 
     public function actionValidateForm($scenario, $id = null)
