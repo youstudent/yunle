@@ -10,8 +10,10 @@ namespace backend\models\form;
 
 use backend\models\ActInsurance;
 use backend\models\Car;
+use backend\models\Identification;
 use backend\models\Insurance;
 use backend\models\InsuranceCompany;
+use backend\models\InsuranceOrder;
 use backend\models\Member;
 use backend\models\InsuranceDetail;
 use common\models\Company;
@@ -169,5 +171,75 @@ class InsuranceOrderForm extends \common\models\InsuranceOrder
             }
             return $this;
         });
+    }
+
+    //    变更状态
+    public static function alter($data, $id)
+    {
+        $user_id = 1000;
+        $name = '系统';
+
+        $a = ActInsurance::findOne(['order_id'=>$id]);
+        $b = InsuranceOrder::findOne($id);
+        $a->status = $data['status_id'];
+        $a->info = '系统将订单变更为'.Helper::getInsuranceStatus($data['status_id']);
+        $a->user_id = $user_id;
+        $a->user = $name;
+        $a->id = null;
+        $a->created_at = time();
+        $a->isNewRecord = 1;
+
+        $b->transaction = Yii::$app->db->beginTransaction();
+        try{
+            //保存动态详情
+            if(!$a->save(false)){
+                $b->errorMsg = '动态详情更新失败';
+                $b->transaction->rollBack();
+                return false;
+            }
+            $act_id = $a->attributes['id'];
+            //更新订单详情
+            $order = InsuranceDetail::findOne(['order_id'=>$id]);
+            $order->action = Helper::getInsuranceStatus($data['status_id']);
+            if(!$order->save(false)){
+                $b->errorMsg = '订单详情更新失败';
+                $b->transaction->rollBack();
+                return false;
+            }
+
+            if ($data['status_id'] == 100) {
+                $order = InsuranceDetail::findOne(['order_id'=>$id]);
+                $member = Member::findOne(['id'=>$order->member_id]);
+                $orderSn = InsuranceOrder::findOne(['id'=>$id]);
+                $real = Identification::findOne(['member_id'=>$order->member_id]);
+                if (!isset($real) || empty($real)) {
+                    $realName = $member->phone;
+                } else {
+                    $realName = $real->name;
+                }
+                
+                $newsA = '您的【保险】订单： 【' . $orderSn->order_sn . '】，已取消';
+                $user_idA = $member->id;
+                $switch = \common\models\Member::findOne($user_idA);
+                if ($switch->system_switch == 1) {
+                    Notice::userNews('member', $user_idA, $newsA);
+                    \common\components\Helper::pushMemberMessage($user_idA, $newsA, 'message');
+                    \common\components\Helper::pushMemberMessage($user_idA, $newsA);
+                }
+                $newsB = '您的会员【' . $realName . '】的【' . Helper::getType($b->type) . '】订单： 【' . $orderSn->order_sn . '】，已取消';
+                $user_idB = $member->pid;
+                $switch = \common\models\User::findOne($user_idB);
+                if ($switch->system_switch == 1) {
+                    Notice::userNews('user', $user_idB, $newsB);
+                    \common\components\Helper::pushServiceMessage($user_idB, $newsB, 'message');
+                    \common\components\Helper::pushServiceMessage($user_idB, $newsB);
+                }
+            }
+            $b->transaction->commit();
+            return true;
+        } catch (Exception $exception){
+            $b->transaction->rollBack();
+            return false;
+        }
     }
 }

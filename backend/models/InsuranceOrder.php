@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use common\models\Helper;
 use Yii;
 use yii\db\Exception;
 
@@ -30,6 +31,12 @@ use yii\db\Exception;
  */
 class InsuranceOrder extends \yii\db\ActiveRecord
 {
+    public $status_id;
+    public $type_label;
+    public $member_id;
+
+    public $errorMsg;
+    public $transaction;
     /**
      * @inheritdoc
      */
@@ -72,6 +79,20 @@ class InsuranceOrder extends \yii\db\ActiveRecord
             'created_at' => '创建时间',
             'updated_at' => '修改时间',
         ];
+    }
+
+    protected function getOrderAct()
+    {
+        return $this->hasOne(ActInsurance::className(), ['order_id'=> 'id'])->alias('act');
+    }
+
+    public static function getOrderDetail($id)
+    {
+        $model = InsuranceOrder::findOne($id);
+        $model->status_id = $model->getOrderAct()->orderBy(['id'=> SORT_DESC])->one()->status;
+        $model->type_label = Helper::getType($model->type);
+        $model->member_id = InsuranceDetail::findOne(['order_id'=>$id])->member_id;
+        return $model;
     }
 
 }
