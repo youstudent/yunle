@@ -162,7 +162,7 @@ JS
                         <td><?= $model->name ?></td>
                         <td><?= $model->principal ?></td>
                         <td><?= $model->principal_phone ?></td>
-                        <td><?= $model->pid && backend\models\Adminuser::findOne($model->sid) ? backend\models\Adminuser::findOne($model->sid)->name : '未设置'   ?></td>
+                        <td><?= $model->sid && backend\models\Adminuser::findOne($model->sid) ? backend\models\Adminuser::findOne($model->sid)->name : '未设置' ?></td>
                         <td><?= $model->status == 1 ? '<span class="badge badge-info">正常</span>' : '<span class="badge badge-danger">冻结</span>' ?></td>
                         <td><?= \pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
                         <td align="center">

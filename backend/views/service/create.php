@@ -194,6 +194,8 @@ JS
                         <div class="form-group field-serviceform-cover">
                             <label class="control-label control-label col-md-4 col-sm-4" for="serviceform-cover">服务商附件</label>
                             <div class="col-md-6 col-sm-6">
+
+                                ?>
                                 <?= FileUploadUI::widget([
                                     'model' => $model,
                                     'attribute' => 'attachment',
@@ -273,6 +275,7 @@ JS
                             ) ?>
                         <?php else: ?>
                             <?= $form->field($model, 'sid')->dropDownList(
+//                                \backend\models\Adminuser::getCustomerManager()
                                 [Yii::$app->user->identity->id => Yii::$app->user->identity->name]
                             ) ?>
                         <?php endif; ?>

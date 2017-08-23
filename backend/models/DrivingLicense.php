@@ -43,9 +43,9 @@ class DrivingLicense extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['member_id', 'name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at', 'imgs'], 'required'],
+            [['member_id', 'name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at'], 'required'],
             [['member_id', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at'], 'string', 'max' => 50],
+            [['name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at', 'imgs'], 'string', 'max' => 255],
             [['info'], 'string', 'max' => 200],
         ];
     }
@@ -97,7 +97,7 @@ class DrivingLicense extends \yii\db\ActiveRecord
         return Yii::$app->db->transaction(function(){
             $this->created_at = time();
             $this->updated_at = time();
-            if(!$this->save()){
+            if(!$this->save(false)){
                 print_r($this->getFirstErrors());
                 throw new Exception('error');
             }

@@ -20,7 +20,7 @@ use yii\widgets\LinkPager;
     <table id="data-table" class="table table-striped table-bordered">
         <thead>
         <tr>
-            <th>#</th>
+            <th>编号</th>
             <th>操作时间</th>
             <th>操作人</th>
             <th>状态</th>

@@ -73,7 +73,7 @@ class Banner extends \yii\db\ActiveRecord
     public function getBanner($form)
     {
         $query = (new \yii\db\Query());
-        $banner = $query->select('name, describe, img_path, action_type, action_value')->from(Banner::tableName())
+        $banner = $query->select('name, describe, status, img_path, action_type, action_value')->from(Banner::tableName())
             ->leftJoin(BannerImg::tableName(), '{{%banner_img}}.banner_id = {{%banner}}.id')
             ->where(['status' => 1])
             ->all();

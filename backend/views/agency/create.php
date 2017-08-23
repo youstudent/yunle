@@ -112,7 +112,7 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
                             ) ?>
                         <?php else: ?>
                             <?= $form->field($model, 'sid')->dropDownList(
-                                [Yii::$app->user->identity->id => Yii::$app->user->identity->username]
+                                [Yii::$app->user->identity->id => Yii::$app->user->identity->name]
                             ) ?>
                         <?php endif; ?>
 

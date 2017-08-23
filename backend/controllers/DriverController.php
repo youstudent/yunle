@@ -37,7 +37,7 @@ class DriverController extends BackendController
             if($model->addDrivingLicense()){
                 return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['index?member_id='.$member_id])]);
             }
-            return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '添加失败']);
+            return $this->asJson(['data'=> '', 'code'=>0, 'message'=> current($model->getFirstErrors())]);
         }
 
         return $this->renderPjax('create', [

@@ -5,13 +5,14 @@ use dosamigos\fileupload\FileUploadUI;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
+use kartik\file\FileInput;
 
 /* @var $this yii\web\View */
 /* @var $adminUserModel backend\models\Adminuser */
 /* @var $model backend\models\form\ServiceForm */
 /* @var $form yii\widgets\ActiveForm */
 
-$this->title = '添加服务商';
+$this->title = '修改服务商';
 $this->params['breadcrumbs'][] = $this->title;
 
 pd\coloradmin\web\plugins\ParsleyAsset::register($this);
@@ -218,129 +219,49 @@ display: flex;
 
                         <?= $form->field($model, 'contact_phone')->textInput() ?>
 
-                        <div class="form-group field-serviceform-heads">
-                            <label class="control-label control-label col-md-4 col-sm-4" for="serviceform-heads">展示头像</label>
-                            <div class="col-md-6 col-sm-6">
-                                <?php if($model->serviceImg) : ?>
-                                    <?php foreach($model->serviceImg as $img) : ?>
-                                        <?php if($img->type == 1): ?>
-                                            <div class="ak-flex" style="justify-content: flex-start;">
-                                                <div class="base-imgBox flex-sum-mR showTheBigPic"
-                                                 style="background-image:url(<?php echo Yii::$app->params['img_domain']. $img->thumb; ?>)"
-                                                 data-src="<?php echo Yii::$app->params['img_domain']. $img->thumb; ?>">
+                        <?=$form->field($model, 'head')->widget(FileInput::classname(), [
+                            'language' => 'zh',
+                            'options' => [
+                                'accept' => 'image/*',
+                                'multiple'=>true
 
-                                                </div>
-                                                <div class="">
-                                                    <a class="btn btn-danger delete showTheDel" data-something="id or other">
-                                                        <i class="glyphicon glyphicon-trash"></i>
-                                                        <span>删除</span>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        <!-- <img src="<?php echo Yii::$app->params['img_domain']. $img->thumb; ?>" alt=""> -->
-                                        <?php endif; ?>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
-                            </div>
-                        </div>
+                            ],
+                            'pluginOptions' => [
+                                'initialPreview' => $model->getPicImg(),
+                                'overwriteInitial'=> false,
+                                'uploadUrl' => Url::to(['/media/image-upload', 'model' => 'service', 'type'=> 'head']),
+                                'maxFileSize'=>2048,
+                                'showPreview' => true,
+                                'showCaption' => true,
+                                'showRemove' => true,
+                                'showUpload' => true,
+                                'maxFileCount' => 1,
+                                'minFileCount' => 1,
+                            ]
+                        ]) ?>
 
 
-                        <div class="form-group field-serviceform-head">
-                            <label class="control-label control-label col-md-4 col-sm-4" for="serviceform-head"></label>
-                            <div class="col-md-6 col-sm-6">
-                                <?= FileUploadUI::widget([
-                                    'model' => $model,
-                                    'attribute' => 'head',
-                                    'url' => ['media/image-upload', 'model' => 'service', 'type'=> 'head'],
-                                    'gallery' => true,
-                                    'fieldOptions' => [
-                                        'accept' => 'image/*'
-                                    ],
-                                    'clientOptions' => [
-                                        'maxFileSize' => 2000000
-                                    ],
-                                    'clientEvents' => [
-                                        'fileuploaddone' => 'function(e, data, options) {
-                                            var img_input = $(\'input[name="ServiceForm[heads]"]\');
-                                             var img_id = data.result.files[0].img_id;
-                                            //将上传完成的数据添加到表单中
-                                             var ids =  img_input.val();
-                                             var ids = ids + "," + img_id;
-                                             img_input.val(ids);
-                                        }',
-                                        'fileuploadfail' => 'function(e, data) {
+                        <?=$form->field($model, 'attachment')->widget(FileInput::classname(), [
+                            'language' => 'zh',
+                            'options' => [
+                                'accept' => 'image/*',
+                                'multiple'=>true
 
-                                        }',
+                            ],
+                            'pluginOptions' => [
+                                'initialPreview' => $model->getPicImg(),
+                                'overwriteInitial'=> false,
+                                'uploadUrl' => Url::to(['/media/image-upload', 'model' => 'service', 'type'=> 'img']),
+                                'maxFileSize'=>2048,
+                                'showPreview' => true,
+                                'showCaption' => true,
+                                'showRemove' => true,
+                                'showUpload' => true,
+                                'maxFileCount' => 12,
+                                'minFileCount' => 1,
+                            ]
+                        ]) ?>
 
-                                    ],
-                                ]); ?>
-
-                                <div class="help-block help-block-error "></div>
-                            </div>
-                        </div>
-
-                        <?= $form->field($model, 'heads', ['template'=> "{input}"])->hiddenInput() ?>
-
-                        <div class="form-group field-serviceform-attachments">
-                            <label class="control-label control-label col-md-4 col-sm-4" for="serviceform-attachments">服务商附件</label>
-                            <div class="col-md-6 col-sm-6">
-                                <?php if($model->serviceImg) : ?>
-                                    <?php foreach($model->serviceImg as $img) : ?>
-                                        <?php if($img->type == 0): ?>
-                                            <div class="ak-flex" style="justify-content: flex-start; margin-bottom:10px;">
-                                                <div class="base-imgBox flex-sum-mR showTheBigPic"
-                                                 style="background-image:url(<?php echo Yii::$app->params['img_domain']. $img->thumb; ?>)"
-                                                 data-src="<?php echo Yii::$app->params['img_domain']. $img->thumb; ?>">
-
-                                                </div>
-                                                <div class="">
-                                                    <a class="btn btn-danger delete showTheDel" data-something="id or other">
-                                                        <i class="glyphicon glyphicon-trash"></i>
-                                                        <span>删除</span>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <!-- <img src="<?php echo Yii::$app->params['img_domain']. $img->thumb; ?>" alt=""> -->
-                                        <?php endif; ?>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-
-                        <div class="form-group field-serviceform-attachment">
-                            <label class="control-label control-label col-md-4 col-sm-4" for="serviceform-attachment"></label>
-                            <div class="col-md-6 col-sm-6">
-                                <?= FileUploadUI::widget([
-                                    'model' => $model,
-                                    'attribute' => 'attachment',
-                                    'url' => ['media/image-upload', 'model'=> 'service', 'type'=> 'img'],
-                                    'gallery' => true,
-                                    'fieldOptions' => [
-                                        'accept' => 'image/*'
-                                    ],
-                                    'clientOptions' => [
-                                        'maxFileSize' => 2000000
-                                    ],
-                                    // ...
-                                    'clientEvents' => [
-                                        'fileuploaddone' => 'function(e, data) {
-                                         var img_input = $(\'input[name="ServiceForm[attachments]"]\');
-                                             var img_id = data.result.files[0].img_id;
-                                            //将上传完成的数据添加到表单中
-                                             var ids =  img_input.val();
-                                             var ids = ids + "," + img_id;
-                                             img_input.val(ids);
-
-                            }',
-                                        'fileuploadfail' => 'function(e, data) {
-
-                            }',
-                                    ],
-                                ]); ?>
-
-                                <div class="help-block help-block-error "></div>
-                            </div>
-                        </div>
 
                         <?= $form->field($model, 'attachments', ['template'=> "{input}"])->hiddenInput() ?>
 
@@ -389,7 +310,7 @@ display: flex;
                             ) ?>
                         <?php else: ?>
                             <?= $form->field($model, 'sid')->dropDownList(
-                                [Yii::$app->user->identity->id => Yii::$app->user->identity->username]
+                                [Yii::$app->user->identity->id => Yii::$app->user->identity->name]
                             ) ?>
                         <?php endif; ?>
 
