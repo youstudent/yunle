@@ -118,7 +118,6 @@ JS
                         <option value="<?= Member::STATUS_ACTIVE ?>" <?= $searchModel->status == Member::STATUS_ACTIVE ? 'selected' : '' ?>>正常</option>
                         <option value="<?= Member::STATUS_INACTIVE ?>" <?= $searchModel->status == Member::STATUS_INACTIVE && strlen($searchModel->status) ? 'selected' : '' ?>>冻结</option>
                     </select>
-
                 </div>
                 <button type="submit" class="btn btn-sm btn-primary m-r-5">搜索</button>
                 <button type="button" class="btn btn-sm btn-info m-r-5" onclick="">重置</button>
