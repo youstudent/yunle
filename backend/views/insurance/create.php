@@ -73,8 +73,11 @@ $this->params['breadcrumbs'][] = $this->title;
                         '<label class="control-label control-label col-md-4 col-sm-4" for="insurance-element">要素</label>' +
                         '<div class="col-md-6 col-sm-6">'  +
                         '<input type="text"  class="form-control" name="Insurance[element][]">' +
-                        '</div><div class="help-block delete-element" >x</div></div>';
+                        '</div><a class="btn btn-warning btn-icon btn-circle  delete-element"><i class="fa fa-minus"></i></a></div>';
             $('#InsuranceForm').append(html);
+        });
+        $('#InsuranceForm').on('click', '.delete-element', function(){
+            $(this).parent().remove();
         });
         $('.btn-submit').on('click', function () {
             var f = $('#InsuranceForm');

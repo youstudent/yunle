@@ -52,12 +52,12 @@ use yii\helpers\Url;
         <?php foreach($model->elements as $element): ?>
 
         <div class="form-group field-insurance-element">
-            <label class="control-label control-label col-md-4 col-sm-4" for="insurance-element">要素</label>
+            <label class="control-label control-label col-md-4 col-sm-4" for="insurance-element-<?= $i ?>">要素</label>
             <div class="col-md-6 col-sm-6">
-                <input type="text" id="insurance-cost" class="form-control" name="Insurance[element][]" value="<?= $element->name ?>">
+                <input type="text" id="insurance-element-<?= $i ?>" class="form-control" name="Insurance[element][]" value="<?= $element->name ?>">
             </div>
             <?php if($i > 1) : ?>
-            <div class="help-block delete-element" >x</div>
+                <a class="btn btn-warning btn-icon btn-circle delete-element"><i class="fa fa-minus"></i></a>
             <?php endif; ?>
         </div>
             <?php $i++; ?>
@@ -77,15 +77,16 @@ use yii\helpers\Url;
 
 <script>
     $(function () {
-        $('.delete-element').on('click', function(){
+        $('#InsuranceForm').on('click', '.delete-element', function(){
             $(this).parent().remove();
         });
+
         $('#add-element').on('click', function(){
             var html = '<div class="form-group field-insurance-element">' +
                 '<label class="control-label control-label col-md-4 col-sm-4" for="insurance-element">要素</label>' +
                 '<div class="col-md-6 col-sm-6">'  +
                 '<input type="text"  class="form-control" name="Insurance[element][]">' +
-                '</div><div class="help-block delete-element" >x</div></div>';
+                '</div><a class="btn btn-warning btn-icon btn-circle  delete-element"><i class="fa fa-minus"></i></a></div>';
             $('#InsuranceForm').append(html);
         });
         $('.btn-submit').on('click', function () {
@@ -129,6 +130,7 @@ use yii\helpers\Url;
             });
             f.submit();
         });
+
     })
 </script>
 

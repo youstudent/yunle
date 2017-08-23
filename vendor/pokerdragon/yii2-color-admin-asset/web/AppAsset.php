@@ -18,11 +18,13 @@ class AppAsset extends BaseColorAdminAsset
         'css/style.min.css',
         'css/style-responsive.min.css',
         'css/theme/default.css',
+        'css/pd/ali-at.css',
     ];
 
     public $js = [
         'js/poker-dragon.js',
         'js/apps.min.js',
+        '//at.alicdn.com/t/font_394073_putpl9kyruh257b9.js',
     ];
 
     public $depends = [

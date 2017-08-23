@@ -4,6 +4,7 @@
  * Date: 2017/8/3 - 下午7:22
  *
  */
+use kartik\widgets\FileInput;
 use yii\helpers\Url;
 
 $this->title = '广告创建';
@@ -58,8 +59,30 @@ $this->title = '广告创建';
 
                 <?= $form->field($model, 'action_value')->dropDownList([]) ?>
 
+                <?=$form->field($model, 'img')->widget(FileInput::classname(), [
+                    'language' => 'zh',
+                    'options' => [
+                        'accept' => 'image/*',
+                        'multiple'=>false
+
+                    ],
+                    'pluginOptions' => [
+                        'uploadUrl' => Url::to(['/media/image-upload', 'model' => 'banner']),
+                        'maxFileSize'=>2800,
+                        'showPreview' => true,
+                        'showCaption' => true,
+                        'showRemove' => true,
+                        'showUpload' => true,
+                        'maxFileCount' => 1,
+                        'minFileCount' => 1,
+                    ]
+                ]) ?>
+
+                <?= $form->field($model, 'img_id', ['template'=> "{input}"])->hiddenInput() ?>
 
                 <?php $model->status = 1; ?>
+
+                <?= $form->field($model, 'status', ['template'=> "{input}"])->hiddenInput() ?>
 
                 <div class="form-group">
                     <label class="control-label col-md-4 col-sm-4"></label>
@@ -83,9 +106,7 @@ $url = Url::to(['article/drop-down-list']);
 $this->registerJs(<<<JS
 
 $(function () {
-    $('.field-bannerform-action_value').hide();
     pd_selectSid = function(that){
-            $('.field-bannerform-action_value').hide();
             var column_id = that.val();
             if(!column_id){
                 return false;
@@ -96,7 +117,21 @@ $(function () {
                 $('.field-bannerform-action_value').show();
             });
         }
+        
+    var img_input = $('input[name="BannerForm[img_id]"]');
+    $('.field-bannerform-img').on('filesuccessremove', function(event, id) {
+         img_input.val(''); 
+    }).on('fileuploaded', function(event, data, previewId, index) {
+        var img_id = data.response.files[0].img_id;
+        //var ids =  img_input.val();
+        img_input.val(img_id);
+    });
+    
     $('.btn-submit').on('click', function () {
+        if(img_input.val() == ''){
+            swal('请先上传图片');
+            return false;
+        }
         var f = $('#BannerForm');
         f.on('beforeSubmit', function (e) {
             swal({

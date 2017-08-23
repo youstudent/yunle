@@ -10,11 +10,10 @@ namespace backend\controllers;
 
 use backend\models\DrivingLicense;
 use backend\models\form\AgencyForm;
+use backend\models\form\BannerForm;
 use backend\models\form\CarForm;
 use backend\models\form\ServiceForm;
 use backend\models\Identification;
-use backend\models\Service;
-use backend\models\ServiceImg;
 use Imagine\Image\ImageInterface;
 use Yii;
 use yii\helpers\FileHelper;
@@ -69,6 +68,12 @@ class MediaController extends BackendController
                 $sub_dir = 'car';
                 $attribute = 'car_img';
                 break;
+            case 'banner':
+                $model = new  BannerForm();
+                $directory = Yii::getAlias('@common/static/upload/banner') . DIRECTORY_SEPARATOR;
+                $sub_dir = 'banner';
+                $attribute = 'img';
+                break;
         }
 
         $imageFile = UploadedFile::getInstance($model, $attribute);
@@ -114,8 +119,9 @@ class MediaController extends BackendController
         return Json::encode(['data'=>[], 'code'=>0]);
     }
 
-    public function actionImageDelete($name)
+    public function actionImageDelete($model, $id)
     {
+        return $this->asJson(['error' => '', 'data' => '', 'ext' => 'delete-banner']);
         $directory = Yii::getAlias('@frontend/web/img/temp') . DIRECTORY_SEPARATOR . Yii::$app->session->id;
         if (is_file($directory . DIRECTORY_SEPARATOR . $name)) {
             unlink($directory . DIRECTORY_SEPARATOR . $name);

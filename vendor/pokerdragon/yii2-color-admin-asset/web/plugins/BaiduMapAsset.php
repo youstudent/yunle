@@ -14,6 +14,6 @@ class BaiduMapAsset extends BaseColorAdminAsset
     public $sourcePath = '@vendor/pokerdragon/color-admin/assets';
 
     public $js = [
-        'http://api.map.baidu.com/api?v=2.0&ak=7WqxPNwpMtVbiDxGLpRwq9qxpOL1bVOn',
+        '//api.map.baidu.com/api?v=2.0&ak=7WqxPNwpMtVbiDxGLpRwq9qxpOL1bVOn',
     ];
 }
