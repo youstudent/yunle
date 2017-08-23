@@ -31,9 +31,9 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]) ?>
 
-    <?= $form->field($model, 'username')->textInput() ?>
+    <?= $form->field($model, 'username')->textInput(['readonly'=>true]) ?>
 
-    <?= $form->field($model, 'name')->textInput() ?>
+    <?= $form->field($model, 'name')->textInput(['readonly'=>true]) ?>
 
     <?= $form->field($model, 'item_name')->dropDownList(
         \common\components\Helper::getAllRoleName()
