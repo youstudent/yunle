@@ -11,6 +11,7 @@ use Yii;
  * @property integer $id
  * @property string $username
  * @property integer $pid
+ * @property integer $name
  * @property string $phone
  * @property string $password
  * @property integer $status

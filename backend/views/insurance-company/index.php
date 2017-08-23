@@ -111,8 +111,9 @@ JS
             </div>
             <h4 class="panel-title">表格</h4>
         </div>
-        <?= \pd\coloradmin\widgets\Alert::widget() ?>
+
         <div class="panel-body">
+            <?= \pd\coloradmin\widgets\Alert::widget() ?>
            <!-- <form class="form-inline"  action="" method="GET">
                 <div class="form-group m-r-10">
                     <input type="text" class="form-control" name="ServiceSearch[created_at]" id="demo" value="<?/*= $searchModel->created_at */?>" placeholder="创建时间">
@@ -156,7 +157,8 @@ JS
                         <td align="center">
                             <div class="btn-group">
                                 <a href="<?= Url::to(['insurance-company/update', 'id'=> $model->id]) ?>" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
-                                <a href="javasrcitp:;" data-confirm="确认删除此保险商？" data-url="<?= Url::to(['insurance-company/delete', 'id' => $model->id]) ?>"  data-method="get" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                                <a href="<?= Url::to(['delete', 'id'=> $model->id]) ?>" data-confirm="确认删除该保险商吗!" data-method="post" data-pjax="0">
+                                    <span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
                             </div>
                         </td>
                     </tr>

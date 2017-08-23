@@ -10,6 +10,10 @@ namespace backend\controllers;
 
 use backend\models\Car;
 use backend\models\form\CarForm;
+use backend\models\Insurance;
+use backend\models\InsuranceDetail;
+use backend\models\Order;
+use backend\models\OrderDetail;
 use backend\models\searchs\CarSearch;
 use Yii;
 use yii\data\ActiveDataProvider;
@@ -70,9 +74,20 @@ class CarController extends BackendController
 
     public function actionDelete($id)
     {
-        //TODO::检查栏目下是否有文章
-        Car::findOne($id)->delete();
-        return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '删除成功', 'url'=> Url::to(['index'])]);
+        $order = OrderDetail::findOne(['car_id'=>$id]);
+        $insurance = InsuranceDetail::findOne(['car_id'=>$id]);
+
+        if (isset($order) && !empty($order)) {
+            Yii::$app->session->setFlash('danger', '删除失败! 该车辆有订单处理中');
+            return $this->redirect(['index']);
+        } elseif (isset($insurance) && !empty($insurance)) {
+            Yii::$app->session->setFlash('danger', '删除失败! 该车辆有保险订单处理中');
+            return $this->redirect(['index']);
+        } else {
+            Car::findOne($id)->delete();
+            Yii::$app->session->setFlash('success', '删除成功!');
+            return $this->redirect(['index']);
+        }
     }
 
     public function actionValidateForm($scenario, $id = null)

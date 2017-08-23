@@ -100,8 +100,9 @@ JS
             </div>
             <h4 class="panel-title">表格</h4>
         </div>
-        <?= \pd\coloradmin\widgets\Alert::widget() ?>
+
         <div class="panel-body">
+            <?= \pd\coloradmin\widgets\Alert::widget() ?>
             <table id="data-table" class="table table-striped table-bordered">
                 <thead>
                 <tr>
@@ -116,9 +117,6 @@ JS
                     <th>荷载人数</th>
                     <th>注册日期</th>
                     <th>发证日期</th>
-                    <th>发动机编号</th>
-                    <th>默认</th>
-                    <th>状态</th>
                     <th>操作</th>
                 </tr>
                 </thead>
@@ -128,22 +126,19 @@ JS
                         <td><?= \pd\helpers\Yii2Helpers::serialColumn($dataProvider, $index) ?></td>
                         <td><?= $model->license_number ?></td>
                         <td><?= $model->type ?></td>
-
                         <td><?= $model->owner ?></td>
+                        <td><?= $model->nature ?></td>
                         <td><?= $model->brand_num ?></td>
                         <td><?= $model->discern_num ?></td>
                         <td><?= $model->motor_num ?></td>
                         <td><?= $model->load_num ?></td>
                         <td><?= $model->sign_at ?></td>
                         <td><?= $model->certificate_at ?></td>
-                        <td><?= $model->stick ?></td>
-                        <td><?= $model->status ?></td>
-                        <td><?= $model->created_at ?></td>
-
                         <td align="center">
                             <div class="btn-group">
                                 <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">编辑</span></a>
-                                <a href="javascript:;" data-url="<?= Url::to(['delete', 'id'=> $model->id]) ?>" onclick="pokerDragon.modalAjax($(this))"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                                <a href="<?= Url::to(['delete', 'id'=> $model->id]) ?>" data-confirm="确认删除该驾照吗!" data-method="post" data-pjax="0">
+                                    <span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
                             </div>
                         </td>
                     </tr>

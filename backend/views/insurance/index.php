@@ -99,8 +99,8 @@ JS
             </div>
             <h4 class="panel-title">表格</h4>
         </div>
-        <?= \pd\coloradmin\widgets\Alert::widget() ?>
         <div class="panel-body">
+            <?= \pd\coloradmin\widgets\Alert::widget() ?>
             <form class="form-inline"  action="" method="GET">
                 <div class="form-group m-r-10">
                     <input type="text" class="form-control" name="InsuranceSearch[title]" id="title" value="<?= $searchModel->title ?>" placeholder="名称">
@@ -133,7 +133,8 @@ JS
                         <td align="center">
                             <div class="btn-group">
                                 <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">编辑</span></a>
-                                <a href="javascript:;" data-confirm="确认删除此险种？" data-url="<?= Url::to(['delete', 'id' => $model->id]) ?>"  data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                                <a href="<?= Url::to(['delete', 'id'=> $model->id]) ?>" data-confirm="确认删除该驾照吗!" data-method="post" data-pjax="0">
+                                    <span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
                             </div>
                         </td>
                     </tr>

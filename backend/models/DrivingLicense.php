@@ -78,7 +78,7 @@ class DrivingLicense extends \yii\db\ActiveRecord
             'status' => '1:正常 0:待审核',
             'created_at' => '创建时间',
             'updated_at' => '修改时间',
-            'img' => '行驶证图片',
+            'img' => '驾驶证图片',
             'info' => '不通过的理由'
         ];
     }
