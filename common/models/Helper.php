@@ -1079,6 +1079,18 @@ class Helper
     }
 
     /*
+     * 平台获取会员对应服务商的名字
+     */
+    public static function getMemberService($id)
+    {
+        $uid = Member::findOne($id)->pid;
+        $sid = User::findOne($uid)->pid;
+        $name = Service::findOne($sid)->name;
+
+        return $name;
+    }
+
+    /*
      * 获取平台首页的增长统计信息
      */
     public static function getStat($days=null)

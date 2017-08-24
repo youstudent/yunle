@@ -72,7 +72,8 @@ class Column extends \yii\db\ActiveRecord
     {
         $size = 2;
         if (!isset($data['page']) || empty($data['page'])) {
-            $page = 1;
+            $data['page'] = 1;
+            $page =($data['page']-1)* $size;
             $column = Column::find()->select('id, name')->asArray()->all();
 
             foreach ($column as $k => &$v) {
@@ -91,9 +92,14 @@ class Column extends \yii\db\ActiveRecord
                     $v['flag'] = false;
                 }
                 $v['page'] = 1;
-                $v['totalPage'] = ceil((Article::find()->select('id, title, views')
-                    ->where(['column_id'=>$v['id'], 'status'=>1])->count())/$size);
+                $totalPage = ceil((Article::find()->select('id, title, views')
+                        ->where(['column_id'=>$v['id'], 'status'=>1])->count())/$size);
+                $v['totalPage'] = $totalPage?$totalPage:1;
             }
+            if(!isset($column) || empty($column)){
+                return null;
+            }
+            return $column;
         } else {
             $page =($data['page']-1)* $size;
             $articles = Article::find()->select('id, title, views')->asArray()
@@ -108,17 +114,25 @@ class Column extends \yii\db\ActiveRecord
             $total = Article::find()->where(['column_id'=>$data['column'], 'status'=>1])->count();
             $totalPage = ceil($total/$size);
             $column = ['articles' => $articles, 'page' => $data['page'], 'totalPage' => $totalPage];
+            if(!isset($column) || empty($column)){
+                return null;
+            }
+            return $column;
         }
-
-        if(!isset($column) || empty($column)){
-            return null;
-        }
-        return $column;
     }
     public function getImg($content){
         $pattern="/<[img|IMG].*?src=[\'|\"](.*?(?:[\.gif|\.jpg]))[\'|\"].*?[\/]?>/";//正则
-        preg_match_all($pattern,$content,$match);//匹配图片
-        return Yii::$app->params['img_domain'].$match[1];//返回所有图片的路径
+        preg_match_all($pattern,$content,$match);
+        if (count($match[1]) > 3) {
+          $matchNew =  array_slice($match[1],0,3);
+        } else {
+            $matchNew = $match[1];
+        }
+
+        foreach ($matchNew as &$v) {
+            $v = Yii::$app->params['img_domain'].$v;
+        }
+        return $matchNew;
     }
     //TODO:截取前20文字
     public function getBrief($content){

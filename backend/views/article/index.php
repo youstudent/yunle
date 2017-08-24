@@ -15,7 +15,6 @@ $this->title = '文章列表';
 $this->params['breadcrumbs'][] = $this->title;
 
 \pd\coloradmin\web\plugins\DaterangePickerAsset::register($this);
-
 $this->registerJs(<<<JS
 
 $('#daterangepicker').daterangepicker({
@@ -102,20 +101,23 @@ JS
         <div class="panel-body">
             <?= \pd\coloradmin\widgets\Alert::widget() ?>
             <form class="form-inline"  action="" method="GET">
-                <div class="form-group m-r-15">
-                    <input type="text" class="form-control" style="min-width: 103%;margin-right: 70px;" name="ArticleSearch[created_at]" id="daterangepicker" value="<?= $searchModel->created_at ?>" placeholder="创建时间">
-                </div>
-                <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="ArticleSearch[author]" id="author" value="<?= $searchModel->author ?>" placeholder="作者">
-                </div>
                 <div class="form-group m-r-10">
                     <input type="text" class="form-control" name="ArticleSearch[title]" id="title" value="<?= $searchModel->title ?>" placeholder="标题">
                 </div>
                 <div class="form-group m-r-10">
+                    <select class="form-control" name="ArticleSearch[name]" id="ArticleSearchName">
+                        <option value="" selected>全部</option>
+                        <?php foreach (\backend\models\Column::find()->all() as $v) { ?>
+                        <option value="<?= $v->name ?>" <?= $searchModel->name == $v->name ? 'selected' : '' ?>><?= $v->name ?></option>
+                        <?php }?>
+                    </select>
+
+                </div>
+                <div class="form-group m-r-10">
                     <select class="form-control" name="ArticleSearch[status]" id="ArticleSearchStatus" style="min-width: 105%;">
                         <option value="" selected>全部</option>
-                        <option value="1" <?= $searchModel->status == 1 && strlen($searchModel->status) ? 'selected' : '' ?>>正常</option>
-                        <option value="0" <?= $searchModel->status == 0 && strlen($searchModel->status) ? 'selected' : '' ?>>禁用</option>
+                        <option value="1" <?= $searchModel->status == 1 && strlen($searchModel->status) ? 'selected' : '' ?>>显示</option>
+                        <option value="0" <?= $searchModel->status == 0 && strlen($searchModel->status) ? 'selected' : '' ?>>隐藏</option>
                     </select>
 
                 </div>

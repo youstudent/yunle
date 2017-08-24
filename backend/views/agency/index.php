@@ -126,7 +126,7 @@ JS
 
             <?= $form->field($searchModel, 'principal')->textInput(['placeholder'=> '负责人姓名']); ?>
 
-            <?= $form->field($searchModel, 'contact_phone')->textInput(['placeholder'=> '联系电话']); ?>
+            <?= $form->field($searchModel, 'principal_phone')->textInput(['placeholder'=> '负责人联系电话']); ?>
 
             <?php if(\mdm\admin\components\Helper::checkRoute('/abs-route/get-customer-manager')) : ?>
                 <?= $form->field($searchModel, 'sid')->dropDownList(
