@@ -53,7 +53,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <?= $form->field($model, 'describe')->textInput() ?>
 
-                <!--                --><? //= $form->field($model, 'action_type')->dropDownList(['内链', '外链']) ?>
                 <?php
                 $model->column_id = \backend\models\Article::findOne(['id'=>$model->action_value]) ? \backend\models\Article::findOne(['id'=>$model->action_value])->column_id : 0;
                 ?>
@@ -77,13 +76,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 $preview = Yii::$app->params['img_domain'] . $m->img_path;
                 ?>
 
-                <input type="hidden" id="img_id_input_<?= $m->id ?>" name="BannerForm[img_id][]" value="<?= $m->id ?>">
+                <input type="hidden" data-img-node="1" id="img_id_input_<?= $m->id ?>" name="BannerForm[img_id][]" value="<?= $m->id ?>">
 
                 <?=$form->field($model, 'img')->widget(FileInput::classname(), [
                     'language' => 'zh',
                     'options' => [
                         'accept' => 'image/*',
-                        'multiple'=>true
+                        'multiple'=>false
 
                     ],
                     'pluginOptions' => [
@@ -93,6 +92,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'initialPreviewConfig' => [
                             $config
                         ],
+                        'overwriteInitial' => false,//不允许覆盖
                         'initialPreviewAsData' => true,
                         'removeFromPreviewOnError' => true,
                         'autoReplace' => true,
@@ -102,8 +102,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         'showCaption' => true,
                         'showRemove' => true,
                         'showUpload' => true,
-                        'maxFileCount' => 4,
-                        'minFileCount' => 1,
+                        'maxFileCount' => 1,
+                        //'minFileCount' => 1,
                     ]
                 ]) ?>
 
@@ -144,42 +144,61 @@ $(function () {
             $('.field-bannerform-action_value').show();
         });
     }
-    var img_input = $('input[name="BannerForm[img_id]"]');
+    
+    //处理上传图片
     $('.field-bannerform-img').
     on('filedeleted', function(event, key, jqXHR, data){
-       removeImgNode(key);
-        //监听删除的图片，并放入删除的标记中
-       alert('删除' + key);
-       $('input[name="BannerForm[delete_img_id]').val(key);
+       removeImgNodeById(key);
+    }).
+    on('filecleared', function(event){
+       //点击右上角的x触发
+       removeAllImgNode();
+    }).
+    on('filereset', function(event){
+        //恢复初始化的时候触发
+       removeAllImgNode();
     }).
     on('filesuccessremove', function(event, id) {
-        alert(2);
-        //如果移除了文件，就在这里将文件id放入delete_id 标记里，这里单图片就简单处理了
-          console.log(id);
-         img_input.val(''); 
+       removeImgNodeByPid(id);
     }).
     on('fileuploaded', function(event, data, previewId, index) {
-        //文件上传成功了，将上传成功的文件，放入待上传的id中
         var img_id = data.response.files[0].img_id;
-        appendImgNode(img_id);
+        appendImgNode(img_id, previewId);
     });
     
-    //将上传完成的图片id追加到中
-    function appendImgNode(img_id)
+    //将图片id存入图容器
+    function appendImgNode(img_id, previewId)
     {
-        var html = '<input type="hidden" id="img_id_input_'+ img_id +'" name="BannerForm[img_id][]" value="'+img_id+'>';
+        var html = '<input type="hidden" data-img-node="1" data-pid="'+ previewId +'" id="img_id_input_'+ img_id +'" name="BannerForm[img_id][]" value="'+img_id+'">';
         $('#BannerForm').append(html);
     }
     
-    //将删除的图片id追加到form中
-    function removeImgNode(img_id)
+    //将图片ID从图片ID容器中删除，根据图片的ID
+    function removeImgNodeById(img_id)
     {
         $('#img_id_input_' + img_id).remove();
     }
-
+    //将图片ID从图片ID容器中删除，根据图片预览的容器id
+    function removeImgNodeByPid(previewId)
+    {
+        $('input[data-pid=previewId]').remove();
+    }
+    //移除所有的图片容器id
+    function removeAllImgNode()
+    {
+        $('input[data-img-node="1"]').remove();
+    }
+    
+    function getAllImgNodeCount()
+    {
+        return $('input[data-img-node="1"]').length;
+    }
+    
+    
     $('.btn-submit').on('click', function () {
-        if(img_input.val() == ''){
-            swal('请先上传图片');
+        var img_count = getAllImgNodeCount();
+        if(img_count != 1){
+            swal('上传图片的数量不符合要求');
             return false;
         }
         var f = $('#BannerForm');

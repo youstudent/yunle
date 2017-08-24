@@ -78,8 +78,6 @@ $this->title = '广告创建';
                     ]
                 ]) ?>
 
-                <?= $form->field($model, 'img_id', ['template'=> "{input}"])->hiddenInput() ?>
-
                 <?php $model->status = 1; ?>
 
                 <?= $form->field($model, 'status', ['template'=> "{input}"])->hiddenInput() ?>
@@ -118,18 +116,59 @@ $(function () {
             });
         }
         
-    var img_input = $('input[name="BannerForm[img_id]"]');
-    $('.field-bannerform-img').on('filesuccessremove', function(event, id) {
-         img_input.val(''); 
-    }).on('fileuploaded', function(event, data, previewId, index) {
+     //处理上传图片
+    $('.field-bannerform-img').
+    on('filedeleted', function(event, key, jqXHR, data){
+       removeImgNodeById(key);
+    }).
+    on('filecleared', function(event){
+       //点击右上角的x触发
+       removeAllImgNode();
+    }).
+    on('filereset', function(event){
+        //恢复初始化的时候触发
+       removeAllImgNode();
+    }).
+    on('filesuccessremove', function(event, id) {
+       removeImgNodeByPid(id);
+    }).
+    on('fileuploaded', function(event, data, previewId, index) {
         var img_id = data.response.files[0].img_id;
-        //var ids =  img_input.val();
-        img_input.val(img_id);
+        appendImgNode(img_id, previewId);
     });
     
+    //将图片id存入图容器
+    function appendImgNode(img_id, previewId)
+    {
+        var html = '<input type="hidden" data-img-node="1" data-pid="'+ previewId +'" id="img_id_input_'+ img_id +'" name="BannerForm[img_id][]" value="'+img_id+'">';
+        $('#BannerForm').append(html);
+    }
+    
+    //将图片ID从图片ID容器中删除，根据图片的ID
+    function removeImgNodeById(img_id)
+    {
+        $('#img_id_input_' + img_id).remove();
+    }
+    //将图片ID从图片ID容器中删除，根据图片预览的容器id
+    function removeImgNodeByPid(previewId)
+    {
+        $('input[data-pid=previewId]').remove();
+    }
+    //移除所有的图片容器id
+    function removeAllImgNode()
+    {
+        $('input[data-img-node="1"]').remove();
+    }
+    
+    function getAllImgNodeCount()
+    {
+        return $('input[data-img-node="1"]').length;
+    }
+    
     $('.btn-submit').on('click', function () {
-        if(img_input.val() == ''){
-            swal('请先上传图片');
+        var img_count = getAllImgNodeCount();
+        if(img_count != 1){
+            swal('图片数量不合法');
             return false;
         }
         var f = $('#BannerForm');
