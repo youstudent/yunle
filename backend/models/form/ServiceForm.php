@@ -102,6 +102,7 @@ class ServiceForm  extends Service
             $this->addError('head', '必须上传一张头像');
             return false;
         }
+
         if(count($this->atta_id) < 1 || count($this->atta_id) > 12){
             $this->addError('attachment', '附件只能上传1到12张');
             return false;

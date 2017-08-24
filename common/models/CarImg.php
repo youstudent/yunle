@@ -30,6 +30,11 @@ use Yii;
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $img_path
+ * @property string $img
+ * @property string $thumb
+ * @property double $size
+ * @property string $status
+ * @property integer $type
  */
 class CarImg extends \yii\db\ActiveRecord
 {
@@ -60,10 +65,13 @@ class CarImg extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'car_id' => 'Car ID',
-            'img_path' => 'Img Path',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'car_id' => '车辆id',
+            'img' => '图片名称',
+            'thumb' => '缩略图名称',
+            'size' => '文件大小',
+            'status' => '是否被绑定了',
+            'type' => '1.封面图',
+            'img_path' => '图片路径',
         ];
     }
 }
