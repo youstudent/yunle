@@ -15,7 +15,6 @@ use kartik\file\FileInput;
 $this->title = '修改服务商';
 $this->params['breadcrumbs'][] = $this->title;
 
-pd\coloradmin\web\plugins\ParsleyAsset::register($this);
 pd\coloradmin\web\plugins\WizardAsset::register($this);
 pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
 pd\coloradmin\web\plugins\BaiduMapAsset::register($this);
@@ -210,24 +209,54 @@ display: flex;
                             'validationUrl'        => $model->isNewRecord ? Url::toRoute(['validate-form', 'scenario' => 'create']) : Url::toRoute(['validate-form', 'scenario' => 'update']),
                         ]) ?>
 
-
-                        <?= $form->field($model, 'owner_username')->textInput() ?>
-
                         <?= $form->field($model, 'name')->textInput() ?>
 
                         <?= $form->field($model, 'principal')->textInput() ?>
 
                         <?= $form->field($model, 'contact_phone')->textInput() ?>
 
+                        <?php
+                        //获取对应的图片数据
+                        $heads  = \backend\models\ServiceImg::find()->where(['service_id'=>$model->id, 'status'=> 1, 'type'=> 1])->all();
+                        $head_config = [];
+                        $head_preview = [];
+                        $input = '';
+                        foreach($heads as $head){
+                            $config = [
+                                    'size' => $head->size,
+                                    'url'  => Url::to(['media/image-delete', 'model'=> 'service', 'id' => $head->id]),
+                                    'key'  => $head->id
+                            ];
+                            $head_config[] = $config;
+                            $head_preview[] = Yii::$app->params['img_domain'] . $head->img_path;
+                            $input .= '<input type="hidden"  data-head-img-node="1" id="head_img_id_input_'.$head->id.'" name="ServiceForm[head_id][]" value="'.$head->id.'">';
+                        }
+
+                        $attas = \backend\models\ServiceImg::find()->where(['service_id'=>$model->id, 'status'=> 1, 'type'=> 0])->all();
+                        $atta_config = [];
+                        $atta_preview = [];
+                        foreach($attas as $atta){
+                            $config = [
+                                'size' => $atta->size,
+                                'url'  => Url::to(['media/image-delete', 'model'=> 'service', 'id' => $atta->id]),
+                                'key'  => $atta->id
+                            ];
+                            $atta_config[] = $config;
+                            $atta_preview[] = Yii::$app->params['img_domain'] . $atta->img_path;
+                            $input .= '<input type="hidden"  data-atta-img-node="1" id="atta_img_id_input_'.$atta->id.'" name="ServiceForm[atta_id][]" value="'.$atta->id.'">';
+                        }
+                        ?>
                         <?=$form->field($model, 'head')->widget(FileInput::classname(), [
                             'language' => 'zh',
                             'options' => [
                                 'accept' => 'image/*',
-                                'multiple'=>true
+                                'multiple'=>false
 
                             ],
                             'pluginOptions' => [
-                                'initialPreview' => $model->getPicImg(),
+                                'initialPreview' => $head_preview,
+                                'initialPreviewConfig' =>$head_config,
+                                'initialPreviewAsData' => true,
                                 'overwriteInitial'=> false,
                                 'uploadUrl' => Url::to(['/media/image-upload', 'model' => 'service', 'type'=> 'head']),
                                 'maxFileSize'=>2048,
@@ -249,7 +278,9 @@ display: flex;
 
                             ],
                             'pluginOptions' => [
-                                'initialPreview' => $model->getPicImg(),
+                                'initialPreview' => $atta_preview,
+                                'initialPreviewConfig' => $atta_config,
+                                'initialPreviewAsData' => true,
                                 'overwriteInitial'=> false,
                                 'uploadUrl' => Url::to(['/media/image-upload', 'model' => 'service', 'type'=> 'img']),
                                 'maxFileSize'=>2048,
@@ -262,8 +293,6 @@ display: flex;
                             ]
                         ]) ?>
 
-
-                        <?= $form->field($model, 'attachments', ['template'=> "{input}"])->hiddenInput() ?>
 
                         <?= $form->field($model, 'introduction')->widget(\yii\redactor\widgets\Redactor::className(), [
                             'clientOptions' => [
@@ -321,6 +350,9 @@ display: flex;
                         <!--                        --><?php //$model->status=1; ?>
                         <!--                        --><?//= $form->field($model, 'status')->dropDownList(['禁用', '启用']) ?>
 
+                        <?php
+                        echo $input;
+                        ?>
                         <div class="form-group">
                             <label class="control-label col-md-4 col-sm-4"></label>
                             <div class="col-md-6 col-sm-6">
@@ -374,16 +406,18 @@ display: flex;
 $formId = $model->formName();
 $this->registerJs(<<<JS
 $(function () {
+    var f = $('#{$formId}');
     $('.btn-submit').on('click', function () {
-       if($('input[name="ServiceForm[heads]"]').val() == ''){
-                swal("请上传头像");
+        var atth_count = getAllImgNodeCount('atth');
+        var head_count = getAllImgNodeCount('head');
+       if(head_count != 1){
+                swal("必须且只能上传一个头图");
                 return false;
         }
-       if($('input[name="ServiceForm[attachments]"]').val() == ''){
-                swal("请至少上传一张附件");
+       if(atth_count <0 || atth_count > 12){
+                swal("请上传1到12个附件");
                 return false;
         }
-        var f = $('#{$formId}');
         f.on('beforeSubmit', function (e) {
             swal({
                     title: "确认更新",
@@ -423,23 +457,97 @@ $(function () {
         });
         f.submit();
     });
-})
-$('.showTheBigPic').on('click', function(){
-    var imgUrl = $(this).attr('data-src')
-    $('.ak_img_mask').removeClass('hidden');
-    $('.ak_mask_img').attr('src', imgUrl)
-})
-$('.ak_img_mask').on('click', function(){
-    $(this).addClass('hidden')
-})
-
-
-$('.showTheDel').on('click', function(){
-    var imgUrl = $(this).attr('data-something')
-    $('.ak_del_mask').removeClass('hidden');
-})
-$('.close_del_mask').on('click', function(){
-    $('.ak_del_mask').addClass('hidden')
+        //处理上传图片
+    $('.field-serviceform-head').
+    on('filedeleted', function(event, key, jqXHR, data){
+       removeImgNodeById(key, 'head');
+    }).
+    on('filecleared', function(event){
+       //点击右上角的x触发
+       removeAllImgNode('head');
+    }).
+    on('filereset', function(event){
+        //恢复初始化的时候触发
+       removeAllImgNode('head');
+    }).
+    on('filesuccessremove', function(event, id) {
+       removeImgNodeByPid(id, 'head');
+    }).
+    on('fileuploaded', function(event, data, previewId, index) {
+        var img_id = data.response.files[0].img_id;
+        appendImgNode(img_id, previewId, 'head');
+    });
+    
+            //处理上传图片
+    $('.field-serviceform-attachment').
+    on('filedeleted', function(event, key, jqXHR, data){
+       removeImgNodeById(key, 'atta');
+    }).
+    on('filecleared', function(event){
+       //点击右上角的x触发
+       removeAllImgNode('atta');
+    }).
+    on('filereset', function(event){
+        //恢复初始化的时候触发
+       removeAllImgNode('atta');
+    }).
+    on('filesuccessremove', function(event, id) {
+       removeImgNodeByPid(id, 'atta');
+    }).
+    on('fileuploaded', function(event, data, previewId, index) {
+        var img_id = data.response.files[0].img_id;
+        appendImgNode(img_id, previewId, 'atta');
+    });
+    
+    //将图片id存入图容器
+    function appendImgNode(img_id, previewId, type)
+    {   
+        if(type == 'head'){
+            var html = '<input type="hidden" data-head-img-node="1" data-pid="'+ previewId +'" id="head_img_id_input_'+ img_id +'" name="ServiceForm[head_id][]" value="'+img_id+'">';
+        }else{
+            var html = '<input type="hidden" data-atth-img-node="1" data-pid="'+ previewId +'" id="atth_img_id_input_'+ img_id +'" name="ServiceForm[atta_id][]" value="'+img_id+'">';
+        }
+        f.append(html);
+    }
+    
+    //将图片ID从图片ID容器中删除，根据图片的ID
+    function removeImgNodeById(img_id, type)
+    {
+        if(type == 'head'){
+            $('#head_img_id_input_' + img_id).remove();
+        }else{
+            $('#atth_img_id_input_' + img_id).remove();
+        }
+    }
+    //将图片ID从图片ID容器中删除，根据图片预览的容器id
+    function removeImgNodeByPid(previewId, type)
+    {
+        if(type == 'head'){
+            $('input[data-head-pid=previewId]').remove();   
+        }else{
+            $('input[data-atth-pid=previewId]').remove();   
+        }
+        
+    }
+    //移除所有的图片容器id
+    function removeAllImgNode(type)
+    {
+        if(type == 'head'){
+           $('input[data-head-img-node="1"]').remove(); 
+        }else{
+           $('input[data-atth-img-node="1"]').remove(); 
+        }
+        
+    }
+    
+    function getAllImgNodeCount(type)
+    {
+        if(type == 'head'){
+            return $('input[data-head-img-node="1"]').length;
+        }else{
+            return $('input[data-atth-img-node="1"]').length;
+        }
+    }
 })
 JS
 );

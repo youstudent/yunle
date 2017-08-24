@@ -103,7 +103,7 @@ class BannerForm extends Banner
                 $ids = BannerImg::find()->where(['banner_id'=>$this->id, 'status'=> 1])->select('id')->column();
                 $reduces = array_diff($ids, $this->img_id);
                 foreach($reduces as $r){
-                    $model = BannerImg::findONe($r);
+                    $model = BannerImg::findOne($r);
                     $model->status = 0;
                     if(!$model->save()){
                         throw new Exception('解除图片绑定失败');
@@ -111,7 +111,7 @@ class BannerForm extends Banner
                 }
                 $incsrease = array_diff($this->img_id, $ids);
                 foreach($incsrease as $i){
-                    $model = BannerImg::findONe($i);
+                    $model = BannerImg::findOne($i);
                     $model->status = 1;
                     $model->banner_id = $this->id;
                     if(!$model->save()){

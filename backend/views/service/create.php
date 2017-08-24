@@ -2,6 +2,7 @@
 
 use common\components\Helper;
 use dosamigos\fileupload\FileUploadUI;
+use kartik\widgets\FileInput;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
@@ -139,7 +140,7 @@ JS
                                     'hint'    => '',
                                 ],
                             ],
-                            'options' => ['class' => 'form-horizontal form-bordered'],
+                            'options'              => ['class' => 'form-horizontal form-bordered'],
                             'enableAjaxValidation' => true,
                             'validationUrl'        => $model->isNewRecord ? Url::toRoute(['validate-form', 'scenario' => 'create']) : Url::toRoute(['validate-form', 'scenario' => 'update']),
                         ]) ?>
@@ -155,97 +156,68 @@ JS
 
                         <?= $form->field($model, 'contact_phone')->textInput() ?>
 
-                        <div class="form-group field-serviceform-cover">
-                            <label class="control-label control-label col-md-4 col-sm-4" for="serviceform-cover">展示头像</label>
-                            <div class="col-md-6 col-sm-6">
-                                <?= FileUploadUI::widget([
-                                    'model' => $model,
-                                    'attribute' => 'head',
-                                    'url' => ['media/image-upload', 'model' => 'service', 'type'=> 'head'],
-                                    'gallery' => true,
-                                    'fieldOptions' => [
-                                        'accept' => 'image/*'
-                                    ],
-                                    'clientOptions' => [
-                                        'maxFileSize' => 2000000
-                                    ],
-                                    'clientEvents' => [
-                                        'fileuploaddone' => 'function(e, data, options) {
-                                            var img_input = $(\'input[name="ServiceForm[heads]"]\');
-                                             var img_id = data.result.files[0].img_id;
-                                            //将上传完成的数据添加到表单中
-                                             var ids =  img_input.val();
-                                             var ids = ids + "," + img_id;
-                                             img_input.val(ids);
-                                        }',
-                                        'fileuploadfail' => 'function(e, data) {
-                                          
-                                        }',
 
-                                    ],
-                                ]); ?>
+                        <?= $form->field($model, 'head')->widget(FileInput::classname(), [
+                            'language'      => 'zh',
+                            'options'       => [
+                                'accept'   => 'image/*',
+                                'multiple' => false,
 
-                                <div class="help-block help-block-error "></div>
-                            </div>
-                        </div>
+                            ],
+                            'pluginOptions' => [
+                                'overwriteInitial'         => false,//不允许覆盖
+                                'initialPreviewAsData'     => true,
+                                'removeFromPreviewOnError' => true,
+                                'autoReplace'              => true,
+                                'uploadUrl'                => Url::to(['/media/image-upload', 'model' => 'service', 'type' => 'head']),
+                                'maxFileSize'              => 2800,
+                                'showPreview'              => true,
+                                'showCaption'              => true,
+                                'showRemove'               => true,
+                                'showUpload'               => true,
+                                'maxFileCount'             => 1,
+                                //'minFileCount' => 1,
+                            ],
+                        ]) ?>
 
-                        <?= $form->field($model, 'heads', ['template'=> "{input}"])->hiddenInput() ?>
+                        <?= $form->field($model, 'attachment')->widget(FileInput::classname(), [
+                            'language'      => 'zh',
+                            'options'       => [
+                                'accept'   => 'image/*',
+                                'multiple' => true,
 
-                        <div class="form-group field-serviceform-cover">
-                            <label class="control-label control-label col-md-4 col-sm-4" for="serviceform-cover">服务商附件</label>
-                            <div class="col-md-6 col-sm-6">
-
-                                ?>
-                                <?= FileUploadUI::widget([
-                                    'model' => $model,
-                                    'attribute' => 'attachment',
-                                    'url' => ['media/image-upload', 'model'=> 'service', 'type'=> 'img'],
-                                    'gallery' => true,
-                                    'fieldOptions' => [
-                                        'accept' => 'image/*'
-                                    ],
-                                    'clientOptions' => [
-                                        'maxFileSize' => 2000000
-                                    ],
-                                    // ...
-                                    'clientEvents' => [
-                                        'fileuploaddone' => 'function(e, data) {
-                                         var img_input = $(\'input[name="ServiceForm[attachments]"]\');
-                                             var img_id = data.result.files[0].img_id;
-                                            //将上传完成的数据添加到表单中
-                                             var ids =  img_input.val();
-                                             var ids = ids + "," + img_id;
-                                             img_input.val(ids);
-                      
-                            }',
-                                        'fileuploadfail' => 'function(e, data) {
-                              
-                            }',
-                                    ],
-                                ]); ?>
-
-                                <div class="help-block help-block-error "></div>
-                            </div>
-                        </div>
-
-                        <?= $form->field($model, 'attachments', ['template'=> "{input}"])->hiddenInput() ?>
-
+                            ],
+                            'pluginOptions' => [
+                                'overwriteInitial'         => false,//不允许覆盖
+                                'initialPreviewAsData'     => true,
+                                'removeFromPreviewOnError' => true,
+                                'autoReplace'              => true,
+                                'uploadUrl'                => Url::to(['/media/image-upload', 'model' => 'service', 'type' => 'img']),
+                                'maxFileSize'              => 2048,
+                                'showPreview'              => true,
+                                'showCaption'              => true,
+                                'showRemove'               => true,
+                                'showUpload'               => true,
+                                'maxFileCount'             => 12,
+                            ],
+                        ]) ?>
 
                         <?= $form->field($model, 'introduction')->widget(\yii\redactor\widgets\Redactor::className(), [
                             'clientOptions' => [
                                 'imageManagerJson' => ['/redactor/upload/image-json'],
-                                'imageUpload' => ['/redactor/upload/image'],
-                                'fileUpload' => ['/redactor/upload/file'],
-                                'lang' => 'zh_cn',
-                                'minHeight' => 300,
-                                'plugins' => ['clips', 'fontcolor','imagemanager']
-                            ]
+                                'imageUpload'      => ['/redactor/upload/image'],
+                                'fileUpload'       => ['/redactor/upload/file'],
+                                'lang'             => 'zh_cn',
+                                'minHeight'        => 300,
+                                'plugins'          => ['clips', 'fontcolor', 'imagemanager'],
+                            ],
                         ]) ?>
 
                         <?= $form->field($model, 'address')->textInput() ?>
 
                         <div class="form-group field-serviceform-address required">
-                            <label class="control-label control-label col-md-4 col-sm-4" for="serviceform-address"></label>
+                            <label class="control-label control-label col-md-4 col-sm-4"
+                                   for="serviceform-address"></label>
                             <div class="col-md-6 col-sm-6">
                                 <div id="Bmap" style="width:700px;height: 700px;"></div>
                             </div>
@@ -255,21 +227,15 @@ JS
 
                         <?= $form->field($model, 'lng')->textInput() ?>
 
-<!--                        --><?php //$model->open_at= '8:30' ?>
-<!--                        --><?//= $form->field($model, 'open_at')->textInput() ?>
-<!---->
-<!--                        --><?php //$model->close_at= '23:30' ?>
-<!--                        --><?//= $form->field($model, 'close_at')->textInput() ?>
-
-                        <?php $model->level=1 ?>
+                        <?php $model->level = 1 ?>
                         <?= $form->field($model, 'level')->dropDownList([
-                            1=> '一星',
-                            2=> '二星',
-                            3=> '三星',
-                            4=> '四星',
-                            5=> '五星',
+                            1 => '一星',
+                            2 => '二星',
+                            3 => '三星',
+                            4 => '四星',
+                            5 => '五星',
                         ]) ?>
-                        <?php if(pd\admin\components\Helper::checkRoute('/account/get-customer-manager')) : ?>
+                        <?php if (pd\admin\components\Helper::checkRoute('/account/get-customer-manager')) : ?>
                             <?= $form->field($model, 'sid')->dropDownList(
                                 \backend\models\Adminuser::getCustomerManager()
                             ) ?>
@@ -281,7 +247,7 @@ JS
                         <?php endif; ?>
 
                         <?= $form->field($model, 'tags')->checkboxList(
-                                \common\models\Tag::find()->select('name,id')->indexBy('id')->column()
+                            \common\models\Tag::find()->select('name,id')->indexBy('id')->column()
                         ) ?>
 
                         <div class="form-group">
@@ -306,16 +272,18 @@ JS
 $formId = $model->formName();
 $this->registerJs(<<<JS
 $(function () {
+    var f = $('#{$formId}');
     $('.btn-submit').on('click', function () {
-       if($('input[name="ServiceForm[heads]"]').val() == ''){
-                swal("请先上传附件");
+        var atth_count = getAllImgNodeCount('atth');
+        var head_count = getAllImgNodeCount('head');
+       if(head_count != 1){
+                swal("必须且只能上传一个头图");
                 return false;
         }
-       if($('input[name="ServiceForm[attachments]"]').val() == ''){
-                swal("请先上传附件");
+       if(atth_count <0 || atth_count > 12){
+                swal("请上传1到12个附件");
                 return false;
         }
-        var f = $('#{$formId}');
         f.on('beforeSubmit', function (e) {
             swal({
                     title: "确认添加",
@@ -355,6 +323,98 @@ $(function () {
         });
         f.submit();
     });
+    
+        //处理上传图片
+    $('.field-serviceform-head').
+    on('filedeleted', function(event, key, jqXHR, data){
+       removeImgNodeById(key, 'head');
+    }).
+    on('filecleared', function(event){
+       //点击右上角的x触发
+       removeAllImgNode('head');
+    }).
+    on('filereset', function(event){
+        //恢复初始化的时候触发
+       removeAllImgNode('head');
+    }).
+    on('filesuccessremove', function(event, id) {
+       removeImgNodeByPid(id, 'head');
+    }).
+    on('fileuploaded', function(event, data, previewId, index) {
+        var img_id = data.response.files[0].img_id;
+        appendImgNode(img_id, previewId, 'head');
+    });
+    
+            //处理上传图片
+    $('.field-serviceform-attachment').
+    on('filedeleted', function(event, key, jqXHR, data){
+       removeImgNodeById(key, 'atta');
+    }).
+    on('filecleared', function(event){
+       //点击右上角的x触发
+       removeAllImgNode('atta');
+    }).
+    on('filereset', function(event){
+        //恢复初始化的时候触发
+       removeAllImgNode('atta');
+    }).
+    on('filesuccessremove', function(event, id) {
+       removeImgNodeByPid(id, 'atta');
+    }).
+    on('fileuploaded', function(event, data, previewId, index) {
+        var img_id = data.response.files[0].img_id;
+        appendImgNode(img_id, previewId, 'atta');
+    });
+    
+    //将图片id存入图容器
+    function appendImgNode(img_id, previewId, type)
+    {   
+        if(type == 'head'){
+            var html = '<input type="hidden" data-head-img-node="1" data-pid="'+ previewId +'" id="head_img_id_input_'+ img_id +'" name="ServiceForm[head_id][]" value="'+img_id+'">';
+        }else{
+            var html = '<input type="hidden" data-atth-img-node="1" data-pid="'+ previewId +'" id="atth_img_id_input_'+ img_id +'" name="ServiceForm[atta_id][]" value="'+img_id+'">';
+        }
+        f.append(html);
+    }
+    
+    //将图片ID从图片ID容器中删除，根据图片的ID
+    function removeImgNodeById(img_id, type)
+    {
+        if(type == 'head'){
+            $('#head_img_id_input_' + img_id).remove();
+        }else{
+            $('#atth_img_id_input_' + img_id).remove();
+        }
+    }
+    //将图片ID从图片ID容器中删除，根据图片预览的容器id
+    function removeImgNodeByPid(previewId, type)
+    {
+        if(type == 'head'){
+            $('input[data-head-pid=previewId]').remove();   
+        }else{
+            $('input[data-atth-pid=previewId]').remove();   
+        }
+        
+    }
+    //移除所有的图片容器id
+    function removeAllImgNode(type)
+    {
+        if(type == 'head'){
+           $('input[data-head-img-node="1"]').remove(); 
+        }else{
+           $('input[data-atth-img-node="1"]').remove(); 
+        }
+        
+    }
+    
+    function getAllImgNodeCount(type)
+    {
+        if(type == 'head'){
+            return $('input[data-head-img-node="1"]').length;
+        }else{
+            return $('input[data-atth-img-node="1"]').length;
+        }
+    }
 })
 JS
 );

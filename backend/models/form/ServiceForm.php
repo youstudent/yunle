@@ -8,6 +8,7 @@
 namespace backend\models\form;
 
 use backend\models\Adminuser;
+use backend\models\BannerImg;
 use backend\models\Service;
 use backend\models\ServiceImg;
 use backend\models\ServiceUser;
@@ -26,8 +27,8 @@ class ServiceForm  extends Service
     public $head;
     public $attachment;
 
-    public $heads;
-    public $attachments;
+    public $head_id;
+    public $atta_id;
 
     public $saleman_id;
     public $tags;
@@ -40,26 +41,27 @@ class ServiceForm  extends Service
             [['level', 'status', 'created_at', 'updated_at', 'deleted_at', 'level', 'sid'], 'integer'],
             [['name', 'principal', 'contact_phone', 'introduction', 'address', 'lat', 'lng', 'open_at', 'close_at'], 'string', 'max' => 256],
             [['sid', 'username', 'password', 'name', 'status', 'address', 'lat', 'lng', 'open_at', 'close_at'], 'required', 'on' => 'create'],
-            [['open_at', 'close_at', 'introduction', 'heads', 'attachments'], 'string'],
+            [['open_at', 'close_at', 'introduction'], 'string'],
             [['username', 'password'], 'string', 'min'=> 6, 'max' => 16],
             [['username'], 'unique', 'targetClass' => '\backend\models\Adminuser', 'message' => '用户名已存在', 'on' => ['create']],
             [['sid', 'name', 'status', 'address', 'lat', 'lng', 'open_at', 'close_at'], 'required', 'on' => 'created_service'],
+            [['head_id', 'atta_id', 'tags'], 'safe']
         ];
     }
 
     public function scenarios()
     {
         return [
-            'create' => ['name', 'principal', 'contact_phone', 'level',  'introduction', 'address', 'lat', 'lng', 'username', 'password',  'level', 'sid', 'heads', 'attachments'],
+            'create' => ['name', 'principal', 'contact_phone', 'level',  'introduction', 'address', 'lat', 'lng', 'username', 'password',  'level', 'sid', 'head_id', 'atta_id', 'tags'],
             'created_service' => ['name', 'principal', 'contact_phone', 'level', 'status', 'introduction', 'address', 'lat', 'lng', 'username', 'password', 'open_at', 'close_at', 'level', 'sid'],
-            'update' => ['name', 'principal', 'contact_phone', 'level', 'status', 'introduction', 'address', 'lat', 'lng', 'sid', 'heads', 'attachments'],
+            'update' => ['name', 'principal', 'contact_phone', 'level', 'status', 'introduction', 'address', 'lat', 'lng', 'sid', 'head_id', 'atta_id', 'tags'],
         ];
     }
 
     public function attributeHints()
     {
         return [
-            'username' => '登录账号将作为服务商使用服务平台的登录账号,服务商的账号不能直接在服务端APP直接使用',
+            'username' => '登录账号将作为服务商使用<span style="color:red;">服务平台</span>的登录账号,服务商的账号不能直接在<span style="color:red;">服务端APP</span>直接使用',
             'password' => '最少6位，最长16位',
             'name' => '服务商名称',
             'principal' => '负责人名称',
@@ -68,8 +70,8 @@ class ServiceForm  extends Service
             'address' => '展示在客户端的服务商详细地址',
             'lat' => '服务商地址纬度,不建议直接填写',
             'lng' => '服务商地址经度,不建议直接填写',
-            'heads' => '服务商头像',
-            'attachments' => '服务商附件，最多传12张，将展示在APP服务商详情',
+            'head' => '服务商头图,有且只能有<span style="color:red;">一</span>张,请务必点击<span style="color:red;">上传</span>',
+            'attachment' => '服务商附件，<span style="color:red;">最多传12张,大小不超过2mb,按住CTRL上传多图</span>，将展示在APP服务商详情',
             'sid' => '平台的客户经理',
         ];
     }
@@ -96,19 +98,17 @@ class ServiceForm  extends Service
             return false;
         }
 
-        $attachment_ids = explode(',', trim($this->attachments,','));
-        if(count($attachment_ids) == 0){
-            $this->addError('attachment', '请上传附件');
+        if(count($this->head_id) != 1){
+            $this->addError('head', '必须上传一张头像');
             return false;
         }
-        $head_ids = explode(',', trim($this->heads,','));
-        if(count($head_ids) == 0){
-            $this->addError('head', '请上传头像');
+        if(count($this->atta_id) < 1 || count($this->atta_id) > 12){
+            $this->addError('attachment', '附件只能上传1到12张');
             return false;
         }
 
         //添加一个管理员用户
-        return Yii::$app->db->transaction(function() use($attachment_ids, $head_ids)
+        return Yii::$app->db->transaction(function()
         {
             $adminuserModel = new Adminuser();
             if(!$adminuserModel->addServiceUser($this, 2)){
@@ -131,26 +131,24 @@ class ServiceForm  extends Service
             }
 
             //设置图片绑定
-            $models =  ServiceImg::find()->where(['id'=>$attachment_ids])->all();
-            foreach ($models as $model){
-                $model->service_id = $this->id;
-                $model->status = 1;
-                $model->type =0;
-                if(!$model->save()){
+            foreach($this->head_id as $h){
+                $m = ServiceImg::findOne($h);
+                $m->service_id = $this->id;
+                $m->status = 1;
+                if(!$m->save()){
                     throw new Exception("绑定图片信息失败");
                 }
             }
-            $models =  ServiceImg::find()->where(['id'=>$head_ids])->all();
-            foreach ($models as $model){
-                $model->service_id = $this->id;
-                $model->status = 1;
-                $model->type =1;
-                if(!$model->save()){
-                    throw new Exception("绑定附件信息失败");
+
+            foreach($this->atta_id as $a){
+                $m = ServiceImg::findOne($a);
+                $m->service_id = $this->id;
+                $m->status = 1;
+                if(!$m->save()){
+                    throw new Exception("绑定图片信息失败");
                 }
             }
 
-            $this->tags = Yii::$app->request->post('ServiceForm')['tags'];
             foreach($this->tags as $tag){
                 $model = new ServiceTag();
                 $model->service_id = $this->id;
@@ -190,11 +188,62 @@ class ServiceForm  extends Service
         //编辑用户的信息
         return Yii::$app->db->transaction(function()
         {
-
-            //处理图片变更, 对比新旧，删除旧的部分
             if(!$this->save()){
                 throw new Exception("更新服务商信息失败");
             }
+
+            //变更图片的绑定
+            $old_head = ServiceImg::find()->where(['service_id'=>$this->id, 'status'=> 1, 'type'=>1])->select('id')->column();
+            $reduces_head = array_diff($old_head, $this->head_id);
+            foreach($reduces_head as $r){
+                $model = ServiceImg::findOne($r);
+                $model->status = 0;
+                if(!$model->save()){
+                    throw new Exception('解除图片绑定失败');
+                }
+            }
+
+            $incsrease_head = array_diff($this->head_id, $old_head);
+            foreach($incsrease_head as $i){
+                $model = ServiceImg::findOne($i);
+                $model->status = 1;
+                $model->service_id = $this->id;
+                if(!$model->save()){
+                    throw new Exception('增加图片绑定失败');
+                }
+            }
+
+            $old_atta = ServiceImg::find()->where(['service_id'=>$this->id, 'status'=> 1, 'type'=>0])->select('id')->column();
+            $reduces_atta = array_diff($old_atta, $this->atta_id);
+            foreach($reduces_atta as $r){
+                $model = ServiceImg::findOne($r);
+                $model->status = 0;
+                if(!$model->save()){
+                    throw new Exception('解除图片绑定失败');
+                }
+            }
+
+            $incsrease_atta = array_diff($this->atta_id, $old_atta);
+            foreach($incsrease_atta as $i){
+                $model = ServiceImg::findOne($i);
+                $model->status = 1;
+                $model->service_id = $this->id;
+                if(!$model->save()){
+                    throw new Exception('增加图片绑定失败');
+                }
+            }
+
+            //获取以前的tags
+            ServiceTag::deleteAll(['service_id'=>$this]);
+            //清楚所有以前的tag，并重新设置
+            foreach($this->tags as $tag){
+                $model = new ServiceTag();
+                $model->service_id = $this->id;
+                $model->tag_id = $tag;
+                $model->created_at = time();
+                $model->save(false);
+            }
+
             return $this;
         });
     }
@@ -202,13 +251,6 @@ class ServiceForm  extends Service
     public static function getOne($id)
     {
         $model = ServiceForm::findOne($id);
-
-        $imgs = ServiceImg::find()->where(['service_id'=>$id, 'type'=> 1])->select('id')->column();
-        $model->heads = implode(",",$imgs);
-
-        $imgs = ServiceImg::find()->where(['service_id'=>$id, 'type'=> 0])->select('id')->column();
-        $model->attachments = implode(",",$imgs);
-
 
         $tags = ServiceTag::find()->where(['service_id'=>$id])->select('tag_id')->column();
         $model->tags = $tags;
