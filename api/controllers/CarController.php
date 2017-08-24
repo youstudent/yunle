@@ -119,7 +119,7 @@ class CarController extends ApiController
         $form = $this->getForm(Yii::$app->request->post('data'));
         $member = $this->getMemberInfo();
 
-        if ($$model->changeDefault($form,$member)) {
+        if ($model->changeDefault($form,$member)) {
             return $this->jsonReturn(1,'设置成功');
         }
 
