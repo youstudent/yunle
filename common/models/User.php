@@ -159,14 +159,13 @@ class User extends ActiveRecord
         //TODO:更改权限
         if ($user->save(false)) {
             $role_id = AppRoleAssign::findOne(['user_id'=>$user->id]);
-            $un_assigned = AppMenuWithout::find()->where(['service_id'=>$user->pid, 'role_id'=>$role_id])->select('id')->column();
+            $un_assigned = AppMenuWithout::find()->where(['service_id'=>$user->pid, 'role_id'=>$role_id])->select('menu_id')->column();
             $menus =AppMenu::find()->alias('A')->select("id,name,key,1 as `show`")->asArray()->indexby('key')->all();
 
             foreach($menus as &$menu){
                 if(in_array($menu['id'], $un_assigned)){
                     $menu['show'] = 0;
                 }
-
             }
             return $menus;
             //            Yii::$app->response->format = Response::FORMAT_JSON;
