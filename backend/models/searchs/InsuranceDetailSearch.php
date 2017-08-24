@@ -17,9 +17,9 @@ class InsuranceDetailSearch extends InsuranceDetail
     public function rules()
     {
         return [
-            [['status', 'member_id'], 'integer'],
-            [['created_at','user', 'car'], 'string'],
-            [['phone'], 'number'],
+            [['action', 'member_id'], 'integer'],
+            [['created_at','order_user', 'order_car', 'order_company'], 'string'],
+            [['order_phone'], 'number'],
         ];
     }
 
@@ -72,10 +72,11 @@ class InsuranceDetailSearch extends InsuranceDetail
                 $query->andFilterWhere(['<=', 'io.created_at', $end]);
             }
         }
-        $query->andFilterWhere(['type' => $this->status])
-            ->andFilterWhere(['LIKE', 'io.user', $this->user])
-            ->andFilterWhere(['LIKE', 'io.phone', $this->phone])
-            ->andFilterWhere(['io.member_id', $this->member_id]);
+        $query->andFilterWhere(['type' => $this->order_type])
+            ->andFilterWhere(['LIKE', 'io.user', $this->order_user])
+            ->andFilterWhere(['LIKE', 'io.phone', $this->order_phone])
+            ->andFilterWhere(['LIKE', 'io.car', $this->order_car])
+            ->andFilterWhere(['LIKE', 'io.company', $this->order_company]);
 
 
         return $dataProvider;

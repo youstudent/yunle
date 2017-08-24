@@ -106,7 +106,7 @@ JS
                     <input type="text" class="form-control" style="min-width: 103%;margin-right: 70px;" name="MemberSearch[created_at]" id="daterangepicker" value="<?= $searchModel->created_at ?>" placeholder="创建时间">
                 </div>
                 <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="MemberSearch[salesman_username]" id="salesman_username" value="<?= $searchModel->salesman_username ?>" placeholder="业务员">
+                    <input type="text" class="form-control" name="MemberSearch[salesman_name]" id="salesman_name" value="<?= $searchModel->salesman_name ?>" placeholder="业务员">
                 </div>
                 <div class="form-group m-r-10">
                     <input type="text" class="form-control" name="MemberSearch[phone]" id="phone" value="<?= $searchModel->phone ?>" placeholder="手机号">
@@ -158,7 +158,7 @@ JS
                         <td><?= $model->id ?></td>
                         <td><?= $model->memberInfo && $model->memberInfo->status ? $model->memberInfo->name : '未认证' ?></td>
                         <td><?= $model->phone ?></td>
-                        <td>不知道</td>
+                        <td><?= \common\models\Helper::getMemberService($model->id)?></td>
                         <td>
                             <a href="<?= Url::to(['modify-salesman', 'id'=> $model->id]) ?>"  data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><?= $model->salesmanName ? $model->salesmanName->name : $model->salesmanName->username ?></a>
                         </td>

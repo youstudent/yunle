@@ -13,7 +13,7 @@ use yii\data\ActiveDataProvider;
 
 class MemberSearch extends Member
 {
-    public $salesman_username;
+    public $salesman_name;
     public $member_name;
 
 
@@ -22,7 +22,7 @@ class MemberSearch extends Member
         return [
             ['type', 'integer'],
             [['phone', 'status'], 'number'],
-            [['created_at','salesman_username', 'member_name'],'string'],
+            [['created_at','salesman_name', 'member_name'],'string'],
         ];
     }
 
@@ -70,9 +70,9 @@ class MemberSearch extends Member
         }
 
 
-        $query->andFilterWhere(['LIKE', 'u.name' , $this->salesman_username]);
+        $query->andFilterWhere(['LIKE', 'u.name' , $this->salesman_name]);
         $query->andFilterWhere(['LIKE', 'm.phone' , $this->phone]);
-        $query->andFilterWhere(['LIKE', 'm.name' , $this->member_name]);
+        $query->andFilterWhere(['LIKE', 'md.name' , $this->member_name]);
 
         return $dataProvider;
     }

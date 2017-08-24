@@ -113,7 +113,7 @@ JS
                     <input type="text" class="form-control" name="UserSearch[phone]" id="phone" value="<?= $searchModel->phone ?>" placeholder="手机号">
                 </div>
                 <div class="form-group m-r-10">
-                    <select class="form-control" name="MemberSearch[status]" id="MemberSearchStatus">
+                    <select class="form-control" name="UserSearch[status]" id="MemberSearchStatus">
                         <option value="" selected>全部</option>
                         <option value="<?= Member::STATUS_ACTIVE ?>" <?= $searchModel->status == Member::STATUS_ACTIVE ? 'selected' : '' ?>>正常</option>
                         <option value="<?= Member::STATUS_INACTIVE ?>" <?= $searchModel->status == Member::STATUS_INACTIVE && strlen($searchModel->status) ? 'selected' : '' ?>>冻结</option>
@@ -151,7 +151,7 @@ JS
                             <div class="btn-group">
                                 <a href="<?= Url::to(['salesman/view', 'id'=> $model->id]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">信息</span></a>
                                 <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
-                                <a href="<?= Url::to(['member/index', 'MemberSearch[salesman_username]'=> $model->username ]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">客户列表</span></a>
+                                <a href="<?= Url::to(['member/index', 'MemberSearch[salesman_name]'=> $model->name ]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">客户列表</span></a>
                                 <a href="<?= Url::to(['order/index', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">订单</span></a>
                                 <a href="<?= Url::to(['insurance/index', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">保险</span></a>
                                 <?php if ($model->status == 1) { ?>
