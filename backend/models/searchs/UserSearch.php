@@ -63,7 +63,9 @@ class UserSearch extends User
         }
 
 
-        $query->andFilterWhere(['LIKE', 's.name', $this->service_name]);
+        $query->andFilterWhere(['LIKE', 's.name', $this->service_name])
+            ->andFilterWhere(['LIKE', 'u.status', $this->status])
+            ->andFilterWhere(['LIKE', 'u.phone', $this->phone]);
 
         return $dataProvider;
     }

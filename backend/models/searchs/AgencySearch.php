@@ -16,7 +16,7 @@ class AgencySearch extends Service
     public function rules()
     {
         return [
-            [['created_at', 'name', 'principal', 'contact_phone', 'pid'] ,'string'],
+            [['created_at', 'name', 'principal', 'principal_phone', 'pid'] ,'string'],
         ];
     }
 
@@ -53,7 +53,7 @@ class AgencySearch extends Service
 
         $query->andFilterWhere(['LIKE', 'name' , $this->name]);
         $query->andFilterWhere(['LIKE', 'principal' , $this->principal]);
-        $query->andFilterWhere(['LIKE', 'contact_phone' , $this->contact_phone]);
+        $query->andFilterWhere(['LIKE', 'principal_phone' , $this->principal_phone]);
         $query->andFilterWhere(['pid'=> $this->pid]);
 
         return $dataProvider;

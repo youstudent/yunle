@@ -103,27 +103,16 @@ JS
                     <input type="text" class="form-control" style="min-width: 103%;margin-right: 70px;" name="OrderSearch[order_created_at]" id="daterangepicker" value="<?= $searchModel->order_created_at ?>" placeholder="创建时间">
                 </div>
                 <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="OrderSearch[order_user]" id="user" value="<?= $searchModel->order_user ?>" placeholder="联系人">
+                    <input type="text" class="form-control" name="InsuranceDetailSearch[order_user]" id="user" value="<?= $searchModel->order_user ?>" placeholder="联系人">
                 </div>
                 <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="OrderSearch[order_phone]" id="phone" value="<?= $searchModel->order_phone ?>" placeholder="联系电话">
+                    <input type="text" class="form-control" name="InsuranceDetailSearch[order_phone]" id="phone" value="<?= $searchModel->order_phone ?>" placeholder="联系电话">
                 </div>
                 <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="OrderSearch[order_car]" id="phone" value="<?= $searchModel->order_car ?>" placeholder="车牌号">
+                    <input type="text" class="form-control" name="InsuranceDetailSearch[order_car]" id="car" value="<?= $searchModel->order_car ?>" placeholder="车牌号">
                 </div>
                 <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="OrderSearch[order_service]" id="service" value="<?= $searchModel->order_service ?>" placeholder="服务商">
-                </div>
-                <div class="form-group m-r-10">
-                    <select class="form-control" name="OrderSearch[order_type]" id="OrderSearchType">
-                        <option value="" selected>全部</option>
-                        <option value="1" <?= $searchModel->order_type == 1 ? 'selected' : '' ?>>救援</option>
-                        <option value="2" <?= $searchModel->order_type == 2 ? 'selected' : '' ?>>维修</option>
-                        <option value="3" <?= $searchModel->order_type == 3 ? 'selected' : '' ?>>保养</option>
-                        <option value="4" <?= $searchModel->order_type == 4 ? 'selected' : '' ?>>上线审车</option>
-                        <option value="5" <?= $searchModel->order_type == 5 ? 'selected' : '' ?>>不上线审车</option>
-                    </select>
-
+                    <input type="text" class="form-control" name="InsuranceDetailSearch[order_company]" id="company" value="<?= $searchModel->order_company ?>" placeholder="承保公司">
                 </div>
                 <button type="submit" class="btn btn-sm btn-primary m-r-5">搜索</button>
                 <button type="reset" class="btn btn-sm btn-info m-r-5" onclick="">重置</button>

@@ -13,13 +13,15 @@ use yii\data\ActiveDataProvider;
 
 class ArticleSearch extends Article
 {
+    public $name;
+
     public function rules()
     {
         return [
             [['content'], 'required'],
             [['content'], 'string'],
             [['status', 'column_id', 'views', 'created_at', 'updated_at'], 'integer'],
-            [['title', 'author'], 'string', 'max' => 50],
+            [['title', 'author', 'name'], 'string', 'max' => 50],
         ];
     }
 
@@ -28,12 +30,13 @@ class ArticleSearch extends Article
         $query = Article::find();
         $query->alias('a')->joinWith('column');
 
-        //$query = $this->authFilter($query);
+//        $this->authFilter($query);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
-        if (!($this->load($params) && $this->validate())) {
+
+        if (!($this->load($params))) {
             return $dataProvider;
         }
         //格式化时间
@@ -52,9 +55,9 @@ class ArticleSearch extends Article
                 $query->andFilterWhere(['<=', 'a.created_at', $end]);
             }
         }
-        $query->andFilterWhere(['status' => $this->status])
-            ->andFilterWhere(['author' => $this->author])
-            ->andFilterWhere(['title' => $this->title]);
+        $query->andFilterWhere(['a.title' => $this->title])
+            ->andFilterWhere(['a.status' => $this->status])
+            ->andFilterWhere(['c.name' => $this->name]);
 
         return $dataProvider;
     }

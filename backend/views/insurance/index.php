@@ -101,15 +101,6 @@ JS
         </div>
         <div class="panel-body">
             <?= \pd\coloradmin\widgets\Alert::widget() ?>
-            <form class="form-inline"  action="" method="GET">
-                <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="InsuranceSearch[title]" id="title" value="<?= $searchModel->title ?>" placeholder="名称">
-                </div>
-                <button type="submit" class="btn btn-sm btn-primary m-r-5">搜索</button>
-                <button type="reset" class="btn btn-sm btn-info m-r-5" onclick="">重置</button>
-            </form>
-
-            <p></p>
             <table id="data-table" class="table table-striped table-bordered">
                 <thead>
                 <tr>
