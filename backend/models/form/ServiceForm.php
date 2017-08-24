@@ -37,7 +37,7 @@ class ServiceForm  extends Service
     public function rules()
     {
         return [
-            [['name', 'principal', 'contact_phone', 'open_at', 'close_at'], 'required'],
+            [['name', 'principal', 'contact_phone', 'open_at', 'close_at', 'tags'], 'required'],
             [['level', 'status', 'created_at', 'updated_at', 'deleted_at', 'level', 'sid'], 'integer'],
             [['name', 'principal', 'contact_phone', 'introduction', 'address', 'lat', 'lng', 'open_at', 'close_at'], 'string', 'max' => 256],
             [['sid', 'username', 'password', 'name', 'status', 'address', 'lat', 'lng', 'open_at', 'close_at'], 'required', 'on' => 'create'],
@@ -149,13 +149,16 @@ class ServiceForm  extends Service
                     throw new Exception("绑定图片信息失败");
                 }
             }
-
-            foreach($this->tags as $tag){
-                $model = new ServiceTag();
-                $model->service_id = $service_id;
-                $model->tag_id = $tag;
-                $model->created_at = time();
-                $model->save(false);
+            if($this->tags){
+                foreach($this->tags as $tag){
+                    $model = new ServiceTag();
+                    $model->service_id = $service_id;
+                    $model->tag_id = $tag;
+                    $model->created_at = time();
+                    if(!$m->save()){
+                        throw new Exception("绑定服务范畴失败");
+                    }
+                }
             }
 
             //关联角色和账户
