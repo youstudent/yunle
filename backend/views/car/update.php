@@ -12,15 +12,15 @@ use kartik\widgets\FileInput;
 /* @var $model backend\models\form\CarForm */
 /* @var $form yii\widgets\ActiveForm */
 
-$this->title = '添加车辆';
+$this->title = '更改车辆';
 $this->params['breadcrumbs'][] = $this->title;
 
 pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
 ?>
 
-    <div class="car-create">
+    <div class="car-update">
 
-        <h1>添加车辆</h1>
+        <h1>修改车辆</h1>
 
         <div class="adminuser-form">
             <!-- begin row -->
@@ -82,33 +82,51 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
 
                             <?= $form->field($model, 'certificate_at')->textInput() ?>
 
-                            <?= $form->field($model, 'car_img')->widget(FileInput::classname(), [
-                                'language'      => 'zh',
-                                'options'       => [
-                                    'accept'   => 'image/*',
-                                    'multiple' => true,
+
+                            <?php
+                            //获取对应的图片数据
+                            $car_imgs  = \common\models\CarImg::find()->where(['car_id'=>$model->id, 'status'=> 1])->all();
+                            $car_img_config = [];
+                            $car_img_preview = [];
+                            $input = '';
+                            foreach($car_imgs as $car_img){
+                                $config = [
+                                    'size' => $car_img->size,
+                                    'url'  => Url::to(['media/image-delete', 'model'=> 'car', 'id' => $car_img->id]),
+                                    'key'  => $car_img->id
+                                ];
+                                $car_img_config[] = $config;
+                                $car_img_preview[] = Yii::$app->params['img_domain'] . $car_img->img_path;
+                                $input .= '<input type="hidden"  data-car_img-img-node="1" id="car_img_img_id_input_'.$car_img->id.'" name="CarForm[car_img_id][]" value="'.$car_img->id.'">';
+                            }
+                            ?>
+                            <?=$form->field($model, 'car_img')->widget(FileInput::classname(), [
+                                'language' => 'zh',
+                                'options' => [
+                                    'accept' => 'image/*',
+                                    'multiple'=>true
 
                                 ],
                                 'pluginOptions' => [
-                                    'overwriteInitial'         => false,//不允许覆盖
-                                    'initialPreviewAsData'     => true,
-                                    'removeFromPreviewOnError' => true,
-                                    'autoReplace'              => true,
-                                    'uploadUrl'                => Url::to(['/media/image-upload', 'model' => 'car']),
-                                    'maxFileSize'              => 2048,
-                                    'showPreview'              => true,
-                                    'showCaption'              => true,
-                                    'showRemove'               => true,
-                                    'showUpload'               => true,
-                                    'maxFileCount'             => 2,
-                                    'minFileCount'             => 1,
-                                ],
+                                    'initialPreview' => $car_img_preview,
+                                    'initialPreviewConfig' =>$car_img_config,
+                                    'initialPreviewAsData' => true,
+                                    'overwriteInitial'=> false,
+                                    'uploadUrl' => Url::to(['/media/image-upload', 'model' => 'car']),
+                                    'maxFileSize'=>2048,
+                                    'showPreview' => true,
+                                    'showCaption' => true,
+                                    'showRemove' => true,
+                                    'showUpload' => true,
+                                    'maxFileCount' => 2,
+                                    'minFileCount' => 1,
+                                ]
                             ]) ?>
 
                             <div class="form-group">
                                 <label class="control-label col-md-4 col-sm-4"></label>
                                 <div class="col-md-6 col-sm-6">
-                                    <button type="button" class="btn btn-primary btn-submit">添加</button>
+                                    <button type="button" class="btn btn-primary btn-submit">修改</button>
                                 </div>
                             </div>
 
@@ -120,6 +138,35 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
                 <!-- end col-12 -->
             </div>
             <!-- end row -->
+        </div>
+    </div>
+    <div class="hidden ak-mask ak_img_mask">
+        <div class="ak-mask-son ak-boxSad">
+            <img class="ak_mask_img" src="" alt="">
+        </div>
+    </div>
+    <!-- mask and bigImg to show __  end -->
+
+    <!-- mask and del to show -->
+    <div class="hidden ak-mask ak_del_mask">
+        <div class="ak-del-son ak-boxSad">
+            <div class="ak-flex" style="justify-content:space-between">
+                <h3>提示</h3>
+                <h3 class="close_del_mask" style="color:red; cursor: pointer;">x</h3>
+            </div>
+            <p style="font-size:18px; text-align:center; margin-top:5vh;color:#222;">您确定要删除该图片吗？</p>
+            <div class="ak-flex" style="justify-content:space-around;margin-top:6.5vh;">
+
+                <a class="btn btn-warning cancel" data-something="id or other">
+                    <i class="glyphicon glyphicon-trash"></i>
+                    <span>确认</span>
+                </a>
+
+                <a class="btn btn-primary start" data-something="id or other">
+                    <i class="glyphicon glyphicon-trash"></i>
+                    <span>取消</span>
+                </a>
+            </div>
         </div>
     </div>
 <?php
@@ -137,7 +184,7 @@ $(function () {
         }
         f.on('beforeSubmit', function (e) {
             swal({
-                    title: "确认添加",
+                    title: "确认修改",
                     text: "",
                     type: "warning",
                     showCancelButton: true,

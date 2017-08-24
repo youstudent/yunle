@@ -46,7 +46,7 @@ class CarController extends BackendController
             if($model->addCar()){
                 return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['index'])]);
             }
-            return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '添加失败']);
+            return json_encode(['data'=> '', 'code'=>0, 'message'=> current($model->getFirstErrors())]);
         }
 
         return $this->renderPjax('create', [
@@ -59,7 +59,6 @@ class CarController extends BackendController
         $model =  CarForm::findOne($id);
         $model->scenario = 'update';
 
-
         if($model->load(Yii::$app->request->post())){
             if($model->updateCar()){
                 return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '修改成功', 'url'=> Url::to(['index'])]);
@@ -67,7 +66,7 @@ class CarController extends BackendController
             return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '修改失败']);
         }
 
-        return $this->renderPjax('create', [
+        return $this->renderPjax('update', [
             'model' => $model
         ]);
     }
