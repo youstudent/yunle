@@ -76,7 +76,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 $preview = Yii::$app->params['img_domain'] . $m->img_path;
                 ?>
 
-                <input type="hidden" data-img-node="1" id="img_id_input_<?= $m->id ?>" name="BannerForm[img_id][]" value="<?= $m->id ?>">
+
 
                 <?=$form->field($model, 'img')->widget(FileInput::classname(), [
                     'language' => 'zh',
@@ -107,7 +107,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]
                 ]) ?>
 
-
+                <input type="hidden" data-img-node="1" id="img_id_input_<?= $m->id ?>" name="BannerForm[img_id][]" value="<?= $m->id ?>">
 
                 <div class="form-group">
                     <label class="control-label col-md-4 col-sm-4"></label>
@@ -222,10 +222,10 @@ $(function () {
                         success: function (res) {
                             if (res.code == 1) {
                                 swal({title: res.message, text: "3秒之后将自动跳转，点击确定立即跳转。", timer: 3000}, function () {
-                                    //window.location.href = res.url;
+                                    window.location.href = res.url;
                                 });
                                 setTimeout(function () {
-                                    //window.location.href = res.url;
+                                    window.location.href = res.url;
                                 }, 3000)
                             } else {
                                 swal(res.message, "", "error");

@@ -23,7 +23,7 @@ return [
         'redactor' => [
             'class' => 'yii\redactor\RedactorModule',
             'uploadDir' => '@common/static/upload/redactor',
-            'uploadUrl' => 'http://img.car.ypxl/upload/redactor',
+            'uploadUrl' => '//img.ypxl27580.com/upload/redactor',
             'imageAllowExtensions'=>['jpg','png','gif']
         ],
     ],
@@ -85,6 +85,8 @@ return [
         'allowActions' => [
             'admin/user/login',
             'admin/user/logout',
+            'media/image-delete',
+            //'*'
         ]
     ],
     'params' => $params,

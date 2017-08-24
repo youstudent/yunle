@@ -118,7 +118,6 @@ class MemberForm extends Member
     public static function getOne($member_id)
     {
         $model = MemberForm::findOne($member_id);
-        $model->service = User::findOne(['id'=>$member_id])->pid;
         return $model;
     }
 

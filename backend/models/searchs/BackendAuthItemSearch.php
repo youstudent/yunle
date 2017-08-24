@@ -25,9 +25,8 @@ class BackendAuthItemSearch extends AuthItem
         $authManager = Yii::$app->getAuthManager();
         if ($this->type == 1) {
             $items = $authManager->getRoles();
-            $role_prefix = Helper::getRolePrefix();
             foreach($items as $key => $val){
-                if(strpos($val->name, $role_prefix) !== false){
+                if(strpos($val->name, '_') !== false){
                     unset($items[$key]);
                 }
             }

@@ -111,7 +111,23 @@ class RbacController extends BackendController
         }
     }
 
+    public function actionRoleDelete($id)
+    {
 
+        //判断角色下的会员
+        $this->type=1;
+        $model = $this->findModel($id);
+        if($model->load(Yii::$app->getRequest()->post())){
+            if($model->save()){
+                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '更新成功', 'url'=> Url::to(['role-index'])]);
+            }
+            return $this->asJson(['data'=> '', 'code'=>0, 'message'=> current($model->getFirstErrors())]);
+        }
+
+        return $this->renderAjax('role-update', [
+            'model' => $model
+        ]);
+    }
     /**
      * 添加角色表单验证
      * @param $scenario
