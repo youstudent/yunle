@@ -163,7 +163,7 @@ JS
                                 <?php } ?>
                                 <a href="<?= Url::to(['delete', 'id'=> $model->id]) ?>" data-confirm="确认删除此业务员吗!" data-method="post" data-pjax="0">
                                     <span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
-                                <?php if(!Helper::checkRoute("organization/account-app-modify-role")): ?>
+                                <?php if(Helper::checkRoute("organization/account-app-modify-role")): ?>
                                     <a href="<?= Url::to(['organization/account-app-modify-role', 'id'=>$model->id]) ?>" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">更改角色</span></a>
                                 <?php endif; ?>
 
