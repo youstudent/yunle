@@ -115,9 +115,10 @@ class ServiceForm  extends Service
                 $this->addErrors($adminuserModel->getFirstErrors());
                 throw new Exception("添加会员信息失败");
             }
+            $admin_id = $adminuserModel->id;
 
             $this->owner_username = $this->username;
-            $this->owner_id = $adminuserModel->id;
+            $this->owner_id = $admin_id;
             $this->type=1;
             $this->pid = $this->sid;
             $this->scenario = 'created_service';
@@ -129,11 +130,11 @@ class ServiceForm  extends Service
             if(!$this->save()){
                 throw new Exception("添加会员信息失败");
             }
-
+            $service_id = $this->id;
             //设置图片绑定
             foreach($this->head_id as $h){
                 $m = ServiceImg::findOne($h);
-                $m->service_id = $this->id;
+                $m->service_id = $service_id;
                 $m->status = 1;
                 if(!$m->save()){
                     throw new Exception("绑定图片信息失败");
@@ -142,7 +143,7 @@ class ServiceForm  extends Service
 
             foreach($this->atta_id as $a){
                 $m = ServiceImg::findOne($a);
-                $m->service_id = $this->id;
+                $m->service_id = $service_id;
                 $m->status = 1;
                 if(!$m->save()){
                     throw new Exception("绑定图片信息失败");
@@ -151,7 +152,7 @@ class ServiceForm  extends Service
 
             foreach($this->tags as $tag){
                 $model = new ServiceTag();
-                $model->service_id = $this->id;
+                $model->service_id = $service_id;
                 $model->tag_id = $tag;
                 $model->created_at = time();
                 $model->save(false);
@@ -159,14 +160,14 @@ class ServiceForm  extends Service
 
             //关联角色和账户
             $items[] = Yii::$app->params['service_role_name'];
-            $id = $this->owner_id;
-            $assign = new Assignment($id);
+
+            $assign = new Assignment($admin_id);
             if(!$assign->assign($items)){
                 throw new Exception("分配角色失败");
             }
             \pd\admin\components\Helper::invalidate();
 
-            if(!ServiceUser::add($id, $this->id)){
+            if(!ServiceUser::add($this->id, $admin_id, 1)){
                 throw new Exception("记录分配关系失败");
             }
 

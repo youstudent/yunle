@@ -98,8 +98,10 @@ class AgencyForm  extends Agency
                 $this->addErrors($adminuserModel->getFirstErrors());
                 throw new Exception("添加账号失败");
             }
+            $admin_id = $adminuserModel->id;
+
             $this->owner_username = $this->username;
-            $this->owner_id = $adminuserModel->id;
+            $this->owner_id = $admin_id;
             $this->type = 2;
             $this->scenario = 'created_service';
             $this->created_at = time();
@@ -123,14 +125,13 @@ class AgencyForm  extends Agency
 
             //关联角色和账户
             $items[] = Yii::$app->params['agency_role_name'];
-            $id = $this->owner_id;
-            $assign = new Assignment($id);
+            $assign = new Assignment($admin_id);
             if(!$assign->assign($items)){
                 throw new Exception("分配角色失败");
             }
             \pd\admin\components\Helper::invalidate();
 
-            if(!ServiceUser::add($id, $this->id)){
+            if(!ServiceUser::add($this->id, $admin_id, 1)){
                 throw new Exception("记录分配关系失败");
             }
 

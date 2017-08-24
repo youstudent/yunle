@@ -1,6 +1,7 @@
 <?php
 
 use backend\models\Member;
+use common\components\Helper;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\Url;
@@ -82,9 +83,11 @@ JS
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="row">
+        <?php if(Helper::byAdminIdGetServiceId(Yii::$app->user->identity->id) > 0): ?>
         <div class="col-md-6">
             <a href="<?= Url::to(['app-role-create', '_opt'=> 's']) ?>" class="btn btn-success" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static" >添加角色</a>
         </div>
+        <?php endif; ?>
     </div>
     <p></p>
 
@@ -107,6 +110,7 @@ JS
                 <tr>
                     <th>名称</th>
                     <th>描述</th>
+                    <th>服务商</th>
                     <th>操作</th>
                 </tr>
                 </thead>

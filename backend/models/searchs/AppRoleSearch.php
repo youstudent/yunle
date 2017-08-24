@@ -28,7 +28,11 @@ class AppRoleSearch extends AppRole
 
         $query = AppRole::find();
 
+
         $service_id = Helper::byAdminIdGetServiceId(Yii::$app->user->identity->id);
+
+        $query->where(['service_id'=>$service_id]);
+
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
