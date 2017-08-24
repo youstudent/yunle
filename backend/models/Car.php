@@ -76,40 +76,6 @@ class Car extends \yii\db\ActiveRecord
         ];
     }
 
-
-    public function addCar()
-    {
-        if(!$this->validate()){
-            return false;
-        }
-
-        return Yii::$app->db->transaction(function(){
-            $this->created_at = time();
-            $this->updated_at = time();
-            if(!$this->save(false)){
-                throw new Exception('error');
-            }
-            return $this;
-        });
-    }
-
-    public function updateCar()
-    {
-
-        if(!$this->validate()){
-            return false;
-        }
-
-        return Yii::$app->db->transaction(function(){
-            $this->created_at = time();
-            $this->updated_at = time();
-            if(!$this->save(false)){
-                throw new Exception('error');
-            }
-            return $this;
-        });
-    }
-
     public function checkInfo()
     {
         $query = Car::find()->select('id, member_id, status, updated_at')->where(['status'=>[0,2]])->orderBy(['status'=>SORT_ASC,'updated_at'=>SORT_DESC]);
