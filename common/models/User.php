@@ -20,6 +20,8 @@ namespace common\models;
      */
 
 use backend\models\AppMenu;
+use backend\models\AppMenuWithout;
+use backend\models\AppRoleAssign;
 use SebastianBergmann\CodeCoverage\Driver\Driver;
 use Yii;
 use yii\base\NotSupportedException;
@@ -156,12 +158,13 @@ class User extends ActiveRecord
 
         //TODO:更改权限
         if ($user->save(false)) {
-            $assigned = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25];
-            $menus =AppMenu::find()->alias('A')->select("id,name,key,0 as `show`")->asArray()->indexby('key')->all();
+            $role_id = AppRoleAssign::findOne(['user_id'=>$user->id]);
+            $un_assigned = AppMenuWithout::find()->where(['service_id'=>$user->pid, 'role_id'=>$role_id])->select('id')->column();
+            $menus =AppMenu::find()->alias('A')->select("id,name,key,1 as `show`")->asArray()->indexby('key')->all();
 
             foreach($menus as &$menu){
-                if(in_array($menu['id'], $assigned)){
-                    $menu['show'] = 1;
+                if(in_array($menu['id'], $un_assigned)){
+                    $menu['show'] = 0;
                 }
 
             }
