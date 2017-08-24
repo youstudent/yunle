@@ -99,8 +99,9 @@ JS
             </div>
             <h4 class="panel-title">表格</h4>
         </div>
-        <?= \pd\coloradmin\widgets\Alert::widget() ?>
         <div class="panel-body">
+            <?= \pd\coloradmin\widgets\Alert::widget() ?>
+
             <form class="form-inline"  action="" method="GET">
                 <div class="form-group m-r-15">
                     <input type="text" class="form-control" style="min-width: 103%;margin-right: 70px;" name="UserSearch[created_at]" id="daterangepicker" value="<?= $searchModel->created_at ?>" placeholder="创建时间">
@@ -109,7 +110,7 @@ JS
                     <input type="text" class="form-control" name="UserSearch[service_name]" id="service_name" value="<?= $searchModel->service_name ?>" placeholder="服务商名称">
                 </div>
                 <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="Userearch[phone]" id="phone" value="<?= $searchModel->phone ?>" placeholder="手机号">
+                    <input type="text" class="form-control" name="UserSearch[phone]" id="phone" value="<?= $searchModel->phone ?>" placeholder="手机号">
                 </div>
                 <div class="form-group m-r-10">
                     <select class="form-control" name="MemberSearch[status]" id="MemberSearchStatus">
@@ -117,7 +118,6 @@ JS
                         <option value="<?= Member::STATUS_ACTIVE ?>" <?= $searchModel->status == Member::STATUS_ACTIVE ? 'selected' : '' ?>>正常</option>
                         <option value="<?= Member::STATUS_INACTIVE ?>" <?= $searchModel->status == Member::STATUS_INACTIVE && strlen($searchModel->status) ? 'selected' : '' ?>>冻结</option>
                     </select>
-
                 </div>
                 <button type="submit" class="btn btn-sm btn-primary m-r-5">搜索</button>
                 <button type="button" class="btn btn-sm btn-info m-r-5" onclick="">重置</button>
@@ -154,9 +154,15 @@ JS
                                 <a href="<?= Url::to(['member/index', 'MemberSearch[salesman_username]'=> $model->username ]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">客户列表</span></a>
                                 <a href="<?= Url::to(['order/index', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">订单</span></a>
                                 <a href="<?= Url::to(['insurance/index', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">保险</span></a>
-                                <a href="javasrcitp:;" data-confirm="确认冻结此会员？" data-url="<?= Url::to(['salesman/set-status','id' => $model->id, 'status'=> Member::STATUS_INACTIVE]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">冻结</span></a>
-                                <a href="javasrcitp:;" data-confirm="确认激活此会员？" data-url="<?= Url::to(['salesman/set-status','id' => $model->id, 'status'=> Member::STATUS_ACTIVE]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">激活</span></a>
-                                <a href="javasrcitp:;" data-confirm="确认删除此会员？" data-url="<?= Url::to(['salesman/soft-delete', 'id' => $model->id]) ?>"  data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                                <?php if ($model->status == 1) { ?>
+                                    <a href="<?= Url::to(['salesman/set-status', 'id' => $model->id, 'opt'=> 0]) ?>" title="冻结" aria-label="冻结" data-pjax="0" data-confirm="您确定要冻结此业务员吗？" data-method="post"><span
+                                                class="btn btn-danger m-r-1 m-b-5 btn-xs">冻结</span></a>
+                                <?php } else { ?>
+                                    <a href="<?= Url::to(['salesman/set-status', 'id' => $model->id, 'opt'=> 1]) ?>" title="激活" aria-label="激活" data-pjax="0" data-confirm="您确定要激活此业务员吗？" data-method="post"><span
+                                                class="btn btn-primary m-r-1 m-b-5 btn-xs">激活</span></a>
+                                <?php } ?>
+                                <a href="<?= Url::to(['delete', 'id'=> $model->id]) ?>" data-confirm="确认删除此业务员吗!" data-method="post" data-pjax="0">
+                                    <span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
                                 <?php if(!Helper::checkRoute("organization/account-app-modify-role")): ?>
                                     <a href="<?= Url::to(['organization/account-app-modify-role', 'id'=>$model->id]) ?>" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">更改角色</span></a>
                                 <?php endif; ?>

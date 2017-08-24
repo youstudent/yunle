@@ -8,14 +8,28 @@
 namespace backend\controllers;
 
 use backend\models\form\UserForm;
+use backend\models\Member;
 use backend\models\searchs\UserSearch;
+use backend\models\User;
 use common\components\Helper;
 use Yii;
+use yii\filters\VerbFilter;
 use yii\helpers\Url;
 use yii\web\Controller;
 
 class SalesmanController extends BackendController
 {
+    public function behaviors()
+    {
+        return [
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['post'],
+                ]
+            ]
+        ];
+    }
     //列表
     public function actionIndex()
     {
@@ -74,23 +88,27 @@ class SalesmanController extends BackendController
         ]);
     }
 
-    //设置用户状态
-    public function actionSetStatus($id, $status)
+    public function actionSetStatus($id, $opt)
     {
-        $model = UserForm::findOne(['id'=>$id]);
-        if($model->setStatus($status)){
-            return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['salesman/index'])]);
-        }
-        return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作失败', 'url'=> Url::to(['salesman/index'])]);
+        $model = User::findOne($id);
+        $model->status = $opt;
+        $model->save();
+        Yii::$app->session->setFlash('success', '业务员 ['. $model->name .' ] 状态变更成功');
+        return $this->redirect(['index']);
     }
 
-    public function actionSoftDelete($id)
+    public function actionDelete($id)
     {
-        $model = UserForm::findOne(['id'=>$id]);
-        if($model->softDelete($id)){
-            return json_encode(['data'=> '', 'code'=>1, 'message'=> '删除成功', 'url'=> Url::to(['salesman/index'])]);
+        $member = Member::findOne(['pid'=>$id]);
+        if (isset($member) && !empty($member)) {
+            Yii::$app->session->setFlash('danger', '删除失败!该业务员拥有客户');
+            return $this->redirect(['index']);
+        } else {
+            User::findOne($id)->delete();
+            Yii::$app->session->setFlash('success', '删除成功!');
+            return $this->redirect(['index']);
         }
-        return json_encode(['data'=> '', 'code'=>1, 'message'=> '删除失败', 'url'=> Url::to(['salesman/index'])]);
+
     }
 
     /**

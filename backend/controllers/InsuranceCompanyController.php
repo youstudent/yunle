@@ -74,13 +74,11 @@ class InsuranceCompanyController extends BackendController
      */
     public function actionDelete($id)
     {
-        $company = new InsuranceCompany();
-        $data = $company->findOne($id)->delete();
-        if ($data) {
-            return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['index'])]);
-        }
-        return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作失败', 'url'=> Url::to(['index'])]);
+        InsuranceCompany::findOne($id)->delete();
+        Yii::$app->session->setFlash('success', '删除成功!');
+        return $this->redirect(['index']);
     }
+
 
     public function actionValidateForm($scenario, $id = null)
     {

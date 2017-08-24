@@ -37,7 +37,7 @@ class DriverController extends BackendController
             if($model->addDrivingLicense()){
                 return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['index?member_id='.$member_id])]);
             }
-            return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '添加失败']);
+            return $this->asJson(['data'=> '', 'code'=>0, 'message'=> current($model->getFirstErrors())]);
         }
 
         return $this->renderPjax('create', [
@@ -64,9 +64,9 @@ class DriverController extends BackendController
 
     public function actionDelete($id)
     {
-        //TODO::检查栏目下是否有文章
         DrivingLicense::findOne($id)->delete();
-        return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '删除成功', 'url'=> Url::to(['index'])]);
+        Yii::$app->session->setFlash('success', '删除成功!');
+        return $this->redirect(['index']);
     }
 
     public function actionValidateForm($scenario, $id = null)

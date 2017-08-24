@@ -86,11 +86,9 @@ class InsuranceController extends BackendController
 
     public function actionDelete($id)
     {
-        $model = Insurance::findOne(['id'=>$id]);
-        if($model->delete()) {
-            return json_encode(['data' => '', 'code' => 1, 'message' => '删除成功', 'url' => Url::to(['index'])]);
-        }
-        return json_encode(['data'=> '', 'code'=>1, 'message'=> '删除失败', 'url'=> Url::to(['index'])]);
+        Insurance::findOne($id)->delete();
+        Yii::$app->session->setFlash('success', '删除成功!');
+        return $this->redirect(['index']);
     }
     /**
      * 保险订单

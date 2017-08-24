@@ -86,7 +86,7 @@ class Car extends \yii\db\ActiveRecord
         return Yii::$app->db->transaction(function(){
             $this->created_at = time();
             $this->updated_at = time();
-            if(!$this->save()){
+            if(!$this->save(false)){
                 throw new Exception('error');
             }
             return $this;
@@ -103,7 +103,7 @@ class Car extends \yii\db\ActiveRecord
         return Yii::$app->db->transaction(function(){
             $this->created_at = time();
             $this->updated_at = time();
-            if(!$this->save()){
+            if(!$this->save(false)){
                 throw new Exception('error');
             }
             return $this;

@@ -86,7 +86,7 @@ $(function () {
         var f = $('#ArticleForm');
         f.on('beforeSubmit', function (e) {
             swal({
-                    title: "确认添加",
+                    title: "确认保存",
                     text: "",
                     type: "warning",
                     showCancelButton: true,

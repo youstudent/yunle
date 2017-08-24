@@ -43,9 +43,9 @@ class DrivingLicense extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['member_id', 'name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at', 'imgs'], 'required'],
+            [['member_id', 'name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at'], 'required'],
             [['member_id', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at'], 'string', 'max' => 50],
+            [['name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at', 'imgs'], 'string', 'max' => 255],
             [['info'], 'string', 'max' => 200],
         ];
     }
@@ -78,7 +78,7 @@ class DrivingLicense extends \yii\db\ActiveRecord
             'status' => '1:正常 0:待审核',
             'created_at' => '创建时间',
             'updated_at' => '修改时间',
-            'img' => '行驶证图片',
+            'img' => '驾驶证图片',
             'info' => '不通过的理由'
         ];
     }
@@ -97,7 +97,7 @@ class DrivingLicense extends \yii\db\ActiveRecord
         return Yii::$app->db->transaction(function(){
             $this->created_at = time();
             $this->updated_at = time();
-            if(!$this->save()){
+            if(!$this->save(false)){
                 print_r($this->getFirstErrors());
                 throw new Exception('error');
             }

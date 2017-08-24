@@ -195,7 +195,7 @@ use yii\widgets\LinkPager;
                     </tr>
                     <tr>
                         <td>保单图片</td>
-                        <td>
+                        <td colspan="6">
                             <?php foreach ($model->warrantyImg as $v) {?>
                                 <img src="<?= $v ?>" alt="" width="100px" />
                             <?php } ?>

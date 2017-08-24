@@ -72,7 +72,7 @@ class Column extends \yii\db\ActiveRecord
     {
         $size = 2;
         if (!isset($data['page']) || empty($data['page'])) {
-            $page = 0;
+            $page = 1;
             $column = Column::find()->select('id, name')->asArray()->all();
 
             foreach ($column as $k => &$v) {
@@ -91,6 +91,8 @@ class Column extends \yii\db\ActiveRecord
                     $v['flag'] = false;
                 }
                 $v['page'] = 1;
+                $v['totalPage'] = ceil((Article::find()->select('id, title, views')
+                    ->where(['column_id'=>$v['id'], 'status'=>1])->count())/$size);
             }
         } else {
             $page =($data['page']-1)* $size;
@@ -116,12 +118,13 @@ class Column extends \yii\db\ActiveRecord
     public function getImg($content){
         $pattern="/<[img|IMG].*?src=[\'|\"](.*?(?:[\.gif|\.jpg]))[\'|\"].*?[\/]?>/";//正则
         preg_match_all($pattern,$content,$match);//匹配图片
-        return $match[1];//返回所有图片的路径
+        return Yii::$app->params['img_domain'].$match[1];//返回所有图片的路径
     }
     //TODO:截取前20文字
     public function getBrief($content){
        $content = strip_tags(htmlspecialchars_decode($content));
-       $brief = substr($content,0,20);
+       $content = trim($content);
+       $brief = substr($content,0,96);
        return $brief;
     }
 

@@ -187,10 +187,13 @@ JS
                                             class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
                                 <a href="<?= Url::to(['salesman/index', 'id' => $model->id]) ?>"><span
                                             class="btn btn-warning m-r-1 m-b-5 btn-xs">业务员</span></a>
-                                <a href="<?= Url::to(['service/set-status', 'id' => $model->id, 'opt'=> 0]) ?>" title="冻结" aria-label="冻结" data-pjax="0" data-confirm="您确定要冻结此服务商吗？" data-method="post"><span
-                                            class="btn btn-danger m-r-1 m-b-5 btn-xs">冻结</span></a>
-                                <a href="<?= Url::to(['service/set-status', 'id' => $model->id, 'opt'=> 1]) ?>" title="激活" aria-label="激活" data-pjax="0" data-confirm="您确定要激活此服务商吗？" data-method="post"><span
+                                <?php if ($model->status == 1) { ?>
+                                    <a href="<?= Url::to(['service/set-status', 'id' => $model->id, 'opt'=> 0]) ?>" title="冻结" aria-label="冻结" data-pjax="0" data-confirm="您确定要冻结此服务商吗？" data-method="post"><span
+                                                class="btn btn-danger m-r-1 m-b-5 btn-xs">冻结</span></a>
+                                <?php } else { ?>
+                                    <a href="<?= Url::to(['service/set-status', 'id' => $model->id, 'opt'=> 1]) ?>" title="激活" aria-label="激活" data-pjax="0" data-confirm="您确定要激活此服务商吗？" data-method="post"><span
                                             class="btn btn-primary m-r-1 m-b-5 btn-xs">激活</span></a>
+                                <?php } ?>
                             </div>
                         </td>
                     </tr>

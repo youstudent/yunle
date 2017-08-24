@@ -8,6 +8,8 @@
 namespace backend\models\searchs;
 
 
+use backend\models\Adminuser;
+use backend\models\Service;
 use backend\models\User;
 use yii\data\ActiveDataProvider;
 
@@ -34,6 +36,12 @@ class UserSearch extends User
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+        if (isset($params['id']) && !empty($params['id'])) {
+            $this->service_name = Service::findOne($params['id'])->name;
+            $query->andFilterWhere(['LIKE', 's.name', $this->service_name]);
+
+            return $dataProvider;
+        }
         if (!($this->load($params) && $this->validate())) {
             return $dataProvider;
         }

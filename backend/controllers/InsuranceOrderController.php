@@ -16,6 +16,7 @@ use backend\models\InsuranceOrder;
 use backend\models\searchs\InsuranceDetailSearch;
 use backend\models\Warranty;
 use common\models\Upload;
+use phpDocumentor\Reflection\DocBlock\Tags\Var_;
 use Yii;
 use yii\helpers\Url;
 use yii\data\ActiveDataProvider;
@@ -183,4 +184,19 @@ class InsuranceOrderController extends BackendController
         return $this->redirect(['detail', 'id' => $data['order_id']]);
     }
 
+    public function actionModifyStatus($id)
+    {
+        //要写逻辑展示可以操作的订单状态
+        $model = InsuranceOrder::getOrderDetail($id);
+
+        if (Yii::$app->request->post()) {
+            if(InsuranceOrderForm::alter(Yii::$app->request->post('InsuranceOrder'),$id)){
+                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '变更成功', 'url'=> Url::to(['order/index?member_id='.$model->member_id])]);
+            }
+            return $this->asJson(['data'=> '', 'code'=>0, 'message'=> $model->errorMsg]);
+        }
+        return $this->renderAjax('modify-status', [
+            'model' => $model
+        ]);
+    }
 }

@@ -70,9 +70,7 @@ pd\coloradmin\web\plugins\BaiduMapAsset::register($this);
                                 <?php if($model->serviceImg) : ?>
                                     <?php foreach($model->serviceImg as $img) : ?>
                                         <?php if($img->type == 1): ?>
-                                            <div href="" class="thumbnail">
-                                                <img src="<?php echo Yii::$app->params['img_domain']. $img->thumb; ?>" alt="">
-                                            </div>
+                                            <img src="<?php echo Yii::$app->params['img_domain']. $img->thumb; ?>" alt="">
                                         <?php endif; ?>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
@@ -85,9 +83,7 @@ pd\coloradmin\web\plugins\BaiduMapAsset::register($this);
                                 <?php if($model->serviceImg) : ?>
                                     <?php foreach($model->serviceImg as $img) : ?>
                                         <?php if($img->type == 0): ?>
-                                        <div href="" class="thumbnail">
-                                             <img src="<?php echo Yii::$app->params['img_domain']. $img->thumb; ?>" alt="">
-                                        </div>
+                                            <img src="<?php echo Yii::$app->params['img_domain']. $img->thumb; ?>" alt="">
                                         <?php endif; ?>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
@@ -125,6 +121,14 @@ pd\coloradmin\web\plugins\BaiduMapAsset::register($this);
                                <?php echo $model->introduction; ?>
                             </td>
                             <td></td>
+                        </tr>
+                        <tr>
+                            <td><?= $model->getAttributeLabel('tags') ?></td>
+                            <td>
+                                <?php foreach (\common\models\ServiceTag::findAll(['service_id'=>$model->id]) as $v) {?>
+                                    <span><?= \common\models\Tag::findOne($v->tag_id)->name ?></span> |
+                                <?php }?>
+                            </td>
                         </tr>
                         </tbody>
                     </table>

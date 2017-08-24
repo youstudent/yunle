@@ -36,6 +36,7 @@ class ColumnController extends ApiController
     {
         $model = new Column();
         $form = $this->getForm(Yii::$app->request->post('data'));
+
         $data = $model->getColumn($form);
         if ($data) {
             return $this->jsonReturn(1, 'success', $data);

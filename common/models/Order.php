@@ -280,7 +280,7 @@ class Order extends \yii\db\ActiveRecord
             ->asArray()
             ->orderBy(['created_at' => SORT_DESC])
             ->one();
-        if ($actEnd['status'] == 2) {
+        if ($actEnd['status'] == 1) {
             $top = '待接单';
         } elseif ($actEnd['status'] == 99 || $actEnd['status'] == 100) {
             $top = '已完成';
@@ -1118,7 +1118,7 @@ class Order extends \yii\db\ActiveRecord
             ->asArray()
             ->orderBy(['created_at' => SORT_DESC])
             ->one();
-        if ($actEnd['status'] == 2) {
+        if ($actEnd['status'] == 1 ) {
             $top = '待接单';
         } elseif ($actEnd['status'] == 99 || $actEnd['status'] == 100) {
             $top = '已完成';

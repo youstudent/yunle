@@ -69,7 +69,7 @@ class ServiceForm  extends Service
             'lat' => '服务商地址纬度,不建议直接填写',
             'lng' => '服务商地址经度,不建议直接填写',
             'heads' => '服务商头像',
-            'attachments' => '服务商附件，最多传11张，将展示在APP服务商详情',
+            'attachments' => '服务商附件，最多传12张，将展示在APP服务商详情',
             'sid' => '平台的客户经理',
         ];
     }
@@ -80,6 +80,7 @@ class ServiceForm  extends Service
             'username' => '登录账号',
             'password' => '登录密码',
             'head' => '展示头图',
+            'attachment' => '服务商附件',
             'cover' => '服务商附件',
             'tags' => '服务范畴',
         ]);
@@ -234,5 +235,19 @@ class ServiceForm  extends Service
             return null;
         }
         return $model;
+    }
+
+    public  function getPic()
+    {
+        return $this->hasMany(ServiceImg::className(), ['service_id'=> 'id'])->where(['status'=> 1]);
+    }
+
+    public function getPicImg()
+    {
+        $arr = [];
+        foreach($this->pic as $i){
+            $arr[] = '<img src="'.Yii::$app->params['img_domain']. $i->thumb.'" />';
+        }
+        return $arr;
     }
 }
