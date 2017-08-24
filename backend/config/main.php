@@ -83,9 +83,8 @@ return [
     'as access' => [
         'class' => 'pd\admin\components\AccessControl',
         'allowActions' => [
-            '/admin/user/login',
-            '/admin/user/logout',
-          //  '*',
+            'admin/user/login',
+            'admin/user/logout',
         ]
     ],
     'params' => $params,
