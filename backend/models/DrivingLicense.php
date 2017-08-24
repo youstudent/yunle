@@ -29,6 +29,8 @@ class DrivingLicense extends \yii\db\ActiveRecord
     public $img;
     public $imgs;
     public $info;
+
+    public $img_id;
     /**
      * @inheritdoc
      */
@@ -47,14 +49,15 @@ class DrivingLicense extends \yii\db\ActiveRecord
             [['member_id', 'status', 'created_at', 'updated_at'], 'integer'],
             [['name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at', 'imgs'], 'string', 'max' => 255],
             [['info'], 'string', 'max' => 200],
+            [['img_id'], 'safe'],
         ];
     }
 
     public function scenarios()
     {
         return [
-            'create' => ['name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at', 'imgs'],
-            'update' => ['name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at', 'imgs'],
+            'create' => ['name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at', 'img_id'],
+            'update' => ['name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at', 'img_id'],
         ];
     }
 
@@ -88,12 +91,6 @@ class DrivingLicense extends \yii\db\ActiveRecord
             return false;
         }
 
-        $this->imgs = explode(',', trim($this->imgs,','));
-        if(count($this->imgs) < 2){
-            $this->addError('imgs', '请上传2张附件');
-            return false;
-        }
-
         return Yii::$app->db->transaction(function(){
             $this->created_at = time();
             $this->updated_at = time();
@@ -104,8 +101,9 @@ class DrivingLicense extends \yii\db\ActiveRecord
 
             //更新图片
             //设置图片绑定
-            $models =  DrivingImg::find()->where(['id'=> $this->imgs])->all();
-            foreach ($models as $model){
+
+            foreach ($this->img_id as $i){
+                $model = DrivingImg::findOne($i);
                 $model->driver_id = $this->id;
                 $model->status = 1;
                 if(!$model->save(false)){
@@ -130,6 +128,19 @@ class DrivingLicense extends \yii\db\ActiveRecord
             if(!$this->save()){
                 throw new Exception('error');
             }
+
+            $img = DrivingImg::findOne(['driver_id'=> $this->id, 'status'=>1]);
+            if($this->img_id[0] != $img->id){
+                $img->status = 0;
+                $img->save();
+
+                //增加新的绑定
+                $m = DrivingImg::findOne($this->img_id[0]);
+                $m->driver_id = $this->id;
+                $m->status = 1;
+                $m->save();
+            }
+
             return $this;
         });
     }

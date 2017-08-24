@@ -85,7 +85,23 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
 
                             <?php }?>
 
-<!--                            --><?//= $form->field($model, 'status')->dropDownList(['未认证', '已认证']) ?>
+                            <?php
+                            //根据对应的id，获取已经有的图片数据
+                            $ms  = \common\models\IdentificationImg::find()->where(['ident_id'=>$model->id, 'status'=> 1])->all();
+                            $config = [];
+                            $preview = [];
+                            $input = '';
+                            foreach($ms as $m){
+                                $config = [
+                                    'size' => $m->size,
+                                    'url'  => Url::to(['media/image-delete', 'model'=> 'identification', 'id' => $m->id]),
+                                    'key'  => $m->id
+                                ];
+                                $config[] = $config;
+                                $preview[] = Yii::$app->params['img_domain'] . $m->img_path;
+                                $input .= '<input type="hidden"  data-img-node="1" id="img_id_input_'.$m->id.'" name="Identification[img_id][]" value="'.$m->id.'">';
+                            }
+                            ?>
 
                             <?=$form->field($model, 'img')->widget(FileInput::classname(), [
                                 'language' => 'zh',
@@ -95,8 +111,10 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
 
                                 ],
                                 'pluginOptions' => [
-                                    'initialPreview' => $model->getPicImg(),
-                                    'overwriteInitial'=> false,
+                                    'initialPreview' => $preview,
+                                    'initialPreviewConfig' =>$config,
+                                    'overwriteInitial' => false,//不允许覆盖
+                                    'initialPreviewAsData' => true,
                                     'uploadUrl' => Url::to(['/media/image-upload', 'model' => 'identification']),
                                     'maxFileSize'=>2800,
                                     'showPreview' => true,
@@ -108,9 +126,7 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
                                 ]
                             ]) ?>
 
-                            <?= $form->field($model, 'imgs', ['template'=> "{input}"])->hiddenInput() ?>
-
-
+                            <?php echo $input ?>
 
                             <div class="form-group">
                                 <label class="control-label col-md-4 col-sm-4"></label>
@@ -134,15 +150,13 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
 $formId = $model->formName();
 $this->registerJs(<<<JS
 $(function () {
-    var img_input = $('input[name="Identification[imgs]"]');
-    $('.field-identification-img').on('fileuploaded', function(event, data, previewId, index) {
-        var img_id = data.response.files[0].img_id;
-        var ids =  img_input.val();
-        img_input.val(ids+','+img_id)
-    });
-   
+   var f = $('#{$formId}');
     $('.btn-submit').on('click', function () {
-        var f = $('#{$formId}');
+       var img_count = getAllImgNodeCount();
+       if(img_count != 2){
+                swal("请上传正反两张身份证图片");
+                return false;
+        }
         f.on('beforeSubmit', function (e) {
             if(img_input.val() == ''){
                 swal("请先上传身份证明照片");
@@ -186,6 +200,54 @@ $(function () {
         });
         f.submit();
     });
+    //处理上传图片
+    $('.field-identification-img').
+    on('filedeleted', function(event, key, jqXHR, data){
+       removeImgNodeById(key);
+    }).
+    on('filecleared', function(event){
+       //点击右上角的x触发
+       removeAllImgNode();
+    }).
+    on('filereset', function(event){
+        //恢复初始化的时候触发
+       removeAllImgNode();
+    }).
+    on('filesuccessremove', function(event, id) {
+       removeImgNodeByPid(id);
+    }).
+    on('fileuploaded', function(event, data, previewId, index) {
+        var img_id = data.response.files[0].img_id;
+        appendImgNode(img_id, previewId);
+    });
+    
+    //将图片id存入图容器
+    function appendImgNode(img_id, previewId)
+    {
+        var html = '<input type="hidden" data-img-node="1" data-pid="'+ previewId +'" id="img_id_input_'+ img_id +'" name="Identification[img_id][]" value="'+img_id+'">';
+        f.append(html);
+    }
+    
+    //将图片ID从图片ID容器中删除，根据图片的ID
+    function removeImgNodeById(img_id)
+    {
+        $('#img_id_input_' + img_id).remove();
+    }
+    //将图片ID从图片ID容器中删除，根据图片预览的容器id
+    function removeImgNodeByPid(previewId)
+    {
+        $('input[data-pid=previewId]').remove();
+    }
+    //移除所有的图片容器id
+    function removeAllImgNode()
+    {
+        $('input[data-img-node="1"]').remove();
+    }
+    
+    function getAllImgNodeCount()
+    {
+        return $('input[data-img-node="1"]').length;
+    }
 })
 JS
 );

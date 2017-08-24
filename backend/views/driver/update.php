@@ -81,6 +81,17 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
 
                             <?= $form->field($model, 'certificate_at')->textInput() ?>
 
+                            <?php
+                            //根据对应的id，获取已经有的图片数据
+                            $m  = \backend\models\DrivingImg::findOne(['driver_id'=>$model->id, 'status'=> 1]);
+
+                            //找到对应的图片数据，这里只有一张，就这样的处理了
+                            $config['size'] = $m->size;
+                            $config['url'] = Url::to(['media/image-delete', 'model'=> 'driver', 'id' => $m->id]);
+                            $config['key'] = $m->id;
+
+                            $preview = Yii::$app->params['img_domain'] . $m->img_path;
+                            ?>
                             <?=$form->field($model, 'img')->widget(FileInput::classname(), [
                                 'language' => 'zh',
                                 'options' => [
@@ -89,8 +100,14 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
 
                                 ],
                                 'pluginOptions' => [
-                                    'initialPreview' => $model->getPicImg(),
-                                    'overwriteInitial'=> false,
+                                    'initialPreview' => [
+                                        $preview
+                                    ],
+                                    'initialPreviewConfig' => [
+                                        $config
+                                    ],
+                                    'overwriteInitial' => false,//不允许覆盖
+                                    'initialPreviewAsData' => true,
                                     'uploadUrl' => Url::to(['/media/image-upload', 'model' => 'driver']),
                                     'maxFileSize'=>2800,
                                     'showPreview' => true,
@@ -104,7 +121,7 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
 
                             <?= $form->field($model, 'imgs', ['template'=> "{input}"])->hiddenInput() ?>
 
-
+                            <input type="hidden" data-img-node="1" id="img_id_input_<?= $m->id ?>" name="DrivingLicense[img_id][]" value="<?= $m->id ?>">
 
                             <div class="form-group">
                                 <label class="control-label col-md-4 col-sm-4"></label>
@@ -128,20 +145,14 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
 $formId = $model->formName();
 $this->registerJs(<<<JS
 $(function () {
-    var img_input = $('input[name="DrivingLicense[imgs]"]');
-    $('.field-drivinglicense-img').on('fileuploaded', function(event, data, previewId, index) {
-        var img_id = data.response.files[0].img_id;
-        var ids =  img_input.val();
-        img_input.val(ids+','+img_id)
-    });
-   
+    var f = $('#{$formId}');
     $('.btn-submit').on('click', function () {
-        var f = $('#{$formId}');
+        var img_count = getAllImgNodeCount();
+        if(img_count != 1){
+            swal("图片数量不符合");
+            return false;
+        }
         f.on('beforeSubmit', function (e) {
-            if(img_input.val() == ''){
-                swal("请先上传行驶证照片");
-                return false;
-            }
             swal({
                     title: "确认保存",
                     text: "",
@@ -180,6 +191,54 @@ $(function () {
         });
         f.submit();
     });
+    //处理上传图片
+    $('.field-drivinglicense-img').
+    on('filedeleted', function(event, key, jqXHR, data){
+       removeImgNodeById(key);
+    }).
+    on('filecleared', function(event){
+       //点击右上角的x触发
+       removeAllImgNode();
+    }).
+    on('filereset', function(event){
+        //恢复初始化的时候触发
+       removeAllImgNode();
+    }).
+    on('filesuccessremove', function(event, id) {
+       removeImgNodeByPid(id);
+    }).
+    on('fileuploaded', function(event, data, previewId, index) {
+        var img_id = data.response.files[0].img_id;
+        appendImgNode(img_id, previewId);
+    });
+    
+    //将图片id存入图容器
+    function appendImgNode(img_id, previewId)
+    {
+        var html = '<input type="hidden" data-img-node="1" data-pid="'+ previewId +'" id="img_id_input_'+ img_id +'" name="DrivingLicense[img_id][]" value="'+img_id+'">';
+        f.append(html);
+    }
+    
+    //将图片ID从图片ID容器中删除，根据图片的ID
+    function removeImgNodeById(img_id)
+    {
+        $('#img_id_input_' + img_id).remove();
+    }
+    //将图片ID从图片ID容器中删除，根据图片预览的容器id
+    function removeImgNodeByPid(previewId)
+    {
+        $('input[data-pid=previewId]').remove();
+    }
+    //移除所有的图片容器id
+    function removeAllImgNode()
+    {
+        $('input[data-img-node="1"]').remove();
+    }
+    
+    function getAllImgNodeCount()
+    {
+        return $('input[data-img-node="1"]').length;
+    }
 })
 JS
 );

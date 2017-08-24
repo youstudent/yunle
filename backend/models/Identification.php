@@ -27,7 +27,7 @@ use yii\web\UploadedFile;
 class Identification extends \yii\db\ActiveRecord
 {
     public $img;
-    public $imgs;
+    public $img_id;
 
     /**
      * @inheritdoc
@@ -47,15 +47,15 @@ class Identification extends \yii\db\ActiveRecord
             [['member_id', 'status', 'created_at', 'updated_at'], 'integer'],
             [['name', 'nation', 'sex', 'birthday', 'start_at', 'end_at'], 'string', 'max' => 50],
             [['licence'], 'string', 'max' => 255],
-            [['img'], 'safe'],
+            [['img_id'], 'safe'],
         ];
     }
 
     public function scenarios()
     {
         return [
-            'create' => ['member_id', 'name', 'nation', 'sex', 'birthday', 'start_at', 'end_at', 'licence', 'imgs'],
-            'update' => ['member_id', 'name', 'nation', 'sex', 'birthday', 'start_at', 'end_at', 'licence', 'imgs'],
+            'create' => ['member_id', 'name', 'nation', 'sex', 'birthday', 'start_at', 'end_at', 'licence', 'img_id'],
+            'update' => ['member_id', 'name', 'nation', 'sex', 'birthday', 'start_at', 'end_at', 'licence', 'img_id'],
         ];
     }
 
@@ -100,11 +100,11 @@ class Identification extends \yii\db\ActiveRecord
                 throw new Exception('error');
             }
 
-            $models =  IdentificationImg::find()->where(['id'=> $this->imgs])->all();
-            foreach ($models as $model){
-                $model->ident_id = $this->id;
-                $model->status = 1;
-                if(!$model->save(false)){
+            foreach($this->img_id as $i){
+                $m = IdentificationImg::findOne($i);
+                $m->ident_id = $this->id;
+                $m->status = 1;
+                if(!$m->save()){
                     throw new Exception("绑定图片信息失败");
                 }
             }
@@ -127,6 +127,28 @@ class Identification extends \yii\db\ActiveRecord
             if(!$this->save()){
                 throw new Exception('error');
             }
+
+            //变更图片的绑定
+            $old_img = IdentificationImg::find()->where(['ident_id'=>$this->id, 'status'=> 1])->select('id')->column();
+            $reduces_head = array_diff($old_img, $this->img_id);
+            foreach($reduces_head as $r){
+                $model = IdentificationImg::findOne($r);
+                $model->status = 0;
+                if(!$model->save()){
+                    throw new Exception('解除图片绑定失败');
+                }
+            }
+
+            $incsrease_head = array_diff($this->img_id, $old_img);
+            foreach($incsrease_head as $i){
+                $model = IdentificationImg::findOne($i);
+                $model->status = 1;
+                $model->ident_id = $this->id;
+                if(!$model->save()){
+                    throw new Exception('增加图片绑定失败');
+                }
+            }
+
             return $this;
         });
     }
@@ -153,10 +175,6 @@ class Identification extends \yii\db\ActiveRecord
     public static function getOne($id)
     {
         $model = Identification::findOne($id);
-
-        $imgs = IdentificationImg::find()->where(['ident_id'=>$id, 'status'=> 1])->select('id')->column();
-
-        $model->imgs = implode(",",$imgs);
 
         return $model;
     }

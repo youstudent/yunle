@@ -103,10 +103,6 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
                                 ]
                             ]) ?>
 
-                            <?= $form->field($model, 'imgs', ['template'=> "{input}"])->hiddenInput() ?>
-
-
-
                             <div class="form-group">
                                 <label class="control-label col-md-4 col-sm-4"></label>
                                 <div class="col-md-6 col-sm-6">
@@ -129,18 +125,14 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
 $formId = $model->formName();
 $this->registerJs(<<<JS
 $(function () {
-    var img_input = $('input[name="Identification[imgs]"]');
-    $('.field-identification-img').on('fileuploaded', function(event, data, previewId, index) {
-        var img_id = data.response.files[0].img_id;
-        var ids =  img_input.val();
-        img_input.val(ids+','+img_id)
-    });
-   
+    var f = $('#{$formId}');
     $('.btn-submit').on('click', function () {
-        var f = $('#{$formId}');
+        
+       
         f.on('beforeSubmit', function (e) {
-            if(img_input.val() == ''){
-                swal("请先上传身份证明照片");
+            img_count = getAllImgNodeCount();
+            if(img_count != 2){
+                swal("请上传正反两张身份证图片");
                 return false;
             }
             swal({
@@ -181,6 +173,54 @@ $(function () {
         });
         f.submit();
     });
+      //处理上传图片
+    $('.field-identification-img').
+    on('filedeleted', function(event, key, jqXHR, data){
+       removeImgNodeById(key);
+    }).
+    on('filecleared', function(event){
+       //点击右上角的x触发
+       removeAllImgNode();
+    }).
+    on('filereset', function(event){
+        //恢复初始化的时候触发
+       removeAllImgNode();
+    }).
+    on('filesuccessremove', function(event, id) {
+       removeImgNodeByPid(id);
+    }).
+    on('fileuploaded', function(event, data, previewId, index) {
+        var img_id = data.response.files[0].img_id;
+        appendImgNode(img_id, previewId);
+    });
+    
+    //将图片id存入图容器
+    function appendImgNode(img_id, previewId)
+    {
+        var html = '<input type="hidden" data-img-node="1" data-pid="'+ previewId +'" id="img_id_input_'+ img_id +'" name="Identification[img_id][]" value="'+img_id+'">';
+        f.append(html);
+    }
+    
+    //将图片ID从图片ID容器中删除，根据图片的ID
+    function removeImgNodeById(img_id)
+    {
+        $('#img_id_input_' + img_id).remove();
+    }
+    //将图片ID从图片ID容器中删除，根据图片预览的容器id
+    function removeImgNodeByPid(previewId)
+    {
+        $('input[data-pid=previewId]').remove();
+    }
+    //移除所有的图片容器id
+    function removeAllImgNode()
+    {
+        $('input[data-img-node="1"]').remove();
+    }
+    
+    function getAllImgNodeCount()
+    {
+        return $('input[data-img-node="1"]').length;
+    }
 })
 JS
 );
