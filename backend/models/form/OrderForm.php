@@ -149,7 +149,7 @@ class OrderForm extends Order
         $a = ActDetail::findOne(['order_id'=>$id]);
         $b = Order::findOne($id);
         $a->status = $data['status_id'];
-        $a->info = '系统将订单变更为'.Helper::getStatus($data['status_id'],$b->type);
+        $a->info = Helper::getCopy($b->type,$data['status_id']);
         $a->user_id = $user_id;
         $a->user = $name;
         $a->id = null;
@@ -179,6 +179,9 @@ class OrderForm extends Order
                     $data['cost'] = 0;
                 }
                 $orderCost = Order::findOne(['id'=>$id]);
+                $act = ActDetail::findOne($act_id);
+                $act->info = Helper::getCopy($orderCost->type,6,$data['cost']);
+                $act->save(false);
                 $orderCost->cost = $data['cost'];
                 if(!$orderCost->save(false)){
                     $b->errorMsg = '评估价格更新失败';

@@ -55,8 +55,8 @@ class MemberController extends BackendController
         $identification = Identification::findOne(['member_id'=>$member->id]);
 
         $member->scenario = 'update';
-        if ($member->load(Yii::$app->request->post()) && $identification->load(Yii::$app->request->post())) {
-            if( $member->updateMember() && $identification->updateInfo() ){
+        if ($member->load(Yii::$app->request->post())) {
+            if ($member->updateMember()) {
                 return $this->asJson(['data' => '', 'code' => 1, 'message' => '更新成功', 'url' => Url::to(['member/index'])]);
             }
             return $this->asJson(['data' => '', 'code' => 0, 'message' => '更新失败']);
