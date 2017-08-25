@@ -196,7 +196,7 @@ class Member extends \yii\db\ActiveRecord
             $butlerName = $myButler->name;
             $level = $myButler->level;
             $phone = $myButler->phone;
-            $img = UserImg::findOne(['user_id'=>$pid]);
+            $img = UserImg::findOne(['user_id'=>$pid,'status'=>1,'type'=>1]);
             if (!isset($img) || empty($img)) {
                 $photo = '';
             } else {

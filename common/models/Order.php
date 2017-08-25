@@ -342,7 +342,7 @@ class Order extends \yii\db\ActiveRecord
         //计算时间区间
         $fac['tag'] = Helper::getServiceTag($fac['id']);
         $fac['status'] = Helper::getClose($service['state']);
-        $fac['img_path'] = Yii::$app->params['img_domain'].ServiceImg::findOne(['service_id'=>$fac['id'],'type'=>1])->img_path;
+        $fac['img_path'] = Yii::$app->params['img_domain'].ServiceImg::findOne(['service_id'=>$fac['id'],'type'=>1,'status'=>1])->img_path;
 
         $all = ['buttonStatus'=>$buttonStatus, 'order'=>$order, 'insurance'=>$insurance, 'service'=>$fac];
         return $all;
@@ -681,7 +681,7 @@ class Order extends \yii\db\ActiveRecord
             $v['level'] = intval($v['level']);
             $v['tag'] = Helper::getServiceTag($v['id']);
             //图片
-            $img = ServiceImg::findOne(['service_id'=>$v['id'],'type'=>1]);
+            $img = ServiceImg::findOne(['service_id'=>$v['id'],'type'=>1,'status'=>1]);
             if (!isset($img) || empty($img)) {
                 $v['img'] = [];
             } else {
@@ -722,7 +722,7 @@ class Order extends \yii\db\ActiveRecord
             $v['level'] = intval($v['level']);
             $v['tag'] = Helper::getServiceTag($v['id']);
             //图片
-            $img = ServiceImg::findOne(['service_id'=>$v['id'],'type'=>1]);
+            $img = ServiceImg::findOne(['service_id'=>$v['id'],'type'=>1,'status'=>1]);
             if (!isset($img) || empty($img)) {
                 $v['img'] = [];
             } else {
@@ -753,7 +753,7 @@ class Order extends \yii\db\ActiveRecord
 
         $fac = ['name'=>$service->name, 'level'=>intval($service->level), 'lat'=>$service->lat, 'lng'=>$service->lng,
             'tag'=>Helper::getServiceTag($service->id),
-            'img'=>Yii::$app->params['img_domain'].ServiceImg::findOne(['service_id'=>$service->id,'type'=>1])->img_path,
+            'img'=>Yii::$app->params['img_domain'].ServiceImg::findOne(['service_id'=>$service->id,'type'=>1,'status'=>1])->img_path,
             'distance'=>Helper::getDistance($data['lat'], $data['lng'], $service->lat, $service->lng),
             'status'=>Helper::getClose($service->state),
             'contact_phone'=>$service->contact_phone,

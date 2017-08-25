@@ -336,7 +336,7 @@ class User extends ActiveRecord
      */
     public function myInfo($id)
     {
-        $img = UserImg::findOne(['user_id'=>$id]);
+        $img = UserImg::findOne(['user_id'=>$id,'type'=>1,'status'=>1]);
         if (!isset($img) || empty($img)) {
             $photo = '';
         } else {
@@ -359,7 +359,7 @@ class User extends ActiveRecord
         } else {
             $butlerName = $myButler->name;
             $level = $myButler->level;
-            $img = ServiceImg::findOne(['service_id'=>$pid]);
+            $img = ServiceImg::findOne(['service_id'=>$pid,'status'=>1,'type'=>1]);
             if (!isset($img) || empty($img)) {
                 $photo = '';
             } else {
