@@ -1025,6 +1025,94 @@ class Helper
     }
 
     /*
+     * 状态文案
+     */
+    public static function getCopy($type,$status,$cost=0)
+    {
+        $info = '';
+        if ($type == 1 || $type == 2 || $type == 3) {
+            switch ($status) {
+                case 1:
+                    $info = '待接单';
+                    break;
+                case 2:
+                    $info = '服务商已成功接单';
+                    break;
+                case 3:
+                    $info = '订单已分派给司机，正在接车中';
+                    break;
+                case 4:
+                    $info = '司机已经接车，正在返回中';
+                    break;
+                case 5:
+                    $info = '服务商已经接车，准备进行评估';
+                    break;
+                case 6:
+                    $info = '服务商已出评估结果，价格：'.$cost.'元';
+                    break;
+                case 7:
+                    $info = '评估结果确认，正在进行处理';
+                    break;
+                case 8:
+                    $info = '服务商处理完毕，等待交车';
+                    break;
+                case 99:
+                    $info = '订单已完成';
+                    break;
+                case 100:
+                    $info = '订单已被取消';
+                    break;
+            }
+        } elseif ($type == 4) {
+            switch ($status) {
+                case 1:
+                    $info = '待接单';
+                    break;
+                case 2:
+                    $info = '服务商已成功接单';
+                    break;
+                case 3:
+                    $info = '订单已经分派给审车员，正在处理';
+                    break;
+                case 4:
+                    $info = '审车成功，等待交车';
+                    break;
+                case 5:
+                    $info = '审车员已出发送车';
+                    break;
+                case 6:
+                    $info = '审车未通过，正在返修';
+                    break;
+                case 99:
+                    $info = '订单已完成';
+                    break;
+                case 100:
+                    $info = '订单已取消';
+                    break;
+            }
+        } else {
+            switch ($status) {
+                case 1:
+                    $info = '待寄出';
+                    break;
+                case 2:
+                    $info = '订单已经分派给审车员，正在处理';
+                    break;
+                case 98:
+                    $info = '审车未通过';
+                    break;
+                case 99:
+                    $info = '订单已完成';
+                    break;
+                case 100:
+                    $info = '订单已取消';
+                    break;
+            }
+        }
+        return $info;
+    }
+
+    /*
      * 获取登录用户的订单统计
      */
     public static function getStatCount()
@@ -1346,5 +1434,29 @@ class Helper
             'xTime' => $time
         ];
         return $all;
+    }
+
+    //------------------------------------------------------20170825分哥线-------------------------------------------------------
+    public static function getTypes($type)
+    {
+        $typeName = '';
+        switch ($type) {
+            case 1:
+                $typeName = '救援';
+                break;
+            case 2:
+                $typeName = '维修';
+                break;
+            case 3:
+                $typeName = '保养';
+                break;
+            case 4:
+                $typeName = '审车';
+                break;
+            case 5:
+                $typeName = '审车';
+                break;
+        }
+        return $typeName;
     }
 }

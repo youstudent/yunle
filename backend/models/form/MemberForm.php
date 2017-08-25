@@ -89,13 +89,9 @@ class MemberForm extends Member
 
     public function updateMember()
     {
-        if(!$this->validate()){
-            return false;
-        }
-
         return Yii::$app->db->transaction(function(){
             $this->updated_at = time();
-            if(!$this->save() || !$this->memberInfo->save()){
+            if(!$this->save()){
                 throw new Exception("更新会员信息失败");
             }
             return $this;
