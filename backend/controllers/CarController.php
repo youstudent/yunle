@@ -24,15 +24,12 @@ class CarController extends BackendController
 {
     public function actionIndex()
     {
-
         $searchModel = new CarSearch();
-
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
 
         return $this->renderPjax('index', [
             'dataProvider' => $dataProvider,
-            'searchModel' => $searchModel
+            'searchModel' => $searchModel,
         ]);
     }
 

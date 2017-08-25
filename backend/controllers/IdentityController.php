@@ -55,9 +55,9 @@ class IdentityController extends BackendController
         if($model->load(Yii::$app->request->post())){
 
             if($model->updateIdentification()){
-                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '保存成功', 'url'=> Url::to(['index?id='.$id])]);
+                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '保存成功', 'url'=> Url::to(['index?member_id='.$model->member_id])]);
             }
-            return json_encode(['data'=> '', 'code'=>0, 'message'=> '操作失败', 'url'=> Url::to(['index?id='.$id])]);
+            return json_encode(['data'=> '', 'code'=>0, 'message'=> '操作失败', 'url'=> Url::to(['index?member_id='.$model->member_id])]);
         }
 
 

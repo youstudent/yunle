@@ -13,33 +13,26 @@ use yii\data\ActiveDataProvider;
 
 class CarSearch extends Car
 {
+    public function rules()
+    {
+        return [
+            ['member_id', 'integer'],
+        ];
+    }
+
     public function search($params)
     {
         $query = Car::find();
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query
+            'query' => $query->where(['status'=>[1,2]])
         ]);
-        if (!($this->load($params) && $this->validate())) {
-            return $dataProvider;
+
+        if (isset($params['member_id']) && !empty($params['member_id'])) {
+
+            $query->andFilterWhere(['member_id' => $params['member_id']]);
         }
-        //格式化时间
-        if ($this->created_at){
-            $start_date = substr($this->created_at,0,10);
-            $start = strtotime($start_date);
-
-            if($start > 0){
-                $query->andFilterWhere(['>=','created_at',$start]);
-            }
-
-            $end_date =  substr($this->created_at,12);
-            $end = strtotime($end_date);
-
-            if($end > 0){
-                $query->andFilterWhere(['<=','created_at',$end]);
-            }
-        }
-
+        $query->andFilterWhere(['member_id' => $this->id]);
         return $dataProvider;
     }
 }

@@ -27,6 +27,7 @@ use yii\web\UploadedFile;
 class Identification extends \yii\db\ActiveRecord
 {
     public $img;
+    public $imgs;
     public $img_id;
 
     /**
@@ -47,7 +48,7 @@ class Identification extends \yii\db\ActiveRecord
             [['member_id', 'status', 'created_at', 'updated_at'], 'integer'],
             [['name', 'nation', 'sex', 'birthday', 'start_at', 'end_at'], 'string', 'max' => 50],
             [['licence'], 'string', 'max' => 255],
-            [['img_id'], 'safe'],
+            [['img_id','img'], 'safe'],
         ];
     }
 
@@ -55,7 +56,7 @@ class Identification extends \yii\db\ActiveRecord
     {
         return [
             'create' => ['member_id', 'name', 'nation', 'sex', 'birthday', 'start_at', 'end_at', 'licence', 'img_id'],
-            'update' => ['member_id', 'name', 'nation', 'sex', 'birthday', 'start_at', 'end_at', 'licence', 'img_id'],
+            'update' => ['name', 'nation', 'sex', 'birthday', 'start_at', 'end_at', 'licence', 'img_id'],
         ];
     }
 
@@ -78,18 +79,18 @@ class Identification extends \yii\db\ActiveRecord
             'status' => '认证状态',
             'created_at' => '创建时间',
             'updated_at' => '修改时间',
-            'img' => '身份证附件',
         ];
     }
     public function addIdentification()
     {
         if(!$this->validate()){
+
             return false;
         }
 
-        $this->imgs = explode(',', trim($this->imgs,','));
-        if(count($this->imgs) < 2){
-            $this->addError('imgs', '请上传2张附件');
+
+        if(count($this->img_id) < 2){
+            $this->addError('img', '请上传2张身份证附件');
             return false;
         }
 
@@ -116,16 +117,11 @@ class Identification extends \yii\db\ActiveRecord
 
     public function updateIdentification()
     {
-
-        if(!$this->validate()){
-            return false;
-        }
-
         return Yii::$app->db->transaction(function(){
             $this->created_at = time();
             $this->updated_at = time();
             if(!$this->save()){
-                throw new Exception('error');
+                throw new Exception('身份证信息更改失败');
             }
 
             //变更图片的绑定
@@ -139,8 +135,8 @@ class Identification extends \yii\db\ActiveRecord
                 }
             }
 
-            $incsrease_head = array_diff($this->img_id, $old_img);
-            foreach($incsrease_head as $i){
+            $increase_head = array_diff($this->img_id, $old_img);
+            foreach($increase_head as $i){
                 $model = IdentificationImg::findOne($i);
                 $model->status = 1;
                 $model->ident_id = $this->id;
@@ -156,7 +152,7 @@ class Identification extends \yii\db\ActiveRecord
      * 上传土图片要用到的
      * @param $data
      * @param string $type
-     * @return ServiceImg|null
+     * @return ServiceImg|null|object
      */
     public function saveImg($data, $type = 'head')
     {

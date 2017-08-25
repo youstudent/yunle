@@ -103,7 +103,7 @@ class CarForm extends Car
             }
 
             //变更图片的绑定
-            $old_car_img = CarImg::find()->where(['car_id'=>$this->id, 'status'=> 1, 'type'=>1])->select('id')->column();
+            $old_car_img = CarImg::find()->where(['car_id'=>$this->id, 'status'=> 1])->select('id')->column();
             $reduces_car_img = array_diff($old_car_img, $this->car_img_id);
             foreach($reduces_car_img as $r){
                 $model = CarImg::findOne($r);

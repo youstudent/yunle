@@ -750,13 +750,12 @@ class Order extends \yii\db\ActiveRecord
     public function getServiceDetail($data)
     {
         $service = Service::findOne(['id'=>$data['service_id']]);
-        $status = Helper::getOpen($service->open_at, $service->close_at);
 
         $fac = ['name'=>$service->name, 'level'=>intval($service->level), 'lat'=>$service->lat, 'lng'=>$service->lng,
             'tag'=>Helper::getServiceTag($service->id),
             'img'=>Yii::$app->params['img_domain'].ServiceImg::findOne(['service_id'=>$service->id,'type'=>1])->img_path,
             'distance'=>Helper::getDistance($data['lat'], $data['lng'], $service->lat, $service->lng),
-            'status'=>Helper::getClose($status),
+            'status'=>Helper::getClose($service->state),
             'contact_phone'=>$service->contact_phone,
             'introduction'=>$service->introduction
             ];

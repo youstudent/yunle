@@ -49,15 +49,15 @@ class DrivingLicense extends \yii\db\ActiveRecord
             [['member_id', 'status', 'created_at', 'updated_at'], 'integer'],
             [['name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at', 'imgs'], 'string', 'max' => 255],
             [['info'], 'string', 'max' => 200],
-            [['img_id'], 'safe'],
+            [['img', 'img_id'], 'safe'],
         ];
     }
 
     public function scenarios()
     {
         return [
-            'create' => ['name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at', 'img_id'],
-            'update' => ['name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at', 'img_id'],
+            'create' => ['name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at', 'img_id', 'img'],
+            'update' => ['name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at', 'img_id', 'img'],
         ];
     }
 
@@ -96,7 +96,7 @@ class DrivingLicense extends \yii\db\ActiveRecord
             $this->updated_at = time();
             if(!$this->save(false)){
                 print_r($this->getFirstErrors());
-                throw new Exception('error');
+                throw new Exception('驾驶证信息添加失败');
             }
 
             //更新图片
@@ -126,19 +126,28 @@ class DrivingLicense extends \yii\db\ActiveRecord
             $this->created_at = time();
             $this->updated_at = time();
             if(!$this->save()){
-                throw new Exception('error');
+                throw new Exception('驾驶证信息更新失败');
             }
 
-            $img = DrivingImg::findOne(['driver_id'=> $this->id, 'status'=>1]);
-            if($this->img_id[0] != $img->id){
-                $img->status = 0;
-                $img->save();
+            //变更图片的绑定
+            $old_img = DrivingImg::find()->where(['driver_id'=>$this->id, 'status'=> 1])->select('id')->column();
+            $reduces_head = array_diff($old_img, $this->img_id);
+            foreach($reduces_head as $r){
+                $model = DrivingImg::findOne($r);
+                $model->status = 0;
+                if(!$model->save()){
+                    throw new Exception('解除图片绑定失败');
+                }
+            }
 
-                //增加新的绑定
-                $m = DrivingImg::findOne($this->img_id[0]);
-                $m->driver_id = $this->id;
-                $m->status = 1;
-                $m->save();
+            $increase_head = array_diff($this->img_id, $old_img);
+            foreach($increase_head as $i){
+                $model = DrivingImg::findOne($i);
+                $model->status = 1;
+                $model->driver_id = $this->id;
+                if(!$model->save()){
+                    throw new Exception('增加图片绑定失败');
+                }
             }
 
             return $this;

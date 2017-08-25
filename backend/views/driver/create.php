@@ -83,24 +83,20 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
                             'language' => 'zh',
                             'options' => [
                                     'accept' => 'image/*',
-                                    'multiple'=> false
+                                    'multiple'=> true
 
                             ],
                             'pluginOptions' => [
                                 'uploadUrl' => Url::to(['/media/image-upload', 'model' => 'driver']),
-                                'maxFileSize'=>2800,
+                                'maxFileSize'=>2048,
                                 'showPreview' => true,
                                 'showCaption' => true,
                                 'showRemove' => true,
                                 'showUpload' => true,
-                                'maxFileCount' => 1,
+                                'maxFileCount' => 2,
                                 'minFileCount' => 1,
                             ]
                         ]) ?>
-
-                        <?= $form->field($model, 'imgs', ['template'=> "{input}"])->hiddenInput() ?>
-
-
 
                         <div class="form-group">
                             <label class="control-label col-md-4 col-sm-4"></label>
@@ -127,15 +123,11 @@ $(function () {
     var f = $('#{$formId}');
     $('.btn-submit').on('click', function () {
         var img_count = getAllImgNodeCount();
-        if(img_count != 1){
-            swal("图片数量不符合");
+        if(img_count < 1){
+            swal("最少两张驾驶证的正反面");
             return false;
         }
         f.on('beforeSubmit', function (e) {
-            if(img_input.val() == ''){
-                swal("请先上传行驶证照片");
-                return false;
-            }
             swal({
                     title: "确认添加",
                     text: "",

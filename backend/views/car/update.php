@@ -97,7 +97,7 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
                                 ];
                                 $car_img_config[] = $config;
                                 $car_img_preview[] = Yii::$app->params['img_domain'] . $car_img->img_path;
-                                $input .= '<input type="hidden"  data-car_img-img-node="1" id="car_img_img_id_input_'.$car_img->id.'" name="CarForm[car_img_id][]" value="'.$car_img->id.'">';
+                                $input .= '<input type="hidden"  data-car_img-node="1" id="car_img_id_input_'.$car_img->id.'" name="CarForm[car_img_id][]" value="'.$car_img->id.'">';
                             }
                             ?>
                             <?=$form->field($model, 'car_img')->widget(FileInput::classname(), [
@@ -123,6 +123,8 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
                                 ]
                             ]) ?>
 
+                            <?php echo $input ?>
+
                             <div class="form-group">
                                 <label class="control-label col-md-4 col-sm-4"></label>
                                 <div class="col-md-6 col-sm-6">
@@ -140,35 +142,6 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
             <!-- end row -->
         </div>
     </div>
-    <div class="hidden ak-mask ak_img_mask">
-        <div class="ak-mask-son ak-boxSad">
-            <img class="ak_mask_img" src="" alt="">
-        </div>
-    </div>
-    <!-- mask and bigImg to show __  end -->
-
-    <!-- mask and del to show -->
-    <div class="hidden ak-mask ak_del_mask">
-        <div class="ak-del-son ak-boxSad">
-            <div class="ak-flex" style="justify-content:space-between">
-                <h3>提示</h3>
-                <h3 class="close_del_mask" style="color:red; cursor: pointer;">x</h3>
-            </div>
-            <p style="font-size:18px; text-align:center; margin-top:5vh;color:#222;">您确定要删除该图片吗？</p>
-            <div class="ak-flex" style="justify-content:space-around;margin-top:6.5vh;">
-
-                <a class="btn btn-warning cancel" data-something="id or other">
-                    <i class="glyphicon glyphicon-trash"></i>
-                    <span>确认</span>
-                </a>
-
-                <a class="btn btn-primary start" data-something="id or other">
-                    <i class="glyphicon glyphicon-trash"></i>
-                    <span>取消</span>
-                </a>
-            </div>
-        </div>
-    </div>
 <?php
 
 
@@ -177,8 +150,8 @@ $this->registerJs(<<<JS
 $(function () {
     var f = $('#{$formId}');
     $('.btn-submit').on('click', function () {
-        var car_count = getAllImgNodeCount('car_img');
-       if(car_count == 0){
+        var car_count = getAllImgNodeCount();
+       if(car_count < 1){
                 swal("最少上传一张行驶证图片");
                 return false;
         }
@@ -246,7 +219,7 @@ $(function () {
     //将图片id存入图容器
     function appendImgNode(img_id, previewId, type)
     {    
-        var html = '<input type="hidden" data-car_img-img-node="1" data-pid="'+ previewId +'" id="car_img_img_id_input_'+ img_id +'" name="CarForm[car_img_id][]" value="'+img_id+'">';
+        var html = '<input type="hidden" data-car_img-node="1" data-pid="'+ previewId +'" id="car_img_id_input_'+ img_id +'" name="CarForm[car_img_id][]" value="'+img_id+'">';
         
         f.append(html);
     }
@@ -254,7 +227,7 @@ $(function () {
     //将图片ID从图片ID容器中删除，根据图片的ID
     function removeImgNodeById(img_id, type)
     {      
-        $('#car_img_img_id_input_' + img_id).remove();        
+        $('#car_img_id_input_' + img_id).remove();        
     }
     //将图片ID从图片ID容器中删除，根据图片预览的容器id
     function removeImgNodeByPid(previewId, type)
@@ -264,12 +237,12 @@ $(function () {
     //移除所有的图片容器id
     function removeAllImgNode(type)
     {  
-        $('input[data-car_img-img-node="1"]').remove();     
+        $('input[data-car_img-node="1"]').remove();     
     }
     
     function getAllImgNodeCount(type)
     {
-        return $('input[data-car_img-img-node="1"]').length;  
+        return $('input[data-car_img-node="1"]').length;  
     }
 })
 JS
