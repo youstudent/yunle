@@ -96,9 +96,9 @@ class DrivingLicense extends \yii\db\ActiveRecord
             $member_id = $data['member_id'];
         }
 
-        $arr = 'id, name, sex, papers, permit';
+        $arr = 'id, name, sex, status, papers, permit';
         $license = DrivingLicense::find()->select($arr)
-            ->where(['member_id' => $member_id])
+            ->where(['member_id' => $member_id,'status'=>[1,2]])
             ->asArray()
             ->all();
         //用户类型信息
@@ -209,7 +209,7 @@ class DrivingLicense extends \yii\db\ActiveRecord
      */
     public function updateDriver($data)
     {
-        $driver = $this::findOne(['id'=>$data['driver_id']]);
+        $driver = DrivingLicense::findOne(['id'=>$data['driver_id']]);
 
         if (!isset($driver) || empty($driver)) {
             $this->addError('message', '要啥自行车');

@@ -684,7 +684,7 @@ class Order extends \yii\db\ActiveRecord
                 ->asArray()
                 ->all();
             foreach ($serviceOld as $k=>$v) {
-                if (in_array(Helper::getTags($v['id']),Helper::getServiceTag($v['id']))) {
+                if (in_array(Helper::getTypes($data['type']),Helper::getServiceTag($v['id']))) {
                     $service[$k] = $v;
                 }
             }
