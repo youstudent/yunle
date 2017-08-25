@@ -93,6 +93,7 @@ use yii\widgets\LinkPager;
                         <th>发证日期</th>
                     </tr>
                     <tbody>
+                    <?php if (isset($model->car) && !empty($model->car)) {?>
                     <tr>
                         <td><?= $model->car->license_number ?></td>
                         <td><?= $model->car->type ?></td>
@@ -105,6 +106,7 @@ use yii\widgets\LinkPager;
                         <td><?= $model->car->sign_at ?></td>
                         <td><?= $model->car->certificate_at ?></td>
                     </tr>
+                    <?php }?>
                     </tbody>
                 </table>
             </div>

@@ -19,7 +19,7 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
 
     <div class="service-create">
 
-        <h1>添加车辆</h1>
+        <h1>修改驾驶证</h1>
 
         <div class="adminuser-form">
             <!-- begin row -->
@@ -83,14 +83,21 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
 
                             <?php
                             //根据对应的id，获取已经有的图片数据
-                            $m  = \backend\models\DrivingImg::findOne(['driver_id'=>$model->id, 'status'=> 1]);
+                            $ms  = \backend\models\DrivingImg::find()->where(['driver_id'=>$model->id, 'status'=> 1])->all();
+                            $config = [];
+                            $preview = [];
+                            $input = '';
+                            foreach($ms as $m){
+                                $data = [
+                                    'size' => $m->size,
+                                    'url'  => Url::to(['media/image-delete', 'model'=> 'driver', 'id' => $m->id]),
+                                    'key'  => $m->id
+                                ];
+                                $config[] = $data;
+                                $preview[] = Yii::$app->params['img_domain'] . $m->img_path;
+                                $input .= '<input type="hidden"  data-img-node="1" id="img_id_input_'.$m->id.'" name="DrivingLicense[img_id][]" value="'.$m->id.'">';
+                            }
 
-                            //找到对应的图片数据，这里只有一张，就这样的处理了
-                            $config['size'] = $m->size;
-                            $config['url'] = Url::to(['media/image-delete', 'model'=> 'driver', 'id' => $m->id]);
-                            $config['key'] = $m->id;
-
-                            $preview = Yii::$app->params['img_domain'] . $m->img_path;
                             ?>
                             <?=$form->field($model, 'img')->widget(FileInput::classname(), [
                                 'language' => 'zh',
@@ -100,16 +107,12 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
 
                                 ],
                                 'pluginOptions' => [
-                                    'initialPreview' => [
-                                        $preview
-                                    ],
-                                    'initialPreviewConfig' => [
-                                        $config
-                                    ],
+                                    'initialPreview' => $preview,
+                                    'initialPreviewConfig' =>$config,
                                     'overwriteInitial' => false,//不允许覆盖
                                     'initialPreviewAsData' => true,
                                     'uploadUrl' => Url::to(['/media/image-upload', 'model' => 'driver']),
-                                    'maxFileSize'=>2800,
+                                    'maxFileSize'=>2048,
                                     'showPreview' => true,
                                     'showCaption' => true,
                                     'showRemove' => true,
@@ -119,9 +122,7 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
                                 ]
                             ]) ?>
 
-                            <?= $form->field($model, 'imgs', ['template'=> "{input}"])->hiddenInput() ?>
-
-                            <input type="hidden" data-img-node="1" id="img_id_input_<?= $m->id ?>" name="DrivingLicense[img_id][]" value="<?= $m->id ?>">
+                            <?php echo $input ?>
 
                             <div class="form-group">
                                 <label class="control-label col-md-4 col-sm-4"></label>
@@ -148,13 +149,13 @@ $(function () {
     var f = $('#{$formId}');
     $('.btn-submit').on('click', function () {
         var img_count = getAllImgNodeCount();
-        if(img_count != 1){
-            swal("图片数量不符合");
+        if(img_count < 1){
+            swal("最少两张驾驶证的正反面");
             return false;
         }
         f.on('beforeSubmit', function (e) {
             swal({
-                    title: "确认保存",
+                    title: "确认修改",
                     text: "",
                     type: "warning",
                     showCancelButton: true,
@@ -191,7 +192,8 @@ $(function () {
         });
         f.submit();
     });
-    //处理上传图片
+    
+     //处理上传图片
     $('.field-drivinglicense-img').
     on('filedeleted', function(event, key, jqXHR, data){
        removeImgNodeById(key);
@@ -239,6 +241,7 @@ $(function () {
     {
         return $('input[data-img-node="1"]').length;
     }
+    
 })
 JS
 );

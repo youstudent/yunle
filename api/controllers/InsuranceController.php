@@ -123,8 +123,8 @@ class InsuranceController extends ApiController
     {
         $model = new InsuranceOrder();
         $form = $this->getForm(Yii::$app->request->post('data'));
-
-        if ($model->affirm($form)) {
+        $member = $this->getMemberInfo();
+        if ($model->affirm($form,$member)) {
             return $this->jsonReturn(1, '确认成功');
         }
 
@@ -136,8 +136,8 @@ class InsuranceController extends ApiController
     {
         $model = new InsuranceOrder();
         $form = $this->getForm(Yii::$app->request->post('data'));
-
-        if ($model->abandon($form)) {
+        $member = $this->getMemberInfo();
+        if ($model->abandon($form,$member)) {
             return $this->jsonReturn(1, '取消成功');
         }
 

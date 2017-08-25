@@ -92,15 +92,16 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
                             $preview = [];
                             $input = '';
                             foreach($ms as $m){
-                                $config = [
+                                $data = [
                                     'size' => $m->size,
                                     'url'  => Url::to(['media/image-delete', 'model'=> 'identification', 'id' => $m->id]),
                                     'key'  => $m->id
                                 ];
-                                $config[] = $config;
+                                $config[] = $data;
                                 $preview[] = Yii::$app->params['img_domain'] . $m->img_path;
                                 $input .= '<input type="hidden"  data-img-node="1" id="img_id_input_'.$m->id.'" name="Identification[img_id][]" value="'.$m->id.'">';
                             }
+
                             ?>
 
                             <?=$form->field($model, 'img')->widget(FileInput::classname(), [
@@ -116,7 +117,7 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
                                     'overwriteInitial' => false,//不允许覆盖
                                     'initialPreviewAsData' => true,
                                     'uploadUrl' => Url::to(['/media/image-upload', 'model' => 'identification']),
-                                    'maxFileSize'=>2800,
+                                    'maxFileSize'=>2048,
                                     'showPreview' => true,
                                     'showCaption' => true,
                                     'showRemove' => true,
@@ -157,11 +158,7 @@ $(function () {
                 swal("请上传正反两张身份证图片");
                 return false;
         }
-        f.on('beforeSubmit', function (e) {
-            if(img_input.val() == ''){
-                swal("请先上传身份证明照片");
-                return false;
-            }
+        f.on('beforeSubmit', function (e) { 
             swal({
                     title: "确认保存",
                     text: "",

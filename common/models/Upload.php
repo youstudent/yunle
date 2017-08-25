@@ -119,16 +119,16 @@ class Upload extends Model
     {
         $save_path = '';
         $this->db_save_path = '/upload/'. $type . '/' . sha1($chars[ mt_rand(0, strlen($chars) - 1) ] . time()) . '.' . $extension;
-        $save_path = $this->db_save_path;
+        $save_path = '/static'.$this->db_save_path;
 
         if (!empty($save_path)) {
-            $save_dir = dirname(Yii::getAlias('@common') .'/static'. $save_path);
+            $save_dir = dirname(Yii::getAlias('@common') . $save_path);
             if (!is_dir($save_dir)) {
 //                mkdir($save_dir, 0755);
                 FileHelper::createDirectory($save_dir, $mode = 0775, $recursive = true);
             }
         }
-        return $save_path;
+        return $this->db_save_path;
     }
 
 //    protected function getFileExtension($filename)
