@@ -391,7 +391,7 @@ class InsuranceOrder extends \yii\db\ActiveRecord
     /*
      * 确认购买
      */
-    public function affirm($data)
+    public function affirm($data,$member)
     {
         if (!isset($member['user']['id']) || empty($member['user']['id'])) {
             $id = $member['member']['id'];
@@ -420,7 +420,7 @@ class InsuranceOrder extends \yii\db\ActiveRecord
     /*
      * 取消购买
      */
-    public function abandon($data)
+    public function abandon($data,$member)
     {
         if (!isset($member['user']['id']) || empty($member['user']['id'])) {
             $id = $member['member']['id'];
