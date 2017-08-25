@@ -461,7 +461,7 @@ class Order extends \yii\db\ActiveRecord
             }
             //创建订单详情
             $service = Order::findOne(['id'=>$order_id])->service;
-            $act = $this->createAct($service,$order_id, $member_id);
+            $act = $this->createAct($service,$order_id, $member_id,$data['type']);
             if ($act == false) {
                 $this->errorMsg = '订单动态详情创建失败';
                 $this->transaction->rollBack();
@@ -642,13 +642,18 @@ class Order extends \yii\db\ActiveRecord
     /*
      * 生成动态
      */
-    public function createAct($service, $order_id, $member_id)
+    public function createAct($service, $order_id, $member_id, $type)
     {
         $act = new ActDetail();
         $act->user_id = $member_id;
         $act->user = Helper::getName($member_id);
         $act->order_id = $order_id;
-        $act->info = '订单已分派给服务商'.$service.'，等待接单';
+        if ($type == 5) {
+            $act->info = '订单创建成功，请及时寄出证件';
+        } else {
+            $act->info = '订单已分派给服务商'.$service.'，等待接单';
+        }
+
         $act->status = 1;
         $act->created_at = time();
 
@@ -672,10 +677,26 @@ class Order extends \yii\db\ActiveRecord
         $size = 3;
         $pageTotal = ceil($count/$size);
         $pageSize = ($data['page']-1)* $size;
-        $service = Service::find()->select('id, name, level, lat, lng, open_at, close_at, state')
-            ->where(['deleted_at'=>null])
-            ->asArray()
-            ->all();
+        if (isset($data['filtrate']) && !empty($data['filtrate'])) {
+            $service = [];
+            $serviceOld = Service::find()->select('id, name, level, lat, lng, open_at, close_at, state')
+                ->where(['deleted_at'=>null,'state'=>1])
+                ->asArray()
+                ->all();
+            foreach ($serviceOld as $k=>$v) {
+                if (in_array(Helper::getTypes($data['type']),Helper::getServiceTag($v['id']))) {
+                    $service[$k] = $v;
+                }
+            }
+
+        } else {
+            $service = Service::find()->select('id, name, level, lat, lng, open_at, close_at, state')
+                ->where(['deleted_at'=>null])
+                ->asArray()
+                ->all();
+        }
+
+
         //获取服务商图片,距离,是否营业
         foreach ($service as &$v) {
             $v['level'] = intval($v['level']);
@@ -731,8 +752,7 @@ class Order extends \yii\db\ActiveRecord
             //距离
             $v['distance'] = Helper::getDistance($data['lat'], $data['lng'], $v['lat'], $v['lng']);
             //是否营业
-            $status = Helper::getOpen($v['open_at'], $v['close_at']);
-            $v['status'] = Helper::getClose($status);
+            $v['status'] = Helper::getClose($v['state']);
         }
         //TODO:按照标签的符合度筛选
         //重新定义以距离最近排序
@@ -1192,7 +1212,7 @@ class Order extends \yii\db\ActiveRecord
         //接受订单
         $a = ActDetail::findOne(['order_id'=>$data['order_id']]);
         $a->status = 2;
-        $a->info = '已接单';
+        $a->info = '服务商已成功接单';
         $a->user_id = $id;
         $a->user = $name;
         $a->id = null;
@@ -1272,11 +1292,14 @@ class Order extends \yii\db\ActiveRecord
 
         //接受订单
         $a = ActDetail::findOne(['order_id'=>$data['order_id']]);
+        $od = Order::findOne($data['order_id'])->type;
         $a->status = $data['actId'];
         if (!isset($data['info'])  && empty($data['info'])) {
-            $a->info = $data['actName'];
+//            $a->info = $data['actName'];
+            $a->info = Helper::getCopy($od,$data['actId']);
         } else {
-            $a->info = $data['info'];
+//            $a->info = $data['info'];
+            $a->info = Helper::getCopy($od,$data['actId']);
         }
         $a->user_id = $user_id;
         $a->user = $name;
@@ -1307,6 +1330,9 @@ class Order extends \yii\db\ActiveRecord
                     $data['cost'] = 0;
                 }
                 $orderCost = Order::findOne(['id'=>$data['order_id']]);
+                $act = ActDetail::findOne($act_id);
+                $act->info = Helper::getCopy($orderCost->type,6,$data['cost']);
+                $act->save(false);
                 $orderCost->cost = $data['cost'];
                 if(!$orderCost->save(false)){
                     $this->errorMsg = '评估价格更新失败';

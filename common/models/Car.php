@@ -97,8 +97,8 @@ class Car extends \yii\db\ActiveRecord
             $member_id = $data['member_id'];
         }
 
-        $car = Car::find()->select('id, license_number, stick')
-            ->where(['member_id'=> $member_id])
+        $car = Car::find()->select('id, license_number, stick, status')
+            ->where(['member_id'=> $member_id, 'status'=>[1,2]])
             ->orderBy(['stick' => SORT_DESC, 'created_at' => SORT_DESC])
             ->asArray()
             ->limit(10)
@@ -125,8 +125,8 @@ class Car extends \yii\db\ActiveRecord
             $member_id = $data['member_id'];
         }
 
-        $car = Car::find()->select('id, license_number, type, created_at, stick')
-            ->where(['member_id'=> $member_id])
+        $car = Car::find()->select('id, license_number, type, created_at, stick, status')
+            ->where(['member_id'=> $member_id,'status'=>[1,2]])
             ->orderBy(['stick' => SORT_DESC, 'created_at' => SORT_DESC])
             ->asArray()
             ->limit(10)
