@@ -128,7 +128,7 @@ class Upload extends Model
                 FileHelper::createDirectory($save_dir, $mode = 0775, $recursive = true);
             }
         }
-        return $save_path;
+        return $this->db_save_path;
     }
 
 //    protected function getFileExtension($filename)
