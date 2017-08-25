@@ -56,7 +56,7 @@ class SalesmanController extends BackendController
             return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '添加失败', 'url'=> '']);
         }
 
-        return $this->renderAjax('create', [
+        return $this->renderPjax('create', [
             'model' => $model
         ]);
     }
@@ -74,7 +74,7 @@ class SalesmanController extends BackendController
             return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '添加失败', 'url'=> '']);
         }
 
-        return $this->renderAjax('update', [
+        return $this->renderPjax('update', [
             'model' => $model
         ]);
     }

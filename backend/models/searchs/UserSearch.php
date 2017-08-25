@@ -11,6 +11,7 @@ namespace backend\models\searchs;
 use backend\models\Adminuser;
 use backend\models\Service;
 use backend\models\User;
+use pd\admin\components\Helper;
 use yii\data\ActiveDataProvider;
 
 class UserSearch extends User
@@ -72,21 +73,19 @@ class UserSearch extends User
 
     public function authFilter(\yii\db\ActiveQuery $query)
     {
-        if(\pd\admin\components\Helper::checkRoute('/abs-route/get-all-salesman')) {
-            return $query;
-        }
-        $group = \common\components\Helper::getLoginMemberRoleGroup();
-        $id = \Yii::$app->user->identity->id;
-        if($group == 1){
-            //用客户经理的身份查询
+        //如果有这个权限，那么只能看自己对应的服务商的业务员
+        if(Helper::checkRoute('/abs-route/customer-manager')){
+            $id = \Yii::$app->user->identity->id;
             $ids = \common\components\Helper::byCustomerManagerIdGetServiceIds($id);
             $query->andWhere(['s.pid'=>$id]);
             return $query;
-        }else{
-            //以服务商代理商的身份查询 - 1. 如果有查看代理商或者服务商所有销售的权限
-            $service_id = \common\components\Helper::byAdminIdGetServiceId($id);
-            $query->andWHere(['u.pid' => $service_id]);
-            return $query;
         }
+        //如果是服务商/代理商
+        $service_id = \common\components\Helper::getLoginMemberServiceId();
+        if($service_id){
+            //这能看自己的业务员
+            $query->andWhere(['s.pid' => $service_id]);
+        }
+        return $query;
     }
 }

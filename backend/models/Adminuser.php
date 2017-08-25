@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use backend\models\searchs\AuthAssignmentSearch;
 use Yii;
 use yii\helpers\ArrayHelper;
 
@@ -149,11 +150,5 @@ class Adminuser extends \yii\db\ActiveRecord
         });
     }
 
-    public static function getCustomerManager()
-    {
-        $ids = Yii::$app->getAuthManager()->getUserIdsByRole("客户经理");
-        $data = Adminuser::find()->where(['id'=>$ids])->indexBy('id')->select('name,id')->column();
 
-        return $data;
-    }
 }

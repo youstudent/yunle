@@ -3,6 +3,7 @@
 namespace backend\models;
 
 use common\models\InvitationCode;
+use common\models\UserImg;
 use Yii;
 
 /**
@@ -54,11 +55,11 @@ class User extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'username' => '用户名',
-            'name' => '姓名',
-            'pid' => '服务商',
-            'phone' => '电话',
-            'password' => '密码',
+            'username' => '登录账号',
+            'name' => '业务员名称',
+            'pid' => '所属管理',
+            'phone' => '业务员电话',
+            'password' => '登录密码',
             'status' => '状态 1:正常 0:冻结',
             'last_login_at' => '最后登录时间',
             'last_login_ip' => 'Last Login Ip',
@@ -67,6 +68,8 @@ class User extends \yii\db\ActiveRecord
             'updated_at' => '更新时间',
             'system_switch' => '系统通知',
             'check_switch' => '审核通知',
+            'level' => '评分星级',
+            'licence' => '身份证号码',
         ];
     }
 
@@ -116,4 +119,8 @@ class User extends \yii\db\ActiveRecord
         return $html;
     }
 
+    public function getUserImg()
+    {
+        return $this->hasMany(UserImg::className(), ['user_id'=>'id']);
+    }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use backend\models\Adminuser;
+use backend\models\AppRole;
 use common\components\Helper;
 use dosamigos\fileupload\FileUploadUI;
 use yii\helpers\Html;
@@ -45,18 +46,8 @@ pd\coloradmin\web\plugins\BaiduMapAsset::register($this);
                         </thead>
                         <tbody>
                         <tr>
-                            <td><?= $model->getAttributeLabel('username') ?></td>
-                            <td><?= $model->username ?></td>
-                            <td><span class="text-muted"></span></td>
-                        </tr>
-                        <tr>
                             <td><?= $model->getAttributeLabel('name') ?></td>
                             <td><?= $model->name ?></td>
-                            <td><span class="text-muted"></span></td>
-                        </tr>
-                        <tr>
-                            <td><?= $model->getAttributeLabel('pid') ?></td>
-                            <td><?= $model->pid && backend\models\Service::findOne($model->pid) ? backend\models\Service::findOne($model->pid)->name : '未设置'   ?></td>
                             <td><span class="text-muted"></span></td>
                         </tr>
                         <tr>
@@ -65,25 +56,58 @@ pd\coloradmin\web\plugins\BaiduMapAsset::register($this);
                             <td><span class="text-muted"></span></td>
                         </tr>
                         <tr>
-                            <td><?= $model->getAttributeLabel('system_switch') ?></td>
-                            <td><?= $model->system_switch == 1 ? '<span class="badge badge-info">开启</span>' : '<span class="badge badge-danger">关闭</span>' ?></td>
+                            <td><?= $model->getAttributeLabel('licence') ?></td>
+                            <td><?= $model->licence ?></td>
                             <td><span class="text-muted"></span></td>
                         </tr>
                         <tr>
-                            <td><?= $model->getAttributeLabel('check_switch') ?></td>
-                            <td><?= $model->check_switch == 1 ? '<span class="badge badge-info">开启</span>' : '<span class="badge badge-danger">关闭</span>' ?></td>
+                            <td>头像</td>
+                            <td>
+                                <?php if($model->userImg) : ?>
+                                    <?php foreach($model->userImg as $img) : ?>
+                                        <?php if($img->type == 1): ?>
+                                            <img src="<?php echo Yii::$app->params['img_domain']. $img->thumb; ?>" alt="">
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </td>
                             <td><span class="text-muted"></span></td>
                         </tr>
                         <tr>
-                            <td><?= $model->getAttributeLabel('status') ?></td>
-                            <td><?= $model->status == 1 ? '<span class="badge badge-info">正常</span>' : '<span class="badge badge-danger">冻结</span>' ?></td>
+                            <td>附件</td>
+                            <td>
+                                <?php if($model->userImg) : ?>
+                                    <?php foreach($model->userImg as $img) : ?>
+                                        <?php if($img->type == 0): ?>
+                                            <img src="<?php echo Yii::$app->params['img_domain']. $img->thumb; ?>" alt="">
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </td>
                             <td><span class="text-muted"></span></td>
                         </tr>
                         <tr>
-                            <td><?= $model->getAttributeLabel('created_at') ?></td>
-                            <td><?= \pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
+                            <td><?= $model->getAttributeLabel('pid') ?></td>
+                            <td><?= $model->pid && backend\models\Service::findOne($model->pid) ? backend\models\Service::findOne($model->pid)->name : '未设置'   ?></td>
                             <td><span class="text-muted"></span></td>
                         </tr>
+                        <?php $role_id = \backend\models\AppRoleAssign::findOne(['user_id'=>$model->id]);
+                            if($role_id){
+                                $role = AppRole::findOne(['service_id'=>$model->pid, 'id'=>$role_id]);
+                            }
+                        ?>
+                        <tr>
+                            <td><?= $model->getAttributeLabel('role_id') ?></td>
+                            <td><?= $role ? $role->name : '未设置'   ?></td>
+                            <td><span class="text-muted"></span></td>
+                        </tr>
+
+                        <tr>
+                            <td><?= $model->getAttributeLabel('level') ?></td>
+                            <td><?= $model->level ?> 星</td>
+                            <td><span class="text-muted"></span></td>
+                        </tr>
+
                         </tbody>
                     </table>
                 </div>

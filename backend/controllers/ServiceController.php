@@ -2,10 +2,12 @@
 
 namespace backend\controllers;
 
+use backend\models\AppRoleAssign;
 use backend\models\form\ServiceForm;
 use backend\models\searchs\ServiceSearch;
 use backend\models\Service;
 use backend\models\ServiceImg;
+use common\models\ServiceTag;
 use Yii;
 use backend\models\Adminuser;
 use backend\models\searchs\Adminuser as AdminuserSearch;
@@ -145,6 +147,17 @@ class ServiceController extends BackendController
         $model->save();
         Yii::$app->session->setFlash('success', '服务商 ['. $model->name .' ] 状态变更成功');
         return $this->redirect(['index']);
+    }
+
+    /**
+     * 获取指定服务商，所有APP角色
+     * @param $service_id
+     * @param $salesman_id
+     * @return mixed
+     */
+    public function actionRoleList($service_id, $salesman_id)
+    {
+        return AppRoleAssign::dropDownListHtml($service_id, $salesman_id);
     }
 
 }

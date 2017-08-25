@@ -13,7 +13,9 @@ use backend\models\form\AgencyForm;
 use backend\models\form\BannerForm;
 use backend\models\form\CarForm;
 use backend\models\form\ServiceForm;
+use backend\models\form\UserForm;
 use backend\models\Identification;
+use common\models\UserImg;
 use Imagine\Image\ImageInterface;
 use Yii;
 use yii\helpers\FileHelper;
@@ -73,6 +75,18 @@ class MediaController extends BackendController
                 $directory = Yii::getAlias('@common/static/upload/banner') . DIRECTORY_SEPARATOR;
                 $sub_dir = 'banner';
                 $attribute = 'img';
+                break;
+            case 'salesman':
+                $model = new UserForm();
+                $directory = Yii::getAlias('@common/static/upload/salesman') . DIRECTORY_SEPARATOR;
+                $sub_dir = 'salesman';
+                $attribute = $type == 'head' ? 'head' : 'attachment';
+                if($attribute == 'head'){
+                    $thumb_width = $thumb_height = 60;
+                }else{
+                    $thumb_width = 640;
+                    $thumb_height = 640;
+                }
                 break;
         }
 

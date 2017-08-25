@@ -9,6 +9,7 @@ namespace backend\models\searchs;
 
 
 use backend\models\Member;
+use pd\admin\components\Helper;
 use yii\data\ActiveDataProvider;
 
 class MemberSearch extends Member
@@ -79,25 +80,24 @@ class MemberSearch extends Member
 
     public function authFilter(\yii\db\ActiveQuery $query)
     {
-        if(\pd\admin\components\Helper::checkRoute('/abs-route/get-all-member')) {
+        //所属权限。如果有这个权限，那么只能看自己对应的服务商的业务员
+        if(Helper::checkRoute('/abs-route/customer-manager')){
+            $id = \Yii::$app->user->identity->id;
+            $service_ids = \common\components\Helper::byCustomerManagerIdGetServiceIds($id);
+            //根据服务商ids找到对应的会员
+            $ids = Member::find()->where(['pid'=>$service_ids])->select('id')->column();
+            $query->andWhere(['s.pid'=>$ids]);
             return $query;
         }
+        //以下都是- 所有权限
 
-        $group = \common\components\Helper::getLoginMemberRoleGroup();
-        $id = \Yii::$app->user->identity->id;
-        if($group == 1){
-            //用客户经理的身份查询
-            $ids = \common\components\Helper::byCustomerManagerIdGetServiceMemberIds($id);
-//            $query->andWhere(['m.pid'=>$ids]);
+        $service_id = \common\components\Helper::getLoginMemberServiceId();
+        //如果有service_id 。则登录的是服务商。那么可以看到的就是自己服务商下面的会员
+        if($service_id){
+            $ids = Member::find()->where(['pid'=>$service_id])->select('id')->column();
+            $query->andWhere(['s.pid' => $ids]);
             return $query;
         }
-        if($group == 2){
-            //由服务商查询
-            $service_id = \common\components\Helper::byAdminIdGetServiceId($id);
-            $query->andWHere(['u.id' => $id]);
-            return $query;
-        }
-
-
+        return $query;
     }
 }

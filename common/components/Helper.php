@@ -1,9 +1,12 @@
 <?php
 namespace common\components;
+use backend\models\Adminuser;
 use backend\models\AppMenu;
 use backend\models\AppMenuWithout;
 use backend\models\AppRole;
 use backend\models\AppRoleAssign;
+use backend\models\AuthAssignment;
+use backend\models\AuthItemChild;
 use backend\models\Member;
 use backend\models\ServiceUser;
 use backend\models\User;
@@ -377,10 +380,25 @@ class Helper
         $model->service_id = $service_id;
         return $model->save();
     }
-    public static function bindAppUserRole($user_id, $service_id)
+    public static function bindAppUserDefaultRole($user_id, $service_id)
     {
         //获取服务商默认的角色组
         $role_id = AppRole::findOne(['service_id'=>$service_id])->id;
+        $model = new AppRoleAssign();
+        $model->user_id = $user_id;
+        $model->role_id = $role_id;
+        return $model->save();
+    }
+
+    public static function unBindAppUserRole($user_id, $service_id)
+    {
+        //获取服务商默认的角色组
+        AppRoleAssign::deleteAll(['user_id'=>$user_id]);
+        return true;
+    }
+
+    public static function bindAppUserRole($user_id, $role_id)
+    {
         $model = new AppRoleAssign();
         $model->user_id = $user_id;
         $model->role_id = $role_id;
@@ -408,5 +426,15 @@ class Helper
     {
         $user_id = Yii::$app->user->identity->id;
         return static::byAdminIdGetServiceId($user_id);
+    }
+
+    public static function getCustomerManager()
+    {
+        $permission = '用户管理-服务商-所属服务商列表';
+        $roles = AuthItemChild::find()->where(['child'=>$permission])->select('parent')->column();
+        //获取对应角色的user_Id;
+        $ids = AuthAssignment::find()->where(['item_name'=> $roles])->select('user_id')->column();
+        $data = Adminuser::find()->where(['id'=>$ids])->indexBy('id')->select('name,id')->column();
+        return $data;
     }
 }

@@ -106,16 +106,15 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
 
                         <?= $form->field($model, 'imgs', ['template'=> "{input}"])->hiddenInput() ?>
 
-                        <?php if(\mdm\admin\components\Helper::checkRoute('/account/get-customer-manager')) : ?>
-                            <?= $form->field($model, 'sid')->dropDownList(
-                                \backend\models\Adminuser::getCustomerManager()
-                            ) ?>
+                        <!--是客户经理，客户经理就是自己，否则可以查看所有的人-->
+                        <?php if (pd\admin\components\Helper::checkRoute('/abs-route/customer-manager')) : ?>
+                            <?= $form->field($model, 'sid', ['template' => '{input}'])->input('hidden', ['value'=> Yii::$app->user->identity->id]) ?>
                         <?php else: ?>
                             <?= $form->field($model, 'sid')->dropDownList(
-                                [Yii::$app->user->identity->id => Yii::$app->user->identity->name]
+                                Helper::getCustomerManager()
                             ) ?>
-                        <?php endif; ?>
 
+                        <?php endif; ?>
 
 
 <!--                        --><?php //$model->status=1; ?>

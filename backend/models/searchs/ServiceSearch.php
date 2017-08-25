@@ -9,6 +9,7 @@ namespace backend\models\searchs;
 
 
 use backend\models\Service;
+use mdm\admin\components\Helper;
 use yii\data\ActiveDataProvider;
 
 
@@ -63,12 +64,12 @@ class ServiceSearch extends Service
 
     public function authFilter(\yii\db\ActiveQuery $query)
     {
-        //如果没有获取所有管理服务商的权限。就筛选自己的的服务商
-        if(\pd\admin\components\Helper::checkRoute('/abs-route/get-all-service')){
+        //如果有查看服务商所属的权限，只接认为你的主账号是客户经理
+        if(Helper::checkRoute('/abs-route/customer-manager')){
+            $id = \Yii::$app->user->identity->id;
+            $query->andWhere(['sid'=>$id]);
             return $query;
         }
-        $id = \Yii::$app->user->identity->id;
-        $query->andWhere(['sid'=>$id]);
         return $query;
     }
 }

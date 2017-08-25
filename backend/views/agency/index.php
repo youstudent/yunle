@@ -1,5 +1,6 @@
 <?php
 
+use common\components\Helper;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\Url;
@@ -80,9 +81,11 @@ JS
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="row">
+        <?php if(Helper::getCustomerManager()) : ?>
         <div class="col-md-6">
             <a href="<?= Url::to(['create']) ?>" class="btn btn-success">添加代理商</a>
         </div>
+        <?php endif; ?>
     </div>
     <p></p>
 
@@ -128,9 +131,9 @@ JS
 
             <?= $form->field($searchModel, 'principal_phone')->textInput(['placeholder'=> '负责人联系电话']); ?>
 
-            <?php if(\mdm\admin\components\Helper::checkRoute('/abs-route/get-customer-manager')) : ?>
+            <?php if(!pd\admin\components\Helper::checkRoute('/abs-route/customer-manager')) : ?>
                 <?= $form->field($searchModel, 'sid')->dropDownList(
-                    \backend\models\Adminuser::getCustomerManager(),
+                    Helper::getCustomerManager(),
                     ['prompt'=> '选择客户经理']
                 ); ?>
             <?php endif; ?>

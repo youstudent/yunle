@@ -61,4 +61,28 @@ class AppRoleAssign extends \yii\db\ActiveRecord
 
         return $model;
     }
+
+    public static function dropDownListHtml($service_id, $user_id)
+    {
+        $data = AppRole::find()->where(['service_id'=>$service_id])->select('name,id')->indexBy('id')->column();
+        $assigned_id = 0;
+        if($user_id){
+            $assigned_id =AppRoleAssign::findOne(['service_id'=>$service_id, 'user_id'=>$user_id]);
+        }
+
+        $html = '';
+        if($data){
+            foreach($data as $k => $v){
+                if($assigned_id !=0 && $k === intval($assigned_id)){
+                    $html .= "<option value=".$k ." selected>".$v."</options>";
+                }else{
+                    $html .= "<option value=".$k .">".$v."</options>";
+                }
+
+            }
+        }else{
+            $html = '<option value="">当前服务商，无角色</option>';
+        }
+        return $html;
+    }
 }
