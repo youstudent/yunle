@@ -95,18 +95,23 @@ class User extends \yii\db\ActiveRecord
         return $this->hasOne(InvitationCode::className(), ['user_id'=> 'id']);
     }
 
-    public static function dropDownList($pid)
+    /**
+     * 找到服务商下面的业务员
+     * @param $salesman_id
+     * @return array
+     */
+    public static function dropDownList($service_id)
     {
-        return  User::find()->where(['pid'=>$pid, 'deleted_at' => null])->select('name,id')->indexBy('id')->column();
+        return  User::find()->where(['pid'=>$service_id, 'deleted_at' => null])->select('name,id')->indexBy('id')->column();
     }
 
-    public static function dropDownListHtml($pid, $salesman_id)
+    public static function dropDownListHtml($user_salesman_id, $service_id)
     {
-        $data = User::dropDownList($pid);
+        $data = User::dropDownList($service_id);
         $html = '';
         if($data){
             foreach($data as $k => $v){
-                if($k === intval($salesman_id)){
+                if($k === intval($user_salesman_id)){
                     $html .= "<option value=".$k ." selected>".$v."</options>";
                 }else{
                     $html .= "<option value=".$k .">".$v."</options>";

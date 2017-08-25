@@ -5,6 +5,8 @@
  *
  */
 use backend\models\Service;
+use backend\models\ServiceUser;
+use backend\models\User;
 use yii\bootstrap\Html;
 use yii\helpers\Url;
 
@@ -33,17 +35,26 @@ use yii\helpers\Url;
         'enableAjaxValidation' => false,
         'validationUrl'        => $model->isNewRecord ? Url::toRoute(['validate-form', 'scenario' => 'create']) : Url::toRoute(['validate-form', 'scenario' => 'update' , 'id'=>$model->id]),
     ]) ?>
+    <?php
+    $service_id = \common\components\Helper::getLoginMemberServiceId();
+    ?>
+    <?php if($service_id) : ?>
+        <?php $model->service = $service_id ?>
+    <?php else: ?>
+       <?php $model->service = User::findOne(['id'=> $model->pid])->pid; ?>
 
-    <?= $form->field($model, 'service')->dropDownList(Service::find()
-        ->where(['status' => 1])
-        ->select('name,id')->
-        indexBy('id')->
-        column(), [
-        'prompt'   => '请选择',
-        'onChange' => 'pd_selectSid($(this))']) ?>
+        <?= $form->field($model, 'service')->dropDownList(
+            Service::find()->select('name,id')->indexBy('id')->column()
+        ) ?>
 
 
-    <?= $form->field($model, 'pid')->dropDownList([]) ?>
+
+    <?php endif; ?>
+
+    <?= $form->field($model, 'pid')->dropDownList(
+            User::find()->where(['pid'=>$model->service])->select('name,id')->indexBy('id')->column()
+    ) ?>
+
 
     <?php \yii\bootstrap\ActiveForm::end() ?>
 
@@ -56,32 +67,23 @@ use yii\helpers\Url;
 
 <script>
     $(function (){
-        pd_init_selected = function(){
-            var pid =$('select[name="Member[service]"]').val();
-            if(!pid){
+        $('#member-service').on('change', function(){
+            <?php if($service_id) : ?>
+            var service_id = <?= $service_id ?>;
+            <? else: ?>
+            var service_id = $(this).find('option:selected').val();
+            if(!service_id){
                 return false;
             }
-            var sid = <?= !$model->isNewRecord ? $model->pid : 0 ?>;
-            if(!pid){return false;}
-            var url = "<?= \yii\helpers\Url::to(['salesman/drop-down-list']); ?>?pid=" + pid + "&sid=" + sid;
-            $.get(url, function(rep){
-                $('#member-pid').html(rep);
-            });
-        }
-        pd_init_selected()
 
-        pd_selectSid = function(that){
-            var pid = that.val();
-            if(!pid){
-                return false;
-            }
-            var sid = <?= !$model->isNewRecord ? $model->pid : 0 ?>;
-            if(!pid){return false;}
-            var url = "<?= Url::to(['salesman/drop-down-list']); ?>?pid=" + pid + "&sid=" + sid;
+            <? endif; ?>
+            var user_salesman_id = <?= $model->pid ?>;
+            if(!user_salesman_id){return false;}
+            var url = "<?= Url::to(['salesman/drop-down-list']); ?>?user_salesman_id=" + user_salesman_id + "&service_id=" + service_id;
             $.get(url, function(rep){
                 $('#member-pid').html(rep);
             });
-        }
+        });
         $('.btn-submit').on('click', function () {
             var f = $('#MemberForm');
             f.on('beforeSubmit', function (e) {

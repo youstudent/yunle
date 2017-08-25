@@ -28,25 +28,6 @@
     ]) ?>
     <?= $form->field($member, 'phone')->textInput() ?>
 
-    <?= $form->field($member, 'service')->dropDownList(\backend\models\Service::find()
-        ->where(['status' => 1])
-        ->select('name,id')->
-        indexBy('id')->
-        column(), [
-        'prompt'   => '请选择',
-        'onChange' => 'pd_selectSid()']) ?>
-
-
-    <?= $form->field($member, 'pid')->dropDownList([]) ?>
-
-
-    <?= $form->field($member, 'status')->dropDownList([
-        0 => '冻结',
-        1 => '正常'
-    ]) ?>
-
-
-
     <?php \yii\bootstrap\ActiveForm::end() ?>
 </div>
 <div class="modal-footer">
@@ -121,25 +102,7 @@
             $('input[name="Identification[start_at]"]').val(start.format('YYYY.MM.DD'));
             $('input[name="Identification[end_at]"]').val(end.format('YYYY.MM.DD'));
         });
-        pd_init_selected = function(){
-            var pid =$('select[name="MemberForm[service]"]').val();
-            if(!pid){
-                return false;
-            }
-            var sid = <?= !$member->isNewRecord ? $member->pid : 0 ?>;
-            if(!pid){return false;}
-            var url = "<?= \yii\helpers\Url::to(['salesman/drop-down-list']); ?>?pid=" + pid + "&sid=" + sid;
-            $.get(url, function(rep){
-                $('#memberform-pid').html(rep);
-                $('.field-memberform-pid').show();
-            });
-        }
-        pd_init_selected()
 
-        pd_selectSid = function(){
-            $('.field-memberform-pid').hide();
-            window.pd_init_selected();
-        }
         $('.btn-submit').on('click', function () {
             var f = $('#MemberForm');
             f.on('beforeSubmit', function (e) {

@@ -138,12 +138,18 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                         ?>
                         <?php if($service_id) : ?>
-                            <?= $form->field($model, 'pid', ['template'=> '{input}'])->textInput() ?>
+                            <?= $form->field($model, 'pid', ['template'=> '{input}'])->hiddenInput(['value'=>$service_id]) ?>
+                            <?php
+                            $role_colums = \backend\models\AppRole::find()->where(['service_id'=>$service_id])->indexBy('id')->select('name,id')->column();
+                            ?>
                         <?php else: ?>
+                            <?php
+                            $role_colums = [];
+                            ?>
                             <?= $form->field($model, 'pid')->dropDownList($colunm) ?>
                         <?php endif; ?>
 
-                        <?= $form->field($model, 'role_id')->dropDownList([]) ?>
+                        <?= $form->field($model, 'role_id')->dropDownList($role_colums) ?>
 
                         <?php $model->level = 1 ?>
                         <?= $form->field($model, 'level')->dropDownList([

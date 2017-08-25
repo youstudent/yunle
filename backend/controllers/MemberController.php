@@ -69,9 +69,9 @@ class MemberController extends BackendController
 
     public function actionView($id)
     {
-        $model = UserForm::findOne(['id'=>$id]);
+        $model = MemberForm::getOne($id);
 
-        return $this->renderAjax('view', [
+        return $this->renderPjax('view', [
             'model' => $model
         ]);
     }

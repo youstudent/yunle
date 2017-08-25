@@ -176,15 +176,18 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                         ?>
                         <?php if($service_id) : ?>
-                            <?= $form->field($model, 'pid', ['template'=> '{input}'])->textInput() ?>
+                            <?= $form->field($model, 'pid', ['template'=> '{input}'])->hiddenInput(['value'=>$service_id]) ?>
+                            <?php
+                            $role_colums = \backend\models\AppRole::find()->where(['service_id'=>$service_id])->indexBy('id')->select('name,id')->column();
+                            ?>
                         <?php else: ?>
+                            <?php
+                            $role_colums = [];
+                            ?>
                             <?= $form->field($model, 'pid')->dropDownList($colunm) ?>
                         <?php endif; ?>
 
-                        <?php $model->role_id = \backend\models\AppRoleAssign::findOne(['user_id'=>$model->id]) ?>
-                        <?= $form->field($model, 'role_id')->dropDownList(
-                                AppRole::find()->where(['service_id'=>$model->pid])->select('name,id')->indexBy('id')->column()
-                        ) ?>
+                        <?= $form->field($model, 'role_id')->dropDownList($role_colums) ?>
 
                         <?php $model->level = 1 ?>
                         <?= $form->field($model, 'level')->dropDownList([
@@ -194,6 +197,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             4 => '四星',
                             5 => '五星',
                         ]) ?>
+
 
                         <?php echo $input ?>
 

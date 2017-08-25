@@ -9,6 +9,7 @@ namespace backend\models\searchs;
 
 
 use backend\models\Member;
+use backend\models\User;
 use pd\admin\components\Helper;
 use yii\data\ActiveDataProvider;
 
@@ -94,8 +95,8 @@ class MemberSearch extends Member
         $service_id = \common\components\Helper::getLoginMemberServiceId();
         //如果有service_id 。则登录的是服务商。那么可以看到的就是自己服务商下面的会员
         if($service_id){
-            $ids = Member::find()->where(['pid'=>$service_id])->select('id')->column();
-            $query->andWhere(['s.pid' => $ids]);
+            $ids = User::find()->where(['pid'=>$service_id])->select('id')->column();
+            $query->andWhere(['m.pid' => $ids]);
             return $query;
         }
         return $query;

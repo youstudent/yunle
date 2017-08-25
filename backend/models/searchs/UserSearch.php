@@ -84,7 +84,7 @@ class UserSearch extends User
         $service_id = \common\components\Helper::getLoginMemberServiceId();
         if($service_id){
             //这能看自己的业务员
-            $query->andWhere(['s.pid' => $service_id]);
+            $query->andWhere(['u.pid' => $service_id]);
         }
         return $query;
     }
