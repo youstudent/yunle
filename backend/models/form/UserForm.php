@@ -180,12 +180,21 @@ class UserForm extends User
                 }
             }
 
-            if($this->getOldAttribute('role_id') != $this->role_id){
+            $old_role_id = AppRoleAssign::findOne(['user_id'=>$this->id])->role_id;
+            if( $old_role_id != $this->role_id ){
                 //去掉以前的绑定
-                Helper::unBindAppUserRole($this->id, $this->pid);
+                $result = Helper::unBindAppUserRole($this->id);
+
+                if(!$result){
+                    throw new Exception('取消角色绑定失败');
+                }
 
                 //绑定添加的业务员到业务员的角色
-                Helper::bindAppUserDefaultRole($this->id,$this->pid);
+                $result = Helper::bindAppUserRole($this->id, $this->role_id);
+
+                if(!$result){
+                    throw new Exception('角色绑定失败');
+                }
             }
 
             return $this;

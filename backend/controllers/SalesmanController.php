@@ -48,7 +48,6 @@ class SalesmanController extends BackendController
     {
         $model = new UserForm();
         $model->scenario = 'create';
-
         if($model->load(Yii::$app->request->post())){
             if($model->addUser()){
                 return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['index'])]);
@@ -56,7 +55,13 @@ class SalesmanController extends BackendController
             return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '添加失败', 'url'=> '']);
         }
 
-        return $this->renderPjax('create', [
+        $member_group = Helper::getLoginMemberRoleGroup();
+        if($member_group == 1 || \pd\admin\components\Helper::checkRoute('/service/create')){
+            return $this->renderPjax('admin_create', [
+                'model' => $model
+            ]);
+        }
+        return $this->renderPjax('platform_create', [
             'model' => $model
         ]);
     }
@@ -74,7 +79,13 @@ class SalesmanController extends BackendController
             return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '添加失败', 'url'=> '']);
         }
 
-        return $this->renderPjax('update', [
+        $member_group = Helper::getLoginMemberRoleGroup();
+        if($member_group == 1 || \pd\admin\components\Helper::checkRoute('/service/create')){
+            return $this->renderPjax('admin_update', [
+                'model' => $model
+            ]);
+        }
+        return $this->renderPjax('platform_update', [
             'model' => $model
         ]);
     }
