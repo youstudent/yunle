@@ -3,7 +3,7 @@ return [
     'adminEmail'                    => 'admin@example.com',
     'supportEmail'                  => 'support@example.com',
     'user.passwordResetTokenExpire' => 3600,
-    'img_domain' => 'http://img.ylxc27580.com',
+    'img_domain' => 'https://img.ylxc27580.com',
 
     'menu' => [
         ['text'=> '首页', 'url' => '/site/index', 'state'=> ['opened'=> true, 'selected'=>true ], 'x'=> true ,'children' => [
