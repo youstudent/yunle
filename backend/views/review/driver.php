@@ -66,8 +66,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             <div class="btn-group">
                                 <a href="<?= Url::to(['driver-detail', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">驾驶证详情</span></a>
                                 <?php if ($model->status == 0) {?>
-                                <a href="javascript:;" data-confirm="确认通过该审核？" data-url="<?= Url::to(['driver-pass','id' => $model->id]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">通过</span></a>
-                                <a href="<?= Url::to(['driver-out', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">不通过</span></a>
+                                    <a href="<?= Url::to(['driver-pass', 'id'=> $model->id]) ?>" data-confirm="确认通过该审核？" data-method="post" data-pjax="0">
+                                        <span class="btn btn-danger m-r-1 m-b-5 btn-xs">通过</span></a>
+                                    <a href="<?= Url::to(['driver-out', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">不通过</span></a>
                                 <?php } ?>
                             </div>
                         </td>
