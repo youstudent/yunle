@@ -39,10 +39,15 @@ class MemberController extends BackendController
     public function actionCreate()
     {
         $model = new MemberForm();
+        $model->scenario = 'create';
 
-        if ($model->addMember(Yii::$app->request->post())) {
-            return json_encode(['data' => '', 'code' => 1, 'message' => '添加成功', 'url' => Url::to(['member/index'])]);
+        if($model->load(Yii::$app->request->post())){
+            if($model->addMember()){
+                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['index'])]);
+            }
+            return $this->asJson(['data'=> '', 'code'=>0, 'message'=> current($model->getFirstErrors())]);
         }
+
         return $this->renderAjax('create', [
             'model' => $model,
         ]);

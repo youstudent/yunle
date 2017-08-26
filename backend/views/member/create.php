@@ -4,6 +4,7 @@
  * Date: 2017/7/24 - 下午4:15
  *
  */
+use pd\admin\components\Helper;
 use yii\bootstrap\Html;
 use yii\helpers\Url;
 
@@ -37,17 +38,37 @@ use yii\helpers\Url;
 
     <?= $form->field($model, 'type')->dropDownList([1 => '个人', 2 => '组织'], ['prompt' => '请选择']) ?>
 
-    <?= $form->field($model, 'service')->dropDownList(\backend\models\Service::find()
-        ->where(['status' => 1])
-        ->select('name,id')->
-        indexBy('id')->
-        column(), [
-        'prompt'   => '请选择',
-        'onChange' => 'pd_selectSid($(this))']) ?>
+    <?php
+    $service_id = \common\components\Helper::getLoginMemberServiceId();
+    if(!$service_id){
+        //A.如果不是服务商或者代理商，还有两种情况
+        if(pd\admin\components\Helper::checkRoute('/abs-route/customer-manager')){
+            //只能看到自己的服务商
+            $id = \Yii::$app->user->identity->id;
+            $ids = \common\components\Helper::byCustomerManagerIdGetServiceIds($id);
+            $colunm = \backend\models\Service::find()->indexBy('id')->where(['id'=>$ids])->select('name,id')->column();
+        }else{
+            //可以看到所有的服务商
+            $colunm = \backend\models\Service::find()->indexBy('id')->select('name,id')->column();
+        }
 
+    }else{
+        //直接是服务商的情况
 
-    <?= $form->field($model, 'pid')->dropDownList([]) ?>
+    }
+    ?>
+<!--    是服务商的-->
+    <?php if($service_id) : ?>
+        <?= $form->field($model, 'pid')->dropDownList(
+            \backend\models\User::find()->indexBy('id')->select('name,id')->where(['pid'=>$service_id])->column()
+        ) ?>
+    <?php else: ?>
+        <?= $form->field($model, 'service')->dropDownList($colunm, [
+            'prompt'   => '请选择',
+            'onChange' => 'pd_selectSid($(this))']) ?>
 
+        <?= $form->field($model, 'pid')->dropDownList([]) ?>
+    <?php endif; ?>
 
     <?= $form->field($model, 'status')->dropDownList([0 => '冻结', 1 => '正常'], ['prompt' => '请选择']) ?>
 
@@ -62,9 +83,7 @@ use yii\helpers\Url;
 
 <script>
     $(function (){
-        $('.field-memberform-pid').hide();
         pd_selectSid = function(that){
-            $('.field-memberform-pid').hide();
             var pid = that.val();
             if(!pid){
                 return false;

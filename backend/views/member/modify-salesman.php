@@ -75,8 +75,7 @@ use yii\helpers\Url;
             if(!service_id){
                 return false;
             }
-
-            <? endif; ?>
+            <?php endif; ?>
             var user_salesman_id = <?= $model->pid ?>;
             if(!user_salesman_id){return false;}
             var url = "<?= Url::to(['salesman/drop-down-list']); ?>?user_salesman_id=" + user_salesman_id + "&service_id=" + service_id;
