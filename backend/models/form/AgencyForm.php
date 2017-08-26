@@ -27,6 +27,8 @@ class AgencyForm  extends Agency
     public $imgs;
 
     public $saleman_id;
+    public $imgs_id;
+    public $atth_id;
 
     public function rules()
     {
@@ -36,10 +38,13 @@ class AgencyForm  extends Agency
             [['sid', 'username', 'password', 'name',  'principal', 'principal_phone'], 'required', 'on' => 'update'],
             ['imgs', 'validateEmptyImg', 'on'=> ['create', 'update']],
             [['imgs'], 'string'],
+            [['principal_phone'],'match','pattern'=>'/^((13[0-9])|(15[^4])|(18[0,2,3,5-9])|(17[0-8])|(147))\\d{8}$/'],
+            //[['principal_phone'], 'string'],
             [['username', 'password'], 'string', 'min'=> 6, 'max' => 16],
             [['username'], 'match', 'pattern' => PregRule::USERNAME],
             [['username'], 'unique', 'targetClass' => '\backend\models\Adminuser', 'message' => '用户名已存在', 'on' => ['create']],
             [['sid', 'username', 'password', 'name', 'status', 'principal', 'principal_phone'], 'required', 'on' => 'created_service'],
+            [['saleman_id','atth_id'],'safe']
         ];
     }
 
@@ -48,7 +53,7 @@ class AgencyForm  extends Agency
         return [
             'create' => ['sid', 'username', 'password', 'name', 'status', 'principal', 'principal_phone', 'imgs'],
             'created_service' => ['pid', 'username', 'password', 'name', 'status', 'principal', 'principal_phone'],
-            'update' => ['sid', 'name', 'status', 'principal', 'principal_phone', 'imgs'],
+            'update' => ['sid', 'name', 'status', 'principal', 'principal_phone', 'imgs', 'atth_id'],
         ];
     }
 
@@ -62,6 +67,7 @@ class AgencyForm  extends Agency
             'principal_phone' => '负责人名称的联系电话',
             'attachments' => '代理商附件，最多传11张，将展示在APP代理商详情',
             'sid' => '平台的客户经理',
+            'imgs' => '代理商附件，<span style="color:red;">最多传12张,大小不超过2mb,按住CTRL上传多图</span>，将展示在APP代理商详情',
         ];
     }
 
@@ -72,6 +78,7 @@ class AgencyForm  extends Agency
             'password' => '登录密码',
             'head' => '展示头图',
             'attachment' => '服务商附件',
+            'imgs' => '代理商图片',
         ]);
     }
     /**
@@ -79,18 +86,17 @@ class AgencyForm  extends Agency
      * @param $form
      * @return bool|mixed
      */
-    public function addAgency()
+    public function addAgency($data)
     {
         if(!$this->validate()){
             return false;
         }
-
         $ids = explode(',', trim($this->imgs,','));
-        if(count($ids) == 0){
-            $this->addError('attachment', '请上传附件');
+        if(empty($data)){
+            $this->addError('username', '请上传附件');
             return false;
         }
-        return Yii::$app->db->transaction(function() use($ids)
+        return Yii::$app->db->transaction(function() use($data)
         {
             //添加一个管理员用户
             $adminuserModel = new Adminuser();
@@ -114,7 +120,7 @@ class AgencyForm  extends Agency
             }
 
             //设置图片绑定
-            $models =  ServiceImg::find()->where(['id'=>$ids])->all();
+            $models =  ServiceImg::find()->where(['id'=>$data])->all();
             foreach ($models as $model){
                 $model->service_id = $this->id;
                 $model->status = 1;
@@ -144,7 +150,7 @@ class AgencyForm  extends Agency
     }
 
     /**
-     * 更新服务商
+     * 更新代理商
      * @return bool|mixed
      */
     public function updateAgency()
@@ -155,6 +161,25 @@ class AgencyForm  extends Agency
         {
             if(!$this->save()){
                 throw new Exception("更新代理商信息失败");
+            }
+    
+            $old_atta = ServiceImg::find()->where(['service_id'=>$this->id, 'status'=> 1, 'type'=>0])->select('id')->column();
+            $reduces_atta = array_diff($old_atta, $this->atth_id);
+            foreach($reduces_atta as $r){
+                $model = ServiceImg::findOne($r);
+                $model->status = 0;
+                if(!$model->save()){
+                    throw new Exception('解除图片绑定失败');
+                }
+            }
+            $incsrease_atta = array_diff($this->atth_id, $old_atta);
+            foreach($incsrease_atta as $i){
+                $model = ServiceImg::findOne($i);
+                $model->status = 1;
+                $model->service_id = $this->id;
+                if(!$model->save()){
+                    throw new Exception('增加图片绑定失败');
+                }
             }
             return $this;
         });

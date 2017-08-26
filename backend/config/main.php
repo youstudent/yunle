@@ -36,7 +36,7 @@ return [
             'identityClass' => 'pd\admin\models\User',
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
-            'loginUrl' => ['admin/user/login'],
+            'loginUrl' => ['/admin/user/login'],
             'on afterLogin' => function($event) {
                 $user = $event->identity; //这里的就是User Model的实例了
                 $data = [

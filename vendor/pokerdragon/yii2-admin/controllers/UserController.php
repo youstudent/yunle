@@ -137,7 +137,8 @@ class UserController extends Controller
 
         $model = new Login();
         if ($model->load(Yii::$app->getRequest()->post()) && $model->login()) {
-            return $this->goBack();
+           //return $this->goBack();
+           return $this->redirect(['/panel/index']);
         } else {
             return $this->render('login', [
                     'model' => $model,

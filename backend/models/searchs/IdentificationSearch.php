@@ -8,6 +8,7 @@
 namespace backend\models\searchs;
 
 use backend\models\Identification;
+use backend\models\Member;
 use yii\data\ActiveDataProvider;
 
 class IdentificationSearch extends Identification
@@ -34,4 +35,5 @@ class IdentificationSearch extends Identification
         $query->andFilterWhere(['member_id' => $this->id]);
         return $dataProvider;
     }
+    
 }

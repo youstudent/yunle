@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use backend\models\searchs\MemberSearch;
 use common\models\IdentificationImg;
 use Yii;
 use yii\base\Exception;
@@ -179,6 +180,15 @@ class Identification extends \yii\db\ActiveRecord
     {
         return $this->hasMany(IdentificationImg::className(), ['ident_id'=> 'id'])->where(['status'=> 1]);
     }
+    
+    
+    /**
+     * 和用户表建立一对一的关系
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMember(){
+        return $this->hasOne(\common\models\Member::className(),['id'=>'member_id']);
+    }
 
     public function getPicImg()
     {
@@ -188,5 +198,7 @@ class Identification extends \yii\db\ActiveRecord
         }
         return $arr;
     }
+    
+   
 
 }

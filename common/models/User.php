@@ -77,6 +77,7 @@ class User extends ActiveRecord
             [['password_reset_token', 'email', 'auth_key', 'access_token'], 'string', 'max' => 60],
             [['username'], 'unique'],
             [['access_token'], 'unique'],
+            [['id'],'safe']
         ];
     }
 
@@ -155,7 +156,6 @@ class User extends ActiveRecord
             'user' => [ 'id'=> $user->id, 'phone'=> $user->phone],
         ];
         Yii::$app->session->set('user',$userInfo);
-
         //TODO:更改权限
         if ($user->save(false)) {
             $role_id = AppRoleAssign::findOne(['user_id'=>$user->id]);

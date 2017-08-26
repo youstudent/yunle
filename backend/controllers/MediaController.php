@@ -89,8 +89,8 @@ class MediaController extends BackendController
                 }
                 break;
         }
-
         $imageFile = UploadedFile::getInstance($model, $attribute);
+       // var_dump($imageFile);exit;
         if (!is_dir($directory)) {
             FileHelper::createDirectory($directory);
         }

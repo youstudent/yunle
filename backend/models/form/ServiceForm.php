@@ -45,7 +45,8 @@ class ServiceForm  extends Service
             [['username', 'password'], 'string', 'min'=> 6, 'max' => 16],
             [['username'], 'unique', 'targetClass' => '\backend\models\Adminuser', 'message' => '用户名已存在', 'on' => ['create']],
             [['sid', 'name', 'status', 'address', 'lat', 'lng', 'open_at', 'close_at'], 'required', 'on' => 'created_service'],
-            [['head_id', 'atta_id', 'tags'], 'safe']
+            [['head_id', 'atta_id', 'tags'], 'safe'],
+            ['contact_phone', 'match', 'pattern' => \pd\helpers\PregRule::PHONE, 'message' => '手机号格式不正确'],
         ];
     }
 
