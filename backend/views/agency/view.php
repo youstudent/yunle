@@ -11,7 +11,6 @@ use yii\widgets\ActiveForm;
 /* @var $adminUserModel backend\models\Adminuser */
 /* @var $model backend\models\form\ServiceForm */
 /* @var $form yii\widgets\ActiveForm */
-
 $this->title = '代理商管理';
 $this->params['breadcrumbs'][] = $this->title;
 pd\coloradmin\web\plugins\BaiduMapAsset::register($this);

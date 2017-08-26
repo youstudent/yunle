@@ -70,13 +70,16 @@ class AgencyController extends BackendController
     {
         $model = new AgencyForm();
         $model->scenario = 'create';
-
         if($model->load(Yii::$app->request->post())){
-            if($model->addAgency()){
-                return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['index'])]);
-
+            $atth_id='';
+            $data = Yii::$app->request->post();
+            if (array_key_exists('atth_id',$data['AgencyForm'])){
+                $atth_id=$data['AgencyForm']['atth_id'];
             }
-            return json_encode(['data'=> '', 'code'=>0, 'message'=> '操作失败']);
+            if($model->addAgency($atth_id)){
+                return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['index'])]);
+            }
+            return json_encode(['data'=> '', 'code'=>0, 'message'=> current($model->getFirstErrors())]);
         }
         return $this->renderPjax('create', [
             'model' => $model
@@ -88,8 +91,11 @@ class AgencyController extends BackendController
     {
         $model =  AgencyForm::getOne($id);
         $model->scenario = 'update';
-
         if($model->load(Yii::$app->request->post())){
+            /*$data = Yii::$app->request->post();
+            if (array_key_exists('atth_id',$data['AgencyForm'])){
+                $atth_id=$data['AgencyForm']['atth_id'];
+            }*/
             if($model->updateAgency()){
                 return json_encode(['data'=> '', 'code'=>1, 'message'=> '操作成功', 'url'=> Url::to(['index'])]);
             }

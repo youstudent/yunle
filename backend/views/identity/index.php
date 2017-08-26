@@ -109,11 +109,12 @@ JS
                     <th>编号</th>
                     <th>证件号</th>
                     <th>姓名/机构名</th>
-                    <th>性别</th>
+                   <!-- <th>性别</th>
                     <th>民族</th>
                     <th>出生日期</th>
                     <th>生效时间</th>
-                    <th>失效时间</th>
+                    <th>失效时间</th>-->
+                    <th>类型</th>
                     <th>上传时间</th>
                     <th>操作</th>
                 </tr>
@@ -124,11 +125,11 @@ JS
                         <td><?= \pd\helpers\Yii2Helpers::serialColumn($dataProvider, $index) ?></td>
                         <td><?= $model->licence ?></td>
                         <td><?= $model->name ?></td>
-                        <td><?= $model->nation ?></td>
-                        <td><?= $model->sex ?></td>
-                        <td><?= $model->birthday ?></td>
-                        <td><?= $model->start_at ?></td>
-                        <td><?= $model->end_at ?></td>
+                        <td><?= $model->member->type==1?'个人用户':'组织用户'?></td>
+                       <!-- <td><?/*= $model->sex */?></td>
+                        <td><?/*= $model->birthday */?></td>
+                        <td><?/*= $model->start_at */?></td>
+                        <td><?/*= $model->end_at */?></td>-->
                         <td><?= pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
                         <td align="center">
                             <div class="btn-group">

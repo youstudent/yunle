@@ -47,11 +47,11 @@ class WarrantySearch extends Warranty
     public function search($params)
     {
         $query = Warranty::find();
-        $query->alias('w')->joinWith('insuranceOrder');
+        $query->alias('war')->joinWith('insuranceOrder')->joinWith('insuranceDetail');
 
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+            'query' => $query->where(['idd.chit'=>1]),
         ]);
         ;
         if (!($this->load($params))) {

@@ -76,6 +76,11 @@ class Warranty extends \yii\db\ActiveRecord
         return $this->hasOne(InsuranceOrder::className(), ['id'=> 'order_id'])->alias('io');
     }
 
+    public function getInsuranceDetail()
+    {
+        return $this->hasOne(InsuranceDetail::className(), ['order_id'=> 'order_id'])->alias('idd');
+    }
+
     public static function getDetail($id)
     {
         $model = Warranty::findOne(['order_id'=>$id]);
@@ -122,6 +127,7 @@ class Warranty extends \yii\db\ActiveRecord
 
         $order = InsuranceDetail::findOne(['order_id'=>$id]);
         $order->action = '已付款';
+        $order->chit = 1;
         $order->updated_at = time();
         $order->save(false);
 
@@ -142,7 +148,7 @@ class Warranty extends \yii\db\ActiveRecord
                 $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
                 $upload = new Upload();
                 $img_path = $upload->getSavePath('insuranceAct', $chars, $extension);
-                $v->saveAs(Yii::getAlias('@common').$img_path);
+                $v->saveAs(Yii::getAlias('@common').'/static'.$img_path);
                 $modelImg = new InsuranceActimg();
                 $modelImg->act_id = $act->id;
                 $modelImg->img_path = $img_path;;
@@ -153,6 +159,7 @@ class Warranty extends \yii\db\ActiveRecord
                 }
             }
         }
+
         if ($compensatory->save(false) && $business->save(false)) {
             return true;
         }

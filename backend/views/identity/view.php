@@ -44,46 +44,61 @@ pd\coloradmin\web\plugins\BaiduMapAsset::register($this);
                         </tr>
                         </thead>
                         <tbody>
+                        <?php if ($model->name):?>
                         <tr>
                             <td><?= $model->getAttributeLabel('name') ?></td>
                             <td><?= $model->name ?></td>
                             <td><span class="text-muted"></span></td>
                         </tr>
+                        <?php endif;?>
+                        <?php if ($model->sex):?>
                         <tr>
                             <td><?= $model->getAttributeLabel('sex') ?></td>
                             <td><?= $model->sex ?></td>
                             <td><span class="text-muted"></span></td>
                         </tr>
+                        <?php endif;?>
+                        <?php if ($model->nation):?>
                         <tr>
                             <td><?= $model->getAttributeLabel('nation') ?></td>
                             <td><?= $model->nation ?></td>
                             <td><span class="text-muted"></span></td>
                         </tr>
+                        <?php endif;?>
+                        <?php if ($model->birthday):?>
                         <tr>
                             <td><?= $model->getAttributeLabel('birthday') ?></td>
                             <td><?= $model->birthday ?></td>
                             <td><span class="text-muted"></span></td>
                         </tr>
+                        <?php endif;?>
+                        <?php if ($model->licence):?>
                         <tr>
                             <td><?= $model->getAttributeLabel('licence') ?></td>
                             <td><?= $model->licence ?></td>
                             <td><span class="text-muted"></span></td>
                         </tr>
+                        <?php endif;?>
+                        <?php if ($model->start_at):?>
                         <tr>
                             <td><?= $model->getAttributeLabel('start_at') ?></td>
                             <td><?= $model->start_at ?></td>
                             <td><span class="text-muted"></span></td>
                         </tr>
+                        <?php endif;?>
+                        <?php if ($model->end_at):?>
                         <tr>
                             <td><?= $model->getAttributeLabel('end_at') ?></td>
                             <td><?= $model->end_at ?></td>
                             <td><span class="text-muted"></span></td>
                         </tr>
+                        <?php endif;?>
                         <tr>
                             <td><?= $model->getAttributeLabel('status') ?></td>
                             <td><?= $model->status == 1 ? '已认证' : '未认证' ?></td>
                             <td><span class="text-muted"></span></td>
                         </tr>
+                        <?php if ($model->pic):?>
                         <tr>
                             <td>附件</td>
                             <td>
@@ -93,6 +108,7 @@ pd\coloradmin\web\plugins\BaiduMapAsset::register($this);
                             </td>
                             <td><span class="text-muted"></span></td>
                         </tr>
+                        <?php endif;?>
                         </tbody>
                     </table>
                 </div>
