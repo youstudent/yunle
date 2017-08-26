@@ -672,15 +672,15 @@ class Order extends \yii\db\ActiveRecord
         if (!isset($data['page']) || empty($data['page'])) {
             $data['page'] = 1;
         }
-        $count = Service::find()->count();
+//        $count = Service::find()->count();
         //TODO:size修改
         $size = 3;
-        $pageTotal = ceil($count/$size);
-        $pageSize = ($data['page']-1)* $size;
+//        $pageTotal = ceil($count/$size);
+//        $pageSize = ($data['page']-1)* $size;
         if (isset($data['filtrate']) && !empty($data['filtrate'])) {
             $service = [];
-            $serviceOld = Service::find()->select('id, name, level, lat, lng, open_at, close_at, state')
-                ->where(['deleted_at'=>null,'state'=>1])
+            $serviceOld = Service::find()->select('id, name, level, lat, lng, open_at, close_at, state, status')
+                ->where(['deleted_at'=>null,'state'=>1,'status'=>1])
                 ->asArray()
                 ->all();
             foreach ($serviceOld as $k=>$v) {
@@ -690,8 +690,8 @@ class Order extends \yii\db\ActiveRecord
             }
 
         } else {
-            $service = Service::find()->select('id, name, level, lat, lng, open_at, close_at, state')
-                ->where(['deleted_at'=>null])
+            $service = Service::find()->select('id, name, level, lat, lng, open_at, close_at, state, status')
+                ->where(['deleted_at'=>null,'status'=>1])
                 ->asArray()
                 ->all();
         }
@@ -724,7 +724,9 @@ class Order extends \yii\db\ActiveRecord
 
         $a = array_chunk($service,$size,false);
 
+        $pageTotal = ceil(count($a)/$size);
         $list = $a[$data['page']-1];
+
         $pageInfo = ['page'=>$data['page'], 'pageTotal'=>$pageTotal];
         $all = ['list'=>$list,'pageInfo'=>$pageInfo];
         return $all;
@@ -734,10 +736,16 @@ class Order extends \yii\db\ActiveRecord
     public function getNewService($data)
     {
         //获取服务商信息
-        $service = Service::find()->select('id, name, level, lat, lng, open_at, close_at')
+        $service = [];
+        $serviceOld = Service::find()->select('id, name, level, lat, lng, open_at, close_at, state')
             ->asArray()
-            ->where(['deleted_at'=>null, 'state'=>1])
+            ->where(['deleted_at'=>null, 'state'=>1, 'status'=>1])
             ->all();
+        foreach ($serviceOld as $k=>$v) {
+            if (in_array(Helper::getTypes($data['type']),Helper::getServiceTag($v['id']))) {
+                $service[$k] = $v;
+            }
+        }
         //获取服务商图片,距离,是否营业
         foreach ($service as &$v) {
             $v['level'] = intval($v['level']);
