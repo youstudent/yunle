@@ -62,12 +62,12 @@ class AppRoleAssign extends \yii\db\ActiveRecord
         return $model;
     }
 
-    public static function dropDownListHtml($service_id, $user_id)
+    public static function dropDownListHtml($service_id, $salesman_id)
     {
         $data = AppRole::find()->where(['service_id'=>$service_id])->select('name,id')->indexBy('id')->column();
         $assigned_id = 0;
-        if($user_id){
-            $assigned_id =AppRoleAssign::findOne(['service_id'=>$service_id, 'user_id'=>$user_id]);
+        if($salesman_id){
+            $assigned_id =AppRoleAssign::findOne(['user_id'=>$salesman_id])->role_id;
         }
 
         $html = '';

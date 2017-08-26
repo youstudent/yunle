@@ -380,6 +380,19 @@ class User extends ActiveRecord
 
     }
 
+    public function newPhone($data) {
+        if (empty($data['phone'])) {
+            $this->addError('message', '手机号或验证码不能为空');
+            return false;
+        }
+        $member = Member::findOne($data['member_id']);
+        $member->phone = $data['phone'];
+        if (!$member->save(false)) {
+            $this->addError('message', '修改失败');
+            return false;
+        }
+        return true;
+    }
     /*
      * 客户端手机号更换
      */

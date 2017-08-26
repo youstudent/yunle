@@ -18,7 +18,7 @@ class InsuranceDetailSearch extends InsuranceDetail
     {
         return [
             [['action', 'member_id'], 'integer'],
-            [['created_at','order_user', 'order_car', 'order_company'], 'string'],
+            [['order_created_at','order_user', 'order_car', 'order_company'], 'string'],
             [['order_phone'], 'number'],
         ];
     }
@@ -52,12 +52,12 @@ class InsuranceDetailSearch extends InsuranceDetail
             'query' => $query,
         ]);
         ;
-        if (!($this->load($params) && $this->validate())) {
+        if (!($this->load($params))) {
             return $dataProvider;
         }
 
         //格式化时间
-        if ($this->created_at) {
+        if ($this->order_created_at) {
             $start_date = substr($this->created_at, 0, 10);
             $start = strtotime($start_date);
 

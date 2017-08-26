@@ -74,34 +74,55 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
 
                                 <?= $form->field($model, 'end_at')->textInput() ?>
 
+                                <?=$form->field($model, 'img')->widget(FileInput::classname(), [
+                                    'language' => 'zh',
+                                    'options' => [
+                                        'accept' => 'image/*',
+                                        'multiple'=>true
+
+                                    ],
+                                    'pluginOptions' => [
+                                        'uploadUrl' => Url::to(['/media/image-upload', 'model' => 'identification']),
+                                        'maxFileSize'=>2800,
+                                        'showPreview' => true,
+                                        'showCaption' => true,
+                                        'showRemove' => true,
+                                        'showUpload' => true,
+                                        'maxFileCount' => 2,
+                                        'minFileCount' => 1,
+                                    ]
+                                ]) ?>
+
                             <?php } else {?>
 
                                 <?= $form->field($model, 'name')->textInput()->label('组织机构名称') ?>
 
                                 <?= $form->field($model, 'licence')->textInput()->label('组织机构代码') ?>
 
+                                <?=$form->field($model, 'img')->widget(FileInput::classname(), [
+                                    'language' => 'zh',
+                                    'options' => [
+                                        'accept' => 'image/*',
+                                        'multiple'=>true
+
+                                    ],
+                                    'pluginOptions' => [
+                                        'uploadUrl' => Url::to(['/media/image-upload', 'model' => 'identification']),
+                                        'maxFileSize'=>2800,
+                                        'showPreview' => true,
+                                        'showCaption' => true,
+                                        'showRemove' => true,
+                                        'showUpload' => true,
+                                        'maxFileCount' => 6,
+                                        'minFileCount' => 1,
+                                    ]
+                                ])->label('营业执照') ?>
+
                             <?php }?>
 
 <!--                            --><?//= $form->field($model, 'status')->dropDownList(['未认证', '已认证']) ?>
 
-                            <?=$form->field($model, 'img')->widget(FileInput::classname(), [
-                                'language' => 'zh',
-                                'options' => [
-                                    'accept' => 'image/*',
-                                    'multiple'=>true
 
-                                ],
-                                'pluginOptions' => [
-                                    'uploadUrl' => Url::to(['/media/image-upload', 'model' => 'identification']),
-                                    'maxFileSize'=>2800,
-                                    'showPreview' => true,
-                                    'showCaption' => true,
-                                    'showRemove' => true,
-                                    'showUpload' => true,
-                                    'maxFileCount' => 2,
-                                    'minFileCount' => 1,
-                                ]
-                            ]) ?>
 
                             <div class="form-group">
                                 <label class="control-label col-md-4 col-sm-4"></label>

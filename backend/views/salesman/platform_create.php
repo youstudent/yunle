@@ -114,42 +114,17 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                         ]) ?>
 
-
-                        <?php if(Helper::getLoginMemberRoleGroup() == 1) : ?>
-                            <?php $colunm = \backend\models\Service::find()->indexBy('id')->select('name,id')->column() ?>
-                        <?php else: ?>
-                            <?php $service_id = Helper::getLoginMemberServiceId(); ?>
-                            <?php $colunm = \backend\models\Service::find()->indexBy('id')->where(['id'=>$service_id])->select('name,id')->column() ?>
-                        <?php endif; ?>
-
                         <?php
-                        $service_id = Helper::getLoginMemberServiceId();
-                        if(!$service_id){
-                            //A.如果不是服务商或者代理商，还有两种情况
-                            if(pd\admin\components\Helper::checkRoute('/abs-route/customer-manager')){
-                                //只能看到自己的服务商
-                                $id = \Yii::$app->user->identity->id;
-                                $ids = \common\components\Helper::byCustomerManagerIdGetServiceIds($id);
-                                $colunm = \backend\models\Service::find()->indexBy('id')->where(['id'=>$ids])->select('name,id')->column();
-                            }else{
-                                //可以看到所有的服务商
-                                $colunm = \backend\models\Service::find()->indexBy('id')->select('name,id')->column();
-                            }
-                        }
+                            $service_id = Helper::getLoginMemberServiceId();
+                            //所属的服务商信息
+                            $column = \backend\models\Service::find()->indexBy('id')->where(['id'=>$service_id])->select('name,id')->column();
+                            //默认获取第一个服务商下面的角色
+                            $role_column = \backend\models\AppRole::find()->where(['service_id'=>$service_id])->indexBy('id')->select('name,id')->column();
                         ?>
-                        <?php if($service_id) : ?>
-                            <?= $form->field($model, 'pid', ['template'=> '{input}'])->hiddenInput(['value'=>$service_id]) ?>
-                            <?php
-                            $role_colums = \backend\models\AppRole::find()->where(['service_id'=>$service_id])->indexBy('id')->select('name,id')->column();
-                            ?>
-                        <?php else: ?>
-                            <?php
-                            $role_colums = [];
-                            ?>
-                            <?= $form->field($model, 'pid')->dropDownList($colunm) ?>
-                        <?php endif; ?>
 
-                        <?= $form->field($model, 'role_id')->dropDownList($role_colums) ?>
+                        <?= $form->field($model, 'pid', ['template'=> '{input}'])->hiddenInput(['value'=>$service_id]) ?>
+
+                        <?= $form->field($model, 'role_id')->dropDownList($role_column) ?>
 
                         <?php $model->level = 1 ?>
                         <?= $form->field($model, 'level')->dropDownList([

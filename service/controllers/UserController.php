@@ -102,7 +102,7 @@ class UserController extends ApiController
         $model = new User();
         $form = $this->getForm(Yii::$app->request->post('data'));
 
-        if ($model->phone($form)) {
+        if ($model->newPhone($form)) {
             return $this->jsonReturn(1, 'success');
         }
         return $this->jsonReturn(0, $model->getFirstError('message'));

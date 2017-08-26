@@ -80,7 +80,6 @@ JS
 <div class="adminuser-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="row">
         <div class="col-md-6">
             <a href="<?= Url::to(['create']) ?>" class="btn btn-success" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static" >添加会员</a>
@@ -144,7 +143,6 @@ JS
                     <th>会员手机号</th>
                     <th>代理商/服务商</th>
                     <th>业务员</th>
-<!--                    <th>会员类型</th>-->
                     <th>状态</th>
 
                     <th>创建时间</th>
@@ -162,7 +160,6 @@ JS
                         <td>
                             <?= $model->salesmanName ? $model->salesmanName->name : $model->salesmanName->username ?>
                         </td>
-<!--                        <td>--><?//= $model->type == 1 ? '<span class="badge badge-info">个人</span>' : '<span class="badge badge-warning">组织</span>' ?><!--</td>-->
                         <td><?= $model->status == 1 ? '<span class="badge badge-info">正常</span>' : '<span class="badge badge-danger">冻结</span>' ?></td>
 
                         <td><?= \pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
@@ -190,9 +187,6 @@ JS
                                 <?php } else { ?>
                                     <a href="<?= Url::to(['choose-type', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">实名认证</span></a>
                                 <?php }?>
-<!--                                <a href="javascript:;" data-confirm="确认冻结此会员？" data-url="--><?//= Url::to(['set-status','id' => $model->id, 'status'=> Member::STATUS_INACTIVE]) ?><!--"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">冻结</span></a>-->
-<!--                                <a href="javascript:;" data-confirm="确认激活此会员？" data-url="--><?//= Url::to(['set-status','id' => $model->id, 'status'=> Member::STATUS_ACTIVE]) ?><!--"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">激活</span></a>-->
-<!--                                <a href="javascript:;" data-confirm="确认删除此会员？" data-url="--><?//= Url::to(['soft-delete', 'id' => $model->id]) ?><!--"  data-method="post" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>-->
                             </div>
                         </td>
                     </tr>

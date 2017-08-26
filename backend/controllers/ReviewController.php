@@ -21,10 +21,11 @@ class ReviewController extends BackendController
     public function actionCarList()
     {
         $car = new Car();
-        $dataProvider = $car->checkInfo();
+        $dataProvider = $car->checkInfo(Yii::$app->request->queryParams);
 
         return $this->renderPjax('car', [
             'dataProvider' => $dataProvider,
+            'searchModel' => $car,
         ]);
     }
 
@@ -33,9 +34,11 @@ class ReviewController extends BackendController
         $model = new Car();
 
         if($model->carPass($id)){
-            return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '审核成功', 'url'=> Url::to(['car-list'])]);
+            Yii::$app->session->setFlash('success', '操作成功!');
+            return $this->redirect(['car-list']);
         }
-        return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '操作失败']);
+        Yii::$app->session->setFlash('success', '操作失败!');
+        return $this->redirect(['car-list']);
     }
 
     public function actionCarOut()
@@ -69,11 +72,14 @@ class ReviewController extends BackendController
     // 驾驶证审核
     public function actionDriverList()
     {
+
         $driver = new DrivingLicense();
-        $dataProvider = $driver->checkInfo();
+        $driver->scenario = 'search';
+        $dataProvider = $driver->checkInfo(Yii::$app->request->queryParams);
 
         return $this->renderPjax('driver', [
             'dataProvider' => $dataProvider,
+            'searchModel' => $driver,
         ]);
     }
 
@@ -82,9 +88,11 @@ class ReviewController extends BackendController
         $model = new DrivingLicense();
 
         if($model->driverPass($id)){
-            return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '审核成功', 'url'=> Url::to(['driver-list'])]);
+            Yii::$app->session->setFlash('success', '操作成功!');
+            return $this->redirect(['driver-list']);
         }
-        return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '操作失败']);
+        Yii::$app->session->setFlash('success', '操作失败!');
+        return $this->redirect(['car-list']);
     }
 
     public function actionDriverOut()

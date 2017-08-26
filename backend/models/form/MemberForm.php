@@ -26,7 +26,7 @@ class MemberForm extends Member
     {
         return [
             [['phone'], 'filter', 'filter' => 'trim'],
-            [['phone', 'pid', 'status', 'type', 'service'], 'required'],
+            [['phone', 'pid', 'status', 'type'], 'required'],
             ['phone', 'match', 'pattern' => \pd\helpers\PregRule::PHONE, 'message' => '手机号格式不正确'],
             ['phone', 'unique', 'targetClass' => '\backend\models\Member', 'message' => '手机号已存在.', 'on' => 'create'],
             ['phone', 'validateUpdatePhone' ,'message' => '手机号已存在.', 'on' => 'update'],
@@ -65,12 +65,8 @@ class MemberForm extends Member
         ];
     }
 
-    public function addMember($form)
+    public function addMember()
     {
-        $this->scenario = 'create';
-        if(!$this->load($form)){
-            return false;
-        }
         if(!$this->validate()){
             return false;
         }

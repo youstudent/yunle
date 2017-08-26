@@ -390,7 +390,7 @@ class Helper
         return $model->save();
     }
 
-    public static function unBindAppUserRole($user_id, $service_id)
+    public static function unBindAppUserRole($user_id)
     {
         //获取服务商默认的角色组
         AppRoleAssign::deleteAll(['user_id'=>$user_id]);

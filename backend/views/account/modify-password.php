@@ -4,7 +4,6 @@
  * Date: 2017/7/24 - 下午4:15
  *
  */
-use pd\admin\components\Helper;
 use yii\bootstrap\Html;
 use yii\helpers\Url;
 
@@ -14,11 +13,11 @@ use yii\helpers\Url;
 <!-- #modal-dialog -->
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h4 class="modal-title">添加会员</h4>
+    <h4 class="modal-title">更改密码</h4>
 </div>
 <div class="modal-body">
     <?php $form = \yii\bootstrap\ActiveForm::begin([
-        'id'                   => 'MemberForm',
+        'id'                   =>  $model->formName(),
         'layout'               => 'horizontal',
         'fieldConfig'          => [
             'template'             => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
@@ -30,77 +29,32 @@ use yii\helpers\Url;
                 'hint'    => '',
             ],
         ],
-        'enableAjaxValidation' => true,
+        'enableAjaxValidation' => false,
         'validationUrl'        => $model->isNewRecord ? Url::toRoute(['validate-form', 'scenario' => 'create']) : Url::toRoute(['validate-form', 'scenario' => 'update' , 'id'=>$model->id]),
     ]) ?>
 
-    <?= $form->field($model, 'phone')->textInput() ?>
+    <?= $form->field($model, 'old_password')->textInput()->label('旧密码') ?>
 
-    <?= $form->field($model, 'type')->dropDownList([1 => '个人', 2 => '组织'], ['prompt' => '请选择']) ?>
+    <?= $form->field($model, 'new_password')->textInput()->label('新密码') ?>
 
-    <?php
-    $service_id = \common\components\Helper::getLoginMemberServiceId();
-    if(!$service_id){
-        //A.如果不是服务商或者代理商，还有两种情况
-        if(pd\admin\components\Helper::checkRoute('/abs-route/customer-manager')){
-            //只能看到自己的服务商
-            $id = \Yii::$app->user->identity->id;
-            $ids = \common\components\Helper::byCustomerManagerIdGetServiceIds($id);
-            $colunm = \backend\models\Service::find()->indexBy('id')->where(['id'=>$ids])->select('name,id')->column();
-        }else{
-            //可以看到所有的服务商
-            $colunm = \backend\models\Service::find()->indexBy('id')->select('name,id')->column();
-        }
+    <?= $form->field($model, 're_password')->textInput()->label('重复密码') ?>
 
-    }else{
-        //直接是服务商的情况
-
-    }
-    ?>
-<!--    是服务商的-->
-    <?php if($service_id) : ?>
-        <?= $form->field($model, 'pid')->dropDownList(
-            \backend\models\User::find()->indexBy('id')->select('name,id')->where(['pid'=>$service_id])->column()
-        ) ?>
-    <?php else: ?>
-        <?= $form->field($model, 'service')->dropDownList($colunm, [
-            'prompt'   => '请选择',
-            'onChange' => 'pd_selectSid($(this))']) ?>
-
-        <?= $form->field($model, 'pid')->dropDownList([]) ?>
-    <?php endif; ?>
-
-    <?= $form->field($model, 'status')->dropDownList([0 => '冻结', 1 => '正常'], ['prompt' => '请选择']) ?>
 
     <?php \yii\bootstrap\ActiveForm::end() ?>
 
 </div>
 <div class="modal-footer">
     <a href="javascript:;" class="btn btn-sm btn-white" data-dismiss="modal">取消</a>
-    <a href="#" class="btn btn-sm btn-success  btn-submit" data-toggle="modal"
-       data-form-id="MemberForm">添加</a>
+    <a href="#" class="btn btn-sm btn-success  btn-submit">保存</a>
 </div>
 
 <script>
     $(function (){
-        pd_selectSid = function(that){
-            var pid = that.val();
-            if(!pid){
-                return false;
-            }
-            var sid = <?= !$model->isNewRecord ? $model->pid : 0 ?>;
-            if(!pid){return false;}
-            var url = "<?= Url::to(['salesman/drop-down-list']); ?>?pid=" + pid + "&sid=" + sid;
-            $.get(url, function(rep){
-                $('#memberform-pid').html(rep);
-                $('.field-memberform-pid').show();
-            });
-        }
         $('.btn-submit').on('click', function () {
-            var f = $('#MemberForm');
+            var f = $('#<?= $model->formName() ?>');
             f.on('beforeSubmit', function (e) {
                 swal({
-                        title: "确认添加会员",
+                        title: "确认修改密码",
                         text: "",
                         type: "warning",
                         showCancelButton: true,
@@ -137,14 +91,6 @@ use yii\helpers\Url;
             });
             f.submit();
         });
-        function getSalesman(that) {
-            var sid = that.val();
-            if (!sid) {
-                return false;
-            }
-            that.attr('data-service-id', sid);
-
-        }
     })
 </script>
 

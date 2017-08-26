@@ -77,57 +77,101 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
 
                                 <?= $form->field($model, 'end_at')->textInput() ?>
 
+                                <?php
+                                //根据对应的id，获取已经有的图片数据
+                                $ms  = \common\models\IdentificationImg::find()->where(['ident_id'=>$model->id, 'status'=> 1])->all();
+                                $config = [];
+                                $preview = [];
+                                $input = '';
+                                foreach($ms as $m){
+                                    $data = [
+                                        'size' => $m->size,
+                                        'url'  => Url::to(['media/image-delete', 'model'=> 'identification', 'id' => $m->id]),
+                                        'key'  => $m->id
+                                    ];
+                                    $config[] = $data;
+                                    $preview[] = Yii::$app->params['img_domain'] . $m->img_path;
+                                    $input .= '<input type="hidden"  data-img-node="1" id="img_id_input_'.$m->id.'" name="Identification[img_id][]" value="'.$m->id.'">';
+                                }
+
+                                ?>
+
+                                <?=$form->field($model, 'img')->widget(FileInput::classname(), [
+                                    'language' => 'zh',
+                                    'options' => [
+                                        'accept' => 'image/*',
+                                        'multiple'=>true
+
+                                    ],
+                                    'pluginOptions' => [
+                                        'initialPreview' => $preview,
+                                        'initialPreviewConfig' =>$config,
+                                        'overwriteInitial' => false,//不允许覆盖
+                                        'initialPreviewAsData' => true,
+                                        'uploadUrl' => Url::to(['/media/image-upload', 'model' => 'identification']),
+                                        'maxFileSize'=>2048,
+                                        'showPreview' => true,
+                                        'showCaption' => true,
+                                        'showRemove' => true,
+                                        'showUpload' => true,
+                                        'maxFileCount' => 2,
+                                        'minFileCount' => 1,
+                                    ]
+                                ]) ?>
+
+                                <?php echo $input ?>
+
                             <?php } else {?>
 
                                 <?= $form->field($model, 'name')->textInput()->label('组织机构名称') ?>
 
                                 <?= $form->field($model, 'licence')->textInput()->label('组织机构代码') ?>
 
+                                <?php
+                                //根据对应的id，获取已经有的图片数据
+                                $ms  = \common\models\IdentificationImg::find()->where(['ident_id'=>$model->id, 'status'=> 1])->all();
+                                $config = [];
+                                $preview = [];
+                                $input = '';
+                                foreach($ms as $m){
+                                    $data = [
+                                        'size' => $m->size,
+                                        'url'  => Url::to(['media/image-delete', 'model'=> 'identification', 'id' => $m->id]),
+                                        'key'  => $m->id
+                                    ];
+                                    $config[] = $data;
+                                    $preview[] = Yii::$app->params['img_domain'] . $m->img_path;
+                                    $input .= '<input type="hidden"  data-img-node="1" id="img_id_input_'.$m->id.'" name="Identification[img_id][]" value="'.$m->id.'">';
+                                }
+
+                                ?>
+
+                                <?=$form->field($model, 'img')->widget(FileInput::classname(), [
+                                    'language' => 'zh',
+                                    'options' => [
+                                        'accept' => 'image/*',
+                                        'multiple'=>true
+
+                                    ],
+                                    'pluginOptions' => [
+                                        'initialPreview' => $preview,
+                                        'initialPreviewConfig' =>$config,
+                                        'overwriteInitial' => false,//不允许覆盖
+                                        'initialPreviewAsData' => true,
+                                        'uploadUrl' => Url::to(['/media/image-upload', 'model' => 'identification']),
+                                        'maxFileSize'=>2048,
+                                        'showPreview' => true,
+                                        'showCaption' => true,
+                                        'showRemove' => true,
+                                        'showUpload' => true,
+                                        'maxFileCount' => 6,
+                                        'minFileCount' => 1,
+                                    ]
+                                ])->label('营业执照') ?>
+
+                                <?php echo $input ?>
+
                             <?php }?>
-
-                            <?php
-                            //根据对应的id，获取已经有的图片数据
-                            $ms  = \common\models\IdentificationImg::find()->where(['ident_id'=>$model->id, 'status'=> 1])->all();
-                            $config = [];
-                            $preview = [];
-                            $input = '';
-                            foreach($ms as $m){
-                                $data = [
-                                    'size' => $m->size,
-                                    'url'  => Url::to(['media/image-delete', 'model'=> 'identification', 'id' => $m->id]),
-                                    'key'  => $m->id
-                                ];
-                                $config[] = $data;
-                                $preview[] = Yii::$app->params['img_domain'] . $m->img_path;
-                                $input .= '<input type="hidden"  data-img-node="1" id="img_id_input_'.$m->id.'" name="Identification[img_id][]" value="'.$m->id.'">';
-                            }
-
-                            ?>
-
-                            <?=$form->field($model, 'img')->widget(FileInput::classname(), [
-                                'language' => 'zh',
-                                'options' => [
-                                    'accept' => 'image/*',
-                                    'multiple'=>true
-
-                                ],
-                                'pluginOptions' => [
-                                    'initialPreview' => $preview,
-                                    'initialPreviewConfig' =>$config,
-                                    'overwriteInitial' => false,//不允许覆盖
-                                    'initialPreviewAsData' => true,
-                                    'uploadUrl' => Url::to(['/media/image-upload', 'model' => 'identification']),
-                                    'maxFileSize'=>2048,
-                                    'showPreview' => true,
-                                    'showCaption' => true,
-                                    'showRemove' => true,
-                                    'showUpload' => true,
-                                    'maxFileCount' => 2,
-                                    'minFileCount' => 1,
-                                ]
-                            ]) ?>
-
-                            <?php echo $input ?>
 
                             <div class="form-group">
                                 <label class="control-label col-md-4 col-sm-4"></label>

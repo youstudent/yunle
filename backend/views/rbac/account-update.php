@@ -6,14 +6,14 @@
  */
 use yii\helpers\Url;
 
-$this->title = '更新账户';
+$this->title = '更新员工资料';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <!-- #modal-dialog -->
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h4 class="modal-title">更新会员资料</h4>
+    <h4 class="modal-title">更新员工资料</h4>
 </div>
 <div class="modal-body">
     <?php $form = \yii\bootstrap\ActiveForm::begin([

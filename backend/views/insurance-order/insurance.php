@@ -103,7 +103,7 @@ use kartik\datetime\DateTimePicker;
                             <td>承保公司</td>
                             <td>
                                 <select name="company" class="form-control">
-                                <?php foreach (\backend\models\InsuranceCompany::find()->select('name,id')->all() as $v) {?>
+                                <?php foreach (\backend\models\InsuranceCompany::find()->select('name,id')->where(['status'=>1])->all() as $v) {?>
                                     <option id="company_id" value="<?= $v->id ?>" <?php if ($v->name == $model->insurance->company) {?> selected <?php }?>><?= $v->name ?></option>
                                 <?php }?>
                                 </select>
