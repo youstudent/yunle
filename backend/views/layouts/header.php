@@ -1,10 +1,13 @@
 <?php
+use backend\models\Service;
+use common\components\Helper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
 /* @var $this \yii\web\View */
 /* @var $content string */
 
+$api = Url::to(['account/service-status']);
 pd\coloradmin\web\plugins\SwitcheryAsset::register($this);
 $this->registerJs(<<<JS
 var green = "#00acac", red = "#ff5b57", blue = "#348fe2", purple = "#727cb6", orange = "#f59c1a", black = "#2d353c",
@@ -36,11 +39,13 @@ var green = "#00acac", red = "#ff5b57", blue = "#348fe2", purple = "#727cb6", or
             alert($('[data-id="switchery-state"]').prop("checked"))
         }), $('[data-change="check-switchery-state-text"]').live("change", function () {
             if($(this).prop("checked")){
+                $.get('{$api}'+'?opt=1');
                 $('[data-id="switchery-state-text"]').attr('class', 'btn btn-xs btn-primary disabled m-l-5');
                 $('[data-id="switchery-state-text"]').text('营业中') 
             }else{
+                $.get('{$api}'+'?opt=0');
                 $('[data-id="switchery-state-text"]').attr('class', 'btn btn-xs btn-danger disabled m-l-5');
-                $('[data-id="switchery-state-text"]').text('停业');
+                $('[data-id="switchery-state-text"]').text('已停业');
             }
         })
     }, FormSliderSwitcher = function () {
@@ -74,12 +79,24 @@ JS
         <!-- begin header navigation right -->
         <ul class="nav navbar-nav navbar-right">
             <li>
+                <?php if(pd\admin\components\Helper::checkRoute('/account/service-status')) : ?>
                 <form class="navbar-form full-width">
                     <div class="form-group">
-                        <input type="checkbox" data-render="switchery" data-theme="blue"  data-change="check-switchery-state-text" checked />
-                        <a href="#" class="btn btn-xs btn-primary disabled m-l-5" data-id="switchery-state-text">营业中</a>
+                        <?php
+                        $service_id = Helper::getLoginMemberServiceId();
+                        $state = Service::findOne($service_id)->state;
+                        ?>
+                        <?php if($state == 1) : ?>
+                            <input type="checkbox" data-render="switchery" data-theme="blue"  data-change="check-switchery-state-text" checked />
+                            <a href="#" class="btn btn-xs btn-primary disabled m-l-5" data-id="switchery-state-text">营业中</a>
+                        <?php else: ?>
+                            <input type="checkbox" data-render="switchery" data-theme="blue"  data-change="check-switchery-state-text"  />
+                            <a href="#" class="btn btn-xs btn-danger disabled m-l-5" data-id="switchery-state-text">已停业</a>
+                        <?php endif; ?>
+
                     </div>
                 </form>
+                <?php endif; ?>
             </li>
 <!--            <li class="dropdown">-->
 <!--                <a href="javascript:;" data-toggle="dropdown" class="dropdown-toggle f-s-14">-->

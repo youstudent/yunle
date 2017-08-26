@@ -95,4 +95,26 @@ class AccountController extends BackendController
         ]);
     }
 
+    /**
+     * 更改自身服务商营业状态
+     */
+    public function actionServiceStatus($opt, $id = null)
+    {
+        $service_id = $id ? $id : Helper::getLoginMemberServiceId();
+        $model = Service::findOne($service_id);
+        $model->state = intval($opt);
+        if($model->save()){
+            return $this->asJson([
+                'data'=> '',
+                'code'=>1,
+                'message'=> '修改成功'
+            ]);
+        }
+        return $this->asJson([
+            'data'=> '',
+            'code'=>0,
+            'message'=> current($model->getFirstErrors())
+        ]);
+
+    }
 }
