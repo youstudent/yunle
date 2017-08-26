@@ -30,6 +30,9 @@ class DrivingLicense extends \yii\db\ActiveRecord
     public $imgs;
     public $info;
 
+    public $real;
+    public $phone;
+
     public $img_id;
     /**
      * @inheritdoc
@@ -50,6 +53,7 @@ class DrivingLicense extends \yii\db\ActiveRecord
             [['name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at', 'imgs'], 'string', 'max' => 255],
             [['info'], 'string', 'max' => 200],
             [['img', 'img_id'], 'safe'],
+            [['phone', 'real'], 'safe'],
         ];
     }
 
@@ -58,6 +62,7 @@ class DrivingLicense extends \yii\db\ActiveRecord
         return [
             'create' => ['name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at', 'img_id', 'img'],
             'update' => ['name', 'sex', 'nationality', 'papers', 'birthday', 'certificate_at', 'permit', 'start_at', 'end_at', 'img_id', 'img'],
+            'search' => ['real', 'phone', 'status'],
         ];
     }
 
@@ -158,7 +163,7 @@ class DrivingLicense extends \yii\db\ActiveRecord
      * 上传土图片要用到的
      * @param $data
      * @param string $type
-     * @return ServiceImg|null
+     * @return ServiceImg|null|object
      */
     public function saveImg($data, $type = 'head')
     {
@@ -199,13 +204,23 @@ class DrivingLicense extends \yii\db\ActiveRecord
         return $arr;
     }
 
-    public function checkInfo()
+    public function checkInfo($params)
     {
-        $query = DrivingLicense::find()->select('id, member_id, status, updated_at')->where(['status'=>[0,2]])->orderBy(['status'=>SORT_ASC,'updated_at'=>SORT_DESC]);
+        $query = DrivingLicense::find();
+        $query->alias('d')->joinWith('member')->joinWith('identification');
 
         $model = new ActiveDataProvider([
-            'query' => $query
+            'query' => $query->where(['d.status'=>[0,2]])->orderBy(['d.status'=>SORT_ASC,'d.updated_at'=>SORT_DESC]),
         ]);
+
+        if (!($this->load($params))) {
+            return $model;
+        }
+
+        $query->andFilterWhere(['LIKE', 'm.phone' , $this->phone])
+            ->andFilterWhere(['LIKE', 'i.name' , $this->real])
+            ->andFilterWhere(['d.status' => $this->status]);
+
         return $model;
     }
 
@@ -285,5 +300,15 @@ class DrivingLicense extends \yii\db\ActiveRecord
         }
 
         return true;
+    }
+
+    public function getMember()
+    {
+        return $this->hasOne(Member::className(), ['id'=> 'member_id'])->alias('m');
+    }
+
+    public function getIdentification()
+    {
+        return $this->hasOne(Identification::className(), ['member_id'=> 'member_id'])->alias('i');
     }
 }

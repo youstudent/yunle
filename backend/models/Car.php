@@ -30,6 +30,8 @@ use yii\data\ActiveDataProvider;
 class Car extends \yii\db\ActiveRecord
 {
     public $info;
+    public $name;
+    public $phone;
     /**
      * @inheritdoc
      */
@@ -47,6 +49,7 @@ class Car extends \yii\db\ActiveRecord
             [['member_id', 'load_num', 'stick', 'status', 'created_at', 'updated_at'], 'integer'],
             [['license_number', 'type', 'nature', 'brand_num', 'discern_num', 'motor_num', 'sign_at', 'certificate_at'], 'string', 'max' => 50],
             [['owner', 'info'], 'string', 'max' => 255],
+            [['phone', 'name'], 'safe'],
         ];
     }
 
@@ -76,13 +79,23 @@ class Car extends \yii\db\ActiveRecord
         ];
     }
 
-    public function checkInfo()
+    public function checkInfo($params)
     {
-        $query = Car::find()->select('id, member_id, status, updated_at')->where(['status'=>[0,2]])->orderBy(['status'=>SORT_ASC,'updated_at'=>SORT_DESC]);
+        $query = Car::find();
+        $query->alias('c')->joinWith('member')->joinWith('identification');
 
         $model = new ActiveDataProvider([
-            'query' => $query
+            'query' => $query->where(['c.status'=>[0,2]])->orderBy(['c.status'=>SORT_ASC,'c.updated_at'=>SORT_DESC]),
         ]);
+
+        if (!($this->load($params))) {
+            return $model;
+        }
+
+        $query->andFilterWhere(['LIKE', 'm.phone' , $this->phone])
+            ->andFilterWhere(['c.status' => $this->status])
+            ->andFilterWhere(['LIKE', 'i.name' , $this->name]);
+
         return $model;
     }
 
@@ -158,5 +171,15 @@ class Car extends \yii\db\ActiveRecord
         }
 
         return true;
+    }
+
+    public function getMember()
+    {
+        return $this->hasOne(Member::className(), ['id'=> 'member_id'])->alias('m');
+    }
+
+    public function getIdentification()
+    {
+        return $this->hasOne(Identification::className(), ['member_id'=> 'member_id'])->alias('i');
     }
 }
