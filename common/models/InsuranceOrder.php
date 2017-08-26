@@ -248,7 +248,8 @@ class InsuranceOrder extends \yii\db\ActiveRecord
             ->all();
         //承保公司
 
-        $company = InsuranceCompany::find()->select('id , name')
+        $company = InsuranceCompany::find()->select('id , name, status')
+            ->where(['status'=>1])
             ->asArray()
             ->all();
 
