@@ -100,7 +100,7 @@ JS
         <div class="panel-body">
             <form class="form-inline"  action="" method="GET">
                 <div class="form-group m-r-15">
-                    <input type="text" class="form-control" style="min-width: 103%;margin-right: 70px;" name="OrderSearch[order_created_at]" id="daterangepicker" value="<?= $searchModel->order_created_at ?>" placeholder="创建时间">
+                    <input type="text" class="form-control" style="min-width: 103%;margin-right: 70px;" name="InsuranceDetailSearch[order_created_at]" id="daterangepicker" value="<?= $searchModel->order_created_at ?>" placeholder="创建时间">
                 </div>
                 <div class="form-group m-r-10">
                     <input type="text" class="form-control" name="InsuranceDetailSearch[order_user]" id="user" value="<?= $searchModel->order_user ?>" placeholder="联系人">

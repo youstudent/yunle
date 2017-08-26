@@ -98,19 +98,19 @@ JS
         <div class="panel-body">
             <form class="form-inline"  action="" method="GET">
                 <div class="form-group m-r-15">
-                    <input type="text" class="form-control" style="min-width: 103%;margin-right: 70px;" name="OrderSearch[order_created_at]" id="daterangepicker" value="<?= $searchModel->order_created_at ?>" placeholder="创建时间">
+                    <input type="text" class="form-control" style="min-width: 103%;margin-right: 70px;" name="WarrantySearch[order_created_at]" id="daterangepicker" value="<?= $searchModel->order_created_at ?>" placeholder="创建时间">
                 </div>
                 <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="OrderSearch[order_user]" id="user" value="<?= $searchModel->order_user ?>" placeholder="投保人">
+                    <input type="text" class="form-control" name="WarrantySearch[order_user]" id="user" value="<?= $searchModel->order_user ?>" placeholder="投保人">
                 </div>
                 <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="OrderSearch[order_phone]" id="phone" value="<?= $searchModel->order_phone ?>" placeholder="联系电话">
+                    <input type="text" class="form-control" name="WarrantySearch[order_phone]" id="phone" value="<?= $searchModel->order_phone ?>" placeholder="联系电话">
                 </div>
                 <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="OrderSearch[order_car]" id="phone" value="<?= $searchModel->order_car ?>" placeholder="车牌号">
+                    <input type="text" class="form-control" name="WarrantySearch[order_car]" id="car" value="<?= $searchModel->order_car ?>" placeholder="车牌号">
                 </div>
                 <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="OrderSearch[order_company]" id="company" value="<?= $searchModel->order_company ?>" placeholder="承保公司">
+                    <input type="text" class="form-control" name="WarrantySearch[order_company]" id="company" value="<?= $searchModel->order_company ?>" placeholder="承保公司">
                 </div>
                 <button type="submit" class="btn btn-sm btn-primary m-r-5">搜索</button>
                 <button type="reset" class="btn btn-sm btn-info m-r-5" onclick="">重置</button>

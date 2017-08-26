@@ -21,10 +21,11 @@ class ReviewController extends BackendController
     public function actionCarList()
     {
         $car = new Car();
-        $dataProvider = $car->checkInfo();
+        $dataProvider = $car->checkInfo(Yii::$app->request->queryParams);
 
         return $this->renderPjax('car', [
             'dataProvider' => $dataProvider,
+            'searchModel' => $car,
         ]);
     }
 
@@ -71,11 +72,14 @@ class ReviewController extends BackendController
     // 驾驶证审核
     public function actionDriverList()
     {
+
         $driver = new DrivingLicense();
-        $dataProvider = $driver->checkInfo();
+        $driver->scenario = 'search';
+        $dataProvider = $driver->checkInfo(Yii::$app->request->queryParams);
 
         return $this->renderPjax('driver', [
             'dataProvider' => $dataProvider,
+            'searchModel' => $driver,
         ]);
     }
 

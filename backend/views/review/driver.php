@@ -36,8 +36,29 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
             <h4 class="panel-title">表格</h4>
         </div>
-        <?= \pd\coloradmin\widgets\Alert::widget() ?>
+
         <div class="panel-body">
+            <?= \pd\coloradmin\widgets\Alert::widget() ?>
+            <form class="form-inline"  action="" method="GET">
+                <div class="form-group m-r-10">
+                    <input type="text" class="form-control" name="DrivingLicense[real]" id="real" value="<?= $searchModel->real ?>" placeholder="发起人">
+                </div>
+                <div class="form-group m-r-10">
+                    <input type="text" class="form-control" name="DrivingLicense[phone]" id="phone" value="<?= $searchModel->phone ?>" placeholder="发起人联系方式">
+                </div>
+                <div class="form-group m-r-10">
+                    <select class="form-control" name="DrivingLicense[status]" id="DrivingLicense" style="min-width: 105%;">
+                        <option value="" selected>全部</option>
+                        <option value="2" <?= $searchModel->status == 2 && strlen($searchModel->status) ? 'selected' : '' ?>>已审核</option>
+                        <option value="0" <?= $searchModel->status == 0 && strlen($searchModel->status) ? 'selected' : '' ?>>未审核</option>
+                    </select>
+
+                </div>
+                <button type="submit" class="btn btn-sm btn-primary m-r-5">搜索</button>
+                <button type="button" class="btn btn-sm btn-info m-r-5" onclick="">重置</button>
+            </form>
+
+            <p></p>
             <table id="data-table" class="table table-striped table-bordered">
                 <thead>
                 <tr>
