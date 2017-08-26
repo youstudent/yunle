@@ -141,8 +141,7 @@ JS
                     <th class="text-center">编号</th>
                     <th class="text-center">保险商名称</th>
                     <th class="text-center">简介</th>
-                    <th class="text-center">创建时间</th>
-                    <th class="text-center">修改时间</th>
+                    <th class="text-center">状态</th>
                     <th class="text-center">操作</th>
                 </tr>
                 </thead>
@@ -152,8 +151,7 @@ JS
                         <td class="text-center"><?= \pd\helpers\Yii2Helpers::serialColumn($data, $index) ?></td>
                         <td class="text-center"><?= $model->name ?></td>
                         <td class="text-center"><?= $model->brief?></td>
-                        <td class="text-center"><?= \pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
-                        <td class="text-center"><?= \pd\helpers\Yii2Helpers::dateFormat($model->updated_at) ?></td>
+                        <td><?= $model->status == 1 ? '<span class="badge badge-info">正常</span>' : '<span class="badge badge-danger">冻结</span>' ?></td>
                         <td align="center">
                             <div class="btn-group">
                                 <a href="<?= Url::to(['insurance-company/update', 'id'=> $model->id]) ?>" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
