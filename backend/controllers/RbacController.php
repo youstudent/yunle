@@ -10,6 +10,7 @@ namespace backend\controllers;
 use backend\models\AuthItem;
 use backend\models\form\Role;
 use backend\models\searchs\BackendAuthItemSearch;
+use pd\admin\components\Helper;
 use pd\admin\models\Assignment;
 use pd\admin\models\searchs\AuthItem as AuthItemSearch;
 use backend\models\Adminuser;
@@ -38,6 +39,7 @@ class RbacController extends BackendController
                     'delete' => ['post'],
                     'assign' => ['post'],
                     'remove' => ['post'],
+                    'role-delete' => ['post'],
                 ],
             ],
         ];
@@ -113,20 +115,12 @@ class RbacController extends BackendController
 
     public function actionRoleDelete($id)
     {
-
-        //判断角色下的会员
         $this->type=1;
         $model = $this->findModel($id);
-        if($model->load(Yii::$app->getRequest()->post())){
-            if($model->save()){
-                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '更新成功', 'url'=> Url::to(['role-index'])]);
-            }
-            return $this->asJson(['data'=> '', 'code'=>0, 'message'=> current($model->getFirstErrors())]);
-        }
-
-        return $this->renderAjax('role-update', [
-            'model' => $model
-        ]);
+        Yii::$app->getAuthManager()->remove($model->item);
+        Helper::invalidate();
+        Yii::$app->session->setFlash('success', '角色删除成功');
+        return $this->redirect(['role-index']);
     }
     /**
      * 添加角色表单验证

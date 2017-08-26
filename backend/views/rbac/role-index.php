@@ -100,9 +100,8 @@ JS
             </div>
             <h4 class="panel-title">表格</h4>
         </div>
-        <?= \pd\coloradmin\widgets\Alert::widget() ?>
         <div class="panel-body">
-
+            <?= \pd\coloradmin\widgets\Alert::widget() ?>
             <table id="data-table" class="table table-striped table-bordered">
                 <thead>
                 <tr>
@@ -118,10 +117,14 @@ JS
                         <td><?= $model->description ?></td>
                         <td align="center">
                             <div class="btn-group">
-                                <a href="<?= Url::to(['role-assign', 'id'=> $model->name]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">权限</span></a>
-                                <a href="<?= Url::to(['role-update', 'id'=> $model->name]) ?>" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
-                                <?php if(Helper::checkRoute("rbac/role-delete")) : ?>
-                                    <a href="<?= Url::to(['role-delete','name' => $model->name]) ?>" data-confirm="确认删除此角色？" data-url=""><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                                <?php if(pd\admin\components\Helper::checkRoute('/rbac/role-assign')) : ?>
+                                    <a href="<?= Url::to(['role-assign', 'id'=> $model->name]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">权限</span></a>
+                                <?php endif; ?>
+                                <?php if(pd\admin\components\Helper::checkRoute('/rbac/role-update') && !in_array($model->name, ['管理员', '服务商', '代理商', '客户经理'])) : ?>
+                                    <a href="<?= Url::to(['role-update', 'id'=> $model->name]) ?>" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
+                                <?php endif; ?>
+                                <?php if(Helper::checkRoute("rbac/role-delete") && !in_array($model->name, ['管理员', '服务商', '代理商', '客户经理'])) : ?>
+                                    <a href="<?= Url::to(['role-delete','id' => $model->name]) ?>" data-confirm="确认删除此角色？" data-method="post" data-url=""><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
                                 <?php endif; ?>
                             </div>
                         </td>
