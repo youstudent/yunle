@@ -79,6 +79,9 @@ class Adminuser extends \yii\db\ActiveRecord
             'status' => '状态',
             'created_at' => '创建时间',
             'updated_at' => '更新时间',
+            'old_password' => '旧密码',
+            'new_password' => '新密码',
+            're_password' => '重复密码',
         ];
     }
 
