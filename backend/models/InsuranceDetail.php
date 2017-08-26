@@ -16,6 +16,7 @@ use yii\web\UploadedFile;
  * @property integer $car_id
  * @property integer $member_id
  * @property string $action
+ * @property string $chit
  * @property integer $created_at
  * @property integer $updated_at
  */
@@ -51,7 +52,7 @@ class InsuranceDetail extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'car_id', 'member_id', 'created_at', 'updated_at'], 'integer'],
+            [['order_id', 'car_id', 'member_id', 'created_at', 'updated_at', 'chit'], 'integer'],
             [['action'], 'string', 'max' => 50],
         ];
     }
@@ -63,6 +64,7 @@ class InsuranceDetail extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'chit' => '是否生成保单',
             'order_id' => '订单id',
             'car_id' => '车辆id',
             'member_id' => '投保人',
@@ -158,7 +160,7 @@ class InsuranceDetail extends \yii\db\ActiveRecord
                 $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
                 $upload = new Upload();
                 $img_path = $upload->getSavePath('insuranceAct', $chars, $extension);
-                $v->saveAs(Yii::getAlias('@common').$img_path);
+                $v->saveAs(Yii::getAlias('@common').'/static'.$img_path);
                 $modelImg = new InsuranceActimg();
                 $modelImg->act_id = $act->id;
                 $modelImg->img_path = $img_path;;
