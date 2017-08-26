@@ -64,8 +64,7 @@ use yii\helpers\Url;
         ) ?>
     <?php else: ?>
         <?= $form->field($model, 'service')->dropDownList($colunm, [
-            'prompt'   => '请选择',
-            'onChange' => 'pd_selectSid($(this))']) ?>
+            'prompt'   => '请选择']) ?>
 
         <?= $form->field($model, 'pid')->dropDownList([]) ?>
     <?php endif; ?>
@@ -83,19 +82,14 @@ use yii\helpers\Url;
 
 <script>
     $(function (){
-        pd_selectSid = function(that){
-            var pid = that.val();
-            if(!pid){
-                return false;
-            }
-            var sid = <?= !$model->isNewRecord ? $model->pid : 0 ?>;
-            if(!pid){return false;}
-            var url = "<?= Url::to(['salesman/drop-down-list']); ?>?pid=" + pid + "&sid=" + sid;
-            $.get(url, function(rep){
-                $('#memberform-pid').html(rep);
-                $('.field-memberform-pid').show();
-            });
-        }
+        $('#memberform-service').on('change', function(){
+           var service_id = $(this).val();
+            var url =  "<?= Url::to(['salesman/drop-down-list']); ?>?service_id=" + service_id;
+                $.get(url, function(rep){
+                    $('#memberform-pid').html(rep);
+                });
+        });
+
         $('.btn-submit').on('click', function () {
             var f = $('#MemberForm');
             f.on('beforeSubmit', function (e) {

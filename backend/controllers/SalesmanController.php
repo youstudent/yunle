@@ -128,10 +128,10 @@ class SalesmanController extends BackendController
      * @param $sid 销售人员id
      * @return string
      */
-    public function actionDropDownList($user_salesman_id, $service_id)
+    public function actionDropDownList($service_id, $salesman_id = null)
     {
         //Yii::$app->response->format = Yii\web\Response::FORMAT_JSON;
-        return UserForm::dropDownListHtml($user_salesman_id, $service_id);
+        return UserForm::dropDownListHtml($salesman_id, $service_id);
     }
 
     public function actionValidateForm($scenario, $id = null)

@@ -7,6 +7,7 @@
 use backend\models\Service;
 use backend\models\ServiceUser;
 use backend\models\User;
+use pd\admin\components\Helper;
 use yii\bootstrap\Html;
 use yii\helpers\Url;
 
@@ -43,8 +44,19 @@ use yii\helpers\Url;
     <?php else: ?>
        <?php $model->service = User::findOne(['id'=> $model->pid])->pid; ?>
 
+        <?php
+        if(Helper::checkRoute('/abs-route/customer-manager')){
+            $id = \Yii::$app->user->identity->id;
+            $service_ids = \common\components\Helper::byCustomerManagerIdGetServiceIds($id);
+            $column =  Service::find()->select('name,id')->where(['id'=>$service_ids])->indexBy('id')->column();
+        }else{
+            $column =  Service::find()->select('name,id')->indexBy('id')->column();
+        }
+
+        ?>
+
         <?= $form->field($model, 'service')->dropDownList(
-            Service::find()->select('name,id')->indexBy('id')->column()
+            $column
         ) ?>
 
 
@@ -70,7 +82,7 @@ use yii\helpers\Url;
         $('#member-service').on('change', function(){
             <?php if($service_id) : ?>
             var service_id = <?= $service_id ?>;
-            <? else: ?>
+            <?php else: ?>
             var service_id = $(this).find('option:selected').val();
             if(!service_id){
                 return false;

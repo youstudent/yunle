@@ -167,7 +167,7 @@ JS
                         <td align="center">
                             <div class="btn-group">
                                 <a href="<?= Url::to(['modify-salesman', 'id'=> $model->id]) ?>"  data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">变更业务员</span</a>
-                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">更换手机</span></a>
+                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">更换</span></a>
                                 <?php if($model->memberInfo) : ?>
                                     <?php if ($model->memberInfo->name) : ?>
                                         <a href="<?= Url::to(['order/create', 'member_id'=> $model->id, 'member_name' => $model->memberInfo->name]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">非保险下单</span></a>

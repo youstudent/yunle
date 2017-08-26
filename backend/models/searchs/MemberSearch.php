@@ -85,9 +85,10 @@ class MemberSearch extends Member
         if(Helper::checkRoute('/abs-route/customer-manager')){
             $id = \Yii::$app->user->identity->id;
             $service_ids = \common\components\Helper::byCustomerManagerIdGetServiceIds($id);
+
             //根据服务商ids找到对应的会员
-            $ids = Member::find()->where(['pid'=>$service_ids])->select('id')->column();
-            $query->andWhere(['s.pid'=>$ids]);
+            $ids = User::find()->where(['pid'=>$service_ids])->select('id')->column();
+            $query->andWhere(['m.pid'=>$ids]);
             return $query;
         }
         //以下都是- 所有权限
