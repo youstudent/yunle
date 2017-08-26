@@ -724,7 +724,7 @@ class Order extends \yii\db\ActiveRecord
 
         $a = array_chunk($service,$size,false);
 
-        $pageTotal = ceil(count($a)/$size);
+        $pageTotal = ceil(count($service) /$size);
         $list = $a[$data['page']-1];
 
         $pageInfo = ['page'=>$data['page'], 'pageTotal'=>$pageTotal];
