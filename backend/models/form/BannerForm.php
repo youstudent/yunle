@@ -21,7 +21,7 @@ class BannerForm extends Banner
     public function rules()
     {
         return [
-            [['name', 'status', 'action_value', 'img_id'], 'required', 'on' => ['create', 'update']],
+            [['name', 'status', 'action_type'], 'required', 'on' => ['create', 'update']],
             [['describe'], 'string'],
             [['status', 'created_at', 'updated_at', 'action_type', 'action_value', 'column_id'], 'integer'],
             [['name'], 'string', 'max' => 30],
@@ -32,7 +32,7 @@ class BannerForm extends Banner
     {
         return [
             'create' => ['name', 'describe', 'status', 'created_at', 'updated_at', 'action_type', 'action_value', 'img_id', 'img'],
-            'update' => ['name', 'describe', 'status', 'created_at', 'updated_at', 'action_type', 'action_value', 'img_id', 'img', 'delete_img_id'],
+            'update' => ['name', 'describe', 'status', 'created_at', 'updated_at', 'action_type', 'action_value', 'img_id', 'img'],
         ];
     }
 
@@ -55,26 +55,30 @@ class BannerForm extends Banner
 
     public function addBanner()
     {
-
         if(!$this->validate()){
             return false;
         }
+
+
+
         return Yii::$app->db->transaction(function(){
             $this->created_at = time();
             $this->updated_at = time();
             if(!$this->save()){
                 throw new Exception('error');
             }
-            //添加图片绑定
-            foreach($this->img_id as $i){
-                $model = BannerImg::findONe($i);
-                $model->status = 1;
-                $model->banner_id = $this->id;
-                if(!$model->save()){
-                    throw new Exception('增加图片绑定失败');
+
+            if($this->action_type == 1){
+                //添加图片绑定
+                foreach($this->img_id as $i){
+                    $model = BannerImg::findONe($i);
+                    $model->status = 1;
+                    $model->banner_id = $this->id;
+                    if(!$model->save()){
+                        throw new Exception('增加图片绑定失败');
+                    }
                 }
             }
-
             return $this;
         });
     }
@@ -92,34 +96,34 @@ class BannerForm extends Banner
             }
 
             //获取一下以前绑定的图片
-            $old_img = BannerImg::findOne(['banner_id'=> $this->id]);
-            if($old_img->id != $this->img_id){
-                //执行更换图片操作
-                $old_img->status = 0;
-                if(!$old_img->save()){
-                    throw new Exception('取消绑定旧图片数据失败');
-                };
-                //更新图片绑定
-                $ids = BannerImg::find()->where(['banner_id'=>$this->id, 'status'=> 1])->select('id')->column();
-                $reduces = array_diff($ids, $this->img_id);
-                foreach($reduces as $r){
-                    $model = BannerImg::findOne($r);
-                    $model->status = 0;
-                    if(!$model->save()){
-                        throw new Exception('解除图片绑定失败');
+            if($this->action_type == 1){
+                $old_img = BannerImg::findOne(['banner_id'=> $this->id]);
+                if($old_img->id != $this->img_id){
+                    //执行更换图片操作
+                    $old_img->status = 0;
+                    if(!$old_img->save()){
+                        throw new Exception('取消绑定旧图片数据失败');
+                    };
+                    //更新图片绑定
+                    $ids = BannerImg::find()->where(['banner_id'=>$this->id, 'status'=> 1])->select('id')->column();
+                    $reduces = array_diff($ids, $this->img_id);
+                    foreach($reduces as $r){
+                        $model = BannerImg::findOne($r);
+                        $model->status = 0;
+                        if(!$model->save()){
+                            throw new Exception('解除图片绑定失败');
+                        }
+                    }
+                    $incsrease = array_diff($this->img_id, $ids);
+                    foreach($incsrease as $i){
+                        $model = BannerImg::findOne($i);
+                        $model->status = 1;
+                        $model->banner_id = $this->id;
+                        if(!$model->save()){
+                            throw new Exception('增加图片绑定失败');
+                        }
                     }
                 }
-                $incsrease = array_diff($this->img_id, $ids);
-                foreach($incsrease as $i){
-                    $model = BannerImg::findOne($i);
-                    $model->status = 1;
-                    $model->banner_id = $this->id;
-                    if(!$model->save()){
-                        throw new Exception('增加图片绑定失败');
-                    }
-                }
-
-
             }
             return $this;
         });
@@ -143,5 +147,7 @@ class BannerForm extends Banner
         }
         return $model;
     }
+
+
 
 }
