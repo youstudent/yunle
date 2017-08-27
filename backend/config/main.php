@@ -23,7 +23,7 @@ return [
         'redactor' => [
             'class' => 'yii\redactor\RedactorModule',
             'uploadDir' => '@common/static/upload/redactor',
-            'uploadUrl' => '//img.ypxl27580.com/upload/redactor',
+            'uploadUrl' => 'https://img.ypxl27580.com/upload/redactor',
             'imageAllowExtensions'=>['jpg','png','gif']
         ],
     ],
