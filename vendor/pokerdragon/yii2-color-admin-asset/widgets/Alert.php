@@ -38,23 +38,23 @@ class Alert extends Widget
      */
     public $alertTypes = [
         'error' => [
-            'class' => 'alert-danger fade in m-b-15',
+            'class' => 'alert alert-danger fade in m-b-15',
             'icon' => '<i class=""></i>',
         ],
         'danger' => [
-            'class' => 'alert-danger fade in m-b-15',
+            'class' => 'alert alert-danger fade in m-b-15',
             'icon' => '<i class=""></i>',
         ],
         'success' => [
-            'class' => 'alert-success fade in m-b-15',
+            'class' => 'alert alert-success fade in m-b-15',
             'icon' => '<i class=""></i>',
         ],
         'info' => [
-            'class' => 'alert-info fade in m-b-15',
+            'class' => 'alert alert-info fade in m-b-15',
             'icon' => '<i class=""></i>',
         ],
         'warning' => [
-            'class' => 'alert-warning fade in m-b-15',
+            'class' => 'alert alert-warning fade in m-b-15',
             'icon' => '<i class=""></i>',
         ],
     ];
@@ -90,12 +90,19 @@ class Alert extends Widget
 
                     $this->options['class'] = $this->alertTypes[$type]['class'] . $appendCss;
                     $this->options['id'] = $this->getId() . '-' . $type;
-
-                    echo BootstrapAlert::widget([
-                            'body' => $this->alertTypes[$type]['icon'] . $message,
-                            'closeButton' => $this->closeButton,
-                            'options' => $this->options,
-                        ]);
+                    $body =  $this->alertTypes[$type]['icon'] . $message;
+                    $class = $this->options['class'];
+                    echo <<<HTML
+<div class="{$class}">
+    {$body}
+    <span class="close" data-dismiss="alert">&times;</span>
+</div>
+HTML;
+//                    echo BootstrapAlert::widget([
+//                            'body' => $this->alertTypes[$type]['icon'] . $message,
+//                            'closeButton' => $this->closeButton,
+//                            'options' => $this->options,
+//                        ]);
                 }
                 if ($this->isAjaxRemoveFlash && !\Yii::$app->request->isAjax) {
                     $session->removeFlash($type);
