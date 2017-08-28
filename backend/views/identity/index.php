@@ -133,8 +133,8 @@ JS
                         <td><?= pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
                         <td align="center">
                             <div class="btn-group">
-                                <a href="<?= Url::to(['view', 'id'=> $model->id]) ?>" ><span class="btn btn-danger m-r-1 m-b-5 btn-xs">查看</span></a>
-                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">编辑</span></a>
+                                <a href="<?= Url::to(['view', 'id'=> $model->id]) ?>" ><span class="btn btn-info m-r-1 m-b-5 btn-xs"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-chakan2"></use></svg> 查看</span></a>
+                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-close"></use></svg> 编辑</span></a>
 
                             </div>
                         </td>

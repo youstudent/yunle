@@ -68,6 +68,7 @@ class Setting extends \yii\db\ActiveRecord
         if(!$form){
             return null;
         }
+        $form['delivery_address'] = $form['delivery_address'][0] . '|' .  $form['delivery_address'][1] . '|' .$form['delivery_address'][2];
         return Yii::$app->db->transaction(function() use($form){
             $reload_cache = false;
             //清空所有数据

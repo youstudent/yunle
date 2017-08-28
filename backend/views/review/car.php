@@ -85,11 +85,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         <td align="center">
                             <div class="btn-group">
-                                <a href="<?= Url::to(['car-detail', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">车辆详情</span></a>
+                                <a href="<?= Url::to(['car-detail', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-form"></svg> 车辆详情</span></a>
                                 <?php if ($model->status == 0) {?>
                                     <a href="<?= Url::to(['car-pass', 'id'=> $model->id]) ?>" data-confirm="确认通过该审核？" data-method="post" data-pjax="0">
-                                        <span class="btn btn-danger m-r-1 m-b-5 btn-xs">通过</span></a>
-                                    <a href="<?= Url::to(['car-out', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs">不通过</span></a>
+                                        <span class="btn btn-danger m-r-1 m-b-5 btn-xs"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-bianji1"></svg> 通过</span></a>
+                                    <a href="<?= Url::to(['car-out', 'id'=> $model->id]) ?>" data-toggle="modal" data-backdrop="static" data-target="#_pd_modal"><span class="btn btn-info m-r-1 m-b-5 btn-xs"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-bianji1"></svg> 不通过</span></a>
                                 <?php }?></div>
                         </td>
                     </tr>

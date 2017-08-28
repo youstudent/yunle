@@ -37,7 +37,7 @@ class PanelController extends BackendController
             'model' => $model,
         ]);
     }
-    public function actionStat($days)
+    public function actionUserAdd($days)
     {
         $model = \common\models\Helper::getStat($days);
         if($model){
@@ -46,14 +46,13 @@ class PanelController extends BackendController
         return $this->asJson(['data'=> '', 'code'=>0, 'message'=> 'error']);
     }
 
-    public function actionUserAdd()
+    public function actionOrderAdd($days)
     {
-
-    }
-
-    public function actionOrderAdd()
-    {
-
+        $model = \common\models\Helper::getStat($days);
+        if($model){
+            return $this->asJson(['data'=> $model, 'code'=>1, 'message'=> 'success']);
+        }
+        return $this->asJson(['data'=> '', 'code'=>0, 'message'=> 'error']);
     }
 
 }

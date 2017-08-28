@@ -149,9 +149,9 @@ JS
                         <td><?= \pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
                         <td align="center">
                             <div class="btn-group">
-                                <a href="<?= Url::to(['salesman/view', 'id'=> $model->id]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">信息</span></a>
-                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
-                                <a href="<?= Url::to(['member/index', 'MemberSearch[salesman_name]'=> $model->name ]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">客户列表</span></a>
+                                <a href="<?= Url::to(['salesman/view', 'id'=> $model->id]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-form"></svg> 信息</span></a>
+                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-edit"></svg> 编辑</span></a>
+                                <a href="<?= Url::to(['member/index', 'MemberSearch[salesman_name]'=> $model->name ]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-31haoyou"></svg> 客户列表</span></a>
                                 <a href="<?= Url::to(['order/index', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">订单</span></a>
                                 <a href="<?= Url::to(['insurance/index', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">保险</span></a>
                                 <?php if ($model->status == 1) { ?>

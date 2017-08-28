@@ -12,6 +12,6 @@ $this->title = '云乐享车';
 
 
 
-<div class="alert alert-info">
-    <span class="label label-inverse m-r-5">NOTE!</span> 你访问的页面已经离家出走。
+<div class="alert alert-warning">
+    <span class="label label-danger m-r-5">NOTE!</span> 无权限访问
 </div>

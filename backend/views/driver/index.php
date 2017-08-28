@@ -154,9 +154,9 @@ JS
                         <td><?= pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
                         <td align="center">
                             <div class="btn-group">
-                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">编辑</span></a>
+                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-edit"></use></svg> 编辑</span></a>
                                 <a href="<?= Url::to(['delete', 'id'=> $model->id]) ?>" data-confirm="确认删除该驾照吗!" data-method="post" data-pjax="0">
-                                    <span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                                    <span class="btn btn-danger m-r-1 m-b-5 btn-xs"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-close"></use></svg> 删除</span></a>
                             </div>
                         </td>
                     </tr>

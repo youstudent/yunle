@@ -154,9 +154,9 @@ JS
                         <td><?= $model->status == 1 ? '<span class="badge badge-info">正常</span>' : '<span class="badge badge-danger">冻结</span>' ?></td>
                         <td align="center">
                             <div class="btn-group">
-                                <a href="<?= Url::to(['insurance-company/update', 'id'=> $model->id]) ?>" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
+                                <a href="<?= Url::to(['insurance-company/update', 'id'=> $model->id]) ?>" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static"><span class="btn btn-warning m-r-1 m-b-5 btn-xs"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-edit"></use></svg> 编辑</span></a>
                                 <a href="<?= Url::to(['delete', 'id'=> $model->id]) ?>" data-confirm="确认删除该保险商吗!" data-method="post" data-pjax="0">
-                                    <span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                                    <span class="btn btn-danger m-r-1 m-b-5 btn-xs"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-close"></use></svg> 删除</span></a>
                             </div>
                         </td>
                     </tr>

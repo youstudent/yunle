@@ -152,8 +152,8 @@ JS
                         <td><?= pd\helpers\Yii2Helpers::dateFormat($model->insuranceOrder->created_at) ?></td>
                         <td align="center">
                             <div class="btn-group">
-                                <a href="<?= Url::to(['detail', 'id'=> $model->order_id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">保单详情</span></a>
-                                <a href="<?= Url::to(['edit', 'id'=> $model->order_id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">修改</span></a>
+                                <a href="<?= Url::to(['detail', 'id'=> $model->order_id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-chakan2"></use></svg> 保单详情</span></a>
+                                <a href="<?= Url::to(['edit', 'id'=> $model->order_id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-edit"></use></svg> 修改</span></a>
                             </div>
                         </td>
                     </tr>

@@ -170,9 +170,9 @@ JS
                         <td><?= \pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
                         <td align="center">
                             <div class="btn-group">
-                                <a href="<?= Url::to(['view', 'id'=>$model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs">更多</span></a>
-                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
-                                <a href="<?= Url::to(['salesman/index', 'id'=> $model->id]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">业务员</span></a>
+                                <a href="<?= Url::to(['view', 'id'=>$model->id]) ?>"><span class="btn btn-info m-r-1 m-b-5 btn-xs"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-form"></svg> 更多</span></a>
+                                <a href="<?= Url::to(['update', 'id'=> $model->id]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-edit"></svg> 编辑</span></a>
+                                <a href="<?= Url::to(['salesman/index', 'id'=> $model->id]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-31haoyou"></svg> 业务员</span></a>
                             </div>
                         </td>
                     </tr>

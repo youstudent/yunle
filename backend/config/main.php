@@ -13,6 +13,7 @@ return [
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
     'language' => 'zh-CN',
+    'defaultRoute' => 'account/index',
     'modules' => [
         'admin' => [
             'class' => 'pd\admin\Module',

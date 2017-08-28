@@ -102,10 +102,27 @@ JS
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane fade active in" id="base-setting">
+                            <?php
+                            //组装收件人配置
+                            $delivery_address = isset($setting['delivery_address']) ? ArrayHelper::getValue($setting['delivery_address'], 'value', '||') : '||';
+                            $delivery_address = explode('|', $delivery_address);
+                            ?>
                             <div class="form-group">
-                                <label class="col-md-3 control-label">收货地址</label>
+                                <label class="col-md-3 control-label">收件人地址</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" name="delivery_address" value="<?= ArrayHelper::getValue($setting['delivery_address'], 'value', '') ?>" placeholder="审车收货地址"/>
+                                    <input type="text" class="form-control" name="delivery_address[0]" value="<?= $delivery_address[0] ?>" placeholder="收件人地址"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">收件人姓名</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" name="delivery_address[1]" value="<?= $delivery_address[1] ?>" placeholder="收件人姓名"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">收件人电话</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" name="delivery_address[2]" value="<?= $delivery_address[2] ?>" placeholder="收件人电话"/>
                                 </div>
                             </div>
                         </div>

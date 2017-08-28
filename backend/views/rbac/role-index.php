@@ -118,13 +118,13 @@ JS
                         <td align="center">
                             <div class="btn-group">
                                 <?php if(pd\admin\components\Helper::checkRoute('/rbac/role-assign')) : ?>
-                                    <a href="<?= Url::to(['role-assign', 'id'=> $model->name]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">权限</span></a>
+                                    <a href="<?= Url::to(['role-assign', 'id'=> $model->name]) ?>"><span class="btn btn-warning m-r-1 m-b-5 btn-xs"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-edit"></use></svg> 权限</span></a>
                                 <?php endif; ?>
                                 <?php if(pd\admin\components\Helper::checkRoute('/rbac/role-update') && !in_array($model->name, ['管理员', '服务商', '代理商', '客户经理'])) : ?>
-                                    <a href="<?= Url::to(['role-update', 'id'=> $model->name]) ?>" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
+                                    <a href="<?= Url::to(['role-update', 'id'=> $model->name]) ?>" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static"><span class="btn btn-warning m-r-1 m-b-5 btn-xs"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-edit"></use></svg> 编辑</span></a>
                                 <?php endif; ?>
                                 <?php if(Helper::checkRoute("rbac/role-delete") && !in_array($model->name, ['管理员', '服务商', '代理商', '客户经理'])) : ?>
-                                    <a href="<?= Url::to(['role-delete','id' => $model->name]) ?>" data-confirm="确认删除此角色？" data-method="post" data-url=""><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                                    <a href="<?= Url::to(['role-delete','id' => $model->name]) ?>" data-confirm="确认删除此角色？" data-method="post" data-url=""><span class="btn btn-danger m-r-1 m-b-5 btn-xs"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-close"></use></svg> 删除</span></a>
                                 <?php endif; ?>
                             </div>
                         </td>
