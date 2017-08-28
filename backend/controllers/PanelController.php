@@ -39,7 +39,8 @@ class PanelController extends BackendController
     }
     public function actionUserAdd($days)
     {
-        $model = \common\models\Helper::getStat($days);
+        $port = 'user';
+        $model = \common\models\Helper::getStat($days,$port);
         if($model){
             return $this->asJson(['data'=> $model, 'code'=>1, 'message'=> 'success']);
         }
@@ -48,7 +49,8 @@ class PanelController extends BackendController
 
     public function actionOrderAdd($days)
     {
-        $model = \common\models\Helper::getStat($days);
+        $port = 'order';
+        $model = \common\models\Helper::getStat($days,$port);
         if($model){
             return $this->asJson(['data'=> $model, 'code'=>1, 'message'=> 'success']);
         }

@@ -64,7 +64,7 @@
                 <div class="widget widget-stats bg-black">
                     <div class="stats-icon"><i class="fa fa-users"></i></div>
                     <div class="stats-info">
-                        <h4>待审核订单</h4>
+                        <h4>待处理审核</h4>
                         <p><?= $model['orderCount']['afterStatusChange']?></p>
                     </div>
                     <div class="stats-link">
@@ -105,7 +105,13 @@
                     <h4 class="panel-title">用户增长</h4>
                 </div>
                 <div class="panel-body">
-                    <div id="memebrAdd" style="height: 250px;"></div>
+                    <p>
+                        <span class="m-r-5">时间:</span>
+                        <a href="javascript:;" class="btn btn-primary btn-xs active memberChooseTime" data-chooseDay="7" data-editable="popup">7天</a>
+                        <a href="javascript:;" class="btn btn-primary btn-xs memberChooseTime" data-chooseDay="30" data-editable="inline">1个月</a>
+                        <a href="javascript:;" class="btn btn-primary btn-xs memberChooseTime" data-chooseDay="90" data-editable="inline">3个月</a>
+                    </p>
+                    <div id="memberAdd" style="height: 250px;"></div>
                 </div>
             </div>
             <?php endif; ?>
@@ -121,8 +127,15 @@
                     <h4 class="panel-title">订单增长</h4>
                 </div>
                 <div class="panel-body">
+                    <p>
+                        <span class="m-r-5">时间:</span>
+                        <a href="javascript:;" class="btn btn-primary btn-xs active orderChooseTime" data-chooseDay="7" data-editable="popup">7天</a>
+                        <a href="javascript:;" class="btn btn-primary btn-xs orderChooseTime" data-chooseDay="30" data-editable="inline">1个月</a>
+                        <a href="javascript:;" class="btn btn-primary btn-xs orderChooseTime" data-chooseDay="90" data-editable="inline">3个月</a>
+                    </p>
                     <div id="orderAdd" style="height: 250px;"></div>
                 </div>
+
             </div>
             <?php endif; ?>
         </div>
@@ -132,41 +145,18 @@
 
 $this->registerJs(<<<JS
 $(function() {
-    $.ajax({
-        url: '/panel/user-add',
+    var ajaxDetailFun = function (theDays,port){
+        $.ajax({
+        url: '/panel/order-add',
         type: 'get',
         dataType: 'json',
-        data: {days:7},
+        data: {days:theDays,port:port},
         success: function (res) {
             if (res.code == 1) {
-                var memberAdd = Morris.Line({
-                // ID of the element in which to draw the chart.
-                    element: 'memebrAdd',
-                    // Chart data records -- each entry in this array corresponds to a point on
-                    // the chart.   
-                    data: [
-                        { day:res.data.xTime.one, a:res.data.people.memberSeven.memberCount1, b:res.data.people.serviceSeven.serviceCount1, c:res.data.people.agencySeven.agencyCount1 },
-                        { day:res.data.xTime.two, a:res.data.people.memberSeven.memberCount2, b:res.data.people.serviceSeven.serviceCount2, c:res.data.people.agencySeven.agencyCount2 },
-                        { day:res.data.xTime.three, a:res.data.people.memberSeven.memberCount3, b:res.data.people.serviceSeven.serviceCount3, c:res.data.people.agencySeven.agencyCount3 },
-                        { day:res.data.xTime.four, a:res.data.people.memberSeven.memberCount4, b:res.data.people.serviceSeven.serviceCount4, c:res.data.people.agencySeven.agencyCount4 },
-                        { day:res.data.xTime.five, a:res.data.people.memberSeven.memberCount5, b:res.data.people.serviceSeven.serviceCount5, c:res.data.people.agencySeven.agencyCount5 },
-                        { day:res.data.xTime.six, a:res.data.people.memberSeven.memberCount6, b:res.data.people.serviceSeven.serviceCount6, c:res.data.people.agencySeven.agencyCount6 },
-                        { day:res.data.xTime.seven, a:res.data.people.memberSeven.memberCount7, b:res.data.people.serviceSeven.serviceCount7, c:res.data.people.agencySeven.agencyCount7 }
-                    ],
-                    // The name of the data record attribute that contains x-values.
-                    xkey: 'day',
-                    // A list of names of data record attributes that contain y-values.
-                    ykeys: ['a', 'b', 'c'],
-                    // Labels for the ykeys -- will be displayed when you hover over the
-                    // chart.
-                    labels: ['会员', '服务商', '代理商']
-                });
-                var orderAdd = new Morris.Line({
-                    // ID of the element in which to draw the chart.
-                    element: 'orderAdd',
-                    // Chart data records -- each entry in this array corresponds to a point on
-                    // the chart.
-                    data: [
+               $('#orderAdd').html('')
+               var callbackData
+               if(theDays == 7){
+                    callbackData = [
                         { year:res.data.xTime.one, a:res.data.order.rescueSeven.rescueCount1, b:res.data.order.maintainSeven.maintainCount1, c:res.data.order.upkeepSeven.upkeepCount1, 
                             d:res.data.order.checkSeven.checkCount1, e:res.data.order.insuranceSeven.insuranceCount1},
                         { year:res.data.xTime.two, a:res.data.order.rescueSeven.rescueCount2, b:res.data.order.maintainSeven.maintainCount2, c:res.data.order.upkeepSeven.upkeepCount2, 
@@ -181,7 +171,34 @@ $(function() {
                             d:res.data.order.checkSeven.checkCount6, e:res.data.order.insuranceSeven.insuranceCount6},
                         { year:res.data.xTime.seven, a:res.data.order.rescueSeven.rescueCount7, b:res.data.order.maintainSeven.maintainCount7, c:res.data.order.upkeepSeven.upkeepCount7, 
                             d:res.data.order.checkSeven.checkCount7, e:res.data.order.insuranceSeven.insuranceCount7}
-                    ],
+                    ];
+               } else if (theDays == 30) {
+                    callbackData = [
+                        { year:res.data.xTime.one, a:res.data.order.rescueMonth.rescueCount1, b:res.data.order.maintainMonth.maintainCount1, c:res.data.order.upkeepMonth.upkeepCount1, 
+                            d:res.data.order.checkMonth.checkCount1, e:res.data.order.insuranceMonth.insuranceCount1},
+                        { year:res.data.xTime.two, a:res.data.order.rescueMonth.rescueCount2, b:res.data.order.maintainMonth.maintainCount2, c:res.data.order.upkeepMonth.upkeepCount2, 
+                            d:res.data.order.checkMonth.checkCount2, e:res.data.order.insuranceMonth.insuranceCount2},
+                        { year:res.data.xTime.three, a:res.data.order.rescueMonth.rescueCount3, b:res.data.order.maintainMonth.maintainCount3, c:res.data.order.upkeepMonth.upkeepCount3, 
+                            d:res.data.order.checkMonth.checkCount3, e:res.data.order.insuranceMonth.insuranceCount3},
+                        { year:res.data.xTime.four, a:res.data.order.rescueMonth.rescueCount4, b:res.data.order.maintainMonth.maintainCount4, c:res.data.order.upkeepMonth.upkeepCount4, 
+                            d:res.data.order.checkMonth.checkCount4, e:res.data.order.insuranceMonth.insuranceCount4}
+                    ];
+               } else {
+                   callbackData = [
+                        { year:res.data.xTime.one, a:res.data.order.rescueThree.rescueCount1, b:res.data.order.maintainThree.maintainCount1, c:res.data.order.upkeepThree.upkeepCount1, 
+                            d:res.data.order.checkThree.checkCount1, e:res.data.order.insuranceThree.insuranceCount1},
+                        { year:res.data.xTime.two, a:res.data.order.rescueThree.rescueCount2, b:res.data.order.maintainThree.maintainCount2, c:res.data.order.upkeepThree.upkeepCount2, 
+                            d:res.data.order.checkThree.checkCount2, e:res.data.order.insuranceThree.insuranceCount2},
+                        { year:res.data.xTime.three, a:res.data.order.rescueThree.rescueCount3, b:res.data.order.maintainThree.maintainCount3, c:res.data.order.upkeepThree.upkeepCount3, 
+                            d:res.data.order.checkThree.checkCount3, e:res.data.order.insuranceThree.insuranceCount3}
+                    ];
+               }
+                var orderAdd = new Morris.Line({
+                    // ID of the element in which to draw the chart.
+                    element: 'orderAdd',
+                    // Chart data records -- each entry in this array corresponds to a point on
+                    // the chart.
+                    data: callbackData,
                     // The name of the data record attribute that contains x-values.
                     xkey: 'year',
                     // A list of names of data record attributes that contain y-values.
@@ -198,6 +215,77 @@ $(function() {
             //swal("网络错误", "", "error");
         }
     });
+    }
+    
+    $('.orderChooseTime').on('click', function() {
+        var tempDay = $(this).attr('data-chooseDay')
+      ajaxDetailFun(tempDay)
+    })
+    ajaxDetailFun(7)
+
+    var ajaxDetailFunM = function (theDays){
+        $.ajax({
+        url: '/panel/user-add',
+        type: 'get',
+        dataType: 'json',
+        data: {days:theDays},
+        success: function (res) {
+            if (res.code == 1) {
+               $('#memberAdd').html('')
+               var callbackData
+               if(theDays == 7){
+                    callbackData = [
+                        { day:res.data.xTime.one, a:res.data.people.memberSeven.memberCount1, b:res.data.people.serviceSeven.serviceCount1, c:res.data.people.agencySeven.agencyCount1 },
+                        { day:res.data.xTime.two, a:res.data.people.memberSeven.memberCount2, b:res.data.people.serviceSeven.serviceCount2, c:res.data.people.agencySeven.agencyCount2 },
+                        { day:res.data.xTime.three, a:res.data.people.memberSeven.memberCount3, b:res.data.people.serviceSeven.serviceCount3, c:res.data.people.agencySeven.agencyCount3 },
+                        { day:res.data.xTime.four, a:res.data.people.memberSeven.memberCount4, b:res.data.people.serviceSeven.serviceCount4, c:res.data.people.agencySeven.agencyCount4 },
+                        { day:res.data.xTime.five, a:res.data.people.memberSeven.memberCount5, b:res.data.people.serviceSeven.serviceCount5, c:res.data.people.agencySeven.agencyCount5 },
+                        { day:res.data.xTime.six, a:res.data.people.memberSeven.memberCount6, b:res.data.people.serviceSeven.serviceCount6, c:res.data.people.agencySeven.agencyCount6 },
+                        { day:res.data.xTime.seven, a:res.data.people.memberSeven.memberCount7, b:res.data.people.serviceSeven.serviceCount7, c:res.data.people.agencySeven.agencyCount7 }
+                    ];
+               } else if (theDays == 30) {
+                    callbackData = [
+                        { day:res.data.xTime.one, a:res.data.people.memberMonth.memberCount1, b:res.data.people.serviceMonth.serviceCount1, c:res.data.people.agencyMonth.agencyCount1 },
+                        { day:res.data.xTime.two, a:res.data.people.memberMonth.memberCount2, b:res.data.people.serviceMonth.serviceCount2, c:res.data.people.agencyMonth.agencyCount2 },
+                        { day:res.data.xTime.three, a:res.data.people.memberMonth.memberCount3, b:res.data.people.serviceMonth.serviceCount3, c:res.data.people.agencyMonth.agencyCount3 },
+                        { day:res.data.xTime.four, a:res.data.people.memberMonth.memberCount4, b:res.data.people.serviceMonth.serviceCount4, c:res.data.people.agencyMonth.agencyCount4 }
+                    ];
+               } else {
+                   callbackData = [
+                        { day:res.data.xTime.one, a:res.data.people.memberThree.memberCount1, b:res.data.people.serviceThree.serviceCount1, c:res.data.people.agencyThree.agencyCount1 },
+                        { day:res.data.xTime.two, a:res.data.people.memberThree.memberCount2, b:res.data.people.serviceThree.serviceCount2, c:res.data.people.agencyThree.agencyCount2 },
+                        { day:res.data.xTime.three, a:res.data.people.memberThree.memberCount3, b:res.data.people.serviceThree.serviceCount3, c:res.data.people.agencyThree.agencyCount3 }
+                    ];
+               }
+                var memberAdd = Morris.Line({
+                // ID of the element in which to draw the chart.
+                    element: 'memberAdd',
+                    // Chart data records -- each entry in this array corresponds to a point on
+                    // the chart.   
+                    data: callbackData,
+                    // The name of the data record attribute that contains x-values.
+                    xkey: 'day',
+                    // A list of names of data record attributes that contain y-values.
+                    ykeys: ['a', 'b', 'c'],
+                    // Labels for the ykeys -- will be displayed when you hover over the
+                    // chart.
+                    labels: ['会员', '服务商', '代理商']
+                });
+            } else {
+                swal(res.message, "", "error");
+            }
+        },
+        error: function (xhr) {
+            //swal("网络错误", "", "error");
+        }
+    });
+    }
+    
+    $('.memberChooseTime').on('click', function() {
+        var tempDay = $(this).attr('data-chooseDay');
+      ajaxDetailFunM(tempDay)
+    })
+    ajaxDetailFunM(7)
 })
 JS
 );
