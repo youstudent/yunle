@@ -680,7 +680,7 @@ class Order extends \yii\db\ActiveRecord
         if (isset($data['filtrate']) && !empty($data['filtrate'])) {
             $service = [];
             $serviceOld = Service::find()->select('id, name, level, lat, lng, open_at, close_at, state, status')
-                ->where(['deleted_at'=>null,'state'=>1,'status'=>1])
+                ->where(['deleted_at'=>null,'status'=>1,'type'=>1])
                 ->asArray()
                 ->all();
             foreach ($serviceOld as $k=>$v) {
@@ -691,7 +691,7 @@ class Order extends \yii\db\ActiveRecord
 
         } else {
             $service = Service::find()->select('id, name, level, lat, lng, open_at, close_at, state, status')
-                ->where(['deleted_at'=>null,'status'=>1])
+                ->where(['deleted_at'=>null,'status'=>1,'type'=>1])
                 ->asArray()
                 ->all();
         }
@@ -739,7 +739,7 @@ class Order extends \yii\db\ActiveRecord
         $service = [];
         $serviceOld = Service::find()->select('id, name, level, lat, lng, open_at, close_at, state')
             ->asArray()
-            ->where(['deleted_at'=>null, 'state'=>1, 'status'=>1])
+            ->where(['deleted_at'=>null, 'state'=>1, 'status'=>1, 'type'=>1])
             ->all();
         foreach ($serviceOld as $k=>$v) {
             if (in_array(Helper::getTypes($data['type']),Helper::getServiceTag($v['id']))) {
