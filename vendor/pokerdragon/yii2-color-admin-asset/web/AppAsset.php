@@ -17,7 +17,7 @@ class AppAsset extends BaseColorAdminAsset
         'css/animate.min.css',
         'css/style.min.css',
         'css/style-responsive.min.css',
-        'css/theme/default.css',
+        //'css/theme/default.css',
         'css/pd/ali-at.css',
     ];
 

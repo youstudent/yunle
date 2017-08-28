@@ -14,17 +14,6 @@ use yii\widgets\Breadcrumbs;
     ) ?>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
-<!--    <h1 class="page-header">-->
-<!--        --><?php
-//        if ($this->title !== null) {
-//            echo \yii\helpers\Html::encode($this->title) . '<small>' . \yii\helpers\Html::encode($this->title) . '</small>';
-//        } else {
-//            echo \yii\helpers\Inflector::camel2words(
-//                \yii\helpers\Inflector::id2camel($this->context->module->id)
-//            );
-//            echo ($this->context->module->id !== \Yii::$app->id) ? '<small>模块</small>' : '';
-//        } ?>
-<!--    </h1>-->
     <!-- end page-header -->
 
     <?= $content ?>
@@ -37,14 +26,14 @@ use yii\widgets\Breadcrumbs;
     <a href="javascript:;" data-click="theme-panel-expand" class="theme-collapse-btn"><i class="fa fa-cog"></i></a>
     <div class="theme-panel-content">
         <h5 class="m-t-0">主题设置</h5>
-        <ul class="theme-list clearfix">
-            <li class="active"><a href="javascript:;" class="bg-green" data-theme="default" data-click="theme-selector" data-toggle="tooltip" data-trigger="hover" data-container="body" data-title="Default">&nbsp;</a></li>
-            <li><a href="javascript:;" class="bg-red" data-theme="red" data-click="theme-selector" data-toggle="tooltip" data-trigger="hover" data-container="body" data-title="Red">&nbsp;</a></li>
-            <li><a href="javascript:;" class="bg-blue" data-theme="blue" data-click="theme-selector" data-toggle="tooltip" data-trigger="hover" data-container="body" data-title="Blue">&nbsp;</a></li>
-            <li><a href="javascript:;" class="bg-purple" data-theme="purple" data-click="theme-selector" data-toggle="tooltip" data-trigger="hover" data-container="body" data-title="Purple">&nbsp;</a></li>
-            <li><a href="javascript:;" class="bg-orange" data-theme="orange" data-click="theme-selector" data-toggle="tooltip" data-trigger="hover" data-container="body" data-title="Orange">&nbsp;</a></li>
-            <li><a href="javascript:;" class="bg-black" data-theme="black" data-click="theme-selector" data-toggle="tooltip" data-trigger="hover" data-container="body" data-title="Black">&nbsp;</a></li>
-        </ul>
+<!--        <ul class="theme-list clearfix">-->
+<!--            <li class="active"><a href="javascript:;" class="bg-green" data-theme="default" data-click="theme-selector" data-toggle="tooltip" data-trigger="hover" data-container="body" data-title="Default">&nbsp;</a></li>-->
+<!--            <li><a href="javascript:;" class="bg-red" data-theme="red" data-click="theme-selector" data-toggle="tooltip" data-trigger="hover" data-container="body" data-title="Red">&nbsp;</a></li>-->
+<!--            <li><a href="javascript:;" class="bg-blue" data-theme="blue" data-click="theme-selector" data-toggle="tooltip" data-trigger="hover" data-container="body" data-title="Blue">&nbsp;</a></li>-->
+<!--            <li><a href="javascript:;" class="bg-purple" data-theme="purple" data-click="theme-selector" data-toggle="tooltip" data-trigger="hover" data-container="body" data-title="Purple">&nbsp;</a></li>-->
+<!--            <li><a href="javascript:;" class="bg-orange" data-theme="orange" data-click="theme-selector" data-toggle="tooltip" data-trigger="hover" data-container="body" data-title="Orange">&nbsp;</a></li>-->
+<!--            <li><a href="javascript:;" class="bg-black" data-theme="black" data-click="theme-selector" data-toggle="tooltip" data-trigger="hover" data-container="body" data-title="Black">&nbsp;</a></li>-->
+<!--        </ul>-->
         <div class="divider"></div>
         <div class="row m-t-10">
             <div class="col-md-5 control-label double-line">顶部颜色</div>
@@ -55,15 +44,15 @@ use yii\widgets\Breadcrumbs;
                 </select>
             </div>
         </div>
-        <div class="row m-t-10">
-            <div class="col-md-5 control-label">头</div>
-            <div class="col-md-7">
-                <select name="header-fixed" class="form-control input-sm">
-                    <option value="1">固定</option>
-                    <option value="2">默认</option>
-                </select>
-            </div>
-        </div>
+<!--        <div class="row m-t-10">-->
+<!--            <div class="col-md-5 control-label">头</div>-->
+<!--            <div class="col-md-7">-->
+<!--                <select name="header-fixed" class="form-control input-sm">-->
+<!--                    <option value="1">固定</option>-->
+<!--                    <option value="2">默认</option>-->
+<!--                </select>-->
+<!--            </div>-->
+<!--        </div>-->
         <div class="row m-t-10">
             <div class="col-md-5 control-label double-line">菜单间隔</div>
             <div class="col-md-7">

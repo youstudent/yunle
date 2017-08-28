@@ -67,7 +67,23 @@ JS
     <div class="container-fluid">
         <!-- begin mobile sidebar expand / collapse button -->
         <div class="navbar-header">
-            <a href="index.html" class="navbar-brand"><span class="navbar-logo"></span>云乐享车</a>
+            <a href="index.html" class="navbar-brand"><span class="navbar-logo"></span>
+                <?php
+                $group = Helper::getLoginMemberRoleGroup();
+                switch($group){
+                    case 1:
+                        echo '云乐享车-后台管理';
+                        break;
+                    case 2:
+                        echo '云乐享车-服务平台';
+                        break;
+                    case 3:
+                        echo '云乐享车-代理平台';
+                        break;
+                }
+
+                ?>
+            </a>
             <button type="button" class="navbar-toggle" data-click="sidebar-toggled">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>

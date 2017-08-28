@@ -21,6 +21,8 @@ if (Yii::$app->controller->action->id === 'login') {
     pd\coloradmin\web\ColorAdminAsset::register($this);
 
     $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/pokerdragon/color-admin/assets');
+    //加载主题css文件
+    $this->registerCssFile($directoryAsset . '/css/theme/default.css', ['id'=> 'theme', 'data-asset' => $directoryAsset]);
     ?>
     <?php $this->beginPage() ?>
     <!DOCTYPE html>

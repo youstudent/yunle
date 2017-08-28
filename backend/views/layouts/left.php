@@ -1,4 +1,6 @@
 <?php
+use common\components\Helper;
+
 $callback = function($menu){
 
     $data = json_decode($menu['data'], true);
@@ -32,15 +34,9 @@ $menu = \mdm\admin\components\MenuHelper::getAssignedMenu(Yii::$app->user->getId
     <div data-scrollbar="true" data-height="100%">
         <!-- begin sidebar user -->
         <ul class="nav">
-            <li class="nav-profile">
-                <div class="image">
-                    <a href="javascript:;"><img src="assets/img/user-13.jpg" alt="" /></a>
-                </div>
-                <div class="info">
-                    Sean Ngu
-                    <small>我其实想在这里放个表</small>
-                </div>
-            </li>
+<!--            <li class="nav-profile">-->
+<!---->
+<!--            </li>-->
         </ul>
         <!-- end sidebar user -->
         <!-- begin sidebar nav -->
