@@ -1027,16 +1027,16 @@ class Helper
     /*
      * 状态文案
      */
-    public static function getCopy($type,$status,$cost=0)
+    public static function getCopy($type,$status,$cost=0,$service,$myInfo)
     {
         $info = '';
         if ($type == 1 || $type == 2 || $type == 3) {
             switch ($status) {
                 case 1:
-                    $info = '待接单';
+                    $info = '订单已分派给服务商'. $service .'等待接单';
                     break;
                 case 2:
-                    $info = '服务商已成功接单';
+                    $info = '服务商'. $service .'已成功接单';
                     break;
                 case 3:
                     $info = '订单已分派给司机，正在接车中';
@@ -1045,16 +1045,16 @@ class Helper
                     $info = '司机已经接车，正在返回中';
                     break;
                 case 5:
-                    $info = '服务商已经接车，准备进行评估';
+                    $info = '服务商'. $service .'已经接车，准备进行评估';
                     break;
                 case 6:
-                    $info = '服务商已出评估结果，价格：'.$cost.'元';
+                    $info = '服务商'. $service .'已出评估结果，价格：'.$cost.'元';
                     break;
                 case 7:
                     $info = '评估结果确认，正在进行处理';
                     break;
                 case 8:
-                    $info = '服务商处理完毕，等待交车';
+                    $info = '服务商'. $service .'处理完毕，等待交车';
                     break;
                 case 99:
                     $info = '订单已完成';
@@ -1069,7 +1069,7 @@ class Helper
                     $info = '待接单';
                     break;
                 case 2:
-                    $info = '服务商已成功接单';
+                    $info = '服务商'. $service .'已成功接单';
                     break;
                 case 3:
                     $info = '订单已经分派给审车员，正在处理';
@@ -1093,16 +1093,19 @@ class Helper
         } else {
             switch ($status) {
                 case 1:
-                    $info = '待寄出';
+                    $info = '订单创建成功，请及时寄出证件';
                     break;
                 case 2:
                     $info = '订单已经分派给审车员，正在处理';
                     break;
+                case 97:
+                    $info = '订单已完成，审车未通过，理由：'.$myInfo;
+                    break;
                 case 98:
-                    $info = '审车未通过';
+                    $info = '审车未通过,理由为:'.$myInfo;
                     break;
                 case 99:
-                    $info = '订单已完成';
+                    $info = '订单已完成, 审车通过';
                     break;
                 case 100:
                     $info = '订单已取消';

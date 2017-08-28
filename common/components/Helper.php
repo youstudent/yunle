@@ -245,6 +245,13 @@ class Helper
         return $ids;
     }
 
+    public static function byServiceIdGetServiceMemberIds($id)
+    {
+        $salesman_ids = User::find()->where(['pid'=>$id])->select('id')->column();
+        $member_ids = Member::find()->where(['pid'=>$salesman_ids])->select('id')->column();
+        return $member_ids;
+    }
+
     public static function byCustomerManagerIdGetServiceMemberIds($id)
     {
         $service_ids = Service::find()->where(['sid'=>$id])->select('id')->column();

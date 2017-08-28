@@ -269,7 +269,7 @@ class Order extends \yii\db\ActiveRecord
         $detail['updated_at'] = date('Y-m-d H:i',$detail['updated_at']);
 
         //动态列表
-        $act = ActDetail::find()->select('status, user_id, created_at')
+        $act = ActDetail::find()->select('status, user, created_at')
             ->where(['order_id'=>$data['order_id']])
             ->asArray()
             ->orderBy(['created_at' => SORT_DESC])
@@ -307,7 +307,7 @@ class Order extends \yii\db\ActiveRecord
 
         foreach ($act as &$v) {
             $v['created_at'] = date('Y-m-d H:i', $v['created_at']);
-            $v['status'] = Helper::getStatus($v['status'],$detail['type']);
+            $v['status'] = Helper::getCopy($detail['type'],$v['status'],$detail['cost'],$detail['service'],$v['info']);
         }
         $order = ['act'=>$act, 'detail'=>$detail, 'topStatus'=>$top, 'endStatus'=>$actEnd['status']];
 
@@ -361,7 +361,7 @@ class Order extends \yii\db\ActiveRecord
         $order = Order::findOne(['id'=>$data['order_id']]);
         foreach ($act as &$v) {
             $v['created_at'] = date('Y-m-d H:i', $v['created_at']);
-            $v['status'] = Helper::getStatus($v['status'],$order->type);
+            $v['status'] = Helper::getCopy($order->type,$v['status'],$order->cost,$order->service,$v['info']);
             $img = ActImg::find()->select('img_path')->where(['act_id'=> $v['id']])->asArray()->all();
             $actImg = [];
             foreach ($img as & $vv) {
@@ -544,7 +544,6 @@ class Order extends \yii\db\ActiveRecord
         //取消订单
         $a = ActDetail::findOne(['order_id'=>$data['order_id']]);
         $a->status = 100;
-        $a->info = '取消订单';
         $a->user_id = $id;
         $a->user = $user;
         $a->id = null;
@@ -648,11 +647,6 @@ class Order extends \yii\db\ActiveRecord
         $act->user_id = $member_id;
         $act->user = Helper::getName($member_id);
         $act->order_id = $order_id;
-        if ($type == 5) {
-            $act->info = '订单创建成功，请及时寄出证件';
-        } else {
-            $act->info = '订单已分派给服务商'.$service.'，等待接单';
-        }
 
         $act->status = 1;
         $act->created_at = time();
@@ -680,7 +674,7 @@ class Order extends \yii\db\ActiveRecord
         if (isset($data['filtrate']) && !empty($data['filtrate'])) {
             $service = [];
             $serviceOld = Service::find()->select('id, name, level, lat, lng, open_at, close_at, state, status')
-                ->where(['deleted_at'=>null,'state'=>1,'status'=>1])
+                ->where(['deleted_at'=>null,'status'=>1,'type'=>1])
                 ->asArray()
                 ->all();
             foreach ($serviceOld as $k=>$v) {
@@ -691,7 +685,7 @@ class Order extends \yii\db\ActiveRecord
 
         } else {
             $service = Service::find()->select('id, name, level, lat, lng, open_at, close_at, state, status')
-                ->where(['deleted_at'=>null,'status'=>1])
+                ->where(['deleted_at'=>null,'status'=>1,'type'=>1])
                 ->asArray()
                 ->all();
         }
@@ -739,7 +733,7 @@ class Order extends \yii\db\ActiveRecord
         $service = [];
         $serviceOld = Service::find()->select('id, name, level, lat, lng, open_at, close_at, state')
             ->asArray()
-            ->where(['deleted_at'=>null, 'state'=>1, 'status'=>1])
+            ->where(['deleted_at'=>null, 'state'=>1, 'status'=>1, 'type'=>1])
             ->all();
         foreach ($serviceOld as $k=>$v) {
             if (in_array(Helper::getTypes($data['type']),Helper::getServiceTag($v['id']))) {
@@ -1195,7 +1189,6 @@ class Order extends \yii\db\ActiveRecord
         //拒绝订单
         $a = ActDetail::findOne(['order_id'=>$data['order_id']]);
         $a->status = 100;
-        $a->info = '订单已被服务商拒绝';
         $a->user_id = $id;
         $a->user = $name;
         $a->id = null;
@@ -1220,7 +1213,6 @@ class Order extends \yii\db\ActiveRecord
         //接受订单
         $a = ActDetail::findOne(['order_id'=>$data['order_id']]);
         $a->status = 2;
-        $a->info = '服务商已成功接单';
         $a->user_id = $id;
         $a->user = $name;
         $a->id = null;
@@ -1303,11 +1295,11 @@ class Order extends \yii\db\ActiveRecord
         $od = Order::findOne($data['order_id'])->type;
         $a->status = $data['actId'];
         if (!isset($data['info'])  && empty($data['info'])) {
-//            $a->info = $data['actName'];
-            $a->info = Helper::getCopy($od,$data['actId']);
+            $a->info = '';
+//            $a->info = Helper::getCopy($od,$data['actId']);
         } else {
-//            $a->info = $data['info'];
-            $a->info = Helper::getCopy($od,$data['actId']);
+            $a->info = $data['info'];
+//            $a->info = Helper::getCopy($od,$data['actId']);
         }
         $a->user_id = $user_id;
         $a->user = $name;
@@ -1339,7 +1331,6 @@ class Order extends \yii\db\ActiveRecord
                 }
                 $orderCost = Order::findOne(['id'=>$data['order_id']]);
                 $act = ActDetail::findOne($act_id);
-                $act->info = Helper::getCopy($orderCost->type,6,$data['cost']);
                 $act->save(false);
                 $orderCost->cost = $data['cost'];
                 if(!$orderCost->save(false)){
