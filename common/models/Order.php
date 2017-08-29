@@ -269,7 +269,7 @@ class Order extends \yii\db\ActiveRecord
         $detail['updated_at'] = date('Y-m-d H:i',$detail['updated_at']);
 
         //动态列表
-        $act = ActDetail::find()->select('status, user, created_at')
+        $act = ActDetail::find()->select('status, user, info, created_at')
             ->where(['order_id'=>$data['order_id']])
             ->asArray()
             ->orderBy(['created_at' => SORT_DESC])
