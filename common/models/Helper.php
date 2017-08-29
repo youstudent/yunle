@@ -1027,7 +1027,7 @@ class Helper
     /*
      * 状态文案
      */
-    public static function getCopy($type,$status,$cost=0,$service,$myInfo)
+    public static function getCopy($type,$status,$cost=0,$service=null,$myInfo=null)
     {
         $info = '';
         if ($type == 1 || $type == 2 || $type == 3) {

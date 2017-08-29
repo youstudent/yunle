@@ -9,6 +9,7 @@ namespace backend\controllers;
 
 
 use backend\models\ActDetail;
+use backend\models\form\ActForm;
 use backend\models\form\OrderForm;
 use backend\models\Order;
 use backend\models\OrderDetail;
@@ -92,11 +93,11 @@ class OrderController extends BackendController
         //要写逻辑展示可以操作的订单状态
         $model = Order::getOrderDetail($id);
 
-        if (Yii::$app->request->post()) {
-            if(OrderForm::alter(Yii::$app->request->post('Order'),$id)){
+        if ($model->load(Yii::$app->request->post())) {
+            if($model->alter(Yii::$app->request->post(),$id)){
                 return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '变更成功', 'url'=> Url::to(['order/index?member_id='.$model->member_id])]);
             }
-            return $this->asJson(['data'=> '', 'code'=>0, 'message'=> $model->errorMsg]);
+            return $this->asJson(['data'=> '', 'code'=>0, 'message'=> $model->getFirstError('img')]);
         }
         return $this->renderAjax('modify-status', [
             'model' => $model

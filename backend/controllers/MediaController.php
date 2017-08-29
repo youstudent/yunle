@@ -9,12 +9,14 @@ namespace backend\controllers;
 
 
 use backend\models\DrivingLicense;
+use backend\models\form\ActForm;
 use backend\models\form\AgencyForm;
 use backend\models\form\BannerForm;
 use backend\models\form\CarForm;
 use backend\models\form\ServiceForm;
 use backend\models\form\UserForm;
 use backend\models\Identification;
+use backend\models\Order;
 use common\models\UserImg;
 use Imagine\Image\ImageInterface;
 use Yii;
@@ -87,6 +89,12 @@ class MediaController extends BackendController
                     $thumb_width = 640;
                     $thumb_height = 640;
                 }
+                break;
+            case 'act':
+                $model = new Order();
+                $directory = Yii::getAlias('@common/static/upload/act') . DIRECTORY_SEPARATOR;
+                $sub_dir = 'act';
+                $attribute = 'img';
                 break;
         }
         $imageFile = UploadedFile::getInstance($model, $attribute);
