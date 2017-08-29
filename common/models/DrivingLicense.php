@@ -98,7 +98,7 @@ class DrivingLicense extends \yii\db\ActiveRecord
 
         $arr = 'id, name, sex, status, papers, permit';
         $license = DrivingLicense::find()->select($arr)
-            ->where(['member_id' => $member_id,'status'=>[1,2]])
+            ->where(['member_id' => $member_id])
             ->asArray()
             ->all();
         //用户类型信息

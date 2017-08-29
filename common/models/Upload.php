@@ -65,7 +65,7 @@ class Upload extends Model
                         return false;
                     }
                     break;
-                case  'identification':
+                case 'identification':
                     $model = new IdentificationImg();
                     $model->ident_id = $id;
                     $model->img_path = $img_path;
@@ -87,7 +87,7 @@ class Upload extends Model
                         return false;
                     }
                     break;
-                case 'portrait':
+                case 'salesman':
                     $model = UserImg::findOne(['user_id'=>$id]);
                     if (!isset($model) || empty($model)) {
                         $model = new UserImg();
@@ -96,6 +96,7 @@ class Upload extends Model
 
                     $model->img_path = $img_path;
                     $model->updated_at = time();
+                    $model->type = 1;
                     if (!$model->save(false)) {
                         return false;
                     }

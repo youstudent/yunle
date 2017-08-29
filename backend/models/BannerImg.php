@@ -8,6 +8,7 @@ use Yii;
  * This is the model class for table "{{%banner_img}}".
  *
  * @property integer $id
+ * @property integer $size
  * @property integer $banner_id
  * @property string $img_path
  */

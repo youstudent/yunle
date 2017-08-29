@@ -382,7 +382,7 @@ class User extends ActiveRecord
 
     public function newPhone($data) {
         if (empty($data['phone'])) {
-            $this->addError('message', '手机号或验证码不能为空');
+            $this->addError('message', '手机号不能为空');
             return false;
         }
         $member = Member::findOne($data['member_id']);
@@ -525,10 +525,10 @@ class User extends ActiveRecord
     /*
      * 头像上传
      */
-    public function photo($data, $user=null)
+    public function photo($data, $user)
     {
         $user_id = $user['user']['id'];
-        $type = 'portrait';
+        $type = 'salesman';
         $upload = new Upload();
         $img = $upload->setImageInformation($data['img'], $user_id, $type);
 

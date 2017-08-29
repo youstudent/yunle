@@ -91,7 +91,11 @@ class Identification extends \yii\db\ActiveRecord
 
 
         if(count($this->img_id) < 2){
-            $this->addError('img', '请上传2张身份证附件');
+            $this->addError('img', '请上传最少2张证件图片');
+            return false;
+        }
+        if(count($this->img_id) > 6){
+            $this->addError('img', '最多可上传6张证件图片');
             return false;
         }
 
@@ -118,6 +122,14 @@ class Identification extends \yii\db\ActiveRecord
 
     public function updateIdentification()
     {
+        if(count($this->img_id) < 2){
+            $this->addError('img', '请上传最少2张证件图片');
+            return false;
+        }
+        if(count($this->img_id) > 6){
+            $this->addError('img', '最多可上传6张证件图片');
+            return false;
+        }
         return Yii::$app->db->transaction(function(){
             $this->created_at = time();
             $this->updated_at = time();

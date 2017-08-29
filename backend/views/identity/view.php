@@ -100,7 +100,7 @@ pd\coloradmin\web\plugins\BaiduMapAsset::register($this);
                         </tr>
                         <?php if ($model->pic):?>
                         <tr>
-                            <td>附件</td>
+                            <td>证件</td>
                             <td>
                                 <?php foreach($model->pic as $img) : ?>
                                     <img src="<?= Yii::$app->params['img_domain']. $img->thumb ?>">

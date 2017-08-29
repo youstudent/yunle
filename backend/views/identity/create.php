@@ -88,8 +88,8 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
                                         'showCaption' => true,
                                         'showRemove' => true,
                                         'showUpload' => true,
-                                        'maxFileCount' => 2,
-                                        'minFileCount' => 1,
+//                                        'maxFileCount' => 2,
+//                                        'minFileCount' => 1,
                                     ]
                                 ]) ?>
 
@@ -113,8 +113,8 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
                                         'showCaption' => true,
                                         'showRemove' => true,
                                         'showUpload' => true,
-                                        'maxFileCount' => 6,
-                                        'minFileCount' => 1,
+//                                        'maxFileCount' => 6,
+//                                        'minFileCount' => 1,
                                     ]
                                 ])->label('营业执照') ?>
 
@@ -151,9 +151,9 @@ $(function () {
         
        
         f.on('beforeSubmit', function (e) {
-            img_count = getAllImgNodeCount();
-            if(img_count != 2){
-                swal("请上传正反两张身份证图片");
+            var img_count = getAllImgNodeCount();
+            if(img_count < 2){
+                swal("请上传最少两张证件图片");
                 return false;
             }
             swal({

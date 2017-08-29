@@ -149,7 +149,10 @@ class OrderForm extends Order
         $a = ActDetail::findOne(['order_id'=>$id]);
         $b = Order::findOne($id);
         $a->status = $data['status_id'];
-        $a->info = Helper::getCopy($b->type,$data['status_id']);
+        if (!isset($data['info']) || empty($data['info'])) {
+            $data['info'] = '操作失误';
+        }
+        $a->info = Helper::getCopy($b->type,$data['status_id'],$b->cost,$b->service,$data['info']);
         $a->user_id = $user_id;
         $a->user = $name;
         $a->id = null;
