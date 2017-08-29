@@ -46,12 +46,13 @@ class BannerController extends BackendController
     {
         $model = new BannerForm();
         $model->scenario = 'create';
-
+//        echo '<pre>';
+//        var_dump(Yii::$app->request->post());die;
         if($model->load(Yii::$app->request->post())){
             if($model->addBanner()){
                 return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '添加成功', 'url'=> Url::to(['index'])]);
             }
-            return $this->asJson(['data'=> '', 'code'=>0]);
+            return $this->asJson(['data'=> '', 'code'=>0, 'message'=> current($model->getFirstErrors())]);
         }
         return $this->renderPjax('create', [
             'model' => $model

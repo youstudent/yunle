@@ -31,7 +31,8 @@ class OrderForm extends Order
     public function rules()
     {
         return [
-            [['type', 'user', 'member_id', 'phone', 'car', 'pick', 'distributing', 'service', 'cost'], 'required', 'on' => ['create', 'update']]
+            [['type', 'user', 'member_id', 'phone', 'car', 'pick', 'distributing', 'service', 'cost'], 'required', 'on' => ['create', 'update']],
+            [['member_id', 'service_id', 'car_id'],'safe']
         ];
     }
 
@@ -39,8 +40,8 @@ class OrderForm extends Order
     public function scenarios()
     {
         return [
-            'create' => ['order_sn', 'type', 'user', 'phone', 'car', 'pick', 'pick_at', 'pick_addr', 'distributing', 'service', 'cost'],
-            'update' => ['order_sn', 'type', 'user', 'phone', 'car', 'pick', 'pick_at', 'pick_addr', 'distributing', 'service', 'cost'],
+            'create' => ['order_sn', 'type', 'user', 'phone', 'car', 'pick', 'pick_at', 'pick_addr', 'distributing', 'service', 'cost', 'service_id', 'car_id', 'member_id'],
+            'update' => ['order_sn', 'type', 'user', 'phone', 'car', 'pick', 'pick_at', 'pick_addr', 'distributing', 'service', 'cost', 'service_id', 'car_id', 'member_id'],
         ];
     }
 
