@@ -37,6 +37,7 @@ class ServiceForm  extends Service
     public function rules()
     {
         return [
+            [['phone'],'number'],
             [['name', 'principal', 'contact_phone', 'open_at', 'close_at', 'tags'], 'required'],
             [['level', 'status', 'created_at', 'updated_at', 'deleted_at', 'level', 'sid'], 'integer'],
             [['name', 'principal', 'contact_phone', 'introduction', 'address', 'lat', 'lng', 'open_at', 'close_at'], 'string', 'max' => 256],
@@ -46,16 +47,16 @@ class ServiceForm  extends Service
             [['username'], 'unique', 'targetClass' => '\backend\models\Adminuser', 'message' => '用户名已存在', 'on' => ['create']],
             [['sid', 'name', 'status', 'address', 'lat', 'lng', 'open_at', 'close_at'], 'required', 'on' => 'created_service'],
             [['head_id', 'atta_id', 'tags'], 'safe'],
-            ['contact_phone', 'match', 'pattern' => \pd\helpers\PregRule::PHONE, 'message' => '手机号格式不正确'],
+            ['contact_phone','match', 'pattern' => \pd\helpers\PregRule::PHONE, 'message' => '手机号格式不正确'],
         ];
     }
 
     public function scenarios()
     {
         return [
-            'create' => ['name', 'principal', 'contact_phone', 'level',  'introduction', 'address', 'lat', 'lng', 'username', 'password',  'level', 'sid', 'head_id', 'atta_id', 'tags'],
-            'created_service' => ['name', 'principal', 'contact_phone', 'level', 'status', 'introduction', 'address', 'lat', 'lng', 'username', 'password', 'open_at', 'close_at', 'level', 'sid'],
-            'update' => ['name', 'principal', 'contact_phone', 'level', 'status', 'introduction', 'address', 'lat', 'lng', 'sid', 'head_id', 'atta_id', 'tags'],
+            'create' => ['name', 'principal', 'contact_phone', 'level',  'introduction', 'address', 'lat', 'lng', 'username', 'password',  'level', 'sid', 'head_id', 'atta_id', 'tags','phone'],
+            'created_service' => ['name', 'principal', 'contact_phone', 'level', 'status', 'introduction', 'address', 'lat', 'lng', 'username', 'password', 'open_at', 'close_at', 'level', 'sid','phone'],
+            'update' => ['name', 'principal', 'contact_phone', 'level', 'status', 'introduction', 'address', 'lat', 'lng', 'sid', 'head_id', 'atta_id', 'tags','phone'],
         ];
     }
 
@@ -66,7 +67,8 @@ class ServiceForm  extends Service
             'password' => '最少6位，最长16位',
             'name' => '服务商名称',
             'principal' => '负责人名称',
-            'contact_phone' => '客户的联系电话',
+            'contact_phone' => '客户的联系电话1',
+            'phone' => '客户的联系电话2',
             'level' => '展示在客户端的服务商星级',
             'address' => '展示在客户端的服务商详细地址',
             'lat' => '服务商地址纬度,不建议直接填写',

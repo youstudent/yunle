@@ -173,7 +173,7 @@ JS
                         <td><?= \pd\helpers\Yii2Helpers::serialColumn($dataProvider, $index) ?></td>
                         <td><?= $model->name ?></td>
                         <td><?= $model->principal ?></td>
-                        <td><?= $model->contact_phone ?></td>
+                        <td><?= $model->contact_phone ?>--<?=$model->phone?></td>
                         <td><?= $model->address ?></td>
                         <td><?= $model->sid && backend\models\Adminuser::findOne($model->sid) ? backend\models\Adminuser::findOne($model->sid)->name : '未设置' ?></td>
                         <td><?= $model->status == 1 ? '<span class="badge badge-info">正常</span>' : '<span class="badge badge-danger">冻结</span>' ?></td>
