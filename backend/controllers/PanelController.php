@@ -8,6 +8,7 @@
 namespace backend\controllers;
 
 
+use backend\models\SystemNotice;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 
@@ -33,8 +34,10 @@ class PanelController extends BackendController
     public function actionIndex()
     {
         $model = \common\models\Helper::getStatCount();
+        $data = SystemNotice::find()->orderBy('created_at DESC')->limit(3)->asArray()->all();
         return $this->render('index', [
             'model' => $model,
+            'data'  =>$data
         ]);
     }
     public function actionUserAdd($days)

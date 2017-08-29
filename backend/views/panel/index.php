@@ -78,9 +78,9 @@
             <!-- begin col-3 -->
             <div class="col-md-8">
                 <div class="widget widget-stats bg-black">
-                    <p>公告1</p>
-                    <p>公告2</p>
-                    <p>公告3</p>
+                    <?php foreach ($data as $V):?>
+                    <p>时间:<?=date('Y-m-d H:i:s',$V['created_at'])?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;通知内容:<?=$V['content']?></p>
+                   <?php endforeach;?>
                 </div>
             </div>
             <!-- end col-3 -->
