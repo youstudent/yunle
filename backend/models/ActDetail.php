@@ -58,6 +58,7 @@ class ActDetail extends \yii\db\ActiveRecord
             'info' => '备注信息',
             'created_at' => '操作时间',
             'updated_at' => '修改时间',
+            'img' => '动态详情附件'
         ];
     }
 

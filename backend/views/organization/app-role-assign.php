@@ -43,17 +43,10 @@ $("#jstree-checkable").jstree({
 //     }
 // })
 $('#jstree-checkable').on('changed.jstree', function(e, data) {
-   if(data.action == 'select_node'){
-        var item = data.node.id;
-        //console.log('选中:'+ item);
-        assign(item);
-        
-   }
-   if(data.action == 'deselect_node'){
-        var item = data.node.id;
-        //console.log('取消选中:'+ item);
-        remove(item);
-   }
+    if(data.action == 'deselect_node' || data.action == 'select_node'){
+        //直接更新授权
+        assign(data.selected);
+    }
 })
 
 function assign(item){
@@ -69,28 +62,7 @@ function assign(item){
                 if(res.code == 1){
                     
                 }else{
-                    swal("授权失败", "error");
-                }
-            },
-            error: function (xhr) {
-                swal("网络错误", "", "error");
-            }
-        });   
-}
-function remove(item){
- var url = "{$remove_url}";
- $.ajax({
-            url: url,
-            type: 'post',
-            dataType: 'json',
-            data: {
-                item:item
-            },
-            success: function (res) {
-                 if(res.code == 1){
-                    
-                }else{
-                    swal("取消授权失败", "error");
+                    //swal("授权失败", "error");
                 }
             },
             error: function (xhr) {
@@ -119,8 +91,6 @@ JS
         <div class="panel-body">
             <div id="jstree-checkable"></div>
         </div>
-
-        <button type="button" class="btn btn-sm btn-primary m-r-5 btn-submit">保存</button>
     </div>
 </div>
 <!-- end col-6 -->

@@ -393,16 +393,28 @@ class OrganizationController extends BackendController
     }
     public function actionGetAppPermission($name)
     {
-        $model = new AppMenu();
-        $items = AppMenu::find()->select('name,parent,id')->select('id,name as text,parent as pid')->indexBy('id')->asArray()->all();
+        //判断角色所属的服务商，是代理商还是服务商
+        $service_type = Helper::byAppRoleGetServiceType($name);
+        if($service_type == 1){
+            $items = AppMenu::find()->select('name,parent,id')->select('id,name as text,parent as pid')->indexBy('id')->asArray()->all();
+        }else{
+            $items = AppMenu::find()->select('name,parent,id')->where(['only_service'=> 0])->select('id,name as text,parent as pid')->indexBy('id')->asArray()->all();
+
+        }
         $service_id =  Helper::byAdminIdGetServiceId(Yii::$app->user->identity->id);
         $out = AppMenuWithout::find()->select('menu_id')->where(['service_id'=>$service_id, 'role_id'=>$name])->column();
+
 
         //格式化成树形菜单
         $tree = [];
         foreach($items as $key => $item){
-            $items[$key]['state']['selected'] = true;
-            if(in_array($item['id'], $out)){
+            $items[$key]['children'] = [];
+            $items[$key]['state']['selected'] = false;
+            $items[$key]['state']['opened'] = true;
+            if(!in_array($item['id'], $out) ){
+                $items[$key]['state']['selected'] = true;
+            }
+            if(in_array($item['id'], [1,2,7,8,14,19,21])){
                 $items[$key]['state']['selected'] = false;
             }
             if(isset($items[$item['pid']])){
@@ -411,18 +423,44 @@ class OrganizationController extends BackendController
                 $tree[] = &$items[$item['id']];
             }
         }
+
         return $this->asJson($tree);
     }
+
+    /**
+     * 授权APP菜单
+     * @param $name
+     * @return \yii\web\Response
+     */
     public function actionAssignAppPermission($name)
     {
         $items = Yii::$app->request->post('item', []);
+        //先清空老的菜单
         $service_id =  Helper::byAdminIdGetServiceId(Yii::$app->user->identity->id);
-        $model = AppMenuWithout::findOne(['service_id'=>$service_id, 'role_id'=>$name, 'menu_id'=>$items]);
+        AppMenuWithout::deleteAll(['service_id'=>$service_id, 'role_id'=>$name]);
 
-        if(isset($model) && $model->delete()){
-            return $this->asJson(['data'=>[], 'message'=>'success', 'code'=> 1, 'url'=> '']);
+        //获取所有的菜单id
+        $service_type = Helper::byAppRoleGetServiceType($name);
+        if($service_type == 1){
+            $all_app_menu_ids = AppMenu::find()->select('id')->column();
+        }else{
+            $all_app_menu_ids = AppMenu::find()->where(['only_service'=> 0])->select('id')->column();
         }
-        return $this->asJson(['data'=>[], 'message'=> '取消授权失败', 'code'=>0]);
+
+        //找到没有的id,即使无权限，或者取消授权的id
+        $with_out_ids = array_diff($all_app_menu_ids, $items);
+        $with_out = [];
+        foreach ($with_out_ids as $id){
+            $with_out[] = [
+                'service_id' => $service_id,
+                'role_id' => $name,
+                'menu_id' => $id
+            ];
+        }
+        Yii::$app->db->createCommand()->batchInsert(AppMenuWithout::tableName(), ['service_id', 'role_id', 'menu_id'], $with_out)->execute();
+
+
+        return $this->asJson(['data'=>[], 'message'=>'success', 'code'=> 1, 'url'=> '']);
     }
 
     public function actionRemoveAppPermission($name)

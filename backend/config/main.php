@@ -87,6 +87,9 @@ return [
             'admin/user/login',
             'admin/user/logout',
             'media/image-delete',
+            'redactor/upload/image-json',
+            'redactor/upload/image',
+            'redactor/upload/file',
             //'*'
         ]
     ],
