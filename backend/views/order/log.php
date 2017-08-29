@@ -25,8 +25,6 @@ use yii\widgets\LinkPager;
             <th>操作人</th>
             <th>状态</th>
             <th>说明</th>
-            <th>备注</th>
-            <th>操作</th>
         </tr>
         </thead>
         <tbody>
@@ -35,14 +33,8 @@ use yii\widgets\LinkPager;
                 <td><?= \pd\helpers\Yii2Helpers::serialColumn($dataProvider, $index) ?></td>
                 <td><?= \pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
                 <td><?= $model->user ?></td>
-                <td><?= $model->status ?></td>
+                <td><?= \common\models\Helper::getStatus($model->status,\common\models\Order::findOne($model->order_id)->type) ?></td>
                 <td><?= $model->info ?></td>
-                <td></td>
-                <td align="center">
-                    <div class="btn-group">
-
-                     </div>
-                </td>
             </tr>
         <?php endforeach; ?>
         </tbody>

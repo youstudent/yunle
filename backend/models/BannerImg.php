@@ -9,6 +9,7 @@ use Yii;
  *
  * @property integer $id
  * @property integer $size
+ * @property integer $status
  * @property integer $banner_id
  * @property string $img_path
  */

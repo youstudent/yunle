@@ -25,14 +25,15 @@ class BannerForm extends Banner
             [['describe'], 'string'],
             [['status', 'created_at', 'updated_at', 'action_type', 'action_value', 'column_id'], 'integer'],
             [['name'], 'string', 'max' => 30],
+            [['img', 'img_id'], 'safe'],
         ];
     }
 
     public function scenarios()
     {
         return [
-            'create' => ['name', 'describe', 'status', 'created_at', 'updated_at', 'action_type', 'action_value', 'img_id', 'img'],
-            'update' => ['name', 'describe', 'status', 'created_at', 'updated_at', 'action_type', 'action_value', 'img_id', 'img'],
+            'create' => ['name', 'describe', 'status', 'created_at', 'updated_at', 'action_type', 'action_value', 'img', 'img_id'],
+            'update' => ['name', 'describe', 'status', 'created_at', 'updated_at', 'action_type', 'action_value', 'img', 'img_id'],
         ];
     }
 
@@ -59,26 +60,26 @@ class BannerForm extends Banner
             return false;
         }
 
-
-
         return Yii::$app->db->transaction(function(){
             $this->created_at = time();
             $this->updated_at = time();
-            if(!$this->save()){
-                throw new Exception('error');
+            if(!$this->save(false)){
+                print_r($this->getFirstErrors());
+                throw new Exception('广告信息添加失败');
             }
 
-            if($this->action_type == 1){
-                //添加图片绑定
-                foreach($this->img_id as $i){
-                    $model = BannerImg::findONe($i);
-                    $model->status = 1;
-                    $model->banner_id = $this->id;
-                    if(!$model->save()){
-                        throw new Exception('增加图片绑定失败');
-                    }
+            //更新图片
+            //设置图片绑定
+
+            foreach ($this->img_id as $i){
+                $model = BannerImg::findOne($i);
+                $model->banner_id = $this->id;
+                $model->status = 1;
+                if(!$model->save(false)){
+                    throw new Exception("绑定图片信息失败");
                 }
             }
+
             return $this;
         });
     }

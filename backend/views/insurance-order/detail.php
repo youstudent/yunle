@@ -12,10 +12,18 @@ use yii\grid\GridView;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yii\widgets\LinkPager;
+
+/* @var $this yii\web\View */
+/* @var $adminUserModel backend\models\Adminuser */
+/* @var $model backend\models\form\ServiceForm */
+/* @var $form yii\widgets\ActiveForm */
+$this->title = '保险订单详情';
+$this->params['breadcrumbs'][] = $this->title;
+
 ?>
 
 <!-- begin page-header -->
-<h1 class="page-header">Tabs & Accordions <small>header small text goes here...</small></h1>
+<h1 class="page-header">保险订单详情</h1>
 <!-- end page-header -->
 
 <!-- begin row -->

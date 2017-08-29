@@ -64,7 +64,7 @@ use yii\helpers\Url;
         ) ?>
     <?php else: ?>
         <?= $form->field($model, 'service')->dropDownList($colunm, [
-            'prompt'   => '请选择']) ?>
+            'prompt'   => '请选择'])->label('服务商/代理商') ?>
 
         <?= $form->field($model, 'pid')->dropDownList([]) ?>
     <?php endif; ?>
