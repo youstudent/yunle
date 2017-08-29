@@ -25,6 +25,7 @@ use yii\widgets\LinkPager;
             <th>操作人</th>
             <th>状态</th>
             <th>说明</th>
+<!--            <th>附件</th>-->
         </tr>
         </thead>
         <tbody>
@@ -35,6 +36,11 @@ use yii\widgets\LinkPager;
                 <td><?= $model->user ?></td>
                 <td><?= \common\models\Helper::getStatus($model->status,\common\models\Order::findOne($model->order_id)->type) ?></td>
                 <td><?= $model->info ?></td>
+<!--                <td>--><?php //if(\common\models\ActImg::findAll(['act_id'=>$model->id])) : ?>
+<!--                        --><?php //foreach(\common\models\ActImg::findAll(['act_id'=>$model->id]) as $img) : ?>
+<!--                            <img src="--><?php //echo Yii::$app->params['img_domain']. $img->thumb; ?><!--" alt="">-->
+<!--                        --><?php //endforeach; ?>
+<!--                    --><?php //endif; ?><!--</td>-->
             </tr>
         <?php endforeach; ?>
         </tbody>
