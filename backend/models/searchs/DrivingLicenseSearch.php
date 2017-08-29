@@ -25,7 +25,7 @@ class DrivingLicenseSearch extends DrivingLicense
             'query' => $query
         ]);
 
-        if (!empty($params)) {
+        if (isset($params['member_id']) && !empty($params['member_id'])) {
             $query->andFilterWhere(['member_id' => $params['member_id']]);
         }
 
@@ -45,18 +45,17 @@ class DrivingLicenseSearch extends DrivingLicense
         //如果有这个权限，那么只能看自己对应的服务商的业务员
         if(Helper::checkRoute('/abs-route/customer-manager')){
             $id = \Yii::$app->user->identity->id;
-            $ids = \common\components\Helper::byCustomerManagerIdGetServiceIds($id);
-            //获取这些service的会员id
-            $member_ids  = Member::find()->where(['pid'=>$ids])->select('id')->column();
-            $query->andWhere(['member_id'=>$member_ids]);
+            // 获取到自己服务商或代理商id组
+            $ids = \common\components\Helper::byCustomerManagerIdGetServiceMemberIds($id);
+            $query->andWhere(['member_id'=>$ids]);
             return $query;
         }
         //如果是服务商/代理商
         $service_id = \common\components\Helper::getLoginMemberServiceId();
         if($service_id){
-            //这能看自己的业务员
-            $member_ids  = Member::find()->where(['pid'=>$service_id])->select('id')->column();
-            $query->andWhere(['member_id'=>$member_ids]);
+            //这能看自己的业务员下的会员的订单
+            $ids = \common\components\Helper::byServiceIdGetServiceMemberIds($service_id);
+            $query->andWhere(['member_id'=>$ids]);
         }
         return $query;
     }

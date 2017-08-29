@@ -155,6 +155,8 @@ JS
 
 
                         <?= $form->field($model, 'contact_phone')->textInput() ?>
+                        
+                        <?= $form->field($model, 'phone')->textInput() ?>
 
 
                         <?= $form->field($model, 'head')->widget(FileInput::classname(), [

@@ -82,6 +82,24 @@ $this->params['breadcrumbs'][] = $this->title;
                     ) ?>
 
 
+                    <?php
+                    //根据对应的id，获取已经有的图片数据
+                    $ms  = \backend\models\BannerImg::find()->where(['banner_id'=>$model->id, 'status'=> 1])->all();
+                    $config = [];
+                    $preview = [];
+                    $input = '';
+                    foreach($ms as $m){
+                        $data = [
+                            'size' => $m->size,
+                            'url'  => Url::to(['media/image-delete', 'model'=> 'banner', 'id' => $m->id]),
+                            'key'  => $m->id
+                        ];
+                        $config[] = $data;
+                        $preview[] = Yii::$app->params['img_domain'] . $m->img_path;
+                        $input .= '<input type="hidden"  data-img-node="1" id="img_id_input_'.$m->id.'" name="BannerForm[img_id][]" value="'.$m->id.'">';
+                    }
+
+                    ?>
                     <?=$form->field($model, 'img')->widget(FileInput::classname(), [
                         'language' => 'zh',
                         'options' => [
@@ -90,26 +108,22 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         ],
                         'pluginOptions' => [
-                            'initialPreview' => [
-                                $preview
-                            ],
-                            'initialPreviewConfig' => [
-                                $config
-                            ],
+                            'initialPreview' => $preview,
+                            'initialPreviewConfig' =>$config,
                             'overwriteInitial' => false,//不允许覆盖
                             'initialPreviewAsData' => true,
-                            'removeFromPreviewOnError' => true,
-                            'autoReplace' => true,
                             'uploadUrl' => Url::to(['/media/image-upload', 'model' => 'banner']),
-                            'maxFileSize'=> 2800,
+                            'maxFileSize'=>2048,
                             'showPreview' => true,
                             'showCaption' => true,
                             'showRemove' => true,
                             'showUpload' => true,
                             'maxFileCount' => 1,
-                            //'minFileCount' => 1,
+                            'minFileCount' => 1,
                         ]
                     ]) ?>
+
+                    <?php echo $input ?>
 
                     <input type="hidden" data-img-node="1" id="img_id_input_<?= $m->id ?>" name="BannerForm[img_id][]" value="<?= $m->id ?>">
 
@@ -122,6 +136,24 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     <?= $form->field($model, 'action_value')->dropDownList([]) ?>
 
+                    <?php
+                    //根据对应的id，获取已经有的图片数据
+                    $ms  = \backend\models\BannerImg::find()->where(['banner_id'=>$model->id, 'status'=> 1])->all();
+                    $config = [];
+                    $preview = [];
+                    $input = '';
+                    foreach($ms as $m){
+                        $data = [
+                            'size' => $m->size,
+                            'url'  => Url::to(['media/image-delete', 'model'=> 'banner', 'id' => $m->id]),
+                            'key'  => $m->id
+                        ];
+                        $config[] = $data;
+                        $preview[] = Yii::$app->params['img_domain'] . $m->img_path;
+                        $input .= '<input type="hidden"  data-img-node="1" id="img_id_input_'.$m->id.'" name="BannerForm[img_id][]" value="'.$m->id.'">';
+                    }
+
+                    ?>
                     <?=$form->field($model, 'img')->widget(FileInput::classname(), [
                         'language' => 'zh',
                         'options' => [
@@ -130,8 +162,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         ],
                         'pluginOptions' => [
+                            'initialPreview' => $preview,
+                            'initialPreviewConfig' =>$config,
+                            'overwriteInitial' => false,//不允许覆盖
+                            'initialPreviewAsData' => true,
                             'uploadUrl' => Url::to(['/media/image-upload', 'model' => 'banner']),
-                            'maxFileSize'=>2800,
+                            'maxFileSize'=>2048,
                             'showPreview' => true,
                             'showCaption' => true,
                             'showRemove' => true,
@@ -140,6 +176,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             'minFileCount' => 1,
                         ]
                     ]) ?>
+
+                    <?php echo $input ?>
 
                 <?php endif; ?>
 
@@ -162,6 +200,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php
 $article_id = $model->action_value ? $model->action_value : 0;
 $url = Url::to(['article/drop-down-list']);
+$formId = $model->formName();
 $this->registerJs(<<<JS
 
 $(function () {
@@ -183,12 +222,10 @@ $(function () {
     function hidden_el(){
          $('.field-bannerform-column_id').hide();
             $('.field-bannerform-action_value').hide();
-            $('.field-bannerform-img').hide();
     }
     function show_el(){
         $('.field-bannerform-column_id').show();
             $('.field-bannerform-action_value').show();
-            $('.field-bannerform-img').show();
     }
      pd_selectSid = function(that){
             var column_id = that.val();
@@ -201,75 +238,17 @@ $(function () {
             });
     }
         
-    console.log(action_type.css('display'));
-    if(action_type.css('display') == 1){
-       
-        
-        //处理上传图片
-        $('.field-bannerform-img').
-        on('filedeleted', function(event, key, jqXHR, data){
-           removeImgNodeById(key);
-        }).
-        on('filecleared', function(event){
-           //点击右上角的x触发
-           removeAllImgNode();
-        }).
-        on('filereset', function(event){
-            //恢复初始化的时候触发
-           removeAllImgNode();
-        }).
-        on('filesuccessremove', function(event, id) {
-           removeImgNodeByPid(id);
-        }).
-        on('fileuploaded', function(event, data, previewId, index) {
-            var img_id = data.response.files[0].img_id;
-            appendImgNode(img_id, previewId);
-        });
-        
-        //将图片id存入图容器
-        function appendImgNode(img_id, previewId)
-        {
-            var html = '<input type="hidden" data-img-node="1" data-pid="'+ previewId +'" id="img_id_input_'+ img_id +'" name="BannerForm[img_id][]" value="'+img_id+'">';
-            $('#BannerForm').append(html);
-        }
-        
-        //将图片ID从图片ID容器中删除，根据图片的ID
-        function removeImgNodeById(img_id)
-        {
-            $('#img_id_input_' + img_id).remove();
-        }
-        //将图片ID从图片ID容器中删除，根据图片预览的容器id
-        function removeImgNodeByPid(previewId)
-        {
-            $('input[data-pid=previewId]').remove();
-        }
-        //移除所有的图片容器id
-        function removeAllImgNode()
-        {
-            $('input[data-img-node="1"]').remove();
-        }
-        
-        function getAllImgNodeCount()
-        {
-            return $('input[data-img-node="1"]').length;
-        }
-    }
-    
-    
-    
+    var f = $('#{$formId}');
     $('.btn-submit').on('click', function () {
-        if(action_type.css('display') == 1){
-              var img_count = getAllImgNodeCount();
-            if(img_count != 1){
-                swal('上传图片的数量不符合要求');
+        
+        f.on('beforeSubmit', function (e) {
+            var img_count = getAllImgNodeCount();
+            if(img_count > 1){
+                 swal("必须且只能上传一个广告图");
                 return false;
             }
-        }
-      
-        var f = $('#BannerForm');
-        f.on('beforeSubmit', function (e) {
             swal({
-                    title: "确认修改",
+                    title: "确认添加",
                     text: "",
                     type: "warning",
                     showCancelButton: true,
@@ -287,10 +266,10 @@ $(function () {
                         success: function (res) {
                             if (res.code == 1) {
                                 swal({title: res.message, text: "3秒之后将自动跳转，点击确定立即跳转。", timer: 3000}, function () {
-                                    window.location.href = res.url;
+                                   window.location.href = res.url;
                                 });
                                 setTimeout(function () {
-                                    window.location.href = res.url;
+                                   window.location.href = res.url;
                                 }, 3000)
                             } else {
                                 swal(res.message, "", "error");
@@ -306,6 +285,54 @@ $(function () {
         });
         f.submit();
     });
+      //处理上传图片
+    $('.field-bannerform-img').
+    on('filedeleted', function(event, key, jqXHR, data){
+       removeImgNodeById(key);
+    }).
+    on('filecleared', function(event){
+       //点击右上角的x触发
+       removeAllImgNode();
+    }).
+    on('filereset', function(event){
+        //恢复初始化的时候触发
+       removeAllImgNode();
+    }).
+    on('filesuccessremove', function(event, id) {
+       removeImgNodeByPid(id);
+    }).
+    on('fileuploaded', function(event, data, previewId, index) {
+        var img_id = data.response.files[0].img_id;
+        appendImgNode(img_id, previewId);
+    });
+    
+    //将图片id存入图容器
+    function appendImgNode(img_id, previewId)
+    {
+        var html = '<input type="hidden" data-img-node="1" data-pid="'+ previewId +'" id="img_id_input_'+ img_id +'" name="BannerForm[img_id][]" value="'+img_id+'">';
+        f.append(html);
+    }
+    
+    //将图片ID从图片ID容器中删除，根据图片的ID
+    function removeImgNodeById(img_id)
+    {
+        $('#img_id_input_' + img_id).remove();
+    }
+    //将图片ID从图片ID容器中删除，根据图片预览的容器id
+    function removeImgNodeByPid(previewId)
+    {
+        $('input[data-pid=previewId]').remove();
+    }
+    //移除所有的图片容器id
+    function removeAllImgNode()
+    {
+        $('input[data-img-node="1"]').remove();
+    }
+    
+    function getAllImgNodeCount()
+    {
+        return $('input[data-img-node="1"]').length;
+    }
 })
 
 JS

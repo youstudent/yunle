@@ -214,6 +214,8 @@ display: flex;
                         <?= $form->field($model, 'principal')->textInput() ?>
 
                         <?= $form->field($model, 'contact_phone')->textInput() ?>
+                        
+                        <?= $form->field($model, 'phone')->textInput() ?>
 
                         <?php
                         //获取对应的图片数据
