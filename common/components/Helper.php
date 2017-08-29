@@ -444,4 +444,12 @@ class Helper
         $data = Adminuser::find()->where(['id'=>$ids])->indexBy('id')->select('name,id')->column();
         return $data;
     }
+
+    //通用app_role_id判断role所属服务商是代理商还是服务商
+    public static function byAppRoleGetServiceType($app_role_id)
+    {
+        $service_id = AppRole::findOne($app_role_id)->service_id;
+        $service = Service::findOne($service_id);
+        return $service->type;
+    }
 }
