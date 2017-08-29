@@ -257,7 +257,7 @@ class Order extends \yii\db\ActiveRecord
     public function getDetail($data=null)
     {
         //订单详情
-        $str = 'order_sn, phone, car, type, pick, pick_addr, pick_at, distributing, created_at, updated_at, cost';
+        $str = 'order_sn, phone, service, car, type, pick, pick_addr, pick_at, distributing, created_at, updated_at, cost';
         $detail = Order::find()->select($str)->asArray()
             ->where(['id'=>$data['order_id']])
             ->one();
