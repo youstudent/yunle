@@ -16,11 +16,11 @@
                 <div class="widget widget-stats bg-green">
                     <div class="stats-icon"><i class="fa fa-desktop"></i></div>
                     <div class="stats-info">
-                        <h4>待审车订单</h4>
+                        <h4>待处理审车订单</h4>
                         <p><?= $model['orderCount']['afterCheckCar']?></p>
                     </div>
                     <div class="stats-link">
-                        <a href="javascript:;">查看详情 <i class="fa fa-arrow-circle-o-right"></i></a>
+                        <a href='/order/index?action=待处理'>查看详情 <i class="fa fa-arrow-circle-o-right"></i></a>
                     </div>
                 </div>
             </div>
@@ -36,7 +36,7 @@
                         <p><?= $model['orderCount']['afterSuccess']?></p>
                     </div>
                     <div class="stats-link">
-                        <a href="javascript:;">查看详情 <i class="fa fa-arrow-circle-o-right"></i></a>
+                        <a href="/insurance-order/index?action=待核保">查看详情 <i class="fa fa-arrow-circle-o-right"></i></a>
                     </div>
                 </div>
             </div>
@@ -52,7 +52,7 @@
                         <p><?= $model['orderCount']['success']?></p>
                     </div>
                     <div class="stats-link">
-                        <a href="javascript:;">查看详情 <i class="fa fa-arrow-circle-o-right"></i></a>
+                        <a href="/insurance-order/index?actionB=核保成功">查看详情 <i class="fa fa-arrow-circle-o-right"></i></a>
                     </div>
                 </div>
             </div>
@@ -68,7 +68,7 @@
                         <p><?= $model['orderCount']['afterStatusChange']?></p>
                     </div>
                     <div class="stats-link">
-                        <a href="javascript:;">查看详情 <i class="fa fa-arrow-circle-o-right"></i></a>
+                        <a href="/review/car-list?status=待审核">查看详情 <i class="fa fa-arrow-circle-o-right"></i></a>
                     </div>
                 </div>
             </div>

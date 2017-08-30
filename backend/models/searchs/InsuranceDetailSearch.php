@@ -54,7 +54,14 @@ class InsuranceDetailSearch extends InsuranceDetail
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
-        ;
+        if (isset($params['action']) && !empty($params['action'])) {
+            $query->andFilterWhere(['LIKE', 'ind.action', '待核保']);
+            return $dataProvider;
+        }
+        if (isset($params['actionB']) && !empty($params['actionB'])) {
+            $query->andFilterWhere(['LIKE', 'ind.action', '核保成功']);
+            return $dataProvider;
+        }
         if (!($this->load($params) && $this->validate())) {
             return $dataProvider;
         }
