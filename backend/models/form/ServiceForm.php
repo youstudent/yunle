@@ -37,7 +37,7 @@ class ServiceForm  extends Service
     public function rules()
     {
         return [
-            [['phone'],'number'],
+            [['phone','contact_phone'],'number'],
             [['name', 'principal', 'contact_phone', 'open_at', 'close_at', 'tags'], 'required'],
             [['level', 'status', 'created_at', 'updated_at', 'deleted_at', 'level', 'sid'], 'integer'],
             [['name', 'principal', 'contact_phone', 'introduction', 'address', 'lat', 'lng', 'open_at', 'close_at'], 'string', 'max' => 256],
@@ -47,9 +47,9 @@ class ServiceForm  extends Service
             [['username'], 'unique', 'targetClass' => '\backend\models\Adminuser', 'message' => '用户名已存在', 'on' => ['create']],
             [['sid', 'name', 'status', 'address', 'lat', 'lng', 'open_at', 'close_at'], 'required', 'on' => 'created_service'],
             [['head_id', 'atta_id', 'tags'], 'safe'],
-            ['contact_phone','match', 'pattern' => \pd\helpers\PregRule::PHONE, 'message' => '手机号格式不正确'],
         ];
     }
+    
 
     public function scenarios()
     {
@@ -100,7 +100,12 @@ class ServiceForm  extends Service
         if(!$this->validate()){
             return false;
         }
-
+        if(strlen($this->contact_phone)>11 || strlen($this->phone)>11 ){
+            $this->addError('contact_phone', '号码不能超过11位数');
+            return false;
+        }
+        
+        
         if(count($this->head_id) != 1){
             $this->addError('head', '必须上传一张头像');
             return false;
