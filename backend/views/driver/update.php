@@ -150,7 +150,7 @@ $(function () {
     $('.btn-submit').on('click', function () {
         var img_count = getAllImgNodeCount();
         if(img_count < 1){
-            swal("最少两张驾驶证的正反面");
+            swal("最少需要一张驾照的正面");
             return false;
         }
         if(img_count > 2){
