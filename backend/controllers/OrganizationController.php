@@ -198,6 +198,23 @@ class OrganizationController extends BackendController
             'model' => $model
         ]);
     }
+    
+    
+    /**
+     * 删除员工账号
+     * @param $id
+     * @return string|\yii\web\Response
+     */
+    public function actionAccountDelete($id)
+    {
+        $model =  AdminuserForm::deleteAll(['id'=>$id]);
+        if($model){
+            return $this->redirect(['/organization/account-index']);
+          // return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '保存成功', 'url'=> Url::to(['index'])]);
+        }
+           return $this->asJson(['data'=> '', 'code'=>0, 'message'=> '删除失败']);
+        
+    }
 
     /**
      * 变更角色
