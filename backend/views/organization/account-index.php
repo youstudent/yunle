@@ -125,8 +125,8 @@ JS
                                     <a href="<?= Url::to(['account-modify-role', 'id'=>$model->id]) ?>" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">更改角色</span></a>
                                 <?php endif; ?>
                                 <a href="<?= Url::to(['account-update', 'id'=>$model->id]) ?>" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static"><span class="btn btn-warning m-r-1 m-b-5 btn-xs">编辑</span></a>
-                                <?php if($model->id != 1): ?>
-                                    <a href="javascript:;" data-confirm="确认删除此账户？" data-url="<?= Url::to(['account-delete','id' => $model->id]) ?>"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
+                                <?php if($model->master == '普通账号'): ?>
+                                    <a href="<?= Url::to(['account-delete','id' => $model->id]) ?>" data-confirm="确认删除此账户？"><span class="btn btn-danger m-r-1 m-b-5 btn-xs">删除</span></a>
                                 <?php endif; ?>
                             </div>
                         </td>

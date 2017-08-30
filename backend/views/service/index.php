@@ -180,6 +180,7 @@ JS
                         <td><?= \pd\helpers\Yii2Helpers::dateFormat($model->created_at) ?></td>
                         <td align="center">
                             <div class="btn-group">
+                                <a href="<?= Url::to(['update-password','id'=> $model->id]) ?>" class="btn btn-success m-r-1 m-b-5 btn-xs" data-toggle="modal" data-target="#_pd_modal" data-backdrop="static">修改密码</a>
                                 <a href="<?= Url::to(['view', 'id' => $model->id]) ?>"><span
                                             class="btn btn-info m-r-1 m-b-5 btn-xs"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-form"></svg> 更多</span></a>
                                 <a href="<?= Url::to(['update', 'id' => $model->id]) ?>"><span

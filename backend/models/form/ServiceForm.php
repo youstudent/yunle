@@ -57,6 +57,7 @@ class ServiceForm  extends Service
             'create' => ['name', 'principal', 'contact_phone', 'level',  'introduction', 'address', 'lat', 'lng', 'username', 'password',  'level', 'sid', 'head_id', 'atta_id', 'tags','phone'],
             'created_service' => ['name', 'principal', 'contact_phone', 'level', 'status', 'introduction', 'address', 'lat', 'lng', 'username', 'password', 'open_at', 'close_at', 'level', 'sid','phone'],
             'update' => ['name', 'principal', 'contact_phone', 'level', 'status', 'introduction', 'address', 'lat', 'lng', 'sid', 'head_id', 'atta_id', 'tags','phone'],
+            'updatepassword' => ['password'],
         ];
     }
 

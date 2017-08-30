@@ -159,5 +159,24 @@ class ServiceController extends BackendController
     {
         return AppRoleAssign::dropDownListHtml($service_id, $salesman_id);
     }
+    
+    
+    
+    //修改服务商密码
+    public function actionUpdatePassword($id)
+    {
+        $member = ServiceForm::findOne($id);
+       // $member = Service::findOne($id);
+        $member->scenario = 'updatepassword';
+        if ($member->load(Yii::$app->request->post())) {
+            if ($member->updatePassword()) {
+                return $this->asJson(['data' => '', 'code' => 1, 'message' => '更新成功', 'url' => Url::to(['service/index'])]);
+            }
+            return $this->asJson(['data' => '', 'code' => 0, 'message' =>current($member->getFirstErrors())]);
+        }
+        return $this->renderAjax('updatepassword', [
+            'model' => $member,
+        ]);
+    }
 
 }

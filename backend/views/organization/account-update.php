@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'validationUrl'        => $model->isNewRecord ? Url::toRoute(['account-validate-form', 'scenario' => 'create']) : Url::toRoute(['account-validate-form', 'scenario' => 'update', 'id' => $model->id]),
     ]) ?>
 
-    <?= $form->field($model, 'username')->textInput() ?>
+    <?= $form->field($model, 'username')->textInput(['readonly'=>'true']) ?>
 
     <?= $form->field($model, 'name')->textInput() ?>
 

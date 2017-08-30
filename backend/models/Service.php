@@ -103,4 +103,21 @@ class Service extends \yii\db\ActiveRecord
     {
         return $this->hasMany(ServiceImg::className(), ['service_id'=>'id']);
     }
+    
+    
+    /**
+     * 服务商密码
+     * @return bool
+     */
+    public function updatePassword(){
+       
+        if (empty($this->password)){
+            $this->addError('name','密码不能为空');
+            return false;
+        }
+        $data = Adminuser::findOne(['id'=>$this->owner_id]);
+        $data->password_hash =Yii::$app->security->generatePasswordHash($this->password);
+        return $data->save(false);
+        
+    }
 }
