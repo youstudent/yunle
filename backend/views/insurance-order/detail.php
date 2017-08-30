@@ -25,7 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <!-- begin page-header -->
 <h1 class="page-header">保险订单详情</h1>
 <!-- end page-header -->
-
+<?= \pd\coloradmin\widgets\Alert::widget() ?>
 <!-- begin row -->
 <div class="row">
     <!-- begin col-12 -->

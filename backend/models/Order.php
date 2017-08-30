@@ -56,7 +56,7 @@ class Order extends \yii\db\ActiveRecord
             [['order_sn'], 'string', 'max' => 100],
             [['user', 'phone', 'car'], 'string', 'max' => 50],
             [['pick_addr', 'service'], 'string', 'max' => 255],
-            [['img', 'img_id', 'info', 'cost'], 'safe'],
+            [['img', 'img_id', 'info', 'cost', 'status_id'], 'safe'],
         ];
     }
 
@@ -115,15 +115,15 @@ class Order extends \yii\db\ActiveRecord
     }
 
     //    变更状态
-    public function alter($data, $id)
+    public function alter($id)
     {
         // 处理图片
 //        if(!$this->validate()){
 //            return false;
 //        }
 
-        if(count($this->img_id) < 1 || count($this->img_id) > 12){
-            $this->addError('img', '附件最多为12张');
+        if(count($this->img_id) > 6){
+            $this->addError('img', '附件最多为6张');
             return false;
         }
 
@@ -134,17 +134,22 @@ class Order extends \yii\db\ActiveRecord
         $act->info = $this->info;
         if(!$this->save(false)){
             $this->addError('img', '添加动态信息失败');
+            return false;
         }
 
         //设置图片绑定
-        foreach($this->img_id as $h){
-            $m = ActImg::findOne($h);
-            $m->act_id = $this->id;
-            $m->status = 1;
-            if(!$m->save()){
-                $this->addError('img', '图片绑定失败');
+        if ($this->img_id) {
+            foreach($this->img_id as $h){
+                $m = ActImg::findOne($h);
+                $m->act_id = $this->id;
+                $m->status = 1;
+                if(!$m->save()){
+                    $this->addError('img', '图片绑定失败');
+                    return false;
+                }
             }
         }
+
 
         $user_id = 1000;
         $name = '系统';

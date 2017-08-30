@@ -82,13 +82,13 @@ class MemberController extends BackendController
     }
 
     //设置用户状态
-    public function actionSetStatus($id, $status)
+    public function actionSetStatus($id, $opt)
     {
-        $model = Member::findOne(['id' => $id]);
-        if ($model->setStatus($status)) {
-            return json_encode(['data' => '', 'code' => 1, 'message' => '操作成功', 'url' => Url::to(['member/index'])]);
-        }
-        return json_encode(['data' => '', 'code' => 1, 'message' => '操作失败', 'url' => Url::to(['member/index'])]);
+        $model = Member::findOne($id);
+        $model->status = $opt;
+        $model->save();
+        Yii::$app->session->setFlash('success', '状态变更成功');
+        return $this->redirect(['index']);
     }
 
     public function actionSoftDelete($id)

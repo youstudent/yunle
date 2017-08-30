@@ -16,15 +16,12 @@ use kartik\file\FileInput;
 use kartik\datetime\DateTimePicker;
 ?>
 
-<!-- begin page-header -->
-<h1 class="page-header">Tabs & Accordions <small>header small text goes here...</small></h1>
-<!-- end page-header -->
-
 <!-- begin row -->
 <div class="row">
     <form class="form-horizontal" action="<?= Url::to(['update']) ?>" method="POST" enctype="multipart/form-data">
         <!-- begin col-12 -->
         <input type="hidden" name="order_id" value="<?=$model->order_id?>" />
+        <?= \pd\coloradmin\widgets\Alert::widget() ?>
         <table id="data-table-title" class="table">
             <caption><h3>保单付款</h3></caption>
             <tr>

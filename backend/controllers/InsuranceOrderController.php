@@ -55,7 +55,7 @@ class InsuranceOrderController extends BackendController
     public function actionLog($id)
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => ActInsurance::find()->where(['order_id'=>$id]),
+            'query' => ActInsurance::find()->where(['order_id'=>$id])->orderBy(['created_at'=>SORT_DESC]),
         ]);
 
         return $this->renderAjax('log', [
@@ -109,13 +109,11 @@ class InsuranceOrderController extends BackendController
     public function actionCheckSuccess($id)
     {
         $model = InsuranceDetail::findOne(['order_id'=>$id]);
-        $data = Yii::$app->request->post();
-        if(!empty($data)){
-
-            if($model->checkSuccess($model,$data, $id)){
-                return $this->redirect('detail?id='.$id);
+        if ($model->load(Yii::$app->request->post())) {
+            if($model->checkSuccess($id)){
+                return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '变更成功', 'url'=> Url::to(['insurance-order/check-success?id='.$id])]);
             }
-            return $this->redirect('detail?id='.$id);
+            return $this->asJson(['data'=> '', 'code'=>0, 'message'=> $model->getFirstError('img')]);
         }
 
         return $this->renderAjax('success', [
@@ -152,13 +150,13 @@ class InsuranceOrderController extends BackendController
         $data = Yii::$app->request->post();
 
         $model =  Warranty::getDetail($data['order_id']);
-        $info = Warranty::changeInfo($model,$data);
+        $info = $model->changeInfo($model,$data);
         if($info){
-            Yii::$app->session->setFlash('success', '修改成功!  ');
+            Yii::$app->session->setFlash('success','确认付款成功' );
             return $this->redirect(['detail', 'id' => $model->order_id]);
         }
-        Yii::$app->session->setFlash('success', '修改失败!  ');
-        return $this->redirect(['detail', 'id' => $model->order_id]);
+        Yii::$app->session->setFlash('error', '确认付款失败!'.current($model->getFirstErrors()));
+        return $this->redirect(['cost', 'id' => $model->order_id]);
     }
 
     public function actionInsurance($id)

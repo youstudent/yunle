@@ -57,9 +57,14 @@ class BannerForm extends Banner
     public function addBanner()
     {
         if(!$this->validate()){
+            $this->addError('img', '数据验证失败');
             return false;
         }
 
+        if (count($this->img_id) != 1) {
+            $this->addError('img', '广告图片有且仅能有一张');
+            return false;
+        }
         return Yii::$app->db->transaction(function(){
             $this->created_at = time();
             $this->updated_at = time();
