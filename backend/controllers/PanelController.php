@@ -8,6 +8,7 @@
 namespace backend\controllers;
 
 
+use backend\models\Adminuser;
 use backend\models\SystemNotice;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -33,11 +34,13 @@ class PanelController extends BackendController
      */
     public function actionIndex()
     {
+        $mark = Adminuser::findOne(['id'=>\Yii::$app->user->identity->id])->mark;
         $model = \common\models\Helper::getStatCount();
         $data = SystemNotice::find()->orderBy('created_at DESC')->limit(3)->asArray()->all();
         return $this->render('index', [
             'model' => $model,
-            'data'  =>$data
+            'data'  =>$data,
+            'mark'  =>$mark
         ]);
     }
     public function actionUserAdd($days)

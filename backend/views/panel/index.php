@@ -79,7 +79,11 @@
             <div class="col-md-8">
                 <div class="widget widget-stats bg-black">
                     <?php foreach ($data as $V):?>
-                    <p>时间:<?=date('Y-m-d H:i:s',$V['created_at'])?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;通知内容:<?=$V['content']?></p>
+                    <?php if ($mark==1):?>
+                     <p>时间:<?=date('Y-m-d H:i:s',$V['created_at'])?> &nbsp;发送人:<?=$V['send_out_people']?>&nbsp;&nbsp; 通知内容:<?=$V['content']?></p>
+                    <?php elseif (in_array($mark,json_decode($V['notice_people'],true))):?>
+                     <p>时间:<?=date('Y-m-d H:i:s',$V['created_at'])?> &nbsp;发送人:<?=$V['send_out_people']?>&nbsp;&nbsp; 通知内容:<?=$V['content']?></p>
+                    <?php endif;?>
                    <?php endforeach;?>
                 </div>
             </div>
