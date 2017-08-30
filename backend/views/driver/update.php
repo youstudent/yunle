@@ -153,6 +153,10 @@ $(function () {
             swal("最少两张驾驶证的正反面");
             return false;
         }
+        if(img_count > 2){
+            swal("驾驶证最多两张图片");
+            return false;
+        }
         f.on('beforeSubmit', function (e) {
             swal({
                     title: "确认修改",

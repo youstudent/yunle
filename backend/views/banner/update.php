@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
             <div class="panel-body">
                 <?php $form = \yii\bootstrap\ActiveForm::begin([
-                    'id'                   => 'BannerForm',
+                    'id'                   => $model->formName(),
                     'layout'               => 'horizontal',
                     'fieldConfig'          => [
                         'template'             => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
@@ -45,6 +45,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'hint'    => '',
                         ],
                     ],
+                    'options' => ['class' => 'form-horizontal form-bordered', 'enctype' => 'multipart/form-data'],
                     'enableAjaxValidation' => true,
                     'validationUrl'        => $model->isNewRecord ? Url::toRoute(['validate-form', 'scenario' => 'create']) : Url::toRoute(['validate-form', 'scenario' => 'update']),
                 ]) ?>
@@ -104,7 +105,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'language' => 'zh',
                         'options' => [
                             'accept' => 'image/*',
-                            'multiple'=>false
+                            'multiple'=>true
 
                         ],
                         'pluginOptions' => [
@@ -118,8 +119,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             'showCaption' => true,
                             'showRemove' => true,
                             'showUpload' => true,
-                            'maxFileCount' => 1,
-                            'minFileCount' => 1,
                         ]
                     ]) ?>
 
@@ -243,12 +242,9 @@ $(function () {
         
         f.on('beforeSubmit', function (e) {
             var img_count = getAllImgNodeCount();
-            if(img_count > 1){
-                 swal("必须且只能上传一个广告图");
-                return false;
-            }
+           
             swal({
-                    title: "确认添加",
+                    title: "确认修改",
                     text: "",
                     type: "warning",
                     showCancelButton: true,

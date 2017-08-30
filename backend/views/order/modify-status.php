@@ -56,6 +56,10 @@ pd\coloradmin\web\plugins\JqueryFileUploadAsset::register($this);
     ?>
     <?= $form->field($model, 'status_id')->dropDownList($items)->label($data['typeName']) ?>
 
+    <div style="display:none " class="dis">
+        <?= $form->field($model,'cost')->textInput()->label('评估价格')?>
+    </div>
+
     <?= $form->field($model, 'info')->textArea(['rows' => '6', 'placeholder'=>'备注信息'])->label('备注') ?>
 
     <?=$form->field($model, 'img')->widget(FileInput::classname(), [
@@ -189,7 +193,18 @@ $(function () {
     {
         return $('input[data-img-node="1"]').length;
     }
+    $("#order-status_id").change(function(){
+     var thisVal = $(this).val();
+     var tempText = $('#order-status_id').find('option[value='+ thisVal +']');
+     if(thisVal==6){
+        $(".dis").attr("style","");
+     }else{
+        $(".dis").attr("style","display: none");
+      
+     }
+     })
 })
+
 JS
 );
 ?>

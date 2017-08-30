@@ -75,7 +75,7 @@ class OrderController extends BackendController
     public function actionLog($id)
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => ActDetail::find()->where(['order_id'=>$id]),
+            'query' => ActDetail::find()->where(['order_id'=>$id])->orderBy(['created_at'=>SORT_DESC]),
         ]);
 
         return $this->renderAjax('log', [
@@ -92,9 +92,10 @@ class OrderController extends BackendController
     {
         //要写逻辑展示可以操作的订单状态
         $model = Order::getOrderDetail($id);
-
+//echo '<pre>';
+//print_r($model->load(Yii::$app->request->post()));die;
         if ($model->load(Yii::$app->request->post())) {
-            if($model->alter(Yii::$app->request->post(),$id)){
+            if($model->alter($id)){
                 return $this->asJson(['data'=> '', 'code'=>1, 'message'=> '变更成功', 'url'=> Url::to(['order/index?member_id='.$model->member_id])]);
             }
             return $this->asJson(['data'=> '', 'code'=>0, 'message'=> $model->getFirstError('img')]);
