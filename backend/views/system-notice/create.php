@@ -43,7 +43,7 @@ use yii\helpers\Url;
 <div class="modal-footer">
     <a href="javascript:;" class="btn btn-sm btn-white" data-dismiss="modal">取消</a>
     <a href="#" class="btn btn-sm btn-success  btn-submit" data-toggle="modal"
-       data-form-id="MemberForm">添加</a>
+       data-form-id="MemberForm">确认发送</a>
 </div>
 
 <script>
