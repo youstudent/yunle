@@ -7,6 +7,7 @@ use common\models\CompensatoryDetail;
 use common\models\Upload;
 use Yii;
 use yii\web\UploadedFile;
+use yii\db\Exception;
 
 /**
  * This is the model class for table "{{%insurance_detail}}".
@@ -33,11 +34,16 @@ class InsuranceDetail extends \yii\db\ActiveRecord
 
     public $cover;
     public $img;
+    public $img_id;
     public $warrantyImg;
+    public $warrantyImg_id;
     public $costImg;
+    public $costImg_id;
     public $head;
     public $attachment;
     public $saleman_id;
+
+    public $transaction;
     /**
      * @inheritdoc
      */
@@ -54,6 +60,9 @@ class InsuranceDetail extends \yii\db\ActiveRecord
         return [
             [['order_id', 'car_id', 'member_id', 'created_at', 'updated_at', 'chit'], 'integer'],
             [['action'], 'string', 'max' => 50],
+            [['insurance','car','person','element','warranty','compensatory','business','total'], 'safe'],
+            [['cover','img','img_id','warrantyImg','warrantyImg_id','costImg','compensatory','costImg_id','head'], 'safe'],
+            [['attachment','saleman_id'], 'safe'],
         ];
     }
 
@@ -71,6 +80,8 @@ class InsuranceDetail extends \yii\db\ActiveRecord
             'action' => '最新动态',
             'created_at' => '创建时间',
             'updated_at' => '修改时间',
+            'costImg' => '报价单图片',
+            'warrantyImg' => '保单图片',
         ];
     }
 
@@ -139,7 +150,7 @@ class InsuranceDetail extends \yii\db\ActiveRecord
         return false;
     }
 
-    public function checkSuccess($model, $data = null, $id)
+    public function checkSuccess($id)
     {
         $user_id = Yii::$app->user->identity->id;
         $user = Adminuser::findOne(['id'=>$user_id])->name;
@@ -152,25 +163,42 @@ class InsuranceDetail extends \yii\db\ActiveRecord
         $act->id = null;
         $act->created_at = time();
         $act->isNewRecord = 1;
-        if ($act->save(false)) {
-            //图片处理
-            $images = UploadedFile::getInstances($model, 'img');
-            foreach ($images as $v) {
-                $extension = $v->extension;
-                $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-                $upload = new Upload();
-                $img_path = $upload->getSavePath('insuranceAct', $chars, $extension);
-                $v->saveAs(Yii::getAlias('@common').'/static'.$img_path);
-                $modelImg = new InsuranceActimg();
-                $modelImg->act_id = $act->id;
-                $modelImg->img_path = $img_path;;
-                $modelImg->created_at = time();
+        $this->transaction = Yii::$app->db->beginTransaction();
+        try{
+            //保存动态详情
+            if(!$act->save(false)){
+                $this->addError('img', '添加动态信息失败');
+                $this->transaction->rollBack();
+                return false;
+            }
+            //图片
+            if(count($this->img_id) < 1){
+                $this->addError('img', '报价单必须上传');
+                $this->transaction->rollBack();
+                return false;
+            }
 
-                if (!$modelImg->save(false)) {
-                    return false;
+            //设置图片绑定
+            if ($this->img_id) {
+                foreach($this->img_id as $h){
+                    $m = InsuranceActimg::findOne($h);
+                    $m->act_id = $this->id;
+                    $m->status = 1;
+                    if(!$m->save(false)){
+                        $this->addError('img', '图片绑定失败');
+                        $this->transaction->rollBack();
+                        return false;
+                    }
                 }
             }
+
+            $this->transaction->commit();
+        } catch (Exception $exception){
+            $this->transaction->rollBack();
+            $this->addError('img', '操作失败');
+            return false;
         }
+
         $order = InsuranceDetail::findOne(['order_id'=>$id]);
         $order->action = '核保成功';
         $order->updated_at = time();
@@ -243,19 +271,37 @@ class InsuranceDetail extends \yii\db\ActiveRecord
         return false;
     }
 
-    public function saveImg($data, $type = 'head')
+    /**
+     * 上传土图片要用到的
+     * @param $data
+     * @return |null|
+     */
+    public function saveImg($data)
     {
-        $model = new ServiceImg();
+        $model = new InsuranceActimg();
         $model->img_path = $data['files'][0]['url'];
         $model->thumb = $data['files'][0]['thumbnailUrl'];
-        $model->type = $type == 'head' ? 1 : 0;
         $model->status = 0;
         $model->size = $data['files'][0]['size'];
         $model->img = $data['files'][0]['name'];
-        if(!$model->save()){
+        if(!$model->save(false)){
             return null;
         }
         return $model;
+    }
+
+    public  function getPic()
+    {
+        return $this->hasMany(InsuranceActimg::className(), ['act_id'=> 'id'])->where(['status'=> 1]);
+    }
+
+    public function getPicImg()
+    {
+        $arr = [];
+        foreach($this->pic as $i){
+            $arr[] = '<img src="'.Yii::$app->params['img_domain']. $i->thumb.'" />';
+        }
+        return $arr;
     }
 
 }

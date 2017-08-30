@@ -32,7 +32,7 @@ $this->title = '广告创建';
             </div>
             <div class="panel-body">
                 <?php $form = \yii\bootstrap\ActiveForm::begin([
-                    'id'                   => 'BannerForm',
+                    'id'                   => $model->formName(),
                     'layout'               => 'horizontal',
                     'fieldConfig'          => [
                         'template'             => "{label}\n{beginWrapper}\n{input}\n{hint}\n{error}\n{endWrapper}",
@@ -44,6 +44,7 @@ $this->title = '广告创建';
                             'hint'    => '',
                         ],
                     ],
+                    'options' => ['class' => 'form-horizontal form-bordered', 'enctype' => 'multipart/form-data'],
                     'enableAjaxValidation' => true,
                     'validationUrl'        => $model->isNewRecord ? Url::toRoute(['validate-form', 'scenario' => 'create']) : Url::toRoute(['validate-form', 'scenario' => 'update']),
                 ]) ?>
@@ -67,7 +68,7 @@ $this->title = '广告创建';
                     'language' => 'zh',
                     'options' => [
                         'accept' => 'image/*',
-                        'multiple'=>false
+                        'multiple'=>true
 
                     ],
                     'pluginOptions' => [
@@ -77,8 +78,6 @@ $this->title = '广告创建';
                         'showCaption' => true,
                         'showRemove' => true,
                         'showUpload' => true,
-                                        'maxFileCount' => 1,
-                                        'minFileCount' => 1,
                     ]
                 ]) ?>
 
@@ -144,12 +143,11 @@ $(function () {
     var f = $('#{$formId}');
     $('.btn-submit').on('click', function () {
         
+       
         f.on('beforeSubmit', function (e) {
             var img_count = getAllImgNodeCount();
-            if(img_count > 1){
-                 swal("必须且只能上传一个广告图");
-                return false;
-            }
+      
+            
             swal({
                     title: "确认添加",
                     text: "",

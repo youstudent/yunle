@@ -1126,9 +1126,8 @@ class Helper
         //总计数
         if ($admin->mark == 1) {
             $a = Order::find()->select('type, status')
-                ->leftJoin(ActDetail::tableName(), '{{%act_detail}}.order_id = {{%order}}.id')
-                ->where(['type' => 5])
-                ->andWhere(['<', 'status', 98])
+                ->leftJoin(OrderDetail::tableName(), '{{%order_detail}}.order_id = {{%order}}.id')
+                ->where(['type' => 5,'action'=>['处理中','待接单','待邮寄']])
                 ->count();
             $b = InsuranceDetail::find()->select('id,action')
                 ->where(['action'=>'待核保'])

@@ -112,7 +112,7 @@ JS
                     <input type="text" class="form-control" name="InsuranceDetailSearch[order_car]" id="car" value="<?= $searchModel->order_car ?>" placeholder="车牌号">
                 </div>
                 <div class="form-group m-r-10">
-                    <input type="text" class="form-control" name="InsuranceDetailSearch[order_company]" id="company" value="<?= $searchModel->order_company ?>" placeholder="承保公司">
+                    <input type="text" class="form-control" name="InsuranceDetailSearch[action]" id="action" value="<?= $searchModel->action ?>" placeholder="订单状态">
                 </div>
                 <button type="submit" class="btn btn-sm btn-primary m-r-5">搜索</button>
                 <button type="reset" class="btn btn-sm btn-info m-r-5" onclick="">重置</button>

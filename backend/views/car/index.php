@@ -82,8 +82,8 @@ JS
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <div class="row">
         <div class="col-md-6">
-            <?php if($searchModel->member_id) : ?>
-                <a href="<?= Url::to(['create', 'member_id'=>$searchModel->member_id]) ?>" class="btn btn-success" >添加车辆</a>
+            <?php if(Yii::$app->request->get('member_id')) : ?>
+                <a href="<?= Url::to(['create', 'member_id'=>Yii::$app->request->get('member_id')]) ?>" class="btn btn-success" >添加车辆</a>
             <?php endif; ?>
         </div>
     </div>

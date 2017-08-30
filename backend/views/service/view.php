@@ -40,29 +40,24 @@ pd\coloradmin\web\plugins\BaiduMapAsset::register($this);
                         <tr>
                             <th></th>
                             <th></th>
-                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
                             <td><?= $model->getAttributeLabel('owner_username') ?></td>
                             <td><?= $model->owner_username ?></td>
-                            <td><span class="text-muted"></span></td>
                         </tr>
                         <tr>
                             <td><?= $model->getAttributeLabel('name') ?></td>
                             <td><?= $model->name ?></td>
-                            <td><span class="text-muted"></span></td>
                         </tr>
                         <tr>
                             <td><?= $model->getAttributeLabel('principal') ?></td>
                             <td><?= $model->principal ?></td>
-                            <td><span class="text-muted"></span></td>
                         </tr>
                         <tr>
                             <td><?= $model->getAttributeLabel('contact_phone') ?></td>
                             <td><?= $model->contact_phone ?></td>
-                            <td><span class="text-muted"></span></td>
                         </tr>
                         <tr>
                             <td>展示头像</td>
@@ -75,7 +70,6 @@ pd\coloradmin\web\plugins\BaiduMapAsset::register($this);
                                     <?php endforeach; ?>
                                 <?php endif; ?>
                             </td>
-                            <td><span class="text-muted"></span></td>
                         </tr>
                         <tr>
                             <td>服务商附件</td>
@@ -88,39 +82,32 @@ pd\coloradmin\web\plugins\BaiduMapAsset::register($this);
                                     <?php endforeach; ?>
                                 <?php endif; ?>
                             </td>
-                            <td><span class="text-muted"></span></td>
                         </tr>
                         <tr>
                             <td><?= $model->getAttributeLabel('address') ?></td>
                             <td><?= $model->address ?></td>
-                            <td><span class="text-muted"></span></td>
                         </tr>
                         <tr>
                             <td><?= $model->getAttributeLabel('lat') ?></td>
                             <td><?= $model->lat ?></td>
-                            <td><span class="text-muted"></span></td>
                         </tr>
                         <tr>
                             <td><?= $model->getAttributeLabel('lng') ?></td>
                             <td><?= $model->lng ?></td>
-                            <td><span class="text-muted"></span></td>
                         </tr>
                         <tr>
                             <td><?= $model->getAttributeLabel('level') ?></td>
                             <td> <?= $model->level ?> 星</td>
-                            <td><span class="text-muted"></span></td>
                         </tr>
                         <tr>
                             <td><?= $model->getAttributeLabel('sid') ?></td>
                             <td><?= Adminuser::findOne([$model->sid])->name ?></td>
-                            <td><span class="text-muted"></span></td>
                         </tr>
                         <tr>
                             <td><?= $model->getAttributeLabel('introduction') ?></td>
                             <td>
                                <?php echo $model->introduction; ?>
                             </td>
-                            <td></td>
                         </tr>
                         <tr>
                             <td><?= $model->getAttributeLabel('tags') ?></td>

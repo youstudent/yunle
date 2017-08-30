@@ -88,6 +88,11 @@ class Car extends \yii\db\ActiveRecord
             'query' => $query->where(['c.status'=>[0,2]])->orderBy(['c.status'=>SORT_ASC,'c.updated_at'=>SORT_DESC]),
         ]);
 
+        if (isset($params['status']) && !empty($params['status'])) {
+            $query->andFilterWhere(['c.status'=>0]);
+            return $model;
+        }
+
         if (!($this->load($params))) {
             return $model;
         }

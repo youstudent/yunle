@@ -628,7 +628,12 @@ class Order extends \yii\db\ActiveRecord
         $orderDetail->member_id = $member_id;
         $orderDetail->order_id = $order_id;
         $orderDetail->car_id = $data['car_id'];
-        $orderDetail->action = '待接单';
+        if ($data['type']==5){
+            $orderDetail->action = '待邮寄';
+        } else {
+            $orderDetail->action = '待接单';
+        }
+
         $orderDetail->service_id = $data['service_id'];
         $orderDetail->created_at = time();
 

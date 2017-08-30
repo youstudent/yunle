@@ -53,6 +53,12 @@ class OrderSearch extends OrderDetail
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+        if (isset($params['action']) && !empty($params['action'])) {
+            $query->andFilterWhere(['o.type' => 5])
+                ->andFilterWhere(['od.action'=> ['处理中','待接单','待邮寄']]);
+
+            return $dataProvider;
+        }
         if (!($this->load($params) && $this->validate())) {
             return $dataProvider;
         }

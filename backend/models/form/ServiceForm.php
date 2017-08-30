@@ -165,7 +165,7 @@ class ServiceForm  extends Service
                     $model->service_id = $service_id;
                     $model->tag_id = $tag;
                     $model->created_at = time();
-                    if(!$m->save()){
+                    if(!$model->save()){
                         throw new Exception("绑定服务范畴失败");
                     }
                 }

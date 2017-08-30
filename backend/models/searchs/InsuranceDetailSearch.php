@@ -18,8 +18,8 @@ class InsuranceDetailSearch extends InsuranceDetail
     public function rules()
     {
         return [
-            [['action', 'member_id'], 'integer'],
-            [['order_created_at','order_user', 'order_car', 'order_company'], 'string'],
+            [['member_id'], 'integer'],
+            [['order_created_at','order_user', 'order_car', 'order_company', 'action'], 'string'],
             [['order_phone'], 'number'],
         ];
     }
@@ -40,6 +40,7 @@ class InsuranceDetailSearch extends InsuranceDetail
             'order_status',
             'order_created_at',
             'member_id',
+            'action',
         ]);
     }
 
@@ -53,7 +54,14 @@ class InsuranceDetailSearch extends InsuranceDetail
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
-        ;
+        if (isset($params['action']) && !empty($params['action'])) {
+            $query->andFilterWhere(['LIKE', 'ind.action', '待核保']);
+            return $dataProvider;
+        }
+        if (isset($params['actionB']) && !empty($params['actionB'])) {
+            $query->andFilterWhere(['LIKE', 'ind.action', '核保成功']);
+            return $dataProvider;
+        }
         if (!($this->load($params) && $this->validate())) {
             return $dataProvider;
         }
@@ -78,7 +86,8 @@ class InsuranceDetailSearch extends InsuranceDetail
             ->andFilterWhere(['LIKE', 'io.user', $this->order_user])
             ->andFilterWhere(['LIKE', 'io.phone', $this->order_phone])
             ->andFilterWhere(['LIKE', 'io.car', $this->order_car])
-            ->andFilterWhere(['LIKE', 'io.company', $this->order_company]);
+            ->andFilterWhere(['LIKE', 'io.company', $this->order_company])
+            ->andFilterWhere(['LIKE', 'ind.action', $this->action]);
 
 
         return $dataProvider;

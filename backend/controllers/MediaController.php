@@ -16,6 +16,7 @@ use backend\models\form\CarForm;
 use backend\models\form\ServiceForm;
 use backend\models\form\UserForm;
 use backend\models\Identification;
+use backend\models\InsuranceDetail;
 use backend\models\Order;
 use common\models\UserImg;
 use Imagine\Image\ImageInterface;
@@ -94,6 +95,12 @@ class MediaController extends BackendController
                 $model = new Order();
                 $directory = Yii::getAlias('@common/static/upload/act') . DIRECTORY_SEPARATOR;
                 $sub_dir = 'act';
+                $attribute = 'img';
+                break;
+            case 'insuranceAct':
+                $model = new InsuranceDetail();
+                $directory = Yii::getAlias('@common/static/upload/insuranceAct') . DIRECTORY_SEPARATOR;
+                $sub_dir = 'insuranceAct';
                 $attribute = 'img';
                 break;
         }
